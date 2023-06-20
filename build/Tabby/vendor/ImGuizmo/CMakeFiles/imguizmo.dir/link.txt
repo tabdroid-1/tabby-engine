@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libimguizmo.a CMakeFiles/imguizmo.dir/GraphEditor.cpp.o CMakeFiles/imguizmo.dir/ImCurveEdit.cpp.o CMakeFiles/imguizmo.dir/ImGradient.cpp.o CMakeFiles/imguizmo.dir/ImGuizmo.cpp.o CMakeFiles/imguizmo.dir/ImSequencer.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libimguizmo.a

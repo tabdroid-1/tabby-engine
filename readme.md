@@ -1,0 +1,3 @@
+required dependencies
+-freetype
+-vulkan
