@@ -4,7 +4,6 @@
 #include <unordered_map>
 
 #include "Scene.h"
-#include "Util/EnumHash.h"
 
 class SceneStateMachine {
 public:

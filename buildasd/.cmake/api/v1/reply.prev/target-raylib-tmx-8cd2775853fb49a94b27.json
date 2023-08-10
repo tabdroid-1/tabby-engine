@@ -1,0 +1,141 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "Tabby/vendor/raylib-tmx/src/libraylib-tmx.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"target_link_libraries",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"Tabby/vendor/raylib-tmx/src/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 19,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 22,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 20,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "  -w"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "GRAPHICS_API_OPENGL_ES2"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "PLATFORM_DESKTOP"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 3,
+					"path" : "/home/tabby/Projects/C++/Tabby/Tabby/vendor/raylib-tmx/src/../include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/tabby/Projects/C++/Tabby/Tabby/vendor/raylib/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/tabby/Projects/C++/Tabby/Tabby/vendor/raylib/src/external/glfw/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/tabby/Projects/C++/Tabby/Tabby/vendor/raylib-tmx/src/tmx/src"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "/usr/include/libxml2"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "raylib::@67426220bd916ed13cbb"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "glfw::@bb0bb6f1b1e8dd70bb73"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "tmx::@bad9b5fc273a670bac6f"
+		}
+	],
+	"id" : "raylib-tmx::@454667a0e97475b5bd41",
+	"name" : "raylib-tmx",
+	"nameOnDisk" : "libraylib-tmx.a",
+	"paths" : 
+	{
+		"build" : "Tabby/vendor/raylib-tmx/src",
+		"source" : "Tabby/vendor/raylib-tmx/src"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Tabby/vendor/raylib-tmx/src/raylib-tmx.c",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

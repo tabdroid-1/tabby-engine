@@ -1,1 +1,8 @@
 build/
+.cache/
+Editor/
+Game/
+
+
+CMakeLists.txt.user
+*.DS_Store

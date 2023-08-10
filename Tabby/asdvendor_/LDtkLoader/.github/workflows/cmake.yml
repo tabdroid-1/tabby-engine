@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        config:
+          - { name: Windows MSVC, os: windows-latest }
+          - { name: Linux GCC, os: ubuntu-latest }
+          - { name: Linux Clang, os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+          - { name: MacOS XCode, os: macos-latest }
+
+    runs-on: ${{ matrix.config.os }}
+
+    steps:
+      - name: ${{ matrix.config.name }}
+        uses: actions/checkout@v2
+
+      - name: Configure CMake
+        shell: bash
+        run: |
+          cmake -S $GITHUB_WORKSPACE \
+                -B $GITHUB_WORKSPACE/build \
+                -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+                -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install \
+                ${{ matrix.config.flags }}
+
+      - name: Build
+        shell: bash
+        run: cmake --build $GITHUB_WORKSPACE/build --config $BUILD_TYPE --target install -j16

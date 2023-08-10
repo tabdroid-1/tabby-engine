@@ -1,4 +1,9 @@
 #include "Core/Game.h"
+#include <math.h>
+
+#if defined(PLATFORM_WEB)
+#include <emscripten/emscripten.h>
+#endif
 
 int main()
 {

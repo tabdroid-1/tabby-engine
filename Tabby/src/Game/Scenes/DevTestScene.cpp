@@ -5,7 +5,6 @@
 #include "box2d/b2_body.h"
 #include "box2d/b2_world.h"
 #include "raylib.h"
-#include <Util/DebugUtils.h>
 #include <cstddef>
 #include <memory>
 

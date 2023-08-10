@@ -1,6 +1,7 @@
 #include "SceneStateMachine.h"
 #include "Scene/GameObject.h"
 #include <cstdio>
+#include <iostream>
 #include <vector>
 
 SceneStateMachine::SceneStateMachine()
