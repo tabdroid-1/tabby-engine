@@ -1,0 +1,2 @@
+/usr/bin/ar qc libtmx.a CMakeFiles/tmx.dir/src/tmx.c.o CMakeFiles/tmx.dir/src/tmx_utils.c.o CMakeFiles/tmx.dir/src/tmx_err.c.o CMakeFiles/tmx.dir/src/tmx_xml.c.o CMakeFiles/tmx.dir/src/tmx_mem.c.o CMakeFiles/tmx.dir/src/tmx_hash.c.o
+/usr/bin/ranlib libtmx.a
