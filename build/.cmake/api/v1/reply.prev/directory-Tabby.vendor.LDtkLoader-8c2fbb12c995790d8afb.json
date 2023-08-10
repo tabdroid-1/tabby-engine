@@ -1,0 +1,134 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"Tabby/vendor/LDtkLoader/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 83,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 85,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 87,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 89,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 90,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 91,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "share/doc/LDtkLoader",
+			"paths" : 
+			[
+				"Tabby/vendor/LDtkLoader/LICENSE.md",
+				"Tabby/vendor/LDtkLoader/README.md"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				"Tabby/vendor/LDtkLoader/include/LDtkLoader"
+			],
+			"type" : "directory"
+		},
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"Tabby/vendor/LDtkLoader/lib/libLDtkLoader.a"
+			],
+			"targetId" : "LDtkLoader::@c64c4ddf26403228153b",
+			"targetIndex" : 18,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/LDtkLoader",
+			"exportName" : "LDtkLoaderTargets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "LDtkLoader::@c64c4ddf26403228153b",
+					"index" : 18
+				}
+			],
+			"paths" : 
+			[
+				"Tabby/vendor/LDtkLoader/CMakeFiles/Export/f9647eb62aabc71d50658ff864394ae9/LDtkLoaderTargets.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 5,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/LDtkLoader",
+			"paths" : 
+			[
+				"build/Tabby/vendor/LDtkLoader/LDtkLoaderConfig.cmake"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 6,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/LDtkLoader",
+			"paths" : 
+			[
+				"build/Tabby/vendor/LDtkLoader/LDtkLoaderConfigVersion.cmake"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "Tabby/vendor/LDtkLoader",
+		"source" : "Tabby/vendor/LDtkLoader"
+	}
+}

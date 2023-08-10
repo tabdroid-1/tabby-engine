@@ -1,3 +1,9 @@
 required dependencies
--freetype
--vulkan
+
+
+
+
+
+
+ cmake .. -DOPENGL_VERSION="ES 2.0"
+

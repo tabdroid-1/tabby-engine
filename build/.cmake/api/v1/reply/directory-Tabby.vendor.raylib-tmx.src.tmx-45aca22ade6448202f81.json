@@ -1,0 +1,102 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"Tabby/vendor/raylib-tmx/src/tmx/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 98,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 103,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 105,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 108,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"Tabby/vendor/raylib-tmx/src/tmx/libtmx.a"
+			],
+			"targetId" : "tmx::@bad9b5fc273a670bac6f",
+			"targetIndex" : 37,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				"Tabby/vendor/raylib-tmx/src/tmx/src/tmx.h"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/tmx",
+			"exportName" : "tmx_exports",
+			"exportTargets" : 
+			[
+				{
+					"id" : "tmx::@bad9b5fc273a670bac6f",
+					"index" : 37
+				}
+			],
+			"paths" : 
+			[
+				"Tabby/vendor/raylib-tmx/src/tmx/CMakeFiles/Export/3a27d78082cf4afde741cdf271c370d1/tmxExports.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/tmx",
+			"paths" : 
+			[
+				"build/tmxConfig.cmake",
+				"build/tmxConfigVersion.cmake"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "Tabby/vendor/raylib-tmx/src/tmx",
+		"source" : "Tabby/vendor/raylib-tmx/src/tmx"
+	}
+}

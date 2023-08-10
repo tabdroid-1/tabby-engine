@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "Tabby/vendor/raylib-tmx/test",
+		"source" : "Tabby/vendor/raylib-tmx/test"
+	}
+}
