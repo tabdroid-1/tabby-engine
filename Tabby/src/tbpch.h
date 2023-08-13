@@ -1,1 +1,14 @@
-// i will add stuf when i try to turn tabby in to a lib
+#pragma once
+
+#include <iostream>
+#include <memory>
+#include <utility>
+#include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <optional>
+
+#include <string>
+#include <vector>
+#include <array>
+#include <sstream>

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ComponentSystem/Component.h"
+#include <Scene/ScriptableGameObject.h>
 #include <raylib.h>
 
-class PlayerMove : public Component {
+class PlayerMove : public Tabby::ScriptableEntity {
 public:
-    PlayerMove(GameObject* owner);
+    // PlayerMove(GameObject* owner);
 
     void Load(float speed);
     void Update(float deltaTime) override;

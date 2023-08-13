@@ -1,26 +1,18 @@
 #pragma once
 
-#include <ComponentSystem/Components.h>
-#include <Game/Scripts/Scripts.h>
-#include <Scene/GameObjectCollection.h>
 #include <Scene/Scene.h>
 #include <Scene/SceneStateMachine.h>
 #include <memory>
 
-class TitleScreenScene : public Scene {
+class TitleScreenScene : public Tabby::Scene {
 public:
     TitleScreenScene(SceneStateMachine& sceneStateMachine);
 
     void OnCreate() override;
+    void OnActivate() override;
     void OnDestroy() override;
 
-    void OnActivate() override;
-
     void SetSwitchToScene(unsigned int id);
-
-    void Update(float deltaTime) override;
-    void LateUpdate(float deltaTime) override;
-    void Draw() override;
 
 private:
     SceneStateMachine& sceneStateMachine;

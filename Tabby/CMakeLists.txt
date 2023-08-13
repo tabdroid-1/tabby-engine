@@ -20,6 +20,7 @@ set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(RAYLIBTMX "${PROJECT_VENDOR_DIR}/raylib-tmx")
 set(LDTKLOADER "${PROJECT_VENDOR_DIR}/LDtkLoader")
 set(FMT "${PROJECT_VENDOR_DIR}/fmt")
+set(ENTT "${PROJECT_VENDOR_DIR}/entt")
 
 # Add Raylib
 set(BUILD_EXAMPLES
@@ -41,15 +42,29 @@ set(BOX2D_BUILD_TESTBED
 # ##############################################################################
 
 # Adding our source files Define PROJECT_SOURCES as a list of all source files
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
-     "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src/*.h"
-     "${CMAKE_CURRENT_LIST_DIR}/src/*.hpp")
+# file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
+#      "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src/*.h"
+#      "${CMAKE_CURRENT_LIST_DIR}/src/*.hpp")
+
+file(GLOB_RECURSE PROJECT_SOURCES
+        "${PROJECT_SOURCE_DIR}/*.h"
+        "${PROJECT_SOURCE_DIR}/*.cpp"
+        )
 
 # Define PROJECT_INCLUDE to be the path to the include directory of the project
-set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/")
+set(PROJECT_INCLUDE 
+    "${CMAKE_CURRENT_LIST_DIR}/src/"
+    "${ENTT}/"
+    )
+
+# Additional project sources (vendors, etc.)
+set(HEADERS
+    "${ENTT}/entt.hpp"
+    # Add more header files here
+)
 
 # Declaring our executable
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${HEADERS})
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 
@@ -93,7 +108,7 @@ if(${PLATFORM} STREQUAL "Web")
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
   set(CMAKE_EXE_LINKER_FLAGS
-      "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -Os -Wall -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 --preload-file assets/ --shell-file ../sources/minshell.html"
+      "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -Os -Wall -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 --preload-file assets/ --shell-file ../src/minshell.html"
   )
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
   # This line is used to set your executable to build with the emscripten html

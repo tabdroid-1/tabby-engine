@@ -10,6 +10,7 @@ class Game {
 public:
     Game();
 
+    void Init();
     void Update();
     void LateUpdate();
     void Draw();

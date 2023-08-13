@@ -1,24 +1,30 @@
 #include "Game.h"
 #include "Game/Scenes/DevTestScene.h"
 #include "Game/Scenes/TitleScreenScene.h"
+#include "Physics/Physics.h"
 #include "raylib.h"
 #include <cstdio>
 #include <tuple>
 
 Game::Game()
 {
+}
+
+void Game::Init()
+{
+
     Game::SetupWindow();
     frameBuffer = LoadRenderTexture(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
 
     ToggleFullscreen();
 
     std::shared_ptr<TitleScreenScene> splashScreen = std::make_shared<TitleScreenScene>(sceneManager);
-    std::shared_ptr<DevTestScene> gameScene = std::make_shared<DevTestScene>(sceneManager);
-
+    // std::shared_ptr<DevTestScene> gameScene = std::make_shared<DevTestScene>(sceneManager);
+    //
     unsigned int splashScreenID = sceneManager.Add(splashScreen);
-    unsigned int gameSceneID = sceneManager.Add(gameScene);
-
-    splashScreen->SetSwitchToScene(gameSceneID);
+    // unsigned int gameSceneID = sceneManager.Add(gameScene);
+    //
+    // splashScreen->SetSwitchToScene(gameSceneID);
 
     sceneManager.SwitchTo(splashScreenID);
 }

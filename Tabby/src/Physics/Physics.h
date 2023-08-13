@@ -9,10 +9,10 @@ class Physics {
 public:
     Physics();
 
-    void Load(Vector2 gravity);
-    void Load(Vector2 Gravity, int VelocityIterations, int PositionIterations);
+    void Init(Vector2 gravity);
+    void Init(Vector2 Gravity, int VelocityIterations, int PositionIterations);
     void Update(float dt);
-    void Draw(Camera2D& camera);
+    void Draw();
     void Destroy();
 
     b2World& GetPhysicsWorld() { return *physicsWorld; }
@@ -36,7 +36,7 @@ public:
     float metresToPixels(float meters) { return meters * pixelsPerMeter; }
 
 public:
-    void DrawColliders(float worldScale, Camera2D& camera);
+    void DrawColliders();
     Vector2 ConvertWorldToScreen(const b2Vec2& worldPosition, const Vector2& windowSize, const float worldScale);
 
 private:

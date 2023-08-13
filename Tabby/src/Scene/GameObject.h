@@ -4,93 +4,64 @@
 #include <string>
 #include <vector>
 
-#include <ComponentSystem/Component.h>
-#include <ComponentSystem/Components/C_Drawable.h>
-#include <ComponentSystem/Components/C_Transform.h>
-#include <Core/S_Drawable.h>
+#include <Scene/Scene.h>
+
+#include <entt.hpp>
+
+namespace Tabby {
 
 class GameObject {
+
 public:
-    GameObject(std::string name);
-    GameObject(std::string name, bool destroyOnLoad);
+    GameObject() = default;
+    GameObject(entt::entity handle, Scene* scene);
+    GameObject(const GameObject& other) = default;
 
-    void Awake(); // Called when object created. Use to ensure required components
-                  // are present.
-    void Start(); // Called after Awake method. Use to initialise variables.
+    // void Awake(); // Called when object created. Use to ensure required components
+    //               // are present.
+    // void Start(); // Called after Awake method. Use to initialise variables.
+    //
+    // void Update(float deltaTime);
+    // void LateUpdate(float deltaTime);
+    // void Draw();
+    // void Delete();
 
-    void Update(float deltaTime);
-    void LateUpdate(float deltaTime);
-    void Draw();
-    void Delete();
-
-    template <typename T>
-    std::shared_ptr<T> AddComponent()
+    template <typename T, typename... Args>
+    T& AddComponent(Args&&... args)
     {
-        static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
-
-        // TODO: allow us to add more than one component, implement getcomponents
-        //  Check that we don't already have a component of this type.
-        for (auto& exisitingComponent : components) {
-            if (std::dynamic_pointer_cast<T>(exisitingComponent)) {
-                return std::dynamic_pointer_cast<T>(exisitingComponent);
-            }
-        }
-
-        std::shared_ptr<T> newComponent = std::make_shared<T>(this);
-
-        components.push_back(newComponent);
-
-        if (std::dynamic_pointer_cast<C_Drawable>(newComponent)) {
-            drawable = std::dynamic_pointer_cast<C_Drawable>(newComponent);
-        }
-
-        return newComponent;
-    };
-
-    template <typename T>
-    std::shared_ptr<T> GetComponent()
-    {
-        static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
-
-        // Check that we don't already have a component of this type.
-        for (auto& exisitingComponent : components) {
-            if (std::dynamic_pointer_cast<T>(exisitingComponent)) {
-                return std::dynamic_pointer_cast<T>(exisitingComponent);
-            }
-        }
-
-        return nullptr;
-    };
-
-    std::shared_ptr<GameObject> AddChild(std::shared_ptr<GameObject> child)
-    {
-        child->SetIsChild(true);
-        children.push_back(child);
-
-        drawables.Add(children);
-
-        return child;
+        T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        // m_Scene->OnComponentAdded<T>(*this, component);
+        return component;
     }
 
-    std::shared_ptr<C_Drawable> GetDrawable();
-    std::string GetName() { return name; }
+    template <typename T>
+    T& GetComponent()
+    {
+        return m_Scene->m_Registry.get<T>(m_EntityHandle);
+    }
+
+    template <typename T>
+    bool HasComponent()
+    {
+        return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
+    }
+
+    template <typename T>
+    void RemoveComponent()
+    {
+        m_Scene->m_Registry.remove<T>(m_EntityHandle);
+    }
+
     bool IsPersistent() { return isPersistent; }
     bool IsChild() { return isChild; }
     void SetIsChild(bool IsChild) { isChild = IsChild; }
 
-    bool IsQueuedForRemoval();
-    void QueueForRemoval();
-
-    std::shared_ptr<C_Transform> transform;
-
 private:
-    std::string name;
     bool isPersistent;
     bool isChild;
-    S_Drawable drawables;
 
-    std::vector<std::shared_ptr<Component>> components;
-    std::vector<std::shared_ptr<GameObject>> children;
-    std::shared_ptr<C_Drawable> drawable;
-    bool queuedForRemoval;
+    entt::entity m_EntityHandle { entt::null };
+    Scene* m_Scene = nullptr;
 };
+
+}

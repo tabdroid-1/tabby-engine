@@ -1,5 +1,4 @@
 #include "SceneStateMachine.h"
-#include "Scene/GameObject.h"
 #include <cstdio>
 #include <iostream>
 #include <vector>
@@ -31,7 +30,7 @@ void SceneStateMachine::Draw()
     }
 }
 
-unsigned int SceneStateMachine::Add(std::shared_ptr<Scene> scene)
+unsigned int SceneStateMachine::Add(std::shared_ptr<Tabby::Scene> scene)
 {
     auto inserted = scenes.insert(std::make_pair(insertedSceneID, scene));
 
@@ -66,10 +65,10 @@ void SceneStateMachine::Remove(unsigned int id)
 void SceneStateMachine::SwitchTo(unsigned int id)
 {
 
-    std::vector<std::shared_ptr<GameObject>> persistentGameObjects;
+    // std::vector<std::shared_ptr<GameObject>> persistentGameObjects;
 
     if (curScene != 0) {
-        persistentGameObjects = curScene->gameObjects.GetPersistentGameObjects();
+        // persistentGameObjects = curScene->gameObjects.GetPersistentGameObjects();
     }
 
     auto it = scenes.find(id);
@@ -78,12 +77,13 @@ void SceneStateMachine::SwitchTo(unsigned int id)
             curScene->OnDeactivate();
         }
 
-        if (!persistentGameObjects.empty()) {
-            it->second->gameObjects.Add(persistentGameObjects);
-        }
+        // if (!persistentGameObjects.empty()) {
+        // it->second->gameObjects.Add(persistentGameObjects);
+        // }
         curScene = it->second;
 
         std::cout << "Switched to Scene ID " << id << "\n";
         curScene->OnActivate();
+        curScene->InitPhysics();
     }
 }

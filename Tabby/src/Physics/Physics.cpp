@@ -11,13 +11,13 @@ Physics::Physics()
 {
 }
 
-void Physics::Load(Vector2 Gravity)
+void Physics::Init(Vector2 Gravity)
 {
     b2Vec2 gravity(Gravity.x, Gravity.y);
     physicsWorld = new b2World(gravity);
 }
 
-void Physics::Load(Vector2 Gravity, int VelocityIterations, int PositionIterations)
+void Physics::Init(Vector2 Gravity, int VelocityIterations, int PositionIterations)
 {
     velocityIterations = VelocityIterations;
     positionIterations = PositionIterations;
@@ -30,9 +30,9 @@ void Physics::Update(float dt)
     physicsWorld->Step(dt, velocityIterations, positionIterations);
 }
 
-void Physics::Draw(Camera2D& camera)
+void Physics::Draw()
 {
-    DrawColliders(physicsWorldScale, camera);
+    DrawColliders();
 }
 
 void Physics::Destroy()
@@ -40,15 +40,15 @@ void Physics::Destroy()
     delete physicsWorld;
 }
 
-void Physics::DrawColliders(float worldScale, Camera2D& camera)
+void Physics::DrawColliders()
 {
     auto currentBody = physicsWorld->GetBodyList();
     while (currentBody != nullptr) {
         auto pos = currentBody->GetPosition();
         auto angle = currentBody->GetAngle();
 
-        DrawCircle(pos.x * worldScale,
-            pos.y * worldScale,
+        DrawCircle(pos.x * physicsWorldScale,
+            pos.y * physicsWorldScale,
             5,
             GREEN);
 
@@ -62,7 +62,7 @@ void Physics::DrawColliders(float worldScale, Camera2D& camera)
                 b2CircleShape* circleShape = static_cast<b2CircleShape*>(shape);
                 b2Vec2 position = currentBody->GetPosition();
                 b2Vec2 offset = b2Mul(b2Rot(angle), circleShape->m_p);
-                DrawCircleLines((position.x + offset.x) * worldScale, (position.y + offset.y) * worldScale, circleShape->m_radius * worldScale, GREEN);
+                DrawCircleLines((position.x + offset.x) * physicsWorldScale, (position.y + offset.y) * physicsWorldScale, circleShape->m_radius * physicsWorldScale, GREEN);
 
             } else if (shape->GetType() == b2Shape::e_polygon) {
                 auto polygonShape = (b2PolygonShape*)shape;
@@ -75,8 +75,8 @@ void Physics::DrawColliders(float worldScale, Camera2D& camera)
                     b2Vec2 rotatedVertexA = b2Mul(b2Rot(angle), vertexA);
                     b2Vec2 rotatedVertexB = b2Mul(b2Rot(angle), vertexB);
 
-                    DrawLineV({ (pos.x + rotatedVertexA.x) * worldScale, (pos.y + rotatedVertexA.y) * worldScale },
-                        { (pos.x + rotatedVertexB.x) * worldScale, (pos.y + rotatedVertexB.y) * worldScale }, GREEN);
+                    DrawLineV({ (pos.x + rotatedVertexA.x) * physicsWorldScale, (pos.y + rotatedVertexA.y) * physicsWorldScale },
+                        { (pos.x + rotatedVertexB.x) * physicsWorldScale, (pos.y + rotatedVertexB.y) * physicsWorldScale }, GREEN);
                 }
             }
 
