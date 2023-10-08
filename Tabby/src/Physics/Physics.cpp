@@ -47,9 +47,9 @@ void Physics::DrawColliders()
         auto pos = currentBody->GetPosition();
         auto angle = currentBody->GetAngle();
 
-        DrawCircle(pos.x * physicsWorldScale,
-            pos.y * physicsWorldScale,
-            5,
+        DrawCircle(pos.x,
+            pos.y,
+            0.1,
             GREEN);
 
         auto fixture = currentBody->GetFixtureList();
@@ -62,7 +62,7 @@ void Physics::DrawColliders()
                 b2CircleShape* circleShape = static_cast<b2CircleShape*>(shape);
                 b2Vec2 position = currentBody->GetPosition();
                 b2Vec2 offset = b2Mul(b2Rot(angle), circleShape->m_p);
-                DrawCircleLines((position.x + offset.x) * physicsWorldScale, (position.y + offset.y) * physicsWorldScale, circleShape->m_radius * physicsWorldScale, GREEN);
+                DrawCircleLines((position.x + offset.x), (position.y + offset.y), circleShape->m_radius, GREEN);
 
             } else if (shape->GetType() == b2Shape::e_polygon) {
                 auto polygonShape = (b2PolygonShape*)shape;
@@ -75,8 +75,8 @@ void Physics::DrawColliders()
                     b2Vec2 rotatedVertexA = b2Mul(b2Rot(angle), vertexA);
                     b2Vec2 rotatedVertexB = b2Mul(b2Rot(angle), vertexB);
 
-                    DrawLineV({ (pos.x + rotatedVertexA.x) * physicsWorldScale, (pos.y + rotatedVertexA.y) * physicsWorldScale },
-                        { (pos.x + rotatedVertexB.x) * physicsWorldScale, (pos.y + rotatedVertexB.y) * physicsWorldScale }, GREEN);
+                    DrawLineV({ (pos.x + rotatedVertexA.x), (pos.y + rotatedVertexA.y) },
+                        { (pos.x + rotatedVertexB.x), (pos.y + rotatedVertexB.y) }, GREEN);
                 }
             }
 

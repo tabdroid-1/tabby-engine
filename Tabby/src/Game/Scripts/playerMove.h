@@ -9,7 +9,9 @@ public:
 
     void Load(float speed);
     void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
 
+    void Move();
     void CheckIfShouldFlip();
     void Flip();
 
@@ -18,5 +20,5 @@ private:
     Vector2 input = { 0, 0 };
     Vector2 velocity;
 
-    float playerSpeed = 100;
+    float playerSpeed = 0.5;
 };

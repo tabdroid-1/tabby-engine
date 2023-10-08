@@ -41,7 +41,7 @@ public:
 
 private:
     float screenScale = 1;
-    float pixelsPerMeter = 48;
+    float pixelsPerMeter = 1;
     const float physicsWorldScale = pixelsPerMeter * screenScale;
 
     Vector2 worldSize = { 24000.0f, 12000.f };

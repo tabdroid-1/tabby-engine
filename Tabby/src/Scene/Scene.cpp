@@ -1,4 +1,8 @@
+#include "Graphics/Graphics.h"
 #include "raylib.h"
+#include "raymath.h"
+#include "rcamera.h"
+#include "rlgl.h"
 #include <Scene/Scene.h>
 
 #include "box2d/b2_body.h"
@@ -8,6 +12,7 @@
 #include "box2d/box2d.h"
 #include <Scene/Components.h>
 #include <Scene/GameObject.h>
+#include <cstddef>
 #include <cwchar>
 
 namespace Tabby {
@@ -27,10 +32,14 @@ GameObject Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
     return entity;
 }
 
+void Scene::InitScene()
+{
+    rlDisableBackfaceCulling();
+}
+
 void Scene::InitPhysics()
 {
-    // m_PhysiscWorld = new b2World({ 0.0, 30.8 });
-    physics.Init({ 0.0, 30.8 });
+    physics.Init({ 0.0, 0.0 });
 
     auto view = m_Registry.view<RigidBodyComponent>();
     for (auto e : view) {
@@ -126,9 +135,33 @@ void Scene::Update(float dt)
 
             auto [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
 
-            camera.camera.target = { transform.Position.x, transform.Position.y };
-            if (camera.isMainCamera)
+            camera.camera.target = { transform.Position.x, transform.Position.y, transform.Position.z + 1 };
+            camera.camera.position = transform.Position;
+            // camera.camera.target = transform.Position;
+            if (camera.isMainCamera) {
+
                 SetActiveCamera(camera.camera);
+                UpdateCamera(&camera.camera, camera.cameraMode);
+            }
+
+            // rlPushMatrix();
+
+            // rlTranslatef(transform.Position.x, transform.Position.y, transform.Position.z);
+            // rlRotatef(transform.Rotation.x, 1.0f, 0.0f, 0.0f);
+            // rlRotatef(transform.Rotation.y, 0.0f, 1.0f, 0.0f);
+            // rlRotatef(transform.Rotation.z, 0.0f, 0.0f, 1.0f);
+
+            // rlPopMatrix();
+        }
+    }
+
+    {
+
+        auto view = m_Registry.view<CameraComponent>();
+        for (auto e : view) {
+            Tabby::GameObject gameObject = { e, this };
+            auto& transform = gameObject.GetComponent<TransformComponent>();
+            auto& camera = gameObject.GetComponent<CameraComponent>();
         }
     }
 
@@ -185,8 +218,8 @@ void Scene::LateUpdate(float dt)
             b2Body* body = (b2Body*)rb.RuntimeBody;
 
             const auto& position = body->GetPosition();
-            transform.Position.x = position.x * physics.GetPhysicsWorldScale();
-            transform.Position.y = position.y * physics.GetPhysicsWorldScale();
+            transform.Position.x = position.x;
+            transform.Position.y = position.y;
             transform.Rotation.z = rb.GetAngle();
 
             if (gameObject.HasComponent<BoxCollider2DComponent>()) {
@@ -221,7 +254,11 @@ void Scene::LateUpdate(float dt)
 void Scene::Draw()
 {
 
-    BeginMode2D(ActiveCamera);
+    BeginMode3D(ActiveCamera);
+
+#ifdef DEBUG
+    DrawGrid(100, 1.0f);
+#endif // DEBUG
 
     {
         auto view = m_Registry.view<SpriteRendererComponent>();
@@ -230,25 +267,13 @@ void Scene::Draw()
             auto& transform = gameObject.GetComponent<TransformComponent>();
             auto& sprite = gameObject.GetComponent<SpriteRendererComponent>();
 
-            // sprite.srcRec = { 0, 0, (float)sprite.Texture.width, (float)sprite.Texture.height };
-
-            Rectangle origin {
-                (transform.Size.x * transform.Scale.x) / 2,
-                (transform.Size.y * transform.Scale.y) / 2,
-            };
-
-            Rectangle destRec = {
-                transform.Position.x, transform.Position.y,
-                transform.Size.x * transform.Scale.x,
-                transform.Size.y * transform.Scale.y
-            };
-            DrawTexturePro(sprite.Texture, sprite.srcRec, destRec, { transform.Origin.x + origin.x, transform.Origin.y + origin.y }, transform.Rotation.z, sprite.Tint);
+            Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.Position, transform.Rotation, { transform.Scale.x, transform.Scale.y }, sprite.Tint);
         }
     }
 
     physics.Draw();
 
-    EndMode2D();
+    EndMode3D();
 }
 
 void Scene::OnDestroy()

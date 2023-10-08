@@ -1,6 +1,7 @@
 #include "Game/Scripts/playerMove.h"
 #include "Scene/Components.h"
 #include "Scene/GameObject.h"
+#include "raylib.h"
 #include <Game/Scenes/TitleScreenScene.h>
 #include <Game/Scripts/Scripts.h>
 
@@ -19,14 +20,20 @@ void TitleScreenScene::OnCreate()
 void TitleScreenScene::OnActivate()
 {
 
+    DisableCursor();
     // ---------- Player ----------
     Tabby::GameObject player = CreateEntity("player");
-    player.GetComponent<Tabby::TransformComponent>().Position = { 500.0f, 48.0f };
-    player.GetComponent<Tabby::TransformComponent>().Size = { 48.0f, 48.0f };
-    player.GetComponent<Tabby::TransformComponent>().Scale = { 4.0f, 4.0f };
+    player.GetComponent<Tabby::TransformComponent>().Position = {
+        0.0f,
+        0.0f,
+        0.0f,
+    };
+    /* player.GetComponent<Tabby::TransformComponent>().Size = { 48.0f, 48.0f }; */
+    player.GetComponent<Tabby::TransformComponent>().Scale = { 1.0f, 1.0f };
 
     auto& playerSprite = player.AddComponent<Tabby::SpriteRendererComponent>();
-    playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png");
+    /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
+    playerSprite.SetTexture("assets/spritesheets/player/player_idle.png");
 
     auto& playerRigidbody = player.AddComponent<Tabby::RigidBodyComponent>();
     playerRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Dynamic;
@@ -63,8 +70,11 @@ void TitleScreenScene::OnActivate()
 
     // ---------- Camera ----------
     Tabby::GameObject cameraObject = CreateEntity("mainCamera");
+    cameraObject.GetComponent<Tabby::TransformComponent>().Position = { 0.0f, 2.0f, 10.0f };
     auto& camera = cameraObject.AddComponent<Tabby::CameraComponent>();
     camera.isMainCamera = true;
+    camera.camera.projection = CAMERA_PERSPECTIVE;
+    camera.camera.fovy = 60.0f;
 
     // ---------- Ground ----------
     Tabby::GameObject ground = CreateEntity("ground");
