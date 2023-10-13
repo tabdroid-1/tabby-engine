@@ -1,3 +1,4 @@
+#include "Game/Scripts/cameraMove.h"
 #include "Game/Scripts/playerMove.h"
 #include "Scene/Components.h"
 #include "Scene/GameObject.h"
@@ -29,7 +30,7 @@ void TitleScreenScene::OnActivate()
         0.0f,
     };
     /* player.GetComponent<Tabby::TransformComponent>().Size = { 48.0f, 48.0f }; */
-    player.GetComponent<Tabby::TransformComponent>().Scale = { 1.0f, 1.0f };
+    player.GetComponent<Tabby::TransformComponent>().Scale = { 2.0f, 2.0f };
 
     auto& playerSprite = player.AddComponent<Tabby::SpriteRendererComponent>();
     /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
@@ -38,7 +39,7 @@ void TitleScreenScene::OnActivate()
     auto& playerRigidbody = player.AddComponent<Tabby::RigidBodyComponent>();
     playerRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Dynamic;
     auto& playerCapsuleCollider = player.AddComponent<Tabby::BoxCollider2DComponent>();
-    playerCapsuleCollider.Size = { 1.0f, 2.4f };
+    playerCapsuleCollider.Size = { 0.1f, 0.24f };
     playerCapsuleCollider.Friction = 1;
     playerCapsuleCollider.Density = 1;
     playerCapsuleCollider.Bounce = 0;
@@ -70,15 +71,21 @@ void TitleScreenScene::OnActivate()
 
     // ---------- Camera ----------
     Tabby::GameObject cameraObject = CreateEntity("mainCamera");
-    cameraObject.GetComponent<Tabby::TransformComponent>().Position = { 0.0f, 2.0f, 10.0f };
+    auto& cameraPosition = cameraObject.GetComponent<Tabby::TransformComponent>().Position;
+    cameraPosition = { 0.0f, 2.0f, 10.0f };
     auto& camera = cameraObject.AddComponent<Tabby::CameraComponent>();
+    camera.camera.target = { cameraPosition.x, cameraPosition.y, cameraPosition.z - 1 };
     camera.isMainCamera = true;
-    camera.camera.projection = CAMERA_PERSPECTIVE;
-    camera.camera.fovy = 60.0f;
+    camera.camera.projection = CAMERA_ORTHOGRAPHIC;
+    camera.camera.fovy = 10.0f;
+
+    auto& cameraMovement = cameraObject.AddComponent<Tabby::NativeScriptComponent>();
+    cameraMovement.Bind<CameraMove>();
+    auto cameraMovementScript = static_cast<CameraMove*>(cameraMovement.Instance);
 
     // ---------- Ground ----------
     Tabby::GameObject ground = CreateEntity("ground");
-    ground.GetComponent<Tabby::TransformComponent>().Position = { 1300.0f, 1200.f };
+    ground.GetComponent<Tabby::TransformComponent>().Position = { 3.0f, 2.0f };
     auto& groundRigidbody = ground.AddComponent<Tabby::RigidBodyComponent>();
     groundRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Static;
 

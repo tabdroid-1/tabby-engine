@@ -135,23 +135,28 @@ void Scene::Update(float dt)
 
             auto [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
 
-            camera.camera.target = { transform.Position.x, transform.Position.y, transform.Position.z + 1 };
+            // camera.camera.target = { transform.Position.x, transform.Position.y, transform.Position.z + 1 };
             camera.camera.position = transform.Position;
-            // camera.camera.target = transform.Position;
+            // // Create a rotation matrix (e.g., a 45-degree rotation around the Y-axis)
+            // Matrix rotationMatrix = MatrixRotateX(transform.Rotation.x * DEG2RAD);
+            // rotationMatrix = MatrixRotateY(transform.Rotation.y * DEG2RAD);
+            // rotationMatrix = MatrixRotateZ(transform.Rotation.z * DEG2RAD);
+            //
+            // // Apply the rotation matrix to the camera's target vector
+            // camera.camera.target = Vector3Transform(camera.camera.target, rotationMatrix);
+            //
+            // // Optionally, apply the same rotation to the camera's up vector to maintain its orientation
+            // camera.camera.up = Vector3Transform(camera.camera.up, rotationMatrix);
+
             if (camera.isMainCamera) {
 
                 SetActiveCamera(camera.camera);
-                UpdateCamera(&camera.camera, camera.cameraMode);
             }
 
-            // rlPushMatrix();
+            if (camera.debugCameraMovement) {
 
-            // rlTranslatef(transform.Position.x, transform.Position.y, transform.Position.z);
-            // rlRotatef(transform.Rotation.x, 1.0f, 0.0f, 0.0f);
-            // rlRotatef(transform.Rotation.y, 0.0f, 1.0f, 0.0f);
-            // rlRotatef(transform.Rotation.z, 0.0f, 0.0f, 1.0f);
-
-            // rlPopMatrix();
+                UpdateCamera(&camera.camera, camera.cameraMode);
+            }
         }
     }
 
@@ -256,6 +261,8 @@ void Scene::Draw()
 
     BeginMode3D(ActiveCamera);
 
+    physics.Draw();
+
 #ifdef DEBUG
     DrawGrid(100, 1.0f);
 #endif // DEBUG
@@ -267,11 +274,9 @@ void Scene::Draw()
             auto& transform = gameObject.GetComponent<TransformComponent>();
             auto& sprite = gameObject.GetComponent<SpriteRendererComponent>();
 
-            Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.Position, transform.Rotation, { transform.Scale.x, transform.Scale.y }, sprite.Tint);
+            Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.Position, transform.Rotation, { 0.0f, 0.0f }, { transform.Scale.x, transform.Scale.y }, sprite.Tint);
         }
     }
-
-    physics.Draw();
 
     EndMode3D();
 }

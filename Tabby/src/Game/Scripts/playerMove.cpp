@@ -114,11 +114,16 @@ void PlayerMove::Move()
         input.x = -1;
     }
 
+    if (IsKeyDown(KEY_W)) {
+        input.y = 1;
+    }
+    if (IsKeyDown(KEY_S)) {
+        input.y = -1;
+    }
+
     velocity = { input.x * playerSpeed, input.y * playerSpeed };
 
     auto& playerTransform = GetComponent<Tabby::TransformComponent>();
-    DrawText(TextFormat("%i", playerTransform.Position.x), 360, 180, 80, LIGHTGRAY);
-    std::cout << GetComponent<Tabby::TransformComponent>().Position.x << "\n";
 
     if (HasComponent<Tabby::RigidBodyComponent>()) {
         auto& playerRB = GetComponent<Tabby::RigidBodyComponent>();
