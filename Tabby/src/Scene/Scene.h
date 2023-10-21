@@ -5,7 +5,7 @@
 #include <Physics/Physics.h>
 #include <box2d/b2_world.h>
 #include <cstdio>
-#include <entt.hpp>
+#include <entt/entt.hpp>
 
 namespace Tabby {
 

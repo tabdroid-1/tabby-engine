@@ -1,7 +1,7 @@
 #pragma once
 
 #include "box2d/b2_body.h"
-#include <Core/Animation.h>
+#include <Graphics/Animation.h>
 #include <Scene/ScriptableGameObject.h>
 #include <raylib.h>
 #include <raymath.h>
@@ -85,20 +85,22 @@ struct SpriteRendererComponent {
         Texture = LoadTexture(path);
         srcRec = { 0.0, 0.0, (float)Texture.width, (float)Texture.height };
     }
-
-    void FlipTextureX()
-    {
-        Image image = LoadImageFromTexture(Texture);
-        ImageFlipHorizontal(&image);
-        UpdateTexture(Texture, image.data);
-    }
-
-    void FlipTextureY()
-    {
-        Image image = LoadImageFromTexture(Texture);
-        ImageFlipVertical(&image);
-        UpdateTexture(Texture, image.data);
-    }
+    //
+    // void FlipTextureX()
+    // {
+    //     Image image = LoadImageFromTexture(Texture);
+    //     ImageFlipHorizontal(&image);
+    //     UpdateTexture(Texture, image.data);
+    //     UnloadImage(image);
+    // }
+    //
+    // void FlipTextureY()
+    // {
+    //     Image image = LoadImageFromTexture(Texture);
+    //     ImageFlipVertical(&image);
+    //     UpdateTexture(Texture, image.data);
+    //     UnloadImage(image);
+    // }
 };
 
 struct AnimationComponent {

@@ -180,16 +180,16 @@ void MemFree(void *ptr)
 }
 
 // Load data from file into a buffer
-unsigned char *LoadFileData(const char *fileName, unsigned int *bytesRead)
+unsigned char *LoadFileData(const char *fileName, int *dataSize)
 {
     unsigned char *data = NULL;
-    *bytesRead = 0;
+    *dataSize = 0;
 
     if (fileName != NULL)
     {
         if (loadFileData)
         {
-            data = loadFileData(fileName, bytesRead);
+            data = loadFileData(fileName, dataSize);
             return data;
         }
 #if defined(SUPPORT_STANDARD_FILEIO)
@@ -200,7 +200,7 @@ unsigned char *LoadFileData(const char *fileName, unsigned int *bytesRead)
             // WARNING: On binary streams SEEK_END could not be found,
             // using fseek() and ftell() could not work in some (rare) cases
             fseek(file, 0, SEEK_END);
-            int size = ftell(file);
+            int size = ftell(file);     // WARNING: ftell() returns 'long int', maximum size returned is INT_MAX (2147483647 bytes)
             fseek(file, 0, SEEK_SET);
 
             if (size > 0)
@@ -210,11 +210,24 @@ unsigned char *LoadFileData(const char *fileName, unsigned int *bytesRead)
                 if (data != NULL)
                 {
                     // NOTE: fread() returns number of read elements instead of bytes, so we read [1 byte, size elements]
-                    unsigned int count = (unsigned int)fread(data, sizeof(unsigned char), size, file);
-                    *bytesRead = count;
+                    size_t count = fread(data, sizeof(unsigned char), size, file);
+                    
+                    // WARNING: fread() returns a size_t value, usually 'unsigned int' (32bit compilation) and 'unsigned long long' (64bit compilation)
+                    // dataSize is unified along raylib as a 'int' type, so, for file-sizes > INT_MAX (2147483647 bytes) we have a limitation
+                    if (count > 2147483647)
+                    {
+                        TRACELOG(LOG_WARNING, "FILEIO: [%s] File is bigger than 2147483647 bytes, avoid using LoadFileData()", fileName);
+                        
+                        RL_FREE(data);
+                        data = NULL;
+                    }
+                    else
+                    {
+                        *dataSize = (int)count;
 
-                    if (count != size) TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially loaded", fileName);
-                    else TRACELOG(LOG_INFO, "FILEIO: [%s] File loaded successfully", fileName);
+                        if ((*dataSize) != size) TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially loaded (%i bytes out of %i)", fileName, dataSize, count);
+                        else TRACELOG(LOG_INFO, "FILEIO: [%s] File loaded successfully", fileName);
+                    }
                 }
                 else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to allocated memory for file reading", fileName);
             }
@@ -239,7 +252,7 @@ void UnloadFileData(unsigned char *data)
 }
 
 // Save data to file from buffer
-bool SaveFileData(const char *fileName, void *data, unsigned int bytesToWrite)
+bool SaveFileData(const char *fileName, void *data, int dataSize)
 {
     bool success = false;
 
@@ -247,17 +260,19 @@ bool SaveFileData(const char *fileName, void *data, unsigned int bytesToWrite)
     {
         if (saveFileData)
         {
-            return saveFileData(fileName, data, bytesToWrite);
+            return saveFileData(fileName, data, dataSize);
         }
 #if defined(SUPPORT_STANDARD_FILEIO)
         FILE *file = fopen(fileName, "wb");
 
         if (file != NULL)
         {
-            unsigned int count = (unsigned int)fwrite(data, sizeof(unsigned char), bytesToWrite, file);
+            // WARNING: fwrite() returns a size_t value, usually 'unsigned int' (32bit compilation) and 'unsigned long long' (64bit compilation)
+            // and expects a size_t input value but as dataSize is limited to INT_MAX (2147483647 bytes), there shouldn't be a problem
+            int count = (int)fwrite(data, sizeof(unsigned char), dataSize, file);
 
             if (count == 0) TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to write file", fileName);
-            else if (count != bytesToWrite) TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially written", fileName);
+            else if (count != dataSize) TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially written", fileName);
             else TRACELOG(LOG_INFO, "FILEIO: [%s] File saved successfully", fileName);
 
             int result = fclose(file);
@@ -274,7 +289,7 @@ bool SaveFileData(const char *fileName, void *data, unsigned int bytesToWrite)
 }
 
 // Export data to code (.h), returns true on success
-bool ExportDataAsCode(const unsigned char *data, unsigned int size, const char *fileName)
+bool ExportDataAsCode(const unsigned char *data, int dataSize, const char *fileName)
 {
     bool success = false;
 
@@ -284,7 +299,7 @@ bool ExportDataAsCode(const unsigned char *data, unsigned int size, const char *
 
     // NOTE: Text data buffer size is estimated considering raw data size in bytes
     // and requiring 6 char bytes for every byte: "0x00, "
-    char *txtData = (char *)RL_CALLOC(size*6 + 2000, sizeof(char));
+    char *txtData = (char *)RL_CALLOC(dataSize*6 + 2000, sizeof(char));
 
     int byteCount = 0;
     byteCount += sprintf(txtData + byteCount, "////////////////////////////////////////////////////////////////////////////////////////\n");
@@ -303,11 +318,11 @@ bool ExportDataAsCode(const unsigned char *data, unsigned int size, const char *
     strcpy(varFileName, GetFileNameWithoutExt(fileName));
     for (int i = 0; varFileName[i] != '\0'; i++) if ((varFileName[i] >= 'a') && (varFileName[i] <= 'z')) { varFileName[i] = varFileName[i] - 32; }
 
-    byteCount += sprintf(txtData + byteCount, "#define %s_DATA_SIZE     %i\n\n", varFileName, size);
+    byteCount += sprintf(txtData + byteCount, "#define %s_DATA_SIZE     %i\n\n", varFileName, dataSize);
 
     byteCount += sprintf(txtData + byteCount, "static unsigned char %s_DATA[%s_DATA_SIZE] = { ", varFileName, varFileName);
-    for (unsigned int i = 0; i < size - 1; i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), data[i]);
-    byteCount += sprintf(txtData + byteCount, "0x%x };\n", data[size - 1]);
+    for (int i = 0; i < (dataSize - 1); i++) byteCount += sprintf(txtData + byteCount, ((i%TEXT_BYTES_PER_LINE == 0)? "0x%x,\n" : "0x%x, "), data[i]);
+    byteCount += sprintf(txtData + byteCount, "0x%x };\n", data[dataSize - 1]);
 
     // NOTE: Text data size exported is determined by '\0' (NULL) character
     success = SaveFileText(fileName, txtData);
@@ -465,12 +480,12 @@ FILE *android_fopen(const char *fileName, const char *mode)
 // Module specific Functions Definition
 //----------------------------------------------------------------------------------
 #if defined(PLATFORM_ANDROID)
-static int android_read(void *cookie, char *buf, int size)
+static int android_read(void *cookie, char *data, int dataSize)
 {
-    return AAsset_read((AAsset *)cookie, buf, size);
+    return AAsset_read((AAsset *)cookie, data, dataSize);
 }
 
-static int android_write(void *cookie, const char *buf, int size)
+static int android_write(void *cookie, const char *data, int dataSize)
 {
     TRACELOG(LOG_WARNING, "ANDROID: Failed to provide write access to APK");
 

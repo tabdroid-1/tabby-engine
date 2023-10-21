@@ -11,16 +11,19 @@ void Graphics::DrawSprite(Matrix mat, Texture2D texture, Rectangle source, Vecto
     rlPushMatrix();
 
     // peel off just the rotation
-    Quaternion quat = QuaternionFromMatrix(mat);
-    mat = QuaternionToMatrix(quat);
+    // Quaternion quat = QuaternionFromMatrix(mat);
+    // mat = QuaternionToMatrix(quat);
 
     // apply just the rotation
-    rlMultMatrixf(MatrixToFloat(mat));
+    // rlMultMatrixf(MatrixToFloat(mat));
 
     // translate backwards in the inverse rotated matrix to put the item where it goes in world space
-    position = Vector3Transform(position, MatrixInvert(mat));
+    // position = Vector3Transform(position, MatrixInvert(mat));
     rlTranslatef(position.x, position.y, position.z);
     rlTranslatef(-origin.x, -origin.y, -origin.z);
+    rlRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
+    rlRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
+    rlRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
 
     // draw the billboard
     float width = size.x / 2;

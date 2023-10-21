@@ -12,8 +12,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # ${libName} GIT_REPOSITORY ${gitURL} GIT_TAG ${gitTag} GIT_SHALLOW TRUE
 # GIT_PROGRESS TRUE) FetchContent_MakeAvailable(${libName})
 # target_compile_options(${libName} PRIVATE "-w") endfunction()
-set(PROJECT_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
-set(PROJECT_VENDOR_DIR "${CMAKE_CURRENT_LIST_DIR}/vendor")
+set(PROJECT_SOURCE_DIR "src")
+set(PROJECT_VENDOR_DIR "vendor")
 
 set(RAYLIB "${PROJECT_VENDOR_DIR}/raylib")
 set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
@@ -46,27 +46,28 @@ set(BOX2D_BUILD_TESTBED
 #      "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src/*.h"
 #      "${CMAKE_CURRENT_LIST_DIR}/src/*.hpp")
 
-file(GLOB_RECURSE PROJECT_SOURCES
+file(GLOB_RECURSE PROJECT_SOURCES 
         "${PROJECT_SOURCE_DIR}/*.h"
         "${PROJECT_SOURCE_DIR}/*.cpp"
         )
+# # Additional project sources (vendors, etc.)
+list(APPEND PROJECT_SOURCES
+        "${ENTT}/entt.hpp" # entity component system
+        "${RAYLIB}/src/raylib.h" 
+        )
 
-# Define PROJECT_INCLUDE to be the path to the include directory of the project
-set(PROJECT_INCLUDE 
-    "${CMAKE_CURRENT_LIST_DIR}/src/"
-    "${ENTT}/"
-    )
-
-# Additional project sources (vendors, etc.)
-set(HEADERS
-    "${ENTT}/entt.hpp"
-    # Add more header files here
-)
 
 # Declaring our executable
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${HEADERS})
-target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
+add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
+
+include_directories(SYSTEM
+        "src"
+        )
+
+target_include_directories(${PROJECT_NAME} PUBLIC 
+        ${PROJECT_SOURCES_DIR}
+        ${PROJECT_VENDOR_DIR}
+        )
 
 add_subdirectory(${RAYLIB})
 add_subdirectory(${RAYLIBTMX})
@@ -74,11 +75,13 @@ add_subdirectory(${LDTKLOADER})
 add_subdirectory(${BOX2D})
 add_subdirectory(${FMT})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC raylib)
-target_link_libraries(${PROJECT_NAME} PUBLIC raylib-tmx)
-target_link_libraries(${PROJECT_NAME} PUBLIC LDtkLoader)
-target_link_libraries(${PROJECT_NAME} PUBLIC box2d)
-target_link_libraries(${PROJECT_NAME} PUBLIC fmt)
+target_link_libraries(${PROJECT_NAME} PUBLIC 
+        raylib
+        raylib-tmx
+        LDtkLoader
+        box2d
+        fmt
+        )
 
 # ##############################################################################
 # Project build settings
@@ -126,5 +129,4 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 endif()
 
-target_precompile_headers(${PROJECT_NAME} PRIVATE
-                          "${PROJECT_SOURCE_DIR}/tbpch.h")
+target_precompile_headers(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/tbpch.h")
