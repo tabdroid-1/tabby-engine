@@ -1,7 +1,6 @@
 build/
 .cache/
 Editor/
-Game/
 
 
 CMakeLists.txt.user

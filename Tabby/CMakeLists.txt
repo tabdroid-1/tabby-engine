@@ -19,7 +19,6 @@ set(RAYLIB "${PROJECT_VENDOR_DIR}/raylib")
 set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(RAYLIBTMX "${PROJECT_VENDOR_DIR}/raylib-tmx")
 set(LDTKLOADER "${PROJECT_VENDOR_DIR}/LDtkLoader")
-set(FMT "${PROJECT_VENDOR_DIR}/fmt")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
 
 # Add Raylib
@@ -73,14 +72,12 @@ add_subdirectory(${RAYLIB})
 add_subdirectory(${RAYLIBTMX})
 add_subdirectory(${LDTKLOADER})
 add_subdirectory(${BOX2D})
-add_subdirectory(${FMT})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC 
         raylib
         raylib-tmx
         LDtkLoader
         box2d
-        fmt
         )
 
 # ##############################################################################
