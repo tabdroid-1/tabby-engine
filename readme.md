@@ -34,3 +34,7 @@ Compiling
     cmake .. -DOPENGL_VERSION="ES 2.0" && make
     ```
     (u can also use opengl 2.1, 3.3, 4,3 or even 1.1 but that might cause error/visual bugs)
+
+ Note From the author
+ --------------------
+ - If you are going to use this game engine, pls support as much platform as possible (eh. You do not have to support Chrome OS or FreeBSD) and support more architectures(like x86_32, x86_64, aarch64). You do not have to that but if you do it you would make me happi. :3
