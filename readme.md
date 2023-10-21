@@ -8,17 +8,25 @@ Engine is build as a static library so it can be linked to executable statically
 
 
 Planned Features / To-do list
-----------------
+-----------------------------
  - More advanced asset manager. Assets will be stored in the code and (some) will be encrypted using AES encryption to complicate data mining/revers engineering(might be in a private branch though)
  - Audio component
  - More advanced animation system
  - Web and Android builds
  - Better 3D support
  - Clean the f*kin "CMakeLists.txt" to be more understand able and more useable. It looks hideous.
+ - Steamworks API implementation
 
+Engine Dependencies
+-------------------
+ - raylib
+ - box2d
+ - entt
+ - LDtkLoader
+ - raylib-tmx 
 
 Compiling
-----------------
+---------
  1. ```shell
     git clone -b 3d https://github.com/tabdroid-1/TabbyENG.git && mkdir TabbyENG/build && cd TabbyENG/build
     ```
