@@ -14,6 +14,7 @@ Planned Features / To-do list
  - More advanced animation system
  - Web and Android builds
  - Better 3D support
+ - Clean the f*kin "CMakeLists.txt" to be more understand able and more useable. It looks hideous.
 
 
 Compiling
