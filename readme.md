@@ -12,7 +12,7 @@ Planned Features / To-do list
  - More advanced asset manager. Assets will be stored in the code and (some) will be encrypted using AES encryption to complicate data mining/revers engineering(might be in a private branch though)
  - Audio component
  - More advanced animation system
- - Web and Android builds
+ - Web, Chrome OS, FreeBSD, Raspberry Pi and Android builds
  - Better 3D support
  - Clean the f*kin "CMakeLists.txt" to be more understand able and more useable. It looks hideous.
  - Steamworks API implementation
