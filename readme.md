@@ -28,7 +28,7 @@ Engine Dependencies
 Compiling
 ---------
  1. ```shell
-    git clone -b 3d https://github.com/tabdroid-1/TabbyENG.git && mkdir TabbyENG/build && cd TabbyENG/build
+    git clone -b 3d https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
     ```
  2. ```shell
     cmake .. -DOPENGL_VERSION="ES 2.0" && make
