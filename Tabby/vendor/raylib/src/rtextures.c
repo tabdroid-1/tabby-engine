@@ -138,13 +138,24 @@
      defined(SUPPORT_FILEFORMAT_PIC) || \
      defined(SUPPORT_FILEFORMAT_PNM))
 
+    #if defined(__GNUC__) // GCC and Clang
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wunused-function"
+    #endif
+
     #define STBI_MALLOC RL_MALLOC
     #define STBI_FREE RL_FREE
     #define STBI_REALLOC RL_REALLOC
 
+    #define STBI_NO_THREAD_LOCALS
+
     #define STB_IMAGE_IMPLEMENTATION
     #include "external/stb_image.h"         // Required for: stbi_load_from_file()
                                             // NOTE: Used to read image data (multiple formats support)
+
+    #if defined(__GNUC__) // GCC and Clang
+        #pragma GCC diagnostic pop
+    #endif
 #endif
 
 #if (defined(SUPPORT_FILEFORMAT_DDS) || \
@@ -153,25 +164,35 @@
      defined(SUPPORT_FILEFORMAT_PVR) || \
      defined(SUPPORT_FILEFORMAT_ASTC))
 
+    #if defined(__GNUC__) // GCC and Clang
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wunused-function"
+    #endif
+
     #define RL_GPUTEX_IMPLEMENTATION
     #include "external/rl_gputex.h"         // Required for: rl_load_xxx_from_memory()
                                             // NOTE: Used to read compressed textures data (multiple formats support)
+
+    #if defined(__GNUC__) // GCC and Clang
+        #pragma GCC diagnostic pop
+    #endif
 #endif
 
 #if defined(SUPPORT_FILEFORMAT_QOI)
     #define QOI_MALLOC RL_MALLOC
     #define QOI_FREE RL_FREE
 
-#if defined(_MSC_VER ) // qoi has warnings on windows, so disable them just for this file
-#pragma warning( push )
-#pragma warning( disable : 4267)
-#endif
+    #if defined(_MSC_VER)               // Disable some MSVC warning
+        #pragma warning(push)
+        #pragma warning(disable : 4267)
+    #endif
+
     #define QOI_IMPLEMENTATION
     #include "external/qoi.h"
 
-#if defined(_MSC_VER )
-#pragma warning( pop )
-#endif
+    #if defined(_MSC_VER)
+        #pragma warning(pop)            // Disable MSVC warning suppression
+    #endif
 
 #endif
 
@@ -192,7 +213,15 @@
 #define STBIR_MALLOC(size,c) ((void)(c), RL_MALLOC(size))
 #define STBIR_FREE(ptr,c) ((void)(c), RL_FREE(ptr))
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "external/stb_image_resize.h"  // Required for: stbir_resize_uint8() [ImageResize()]
+#include "external/stb_image_resize2.h"  // Required for: stbir_resize_uint8_linear() [ImageResize()]
+
+#if defined(SUPPORT_FILEFORMAT_SVG)
+	#define NANOSVG_IMPLEMENTATION	// Expands implementation
+	#include "external/nanosvg.h"
+
+	#define NANOSVGRAST_IMPLEMENTATION
+	#include "external/nanosvgrast.h"
+#endif
 
 //----------------------------------------------------------------------------------
 // Defines and Macros
@@ -223,6 +252,8 @@ extern void LoadFontDefault(void);          // [Module: text] Loads default font
 //----------------------------------------------------------------------------------
 // Module specific Functions Declaration
 //----------------------------------------------------------------------------------
+static float HalfToFloat(unsigned short x);
+static unsigned short FloatToHalf(float x);
 static Vector4 *LoadImageDataNormalized(Image image);       // Load pixel data from image as Vector4 array (float normalized)
 
 //----------------------------------------------------------------------------------
@@ -248,11 +279,11 @@ Image LoadImage(const char *fileName)
 #endif
 
     // Loading file to memory
-    unsigned int fileSize = 0;
-    unsigned char *fileData = LoadFileData(fileName, &fileSize);
+    int dataSize = 0;
+    unsigned char *fileData = LoadFileData(fileName, &dataSize);
 
     // Loading image from memory data
-    if (fileData != NULL) image = LoadImageFromMemory(GetFileExtension(fileName), fileData, fileSize);
+    if (fileData != NULL) image = LoadImageFromMemory(GetFileExtension(fileName), fileData, dataSize);
 
     RL_FREE(fileData);
 
@@ -264,7 +295,7 @@ Image LoadImageRaw(const char *fileName, int width, int height, int format, int 
 {
     Image image = { 0 };
 
-    unsigned int dataSize = 0;
+    int dataSize = 0;
     unsigned char *fileData = LoadFileData(fileName, &dataSize);
 
     if (fileData != NULL)
@@ -287,6 +318,84 @@ Image LoadImageRaw(const char *fileName, int width, int height, int format, int 
     return image;
 }
 
+// Load an image from a SVG file or string with custom size
+Image LoadImageSvg(const char *fileNameOrString, int width, int height)
+{
+    Image image = { 0 };
+
+#if defined(SUPPORT_FILEFORMAT_SVG)
+    bool isSvgStringValid = false;
+
+    // Validate fileName or string
+    if (fileNameOrString != NULL)
+    {
+        int dataSize = 0;
+        unsigned char *fileData = NULL;
+
+        if (FileExists(fileNameOrString))
+        {
+            fileData = LoadFileData(fileNameOrString, &dataSize);
+            isSvgStringValid = true;
+        }
+        else
+        {
+            // Validate fileData as valid SVG string data
+            //<svg xmlns="http://www.w3.org/2000/svg" width="2500" height="2484" viewBox="0 0 192.756 191.488">
+            if ((fileNameOrString != NULL) &&
+                (fileNameOrString[0] == '<') &&
+                (fileNameOrString[1] == 's') &&
+                (fileNameOrString[2] == 'v') &&
+                (fileNameOrString[3] == 'g'))
+            {
+                fileData = fileNameOrString;
+                isSvgStringValid = true;
+            }
+        }
+
+        if (isSvgStringValid)
+        {
+            struct NSVGimage *svgImage = nsvgParse(fileData, "px", 96.0f);
+
+            unsigned char *img = RL_MALLOC(width*height*4);
+
+            // Calculate scales for both the width and the height
+            const float scaleWidth = width/svgImage->width;
+            const float scaleHeight = height/svgImage->height;
+
+            // Set the largest of the 2 scales to be the scale to use
+            const float scale = (scaleHeight > scaleWidth)? scaleWidth : scaleHeight;
+
+            int offsetX = 0;
+            int offsetY = 0;
+
+            if (scaleHeight > scaleWidth) offsetY = (height - svgImage->height*scale) / 2;
+            else offsetX = (width - svgImage->width*scale) / 2;
+
+            // Rasterize
+            struct NSVGrasterizer *rast = nsvgCreateRasterizer();
+            nsvgRasterize(rast, svgImage, (int)offsetX, (int)offsetY, scale, img, width, height, width*4);
+
+            // Populate image struct with all data
+            image.data = img;
+            image.width = width;
+            image.height = height;
+            image.mipmaps = 1;
+            image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+
+            // Free used memory
+            nsvgDelete(svgImage);
+            nsvgDeleteRasterizer(rast);
+        }
+
+        if (isSvgStringValid && (fileData != fileNameOrString)) UnloadFileData(fileData);
+    }
+#else
+    TRACELOG(LOG_WARNING, "SVG image support not enabled, image can not be loaded");
+#endif
+
+    return image;
+}
+
 // Load animated image data
 //  - Image.data buffer includes all frames: [image#0][image#1][image#2][...]
 //  - Number of frames is returned through 'frames' parameter
@@ -300,7 +409,7 @@ Image LoadImageAnim(const char *fileName, int *frames)
 #if defined(SUPPORT_FILEFORMAT_GIF)
     if (IsFileExtension(fileName, ".gif"))
     {
-        unsigned int dataSize = 0;
+        int dataSize = 0;
         unsigned char *fileData = LoadFileData(fileName, &dataSize);
 
         if (fileData != NULL)
@@ -410,12 +519,45 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
 #if defined(SUPPORT_FILEFORMAT_QOI)
     else if ((strcmp(fileType, ".qoi") == 0) || (strcmp(fileType, ".QOI") == 0))
     {
-        qoi_desc desc = { 0 };
-        image.data = qoi_decode(fileData, dataSize, &desc, 4);
-        image.width = desc.width;
-        image.height = desc.height;
-        image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
-        image.mipmaps = 1;
+        if (fileData != NULL)
+        {
+            qoi_desc desc = { 0 };
+            image.data = qoi_decode(fileData, dataSize, &desc, 4);
+            image.width = desc.width;
+            image.height = desc.height;
+            image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+            image.mipmaps = 1;
+        }
+    }
+#endif
+#if defined(SUPPORT_FILEFORMAT_SVG)
+    else if ((strcmp(fileType, ".svg") == 0) || (strcmp(fileType, ".SVG") == 0))
+    {
+        // Validate fileData as valid SVG string data
+        //<svg xmlns="http://www.w3.org/2000/svg" width="2500" height="2484" viewBox="0 0 192.756 191.488">
+        if ((fileData != NULL) &&
+            (fileData[0] == '<') &&
+            (fileData[1] == 's') &&
+            (fileData[2] == 'v') &&
+            (fileData[3] == 'g'))
+        {
+            struct NSVGimage *svgImage = nsvgParse(fileData, "px", 96.0f);
+            unsigned char *img = RL_MALLOC(svgImage->width*svgImage->height*4);
+
+            // Rasterize
+            struct NSVGrasterizer *rast = nsvgCreateRasterizer();
+            nsvgRasterize(rast, svgImage, 0, 0, 1.0f, img, svgImage->width, svgImage->height, svgImage->width*4);
+
+            // Populate image struct with all data
+            image.data = img;
+            image.width = svgImage->width;
+            image.height = svgImage->height;
+            image.mipmaps = 1;
+            image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+
+            nsvgDelete(svgImage);
+            nsvgDeleteRasterizer(rast);
+        }
     }
 #endif
 #if defined(SUPPORT_FILEFORMAT_DDS)
@@ -522,9 +664,9 @@ void UnloadImage(Image image)
 // NOTE: File format depends on fileName extension
 bool ExportImage(Image image, const char *fileName)
 {
-    int success = 0;
+    int result = 0;
 
-    if ((image.width == 0) || (image.height == 0) || (image.data == NULL)) return success;
+    if ((image.width == 0) || (image.height == 0) || (image.data == NULL)) return result;
 
 #if defined(SUPPORT_IMAGE_EXPORT)
     int channels = 4;
@@ -547,21 +689,21 @@ bool ExportImage(Image image, const char *fileName)
     {
         int dataSize = 0;
         unsigned char *fileData = stbi_write_png_to_mem((const unsigned char *)imgData, image.width*channels, image.width, image.height, channels, &dataSize);
-        success = SaveFileData(fileName, fileData, dataSize);
+        result = SaveFileData(fileName, fileData, dataSize);
         RL_FREE(fileData);
     }
 #else
     if (false) { }
 #endif
 #if defined(SUPPORT_FILEFORMAT_BMP)
-    else if (IsFileExtension(fileName, ".bmp")) success = stbi_write_bmp(fileName, image.width, image.height, channels, imgData);
+    else if (IsFileExtension(fileName, ".bmp")) result = stbi_write_bmp(fileName, image.width, image.height, channels, imgData);
 #endif
 #if defined(SUPPORT_FILEFORMAT_TGA)
-    else if (IsFileExtension(fileName, ".tga")) success = stbi_write_tga(fileName, image.width, image.height, channels, imgData);
+    else if (IsFileExtension(fileName, ".tga")) result = stbi_write_tga(fileName, image.width, image.height, channels, imgData);
 #endif
 #if defined(SUPPORT_FILEFORMAT_JPG)
     else if (IsFileExtension(fileName, ".jpg") ||
-             IsFileExtension(fileName, ".jpeg")) success = stbi_write_jpg(fileName, image.width, image.height, channels, imgData, 90);  // JPG quality: between 1 and 100
+             IsFileExtension(fileName, ".jpeg")) result = stbi_write_jpg(fileName, image.width, image.height, channels, imgData, 90);  // JPG quality: between 1 and 100
 #endif
 #if defined(SUPPORT_FILEFORMAT_QOI)
     else if (IsFileExtension(fileName, ".qoi"))
@@ -579,30 +721,30 @@ bool ExportImage(Image image, const char *fileName)
             desc.channels = channels;
             desc.colorspace = QOI_SRGB;
 
-            success = qoi_write(fileName, imgData, &desc);
+            result = qoi_write(fileName, imgData, &desc);
         }
     }
 #endif
 #if defined(SUPPORT_FILEFORMAT_KTX)
     else if (IsFileExtension(fileName, ".ktx"))
     {
-        success = rl_save_ktx(fileName, image.data, image.width, image.height, image.format, image.mipmaps);
+        result = rl_save_ktx(fileName, image.data, image.width, image.height, image.format, image.mipmaps);
     }
 #endif
     else if (IsFileExtension(fileName, ".raw"))
     {
         // Export raw pixel data (without header)
         // NOTE: It's up to the user to track image parameters
-        success = SaveFileData(fileName, image.data, GetPixelDataSize(image.width, image.height, image.format));
+        result = SaveFileData(fileName, image.data, GetPixelDataSize(image.width, image.height, image.format));
     }
 
     if (allocatedData) RL_FREE(imgData);
 #endif      // SUPPORT_IMAGE_EXPORT
 
-    if (success != 0) TRACELOG(LOG_INFO, "FILEIO: [%s] Image exported successfully", fileName);
+    if (result != 0) TRACELOG(LOG_INFO, "FILEIO: [%s] Image exported successfully", fileName);
     else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to export image", fileName);
 
-    return success;
+    return result;
 }
 
 // Export image to memory buffer
@@ -1286,6 +1428,40 @@ void ImageFormat(Image *image, int newFormat)
                         ((float *)image->data)[i + 3] = pixels[k].w;
                     }
                 } break;
+                case PIXELFORMAT_UNCOMPRESSED_R16:
+                {
+                    // WARNING: Image is converted to GRAYSCALE equivalent 16bit
+
+                    image->data = (unsigned short *)RL_MALLOC(image->width*image->height*sizeof(unsigned short));
+
+                    for (int i = 0; i < image->width*image->height; i++)
+                    {
+                        ((unsigned short *)image->data)[i] = FloatToHalf((float)(pixels[i].x*0.299f + pixels[i].y*0.587f + pixels[i].z*0.114f));
+                    }
+                } break;
+                case PIXELFORMAT_UNCOMPRESSED_R16G16B16:
+                {
+                    image->data = (unsigned short *)RL_MALLOC(image->width*image->height*3*sizeof(unsigned short));
+
+                    for (int i = 0, k = 0; i < image->width*image->height*3; i += 3, k++)
+                    {
+                        ((unsigned short *)image->data)[i] = FloatToHalf(pixels[k].x);
+                        ((unsigned short *)image->data)[i + 1] = FloatToHalf(pixels[k].y);
+                        ((unsigned short *)image->data)[i + 2] = FloatToHalf(pixels[k].z);
+                    }
+                } break;
+                case PIXELFORMAT_UNCOMPRESSED_R16G16B16A16:
+                {
+                    image->data = (unsigned short *)RL_MALLOC(image->width*image->height*4*sizeof(unsigned short));
+
+                    for (int i = 0, k = 0; i < image->width*image->height*4; i += 4, k++)
+                    {
+                        ((unsigned short *)image->data)[i] = FloatToHalf(pixels[k].x);
+                        ((unsigned short *)image->data)[i + 1] = FloatToHalf(pixels[k].y);
+                        ((unsigned short *)image->data)[i + 2] = FloatToHalf(pixels[k].z);
+                        ((unsigned short *)image->data)[i + 3] = FloatToHalf(pixels[k].w);
+                    }
+                } break;
                 default: break;
             }
 
@@ -1448,10 +1624,10 @@ void ImageResize(Image *image, int newWidth, int newHeight)
 
         switch (image->format)
         {
-            case PIXELFORMAT_UNCOMPRESSED_GRAYSCALE: stbir_resize_uint8((unsigned char *)image->data, image->width, image->height, 0, output, newWidth, newHeight, 0, 1); break;
-            case PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA: stbir_resize_uint8((unsigned char *)image->data, image->width, image->height, 0, output, newWidth, newHeight, 0, 2); break;
-            case PIXELFORMAT_UNCOMPRESSED_R8G8B8: stbir_resize_uint8((unsigned char *)image->data, image->width, image->height, 0, output, newWidth, newHeight, 0, 3); break;
-            case PIXELFORMAT_UNCOMPRESSED_R8G8B8A8: stbir_resize_uint8((unsigned char *)image->data, image->width, image->height, 0, output, newWidth, newHeight, 0, 4); break;
+            case PIXELFORMAT_UNCOMPRESSED_GRAYSCALE: stbir_resize_uint8_linear((unsigned char *)image->data, image->width, image->height, 0, output, newWidth, newHeight, 0, (stbir_pixel_layout)1); break;
+            case PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA: stbir_resize_uint8_linear((unsigned char *)image->data, image->width, image->height, 0, output, newWidth, newHeight, 0, (stbir_pixel_layout)2); break;
+            case PIXELFORMAT_UNCOMPRESSED_R8G8B8: stbir_resize_uint8_linear((unsigned char *)image->data, image->width, image->height, 0, output, newWidth, newHeight, 0, (stbir_pixel_layout)3); break;
+            case PIXELFORMAT_UNCOMPRESSED_R8G8B8A8: stbir_resize_uint8_linear((unsigned char *)image->data, image->width, image->height, 0, output, newWidth, newHeight, 0, (stbir_pixel_layout)4); break;
             default: break;
         }
 
@@ -1467,7 +1643,7 @@ void ImageResize(Image *image, int newWidth, int newHeight)
         Color *output = (Color *)RL_MALLOC(newWidth*newHeight*sizeof(Color));
 
         // NOTE: Color data is cast to (unsigned char *), there shouldn't been any problem...
-        stbir_resize_uint8((unsigned char *)pixels, image->width, image->height, 0, (unsigned char *)output, newWidth, newHeight, 0, 4);
+        stbir_resize_uint8_linear((unsigned char *)pixels, image->width, image->height, 0, (unsigned char *)output, newWidth, newHeight, 0, (stbir_pixel_layout)4);
 
         int format = image->format;
 
@@ -1649,6 +1825,19 @@ void ImageAlphaClear(Image *image, Color color, float threshold)
                         ((float *)image->data)[i - 2] = (float)color.g/255.0f;
                         ((float *)image->data)[i - 1] = (float)color.b/255.0f;
                         ((float *)image->data)[i] = (float)color.a/255.0f;
+                    }
+                }
+            } break;
+            case PIXELFORMAT_UNCOMPRESSED_R16G16B16A16:
+            {
+                for (int i = 3; i < image->width*image->height*4; i += 4)
+                {
+                    if (HalfToFloat(((unsigned short *)image->data)[i]) <= threshold)
+                    {
+                        ((unsigned short *)image->data)[i - 3] = FloatToHalf((float)color.r/255.0f);
+                        ((unsigned short *)image->data)[i - 2] = FloatToHalf((float)color.g/255.0f);
+                        ((unsigned short *)image->data)[i - 1] = FloatToHalf((float)color.b/255.0f);
+                        ((unsigned short *)image->data)[i] = FloatToHalf((float)color.a/255.0f);
                     }
                 }
             } break;
@@ -2493,6 +2682,10 @@ Color *LoadImageColors(Image image)
             (image.format == PIXELFORMAT_UNCOMPRESSED_R32G32B32) ||
             (image.format == PIXELFORMAT_UNCOMPRESSED_R32G32B32A32)) TRACELOG(LOG_WARNING, "IMAGE: Pixel format converted from 32bit to 8bit per channel");
 
+        if ((image.format == PIXELFORMAT_UNCOMPRESSED_R16) ||
+            (image.format == PIXELFORMAT_UNCOMPRESSED_R16G16B16) ||
+            (image.format == PIXELFORMAT_UNCOMPRESSED_R16G16B16A16)) TRACELOG(LOG_WARNING, "IMAGE: Pixel format converted from 16bit to 8bit per channel");
+
         for (int i = 0, k = 0; i < image.width*image.height; i++)
         {
             switch (image.format)
@@ -2585,6 +2778,32 @@ Color *LoadImageColors(Image image)
                     pixels[i].g = (unsigned char)(((float *)image.data)[k]*255.0f);
                     pixels[i].b = (unsigned char)(((float *)image.data)[k]*255.0f);
                     pixels[i].a = (unsigned char)(((float *)image.data)[k]*255.0f);
+
+                    k += 4;
+                } break;
+                case PIXELFORMAT_UNCOMPRESSED_R16:
+                {
+                    pixels[i].r = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[k])*255.0f);
+                    pixels[i].g = 0;
+                    pixels[i].b = 0;
+                    pixels[i].a = 255;
+
+                } break;
+                case PIXELFORMAT_UNCOMPRESSED_R16G16B16:
+                {
+                    pixels[i].r = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[k])*255.0f);
+                    pixels[i].g = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[k + 1])*255.0f);
+                    pixels[i].b = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[k + 2])*255.0f);
+                    pixels[i].a = 255;
+
+                    k += 3;
+                } break;
+                case PIXELFORMAT_UNCOMPRESSED_R16G16B16A16:
+                {
+                    pixels[i].r = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[k])*255.0f);
+                    pixels[i].g = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[k])*255.0f);
+                    pixels[i].b = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[k])*255.0f);
+                    pixels[i].a = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[k])*255.0f);
 
                     k += 4;
                 } break;
@@ -2800,6 +3019,30 @@ Color GetImageColor(Image image, int x, int y)
                 color.a = (unsigned char)(((float *)image.data)[(y*image.width + x)*4]*255.0f);
 
             } break;
+            case PIXELFORMAT_UNCOMPRESSED_R16:
+            {
+                color.r = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[y*image.width + x])*255.0f);
+                color.g = 0;
+                color.b = 0;
+                color.a = 255;
+
+            } break;
+            case PIXELFORMAT_UNCOMPRESSED_R16G16B16:
+            {
+                color.r = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[(y*image.width + x)*3])*255.0f);
+                color.g = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[(y*image.width + x)*3 + 1])*255.0f);
+                color.b = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[(y*image.width + x)*3 + 2])*255.0f);
+                color.a = 255;
+
+            } break;
+            case PIXELFORMAT_UNCOMPRESSED_R16G16B16A16:
+            {
+                color.r = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[(y*image.width + x)*4])*255.0f);
+                color.g = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[(y*image.width + x)*4])*255.0f);
+                color.b = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[(y*image.width + x)*4])*255.0f);
+                color.a = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[(y*image.width + x)*4])*255.0f);
+
+            } break;
             default: TRACELOG(LOG_WARNING, "Compressed image format does not support color reading"); break;
         }
     }
@@ -2937,6 +3180,34 @@ void ImageDrawPixel(Image *dst, int x, int y, Color color)
             ((float *)dst->data)[(y*dst->width + x)*4 + 1] = coln.y;
             ((float *)dst->data)[(y*dst->width + x)*4 + 2] = coln.z;
             ((float *)dst->data)[(y*dst->width + x)*4 + 3] = coln.w;
+
+        } break;
+        case PIXELFORMAT_UNCOMPRESSED_R16:
+        {
+            // NOTE: Calculate grayscale equivalent color (normalized to 32bit)
+            Vector3 coln = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f };
+
+            ((unsigned short*)dst->data)[y*dst->width + x] = FloatToHalf(coln.x*0.299f + coln.y*0.587f + coln.z*0.114f);
+
+        } break;
+        case PIXELFORMAT_UNCOMPRESSED_R16G16B16:
+        {
+            // NOTE: Calculate R32G32B32 equivalent color (normalized to 32bit)
+            Vector3 coln = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f };
+
+            ((unsigned short *)dst->data)[(y*dst->width + x)*3] = FloatToHalf(coln.x);
+            ((unsigned short *)dst->data)[(y*dst->width + x)*3 + 1] = FloatToHalf(coln.y);
+            ((unsigned short *)dst->data)[(y*dst->width + x)*3 + 2] = FloatToHalf(coln.z);
+        } break;
+        case PIXELFORMAT_UNCOMPRESSED_R16G16B16A16:
+        {
+            // NOTE: Calculate R32G32B32A32 equivalent color (normalized to 32bit)
+            Vector4 coln = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f, (float)color.a/255.0f };
+
+            ((unsigned short *)dst->data)[(y*dst->width + x)*4] = FloatToHalf(coln.x);
+            ((unsigned short *)dst->data)[(y*dst->width + x)*4 + 1] = FloatToHalf(coln.y);
+            ((unsigned short *)dst->data)[(y*dst->width + x)*4 + 2] = FloatToHalf(coln.z);
+            ((unsigned short *)dst->data)[(y*dst->width + x)*4 + 3] = FloatToHalf(coln.w);
 
         } break;
         default: break;
@@ -3134,26 +3405,36 @@ void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color)
     if (rec.width < 0) rec.width = 0;
     if (rec.height < 0) rec.height = 0;
 
-    int sy = (int)rec.y;
-    int ey = sy + (int)rec.height;
+    // Clamp the size the the image bounds
+    if ((rec.x + rec.width) >= dst->width) rec.width = dst->width - rec.x;
+    if ((rec.y + rec.height) >= dst->height) rec.height = dst->height - rec.y;
 
+    // Check if the rect is even inside the image
+    if ((rec.x > dst->width) || (rec.y > dst->height)) return;
+    if (((rec.x + rec.width) < 0) || (rec.y + rec.height < 0)) return;
+
+    int sy = (int)rec.y;
     int sx = (int)rec.x;
 
     int bytesPerPixel = GetPixelDataSize(1, 1, dst->format);
 
-    for (int y = sy; y < ey; y++)
+    // Fill in the first pixel of the first row based on image format
+    ImageDrawPixel(dst, sx, sy, color);
+
+    int bytesOffset = ((sy*dst->width) + sx)*bytesPerPixel;
+    unsigned char *pSrcPixel = (unsigned char *)dst->data + bytesOffset;
+
+    // Repeat the first pixel data throughout the row
+    for (int x = 1; x < (int)rec.width; x++)
     {
-        // Fill in the first pixel of the row based on image format
-        ImageDrawPixel(dst, sx, y, color);
+        memcpy(pSrcPixel + x*bytesPerPixel, pSrcPixel, bytesPerPixel);
+    }
 
-        int bytesOffset = ((y*dst->width) + sx)*bytesPerPixel;
-        unsigned char *pSrcPixel = (unsigned char *)dst->data + bytesOffset;
-
-        // Repeat the first pixel data throughout the row
-        for (int x = 1; x < (int)rec.width; x++)
-        {
-            memcpy(pSrcPixel + x*bytesPerPixel, pSrcPixel, bytesPerPixel);
-        }
+    // Repeat the first row data for all other rows
+    int bytesPerRow = bytesPerPixel * (int)rec.width;
+    for (int y = 1; y < (int)rec.height; y++)
+    {
+        memcpy(pSrcPixel + (y*dst->width)*bytesPerPixel, pSrcPixel, bytesPerRow);
     }
 }
 
@@ -3203,7 +3484,7 @@ void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color 
         // Destination rectangle out-of-bounds security checks
         if (dstRec.x < 0)
         {
-            srcRec.x = -dstRec.x;
+            srcRec.x -= dstRec.x;
             srcRec.width += dstRec.x;
             dstRec.x = 0;
         }
@@ -3211,7 +3492,7 @@ void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color 
 
         if (dstRec.y < 0)
         {
-            srcRec.y = -dstRec.y;
+            srcRec.y -= dstRec.y;
             srcRec.height += dstRec.y;
             dstRec.y = 0;
         }
@@ -3232,7 +3513,7 @@ void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color 
         //    [-] GetPixelColor(): Get Vector4 instead of Color, easier for ColorAlphaBlend()
         //    [ ] Support f32bit channels drawing
 
-        // TODO: Support PIXELFORMAT_UNCOMPRESSED_R32, PIXELFORMAT_UNCOMPRESSED_R32G32B32, PIXELFORMAT_UNCOMPRESSED_R32G32B32A32
+        // TODO: Support PIXELFORMAT_UNCOMPRESSED_R32, PIXELFORMAT_UNCOMPRESSED_R32G32B32, PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 and 16-bit equivalents
 
         Color colSrc, colDst, blend;
         bool blendRequired = true;
@@ -3367,9 +3648,15 @@ TextureCubemap LoadTextureCubemap(Image image, int layout)
             if ((image.height/6) == image.width) { layout = CUBEMAP_LAYOUT_LINE_VERTICAL; cubemap.width = image.height/6; }
             else if ((image.width/3) == (image.height/4)) { layout = CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR; cubemap.width = image.width/3; }
         }
-
-        cubemap.height = cubemap.width;
+    } else {
+        if (layout == CUBEMAP_LAYOUT_LINE_VERTICAL) cubemap.width = image.height/6;
+        if (layout == CUBEMAP_LAYOUT_LINE_HORIZONTAL) cubemap.width = image.width/6;
+        if (layout == CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR) cubemap.width = image.width/3;
+        if (layout == CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE) cubemap.width = image.width/4;
+        if (layout == CUBEMAP_LAYOUT_PANORAMA) cubemap.width = image.width/4;
     }
+
+    cubemap.height = cubemap.width;
 
     // Layout provided or already auto-detected
     if (layout != CUBEMAP_LAYOUT_AUTO_DETECT)
@@ -3508,8 +3795,11 @@ void UnloadRenderTexture(RenderTexture2D target)
 {
     if (target.id > 0)
     {
-        // Color texture attached to FBO is deleted
-        rlUnloadTexture(target.texture.id);
+        if (target.texture.id > 0)
+        {
+            // Color texture attached to FBO is deleted
+            rlUnloadTexture(target.texture.id);
+        }
 
         // NOTE: Depth texture/renderbuffer is automatically
         // queried and deleted before deleting framebuffer
@@ -4359,6 +4649,33 @@ Color GetPixelColor(void *srcPtr, int format)
             color.a = (unsigned char)(((float *)srcPtr)[3]*255.0f);
 
         } break;
+        case PIXELFORMAT_UNCOMPRESSED_R16:
+        {
+            // NOTE: Pixel normalized float value is converted to [0..255]
+            color.r = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[0])*255.0f);
+            color.g = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[0])*255.0f);
+            color.b = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[0])*255.0f);
+            color.a = 255;
+
+        } break;
+        case PIXELFORMAT_UNCOMPRESSED_R16G16B16:
+        {
+            // NOTE: Pixel normalized float value is converted to [0..255]
+            color.r = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[0])*255.0f);
+            color.g = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[1])*255.0f);
+            color.b = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[2])*255.0f);
+            color.a = 255;
+
+        } break;
+        case PIXELFORMAT_UNCOMPRESSED_R16G16B16A16:
+        {
+            // NOTE: Pixel normalized float value is converted to [0..255]
+            color.r = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[0])*255.0f);
+            color.g = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[1])*255.0f);
+            color.b = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[2])*255.0f);
+            color.a = (unsigned char)(HalfToFloat(((unsigned short *)srcPtr)[3])*255.0f);
+
+        } break;
         default: break;
     }
 
@@ -4465,6 +4782,9 @@ int GetPixelDataSize(int width, int height, int format)
         case PIXELFORMAT_UNCOMPRESSED_R32: bpp = 32; break;
         case PIXELFORMAT_UNCOMPRESSED_R32G32B32: bpp = 32*3; break;
         case PIXELFORMAT_UNCOMPRESSED_R32G32B32A32: bpp = 32*4; break;
+        case PIXELFORMAT_UNCOMPRESSED_R16: bpp = 16; break;
+        case PIXELFORMAT_UNCOMPRESSED_R16G16B16: bpp = 16*3; break;
+        case PIXELFORMAT_UNCOMPRESSED_R16G16B16A16: bpp = 16*4; break;
         case PIXELFORMAT_COMPRESSED_DXT1_RGB:
         case PIXELFORMAT_COMPRESSED_DXT1_RGBA:
         case PIXELFORMAT_COMPRESSED_ETC1_RGB:
@@ -4495,6 +4815,24 @@ int GetPixelDataSize(int width, int height, int format)
 //----------------------------------------------------------------------------------
 // Module specific Functions Definition
 //----------------------------------------------------------------------------------
+// From https://stackoverflow.com/questions/1659440/32-bit-to-16-bit-floating-point-conversion/60047308#60047308
+
+static float HalfToFloat(unsigned short x) {
+    const unsigned int e = (x&0x7C00)>>10; // exponent
+    const unsigned int m = (x&0x03FF)<<13; // mantissa
+    const float fm = (float)m;
+    const unsigned int v = (*(unsigned int*)&fm)>>23; // evil log2 bit hack to count leading zeros in denormalized format
+    const unsigned int r = (x&0x8000)<<16 | (e!=0)*((e+112)<<23|m) | ((e==0)&(m!=0))*((v-37)<<23|((m<<(150-v))&0x007FE000)); // sign : normalized : denormalized
+    return *(float*)&r;
+}
+
+static unsigned short FloatToHalf(float x) {
+    const unsigned int b = (*(unsigned int*)&x)+0x00001000; // round-to-nearest-even: add last bit after truncated mantissa
+    const unsigned int e = (b&0x7F800000)>>23; // exponent
+    const unsigned int m = b&0x007FFFFF; // mantissa; in line below: 0x007FF000 = 0x00800000-0x00001000 = decimal indicator flag - initial rounding
+    return (b&0x80000000)>>16 | (e>112)*((((e-112)<<10)&0x7C00)|m>>13) | ((e<113)&(e>101))*((((0x007FF000+m)>>(125-e))+1)>>1) | (e>143)*0x7FFF; // sign : normalized : denormalized : saturate
+}
+
 // Get pixel data from image as Vector4 array (float normalized)
 static Vector4 *LoadImageDataNormalized(Image image)
 {
@@ -4597,7 +4935,32 @@ static Vector4 *LoadImageDataNormalized(Image image)
                     pixels[i].w = ((float *)image.data)[k + 3];
 
                     k += 4;
-                }
+                } break;
+                case PIXELFORMAT_UNCOMPRESSED_R16:
+                {
+                    pixels[i].x = HalfToFloat(((unsigned short *)image.data)[k]);
+                    pixels[i].y = 0.0f;
+                    pixels[i].z = 0.0f;
+                    pixels[i].w = 1.0f;
+                } break;
+                case PIXELFORMAT_UNCOMPRESSED_R16G16B16:
+                {
+                    pixels[i].x = HalfToFloat(((unsigned short *)image.data)[k]);
+                    pixels[i].y = HalfToFloat(((unsigned short *)image.data)[k + 1]);
+                    pixels[i].z = HalfToFloat(((unsigned short *)image.data)[k + 2]);
+                    pixels[i].w = 1.0f;
+
+                    k += 3;
+                } break;
+                case PIXELFORMAT_UNCOMPRESSED_R16G16B16A16:
+                {
+                    pixels[i].x = HalfToFloat(((unsigned short *)image.data)[k]);
+                    pixels[i].y = HalfToFloat(((unsigned short *)image.data)[k + 1]);
+                    pixels[i].z = HalfToFloat(((unsigned short *)image.data)[k + 2]);
+                    pixels[i].w = HalfToFloat(((unsigned short *)image.data)[k + 3]);
+
+                    k += 4;
+                } break;
                 default: break;
             }
         }
