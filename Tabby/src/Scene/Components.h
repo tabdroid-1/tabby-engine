@@ -1,7 +1,7 @@
 #pragma once
 
 #include "box2d/b2_body.h"
-#include <Core/Animation.h>
+#include <Graphics/Animation.h>
 #include <Scene/ScriptableGameObject.h>
 #include <raylib.h>
 #include <raymath.h>
@@ -42,8 +42,8 @@ struct TransformComponent {
     Vector3 Position = { 0.0f, 0.0f };
     Vector3 Scale = { 1.0f, 1.0f, 1.0f };
     Vector3 Rotation = { 0.0f, 0.0f, 0.0f };
-    Vector3 Size = { 32.0f, 32.0f, 32.0f };
-    Vector3 Origin = { 1.0f, 1.0f, 1.0f };
+    /* Vector3 Size = { 32.0f, 32.0f, 32.0f }; */
+    Vector3 Origin = { 0.0f, 0.0f, 0.0f };
 
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
@@ -57,9 +57,9 @@ struct TransformComponent {
         Matrix mat = MatrixIdentity();
 
         mat = MatrixMultiply(mat, MatrixTranslate(Position.x, Position.y, Position.z));
-        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 1.0f, 0.0f, 0.0f }, Rotation.x));
-        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 1.0f, 0.0f }, Rotation.y));
-        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 0.0f, 1.0f }, Rotation.z));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 1.0f, 0.0f, 0.0f }, Rotation.x * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 1.0f, 0.0f }, Rotation.y * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 0.0f, 1.0f }, Rotation.z * DEG2RAD));
         mat = MatrixMultiply(mat, MatrixScale(Scale.x, Scale.y, Scale.y));
 
         return mat;
@@ -69,7 +69,7 @@ struct TransformComponent {
 struct SpriteRendererComponent {
     Color Tint = WHITE;
     Texture2D Texture;
-    Rectangle srcRec = { 0, 0, 50, 50 };
+    Rectangle srcRec = { 0, 0, 100, 100 };
     Rectangle destRec;
     Vector2 origin;
 
@@ -80,19 +80,27 @@ struct SpriteRendererComponent {
     {
     }
 
-    void FlipTextureX()
+    void SetTexture(const char* path)
     {
-        Image image = LoadImageFromTexture(Texture);
-        ImageFlipHorizontal(&image);
-        UpdateTexture(Texture, image.data);
+        Texture = LoadTexture(path);
+        srcRec = { 0.0, 0.0, (float)Texture.width, (float)Texture.height };
     }
-
-    void FlipTextureY()
-    {
-        Image image = LoadImageFromTexture(Texture);
-        ImageFlipVertical(&image);
-        UpdateTexture(Texture, image.data);
-    }
+    //
+    // void FlipTextureX()
+    // {
+    //     Image image = LoadImageFromTexture(Texture);
+    //     ImageFlipHorizontal(&image);
+    //     UpdateTexture(Texture, image.data);
+    //     UnloadImage(image);
+    // }
+    //
+    // void FlipTextureY()
+    // {
+    //     Image image = LoadImageFromTexture(Texture);
+    //     ImageFlipVertical(&image);
+    //     UpdateTexture(Texture, image.data);
+    //     UnloadImage(image);
+    // }
 };
 
 struct AnimationComponent {
@@ -137,25 +145,24 @@ struct AnimationComponent {
 
 struct CameraComponent {
     // TODO: Experiment with adding second camera for 3D to be able to toggle between perspective and orthographic camera view;
-    Camera2D camera = { 0 };
+    Camera camera = { 0 };
+    int cameraMode = CAMERA_FIRST_PERSON;
     bool isMainCamera;
+    bool debugCameraMovement = false;
 
     bool FixedAspectRatio = false;
 
     // CameraComponent() = default;
     CameraComponent()
     {
-        camera.target = (Vector2) { 0.0f, 0.0f };
-        camera.offset = (Vector2) { 0, 0 };
-        camera.zoom = 1.0f;
-        camera.rotation = 0.0f;
+        camera = { 0 };
+        camera.position = (Vector3) { 0.0f, 0.0f, 0.0f }; // Camera position
+        camera.target = (Vector3) { 0.0f, 0.0f, 0.0f }; // Camera looking at point
+        camera.up = (Vector3) { 0.0f, 1.0f, 0.0f }; // Camera up vector (rotation towards target)
+        camera.fovy = 60.0f; // Camera field-of-view Y
+        camera.projection = CAMERA_PERSPECTIVE; // Camera projection type
     };
     CameraComponent(const CameraComponent&) = default;
-
-    const Camera2D& GetCamera() { return camera; }
-    void SetRotation(float rotation) { camera.rotation = rotation; }
-    void SetZoom(float zoom) { camera.zoom = zoom; }
-    void SetOffest(Vector2 offset) { camera.offset = offset; }
 };
 
 struct RigidBodyComponent {

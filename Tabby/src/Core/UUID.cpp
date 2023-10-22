@@ -1,7 +1,7 @@
 #include <Core/UUID.h>
+#include <tbpch.h>
 
-#include <random>
-#include <unordered_map>
+namespace Tabby {
 
 static std::unordered_map<UUID, std::string> m_map;
 
@@ -22,4 +22,6 @@ UUID::UUID()
 UUID::UUID(uint64_t uuid)
     : m_UUID(uuid)
 {
+}
+
 }

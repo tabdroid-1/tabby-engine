@@ -5,7 +5,7 @@
 #include <Physics/Physics.h>
 #include <box2d/b2_world.h>
 #include <cstdio>
-#include <entt.hpp>
+#include <entt/entt.hpp>
 
 namespace Tabby {
 
@@ -24,11 +24,12 @@ public:
     virtual void OnDeactivate() {}; // Called whenever a scene is deactivated.
 
     void InitPhysics();
+    void InitScene();
     void Update(float deltaTime);
     void LateUpdate(float deltaTime);
     void Draw();
 
-    void SetActiveCamera(const Camera2D& camera) { ActiveCamera = camera; }
+    void SetActiveCamera(const Camera& camera) { ActiveCamera = camera; }
 
     GameObject CreateEntity(const std::string& name = std::string());
     GameObject CreateEntityWithUUID(UUID uuid, const std::string& name);
@@ -41,8 +42,7 @@ public:
 
 private:
     Physics physics;
-    // b2World* m_PhysiscWorld = nullptr;
-    Camera2D ActiveCamera;
+    Camera ActiveCamera;
 
     friend class GameObject;
 };

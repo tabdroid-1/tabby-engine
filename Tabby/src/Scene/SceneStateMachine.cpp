@@ -84,6 +84,7 @@ void SceneStateMachine::SwitchTo(unsigned int id)
 
         std::cout << "Switched to Scene ID " << id << "\n";
         curScene->OnActivate();
+        curScene->InitScene();
         curScene->InitPhysics();
     }
 }

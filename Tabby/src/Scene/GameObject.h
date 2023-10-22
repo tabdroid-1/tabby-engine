@@ -6,7 +6,7 @@
 
 #include <Scene/Scene.h>
 
-#include <entt.hpp>
+#include <entt/entt.hpp>
 
 namespace Tabby {
 
@@ -16,15 +16,6 @@ public:
     GameObject() = default;
     GameObject(entt::entity handle, Scene* scene);
     GameObject(const GameObject& other) = default;
-
-    // void Awake(); // Called when object created. Use to ensure required components
-    //               // are present.
-    // void Start(); // Called after Awake method. Use to initialise variables.
-    //
-    // void Update(float deltaTime);
-    // void LateUpdate(float deltaTime);
-    // void Draw();
-    // void Delete();
 
     template <typename T, typename... Args>
     T& AddComponent(Args&&... args)

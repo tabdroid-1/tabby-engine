@@ -55,9 +55,7 @@
 // Use busy wait loop for timing sync, if not defined, a high-resolution timer is set up and used
 //#define SUPPORT_BUSY_WAIT_LOOP          1
 // Use a partial-busy wait loop, in this case frame sleeps for most of the time, but then runs a busy loop at the end for accuracy
-#define SUPPORT_PARTIALBUSY_WAIT_LOOP
-// Wait for events passively (sleeping while no events) instead of polling them actively every frame
-//#define SUPPORT_EVENTS_WAITING          1
+#define SUPPORT_PARTIALBUSY_WAIT_LOOP    1
 // Allow automatic screen capture of current screen pressing F12, defined in KeyCallback()
 #define SUPPORT_SCREEN_CAPTURE          1
 // Allow automatic gif recording of current screen pressing CTRL+F12, defined in KeyCallback()
@@ -141,22 +139,22 @@
 //------------------------------------------------------------------------------------
 // Module: rtextures - Configuration Flags
 //------------------------------------------------------------------------------------
-// Select the desired fileformats to be supported for image data loading
-#define SUPPORT_FILEFORMAT_PNG          1
-//#define SUPPORT_FILEFORMAT_BMP          1
-//#define SUPPORT_FILEFORMAT_TGA          1
-//#define SUPPORT_FILEFORMAT_JPG          1
-#define SUPPORT_FILEFORMAT_GIF          1
-#define SUPPORT_FILEFORMAT_QOI          1
-//#define SUPPORT_FILEFORMAT_PSD          1
-#define SUPPORT_FILEFORMAT_DDS          1
-#define SUPPORT_FILEFORMAT_HDR          1
+// Selecte desired fileformats to be supported for image data loading
+#define SUPPORT_FILEFORMAT_PNG      1
+//#define SUPPORT_FILEFORMAT_BMP      1
+//#define SUPPORT_FILEFORMAT_TGA      1
+//#define SUPPORT_FILEFORMAT_JPG      1
+#define SUPPORT_FILEFORMAT_GIF      1
+#define SUPPORT_FILEFORMAT_QOI      1
+//#define SUPPORT_FILEFORMAT_PSD      1
+#define SUPPORT_FILEFORMAT_DDS      1
+//#define SUPPORT_FILEFORMAT_HDR      1
 //#define SUPPORT_FILEFORMAT_PIC          1
-//#define SUPPORT_FILEFORMAT_PNM          1
-//#define SUPPORT_FILEFORMAT_KTX          1
-//#define SUPPORT_FILEFORMAT_ASTC         1
-//#define SUPPORT_FILEFORMAT_PKM          1
-//#define SUPPORT_FILEFORMAT_PVR          1
+//#define SUPPORT_FILEFORMAT_KTX      1
+//#define SUPPORT_FILEFORMAT_ASTC     1
+//#define SUPPORT_FILEFORMAT_PKM      1
+//#define SUPPORT_FILEFORMAT_PVR      1
+//#define SUPPORT_FILEFORMAT_SVG      1
 
 // Support image export functionality (.png, .bmp, .tga, .jpg, .qoi)
 #define SUPPORT_IMAGE_EXPORT            1
@@ -180,6 +178,11 @@
 // Support text management functions
 // If not defined, still some functions are supported: TextLength(), TextFormat()
 #define SUPPORT_TEXT_MANIPULATION       1
+
+// On font atlas image generation [GenImageFontAtlas()], add a 3x3 pixels white rectangle
+// at the bottom-right corner of the atlas. It can be useful to for shapes drawing, to allow
+// drawing text and shapes with a single draw call [SetShapesTexture()].
+#define SUPPORT_FONT_ATLAS_WHITE_REC    1
 
 // rtext: Configuration values
 //------------------------------------------------------------------------------------
