@@ -92,12 +92,12 @@ void TitleScreenScene::OnActivate()
 
 void TitleScreenScene::DrawImGui()
 {
-#if DEBUG
+    // #if DEBUG
 
     bool show = true;
     ImGui::ShowDemoWindow(&show);
 
-#endif // DEBUG
+    // #endif // DEBUG
 }
 
 void TitleScreenScene::OnDestroy()

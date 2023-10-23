@@ -26,12 +26,11 @@
 //========================================================================
 // It is fine to use C99 in this file because it will not be built with VS
 //========================================================================
-
+#define _POSIX_C_SOURCE 199309L
 #include "internal.h"
 
-#include <unistd.h>
 #include <sys/time.h>
-
+#include <unistd.h>
 
 //////////////////////////////////////////////////////////////////////////
 //////                       GLFW platform API                      //////
@@ -53,11 +52,10 @@ uint64_t _glfwPlatformGetTimerValue(void)
 {
     struct timespec ts;
     clock_gettime(_glfw.timer.posix.clock, &ts);
-    return (uint64_t) ts.tv_sec * _glfw.timer.posix.frequency + (uint64_t) ts.tv_nsec;
+    return (uint64_t)ts.tv_sec * _glfw.timer.posix.frequency + (uint64_t)ts.tv_nsec;
 }
 
 uint64_t _glfwPlatformGetTimerFrequency(void)
 {
     return _glfw.timer.posix.frequency;
 }
-
