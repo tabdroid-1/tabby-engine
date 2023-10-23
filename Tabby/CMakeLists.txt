@@ -20,7 +20,8 @@ set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(RAYLIBTMX "${PROJECT_VENDOR_DIR}/raylib-tmx")
 set(LDTKLOADER "${PROJECT_VENDOR_DIR}/LDtkLoader")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
-set(JETLIVE "${PROJECT_VENDOR_DIR}/jet-live")
+set(RLIMGUI "${PROJECT_VENDOR_DIR}/rlImGui")
+set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
 
 # Add Raylib
 set(BUILD_EXAMPLES
@@ -73,10 +74,14 @@ add_subdirectory(${RAYLIB})
 add_subdirectory(${RAYLIBTMX})
 add_subdirectory(${LDTKLOADER})
 add_subdirectory(${BOX2D})
+add_subdirectory(${RLIMGUI})
+add_subdirectory(${IMGUI})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC 
+target_link_libraries(${PROJECT_NAME} PRIVATE 
         raylib
         raylib-tmx
+        rlImGui
+        imgui
         LDtkLoader
         box2d
         )

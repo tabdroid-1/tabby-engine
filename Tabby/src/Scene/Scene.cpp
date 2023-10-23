@@ -34,7 +34,6 @@ GameObject Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
 
 void Scene::InitScene()
 {
-    rlDisableBackfaceCulling();
 }
 
 void Scene::InitPhysics()
@@ -262,6 +261,8 @@ void Scene::Draw()
     BeginMode3D(ActiveCamera);
 
     physics->Draw();
+
+    rlDisableBackfaceCulling();
 
 #ifdef DEBUG
     DrawGrid(100, 1.0f);

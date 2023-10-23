@@ -29,7 +29,7 @@ struct ApplicationSpecification {
 class Application {
 public:
     Application(const ApplicationSpecification& specification);
-    ~Application() { }
+    ~Application();
 
     void Run();
 

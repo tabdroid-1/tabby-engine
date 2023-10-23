@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "raylib.h"
+#include "rlImGui/rlImGui.h"
 
 namespace Tabby {
 
@@ -25,8 +26,19 @@ Application::Application(const ApplicationSpecification& specification)
     if (GetScreenHeight() > maxHeight)
         SetWindowSize(GetScreenWidth(), maxHeight);
 
+#if DEBUG
+
+    rlImGuiSetup(true);
+
+#endif // DEBUG
+
     SetExitKey(0);
     SetTargetFPS(60);
+}
+
+Application::~Application()
+{
+    rlImGuiShutdown();
 }
 
 void Application::Run()
@@ -48,6 +60,13 @@ void Application::Run()
         BeginDrawing();
         DrawTexturePro(frameBuffer.texture, { 0, 0, (float)frameBuffer.texture.width, -(float)frameBuffer.texture.height },
             { 0, 0, (float)GetMonitorWidth(GetCurrentMonitor()), (float)GetMonitorHeight(GetCurrentMonitor()) }, { 0, 0 }, 0, WHITE);
+
+        rlImGuiBegin();
+
+        sceneManager.DrawImGui();
+
+        rlImGuiEnd();
+
         EndDrawing();
     }
 }

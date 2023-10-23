@@ -28,6 +28,7 @@ public:
     void Update(float deltaTime);
     void LateUpdate(float deltaTime);
     void Draw();
+    virtual void DrawImGui() {}; // Called whenever a scene is deactivated.
 
     void SetActiveCamera(const Camera& camera) { ActiveCamera = camera; }
 
