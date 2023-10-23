@@ -31,10 +31,14 @@ public:
     Application(const ApplicationSpecification& specification);
     ~Application() { }
 
-    // virtual void Init();
     void Run();
 
-    bool IsRunning() const { return !WindowShouldClose(); }
+    bool IsRunning() const { return !WindowShouldClose() && isRunning; }
+
+    static void CloseApplication()
+    {
+        s_Instance->isRunning = false;
+    }
     static Application& Get() { return *s_Instance; }
 
 public:
@@ -42,6 +46,7 @@ public:
     SceneStateMachine sceneManager;
 
 private:
+    bool isRunning = true;
     ApplicationSpecification m_Specification;
 
 private:

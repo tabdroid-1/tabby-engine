@@ -1,6 +1,7 @@
 // #include <Core/EntryPoint.h>
 #include <Game/Scenes/Scenes.h>
 #include <Tabby.h>
+#include <cstdio>
 
 #include "Sandbox2D.h"
 
@@ -48,4 +49,5 @@ int main(int argc, char** argv)
     app->Run();
 
     delete app;
+    return 0;
 }

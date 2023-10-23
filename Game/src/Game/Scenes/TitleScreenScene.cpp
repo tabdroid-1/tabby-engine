@@ -24,11 +24,11 @@ void TitleScreenScene::OnActivate()
     Tabby::GameObject player = CreateEntity("player");
     player.GetComponent<Tabby::TransformComponent>().Position = {
         0.0f,
-        0.0f,
+        3.0f,
         0.0f,
     };
     /* player.GetComponent<Tabby::TransformComponent>().Size = { 48.0f, 48.0f }; */
-    player.GetComponent<Tabby::TransformComponent>().Scale = { 2.0f, 2.0f };
+    player.GetComponent<Tabby::TransformComponent>().Scale = { 1.25f, 1.25f };
 
     auto& playerSprite = player.AddComponent<Tabby::SpriteRendererComponent>();
     /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
@@ -36,8 +36,9 @@ void TitleScreenScene::OnActivate()
 
     auto& playerRigidbody = player.AddComponent<Tabby::RigidBodyComponent>();
     playerRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Dynamic;
+    playerRigidbody.FixedRotation = true;
     auto& playerCapsuleCollider = player.AddComponent<Tabby::BoxCollider2DComponent>();
-    playerCapsuleCollider.Size = { 0.1f, 0.24f };
+    playerCapsuleCollider.Size = { 0.2f, 0.50f };
     playerCapsuleCollider.Friction = 1;
     playerCapsuleCollider.Density = 1;
     playerCapsuleCollider.Bounce = 0;
@@ -83,7 +84,7 @@ void TitleScreenScene::OnActivate()
 
     // ---------- Ground ----------
     Tabby::GameObject ground = CreateEntity("ground");
-    ground.GetComponent<Tabby::TransformComponent>().Position = { 3.0f, 2.0f };
+    ground.GetComponent<Tabby::TransformComponent>().Position = { 3.0f, -1.0f };
     auto& groundRigidbody = ground.AddComponent<Tabby::RigidBodyComponent>();
     groundRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Static;
 
