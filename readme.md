@@ -10,7 +10,7 @@ Engine is build as a static library so it can be linked to executable statically
 Planned Features / To-do list
 -----------------------------
  - <s>ImGui implementation for easy component value editing without rebuilding.</s> Done
- - Wayland support (Currently working on this)
+ - <s>Wayland support</s> (GLFW is currently broken. Doesn't render properly in high dpi)
  - More advanced asset manager. Assets will be stored in the code and (some) will be encrypted using AES encryption to complicate data mining/revers engineering, but there will be option to use files instead of storing in code.(might be in a private branch though)
  - Audio component
  - More advanced animation system

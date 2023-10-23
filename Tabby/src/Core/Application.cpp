@@ -15,6 +15,7 @@ Application::Application(const ApplicationSpecification& specification)
     TB_ASSERT(!s_Instance, "Application already exists!");
     s_Instance = this;
 
+    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI);
     int monitor = GetCurrentMonitor();
     InitWindow(GetMonitorWidth(monitor), GetMonitorHeight(monitor), m_Specification.Name.c_str());
 
@@ -58,9 +59,11 @@ void Application::Run()
         EndTextureMode();
 
         BeginDrawing();
-        DrawTexturePro(frameBuffer.texture, { 0, 0, (float)frameBuffer.texture.width, -(float)frameBuffer.texture.height },
-            { 0, 0, (float)GetMonitorWidth(GetCurrentMonitor()), (float)GetMonitorHeight(GetCurrentMonitor()) }, { 0, 0 }, 0, WHITE);
+        // DrawTexturePro(frameBuffer.texture, { 0, 0, (float)frameBuffer.texture.width, -(float)frameBuffer.texture.height },
+        //     { 0, 0, (float)GetMonitorWidth(GetCurrentMonitor()), (float)GetMonitorHeight(GetCurrentMonitor()) }, { 0, 0 }, 0, WHITE);
 
+        DrawTexturePro(frameBuffer.texture, { 0, 0, (float)frameBuffer.texture.width, -(float)frameBuffer.texture.height },
+            { 0, 0, 2560, 1600 }, { 0, 0 }, 0, WHITE);
         rlImGuiBegin();
 
         sceneManager.DrawImGui();
