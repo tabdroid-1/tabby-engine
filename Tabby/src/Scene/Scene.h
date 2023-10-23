@@ -41,7 +41,7 @@ public:
     bool activationDone = false;
 
 private:
-    Physics physics;
+    Physics* physics = new Physics();
     Camera ActiveCamera;
 
     friend class GameObject;

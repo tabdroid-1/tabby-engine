@@ -5,35 +5,44 @@
 #include <raylib.h>
 #include <vector>
 
+namespace Tabby {
+
 class Physics {
 public:
     Physics();
 
-    void Init(Vector2 gravity);
+    void Init(Vector2 Gravity);
     void Init(Vector2 Gravity, int VelocityIterations, int PositionIterations);
     void Update(float dt);
     void Draw();
     void Destroy();
 
     b2World& GetPhysicsWorld() { return *physicsWorld; }
-    const float GetPhysicsWorldScale() { return physicsWorldScale; }
+    static float GetPhysicsWorldScale() { return s_Instance->physicsWorldScale; }
 
-    float GetScreenScale() { }
-    void SetScreenScale(float ScreenScale) { screenScale = ScreenScale; }
-
-    Vector2 GetWorldSize() { return worldSize; }
-    Vector2 GetWorldMeterSize() { return worldMeterSize; }
-    void SetWorldSize(Vector2 WorldSize)
+    static Physics& Get() { return *s_Instance; }
+    static void SetGravity(Vector2 Gravity)
     {
-        worldSize = WorldSize;
-        worldMeterSize = { pixelsToMetres(worldSize.x), pixelsToMetres(worldSize.y) };
+        b2Vec2 gravity(Gravity.x, Gravity.y);
+        s_Instance->physicsWorld->SetGravity(gravity);
     }
 
-    float GetPixelsPerMeter() { return pixelsPerMeter; }
-    void SetPixelsPerMeter(float PixelsPerMeter) { pixelsPerMeter = PixelsPerMeter; }
+    // float GetScreenScale() { }
+    // void SetScreenScale(float ScreenScale) { screenScale = ScreenScale; }
 
-    float pixelsToMetres(float pixels) { return pixels / pixelsPerMeter; }
-    float metresToPixels(float meters) { return meters * pixelsPerMeter; }
+    // Vector2 GetWorldSize() { return worldSize; }
+    // Vector2 GetWorldMeterSize() { return worldMeterSize; }
+    // void SetWorldSize(Vector2 WorldSize)
+    // {
+    //     worldSize = WorldSize;
+    //     worldMeterSize = { pixelsToMetres(worldSize.x), pixelsToMetres(worldSize.y) };
+    // }
+
+    // float GetPixelsPerMeter() { return pixelsPerMeter; }
+    // void SetPixelsPerMeter(float PixelsPerMeter) { pixelsPerMeter = PixelsPerMeter; }
+
+    // float pixelsToMetres(float pixels) { return pixels / pixelsPerMeter; }
+    // float metresToPixels(float meters) { return meters * pixelsPerMeter; }
 
 public:
     void DrawColliders();
@@ -44,15 +53,19 @@ private:
     float pixelsPerMeter = 1;
     const float physicsWorldScale = pixelsPerMeter * screenScale;
 
-    Vector2 worldSize = { 24000.0f, 12000.f };
-    Vector2 worldMeterSize = { worldSize.x / pixelsPerMeter, worldSize.y / pixelsPerMeter };
-    const Vector2 worldScale = { worldMeterSize.x / GetMonitorWidth(GetCurrentMonitor()), worldMeterSize.y / GetMonitorHeight(GetCurrentMonitor()) };
+    // Vector2 worldSize = { 24000.0f, 12000.f };
+    // Vector2 worldMeterSize = { worldSize.x / pixelsPerMeter, worldSize.y / pixelsPerMeter };
+    // const Vector2 worldScale = { worldMeterSize.x / GetMonitorWidth(GetCurrentMonitor()), worldMeterSize.y / GetMonitorHeight(GetCurrentMonitor()) };
 
     static b2World* physicsWorld;
     int velocityIterations;
     int positionIterations;
+
+private:
+    static Physics* s_Instance;
 };
 
+}
 // float SCREEN_SCALE = 1;
 // float SCREEN_WIDTH = 2560;
 // float SCREEN_HEIGHT = 1600;

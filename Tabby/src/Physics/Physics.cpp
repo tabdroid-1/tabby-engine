@@ -1,14 +1,21 @@
 #include "box2d/b2_math.h"
+#include "box2d/b2_world.h"
 #include "raylib.h"
 #include <Physics/Physics.h>
 #include <box2d/box2d.h>
 
+namespace Tabby {
+
+Physics* Physics::s_Instance = nullptr;
 b2World* Physics::physicsWorld = nullptr;
 
 Physics::Physics()
     : velocityIterations(6)
     , positionIterations(2)
 {
+
+    TB_ASSERT(!s_Instance, "Application already exists!");
+    s_Instance = this;
 }
 
 void Physics::Init(Vector2 Gravity)
@@ -93,4 +100,6 @@ Vector2 Physics::ConvertWorldToScreen(const b2Vec2& worldPosition, const Vector2
     float y = windowSize.y - (worldPosition.y * worldScale); // Invert the y-axis for Raylib
 
     return { x, -y };
+}
+
 }

@@ -61,6 +61,8 @@
 //     owner->GetComponent<C_Sprite>()->FlipTextureX();
 //     facingDirection *= -1;
 // }
+#include "Core/Application.h"
+#include "Physics/Physics.h"
 #include "Scene/Components.h"
 #include "raylib.h"
 #include <Game/Scripts/playerMove.h>
@@ -126,6 +128,14 @@ void PlayerMove::Move()
         input.y = -1;
     }
 
+    if (IsKeyDown(KEY_ESCAPE)) {
+        Tabby::Application::CloseApplication();
+    }
+
+    if (IsKeyDown(KEY_E)) {
+        Tabby::Physics::SetGravity({ 0.0f, -9.81f });
+    }
+
     velocity = { input.x * playerSpeed, input.y * playerSpeed };
 
     auto& playerTransform = GetComponent<Tabby::TransformComponent>();
@@ -133,12 +143,12 @@ void PlayerMove::Move()
     if (HasComponent<Tabby::RigidBodyComponent>()) {
         auto& playerRB = GetComponent<Tabby::RigidBodyComponent>();
 
-        // playerRB.SetVelocity({ velocity.x, playerRB.GetVelocity().y });
+        playerRB.SetVelocity({ velocity.x, playerRB.GetVelocity().y });
 
-        GetComponent<Tabby::RigidBodyComponent>().SetVelocity(velocity);
+        // GetComponent<Tabby::RigidBodyComponent>().SetVelocity(velocity);
 
         if (IsKeyDown(KEY_R)) {
-            playerRB.SetAngularVelocity(2);
+            // playerRB.SetAngularVelocity(2);
             // playerTransform.Rotation.z += 2;
         }
         if (IsKeyDown(KEY_T)) {

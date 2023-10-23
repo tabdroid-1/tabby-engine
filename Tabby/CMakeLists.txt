@@ -20,6 +20,7 @@ set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(RAYLIBTMX "${PROJECT_VENDOR_DIR}/raylib-tmx")
 set(LDTKLOADER "${PROJECT_VENDOR_DIR}/LDtkLoader")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
+set(JETLIVE "${PROJECT_VENDOR_DIR}/jet-live")
 
 # Add Raylib
 set(BUILD_EXAMPLES

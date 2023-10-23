@@ -39,7 +39,7 @@ void Scene::InitScene()
 
 void Scene::InitPhysics()
 {
-    physics.Init({ 0.0, 0.0 });
+    physics->Init({ 0.0, 0.0 });
 
     auto view = m_Registry.view<RigidBodyComponent>();
     for (auto e : view) {
@@ -50,10 +50,10 @@ void Scene::InitPhysics()
         b2BodyDef bodyDef;
         // bodyDef.type = (b2BodyType)rb.Type;
         bodyDef.type = b2_staticBody;
-        bodyDef.position.Set(transform.Position.x / physics.GetPhysicsWorldScale(), transform.Position.y / physics.GetPhysicsWorldScale());
+        bodyDef.position.Set(transform.Position.x / physics->GetPhysicsWorldScale(), transform.Position.y / physics->GetPhysicsWorldScale());
         bodyDef.angle = transform.Rotation.z;
 
-        b2Body* body = physics.GetPhysicsWorld().CreateBody(&bodyDef);
+        b2Body* body = physics->GetPhysicsWorld().CreateBody(&bodyDef);
         body->SetFixedRotation(rb.FixedRotation);
 
         if (gameObject.HasComponent<BoxCollider2DComponent>()) {
@@ -213,7 +213,7 @@ void Scene::LateUpdate(float dt)
         const int32_t positionIterations = 2;
 
         // m_PhysiscWorld->Step(dt, velocityIteration, positionIterations);
-        physics.Update(dt);
+        physics->Update(dt);
         auto view = m_Registry.view<RigidBodyComponent>();
         for (auto e : view) {
             Tabby::GameObject gameObject = { e, this };
@@ -261,7 +261,7 @@ void Scene::Draw()
 
     BeginMode3D(ActiveCamera);
 
-    physics.Draw();
+    physics->Draw();
 
 #ifdef DEBUG
     DrawGrid(100, 1.0f);
