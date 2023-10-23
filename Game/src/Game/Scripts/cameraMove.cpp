@@ -52,10 +52,10 @@ void CameraMove::Move()
 
     if (IsKeyDown(KEY_T)) {
         cameraTransform.Rotation.x += 2;
-        std::cout << cameraTransform.Rotation.x << "\n";
+        // std::cout << cameraTransform.Rotation.x << "\n";
     }
     if (IsKeyDown(KEY_Y)) {
         cameraTransform.Rotation.y += 2;
-        std::cout << cameraTransform.Rotation.y << "\n";
+        // std::cout << cameraTransform.Rotation.y << "\n";
     }
 }

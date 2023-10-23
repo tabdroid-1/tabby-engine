@@ -12,6 +12,7 @@ public:
     void Update(float deltaTime);
     void LateUpdate(float deltaTime);
     void Draw();
+    void DrawImGui();
 
     unsigned int Add(std::shared_ptr<Tabby::Scene> scene);
     void SwitchTo(unsigned int id);

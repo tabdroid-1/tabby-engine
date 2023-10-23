@@ -12,6 +12,8 @@ public:
     void OnActivate() override;
     void OnDestroy() override;
 
+    void DrawImGui() override;
+
     void SetSwitchToScene(unsigned int id);
 
 private:

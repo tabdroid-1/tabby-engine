@@ -1,8 +1,6 @@
-#include "Scene/Components.h"
-#include "Scene/GameObject.h"
-#include "raylib.h"
 #include <Game/Scenes/TitleScreenScene.h>
 #include <Game/Scripts/Scripts.h>
+#include <Tabby.h>
 
 TitleScreenScene::TitleScreenScene(SceneStateMachine& sceneStateMachine)
     : sceneStateMachine(sceneStateMachine)
@@ -90,6 +88,16 @@ void TitleScreenScene::OnActivate()
 
     auto& groundBoxCollider = ground.AddComponent<Tabby::BoxCollider2DComponent>();
     groundBoxCollider.Size = { 50.0f, 1.0f };
+}
+
+void TitleScreenScene::DrawImGui()
+{
+#if DEBUG
+
+    bool show = true;
+    ImGui::ShowDemoWindow(&show);
+
+#endif // DEBUG
 }
 
 void TitleScreenScene::OnDestroy()

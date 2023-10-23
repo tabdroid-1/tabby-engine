@@ -30,6 +30,13 @@ void SceneStateMachine::Draw()
     }
 }
 
+void SceneStateMachine::DrawImGui()
+{
+    if (curScene) {
+        curScene->DrawImGui();
+    }
+}
+
 unsigned int SceneStateMachine::Add(std::shared_ptr<Tabby::Scene> scene)
 {
     auto inserted = scenes.insert(std::make_pair(insertedSceneID, scene));
