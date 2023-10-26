@@ -2,9 +2,11 @@
 
 #include "box2d/b2_body.h"
 #include <Graphics/Animation.h>
+#include <Scene/Scene.h>
 #include <Scene/ScriptableGameObject.h>
 #include <raylib.h>
 #include <raymath.h>
+#include <vector>
 
 namespace Tabby {
 
@@ -39,16 +41,20 @@ struct TagComponent {
 };
 
 struct TransformComponent {
-    Vector3 Position = { 0.0f, 0.0f };
-    Vector3 Scale = { 1.0f, 1.0f, 1.0f };
-    Vector3 Rotation = { 0.0f, 0.0f, 0.0f };
-    /* Vector3 Size = { 32.0f, 32.0f, 32.0f }; */
-    Vector3 Origin = { 0.0f, 0.0f, 0.0f };
+    Vector3 position = { 0.0f, 0.0f };
+    Vector3 scale = { 1.0f, 1.0f, 1.0f };
+    Vector3 rotation = { 0.0f, 0.0f, 0.0f };
+    Vector3 localPosition = { 0.0f, 0.0f };
+    Vector3 localScale = { 1.0f, 1.0f, 1.0f };
+    Vector3 localRotation = { 0.0f, 0.0f, 0.0f };
+
+    entt::entity parent { entt::null };
+    std::vector<entt::entity> children;
 
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
     TransformComponent(const Vector3& position)
-        : Position(position)
+        : position(position)
     {
     }
 
@@ -56,11 +62,11 @@ struct TransformComponent {
     {
         Matrix mat = MatrixIdentity();
 
-        mat = MatrixMultiply(mat, MatrixTranslate(Position.x, Position.y, Position.z));
-        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 1.0f, 0.0f, 0.0f }, Rotation.x * DEG2RAD));
-        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 1.0f, 0.0f }, Rotation.y * DEG2RAD));
-        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 0.0f, 1.0f }, Rotation.z * DEG2RAD));
-        mat = MatrixMultiply(mat, MatrixScale(Scale.x, Scale.y, Scale.y));
+        mat = MatrixMultiply(mat, MatrixTranslate(position.x, position.y, position.z));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 1.0f, 0.0f, 0.0f }, rotation.x * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 1.0f, 0.0f }, rotation.y * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 0.0f, 1.0f }, rotation.z * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixScale(scale.x, scale.y, scale.y));
 
         return mat;
     }
@@ -85,22 +91,6 @@ struct SpriteRendererComponent {
         Texture = LoadTexture(path);
         srcRec = { 0.0, 0.0, (float)Texture.width, (float)Texture.height };
     }
-    //
-    // void FlipTextureX()
-    // {
-    //     Image image = LoadImageFromTexture(Texture);
-    //     ImageFlipHorizontal(&image);
-    //     UpdateTexture(Texture, image.data);
-    //     UnloadImage(image);
-    // }
-    //
-    // void FlipTextureY()
-    // {
-    //     Image image = LoadImageFromTexture(Texture);
-    //     ImageFlipVertical(&image);
-    //     UpdateTexture(Texture, image.data);
-    //     UnloadImage(image);
-    // }
 };
 
 struct AnimationComponent {

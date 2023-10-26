@@ -33,5 +33,4 @@ private:
     GameObject m_GameObject;
     friend class Scene;
 };
-
 }

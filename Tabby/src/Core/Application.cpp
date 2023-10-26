@@ -59,11 +59,9 @@ void Application::Run()
         EndTextureMode();
 
         BeginDrawing();
-        // DrawTexturePro(frameBuffer.texture, { 0, 0, (float)frameBuffer.texture.width, -(float)frameBuffer.texture.height },
-        //     { 0, 0, (float)GetMonitorWidth(GetCurrentMonitor()), (float)GetMonitorHeight(GetCurrentMonitor()) }, { 0, 0 }, 0, WHITE);
-
         DrawTexturePro(frameBuffer.texture, { 0, 0, (float)frameBuffer.texture.width, -(float)frameBuffer.texture.height },
-            { 0, 0, 2560, 1600 }, { 0, 0 }, 0, WHITE);
+            { 0, 0, (float)GetMonitorWidth(GetCurrentMonitor()), (float)GetMonitorHeight(GetCurrentMonitor()) }, { 0, 0 }, 0, WHITE);
+
         rlImGuiBegin();
 
         sceneManager.DrawImGui();

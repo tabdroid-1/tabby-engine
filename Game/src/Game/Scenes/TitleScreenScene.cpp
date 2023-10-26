@@ -1,3 +1,7 @@
+#include "Scene/Components.h"
+#include "Scene/GameObject.h"
+#include "Scene/Scene.h"
+#include "raylib.h"
 #include <Game/Scenes/TitleScreenScene.h>
 #include <Game/Scripts/Scripts.h>
 #include <Tabby.h>
@@ -16,17 +20,28 @@ void TitleScreenScene::OnCreate()
 
 void TitleScreenScene::OnActivate()
 {
-
+    m_Panel.SetContext(*this);
     DisableCursor();
+    // ---------- Tabby -----------
+    Tabby::GameObject tabbySpriteHolder = CreateEntity("tabbySprite");
+    tabbySpriteHolder.GetComponent<Tabby::TransformComponent>().localPosition = { 0.0f, 0.0f, -1.0f };
+
+    auto& tabbySprite = tabbySpriteHolder.AddComponent<Tabby::SpriteRendererComponent>();
+    /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
+    tabbySprite.SetTexture("assets/random/tabby.png");
+
     // ---------- Player ----------
     Tabby::GameObject player = CreateEntity("player");
-    player.GetComponent<Tabby::TransformComponent>().Position = {
+    player.GetComponent<Tabby::TransformComponent>().position = {
         0.0f,
         3.0f,
-        0.0f,
+        1.0f,
     };
+
+    player.AddChild(tabbySpriteHolder);
+
     /* player.GetComponent<Tabby::TransformComponent>().Size = { 48.0f, 48.0f }; */
-    player.GetComponent<Tabby::TransformComponent>().Scale = { 1.25f, 1.25f };
+    player.GetComponent<Tabby::TransformComponent>().scale = { 1.25f, 1.25f };
 
     auto& playerSprite = player.AddComponent<Tabby::SpriteRendererComponent>();
     /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
@@ -68,7 +83,7 @@ void TitleScreenScene::OnActivate()
 
     // ---------- Camera ----------
     Tabby::GameObject cameraObject = CreateEntity("mainCamera");
-    auto& cameraPosition = cameraObject.GetComponent<Tabby::TransformComponent>().Position;
+    auto& cameraPosition = cameraObject.GetComponent<Tabby::TransformComponent>().position;
     cameraPosition = { 0.0f, 2.0f, 10.0f };
     auto& camera = cameraObject.AddComponent<Tabby::CameraComponent>();
     camera.camera.target = { cameraPosition.x, cameraPosition.y, cameraPosition.z - 1 };
@@ -82,7 +97,7 @@ void TitleScreenScene::OnActivate()
 
     // ---------- Ground ----------
     Tabby::GameObject ground = CreateEntity("ground");
-    ground.GetComponent<Tabby::TransformComponent>().Position = { 3.0f, -1.0f };
+    ground.GetComponent<Tabby::TransformComponent>().position = { 3.0f, -1.0f };
     auto& groundRigidbody = ground.AddComponent<Tabby::RigidBodyComponent>();
     groundRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Static;
 
@@ -92,12 +107,11 @@ void TitleScreenScene::OnActivate()
 
 void TitleScreenScene::DrawImGui()
 {
-    // #if DEBUG
+    // bool show = true;
+    // ImGui::ShowDemoWindow(&show);
 
-    bool show = true;
-    ImGui::ShowDemoWindow(&show);
-
-    // #endif // DEBUG
+    Tabby::GameObject selectedentity = m_Panel.GetSelectedEntity();
+    m_Panel.OnImGuiRender();
 }
 
 void TitleScreenScene::OnDestroy()
