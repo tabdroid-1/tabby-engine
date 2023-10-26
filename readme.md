@@ -29,6 +29,8 @@ Engine Dependencies
  - entt
  - LDtkLoader
  - raylib-tmx 
+ - ImGui
+ - rlImGui
 
 Compiling
 ---------
