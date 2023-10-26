@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Game/UI/SceneHierarchyPanel.h>
 #include <Scene/Scene.h>
 #include <Scene/SceneStateMachine.h>
 #include <memory>
@@ -15,6 +16,9 @@ public:
     void DrawImGui() override;
 
     void SetSwitchToScene(unsigned int id);
+
+private:
+    SceneHierarchyPanel m_Panel;
 
 private:
     SceneStateMachine& sceneStateMachine;

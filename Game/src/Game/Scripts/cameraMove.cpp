@@ -42,20 +42,20 @@ void CameraMove::Move()
     auto& cameraTransform = GetComponent<Tabby::TransformComponent>();
     auto& camera = GetComponent<Tabby::CameraComponent>();
 
-    cameraTransform.Position.x += velocity.x;
-    cameraTransform.Position.y += velocity.y;
+    cameraTransform.position.x += velocity.x;
+    cameraTransform.position.y += velocity.y;
     // playerRB.SetVelocity({ velocity.x, playerRB.GetVelocity().y });
 
     // std::cout << "X: " << cameraTransform.Position.x << "  Y: " << cameraTransform.Position.y << "\n";
 
-    camera.camera.target = { cameraTransform.Position.x, cameraTransform.Position.y, cameraTransform.Position.z - 1 };
+    camera.camera.target = { cameraTransform.position.x, cameraTransform.position.y, cameraTransform.position.z - 1 };
 
     if (IsKeyDown(KEY_T)) {
-        cameraTransform.Rotation.x += 2;
+        cameraTransform.rotation.x += 2;
         // std::cout << cameraTransform.Rotation.x << "\n";
     }
     if (IsKeyDown(KEY_Y)) {
-        cameraTransform.Rotation.y += 2;
+        cameraTransform.rotation.y += 2;
         // std::cout << cameraTransform.Rotation.y << "\n";
     }
 }

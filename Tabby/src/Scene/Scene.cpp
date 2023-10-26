@@ -3,6 +3,7 @@
 #include "raymath.h"
 #include "rcamera.h"
 #include "rlgl.h"
+#include <Math/Math.h>
 #include <Scene/Scene.h>
 
 #include "box2d/b2_body.h"
@@ -32,13 +33,18 @@ GameObject Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
     return entity;
 }
 
+void Scene::DestroyEntity(GameObject entity)
+{
+    m_Registry.destroy(entity);
+}
+
 void Scene::InitScene()
 {
 }
 
 void Scene::InitPhysics()
 {
-    physics->Init({ 0.0, 0.0 });
+    physics->Init({ 0.0, -9.81 });
 
     auto view = m_Registry.view<RigidBodyComponent>();
     for (auto e : view) {
@@ -49,8 +55,8 @@ void Scene::InitPhysics()
         b2BodyDef bodyDef;
         // bodyDef.type = (b2BodyType)rb.Type;
         bodyDef.type = b2_staticBody;
-        bodyDef.position.Set(transform.Position.x / physics->GetPhysicsWorldScale(), transform.Position.y / physics->GetPhysicsWorldScale());
-        bodyDef.angle = transform.Rotation.z;
+        bodyDef.position.Set(transform.position.x / physics->GetPhysicsWorldScale(), transform.position.y / physics->GetPhysicsWorldScale());
+        bodyDef.angle = transform.rotation.z;
 
         b2Body* body = physics->GetPhysicsWorld().CreateBody(&bodyDef);
         body->SetFixedRotation(rb.FixedRotation);
@@ -60,7 +66,7 @@ void Scene::InitPhysics()
 
             b2PolygonShape shape;
 
-            shape.SetAsBox(bc2D.Size.x * transform.Scale.x, bc2D.Size.y * transform.Scale.y);
+            shape.SetAsBox(bc2D.Size.x * transform.scale.x, bc2D.Size.y * transform.scale.y);
 
             b2FixtureDef fixtureDef;
             fixtureDef.shape = &shape;
@@ -129,23 +135,43 @@ void Scene::Update(float dt)
     }
 
     {
+        for (auto entity : m_Registry.view<TransformComponent>()) {
+
+            auto& transform = m_Registry.get<TransformComponent>(entity);
+
+            if (transform.rotation.x >= 360) {
+                float rot = transform.rotation.x - 360.0f;
+                transform.rotation.x = rot;
+            }
+
+            if (transform.rotation.y >= 360) {
+                float rot = transform.rotation.y - 360.0f;
+                transform.rotation.y = rot;
+            }
+
+            if (transform.rotation.z >= 360) {
+                float rot = transform.rotation.z - 360.0f;
+                transform.rotation.z = rot;
+            }
+
+            if (transform.parent != entt::null) {
+
+                GameObject parent = { transform.parent, this };
+
+                transform.position = parent.GetComponent<TransformComponent>().position + transform.localPosition;
+                transform.rotation = parent.GetComponent<TransformComponent>().rotation + transform.localRotation;
+                transform.scale = parent.GetComponent<TransformComponent>().scale + transform.localScale;
+            }
+        }
+    }
+
+    {
         auto group = m_Registry.group<TransformComponent>(entt::get<CameraComponent>);
         for (auto entity : group) {
 
             auto [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
 
-            // camera.camera.target = { transform.Position.x, transform.Position.y, transform.Position.z + 1 };
-            camera.camera.position = transform.Position;
-            // // Create a rotation matrix (e.g., a 45-degree rotation around the Y-axis)
-            // Matrix rotationMatrix = MatrixRotateX(transform.Rotation.x * DEG2RAD);
-            // rotationMatrix = MatrixRotateY(transform.Rotation.y * DEG2RAD);
-            // rotationMatrix = MatrixRotateZ(transform.Rotation.z * DEG2RAD);
-            //
-            // // Apply the rotation matrix to the camera's target vector
-            // camera.camera.target = Vector3Transform(camera.camera.target, rotationMatrix);
-            //
-            // // Optionally, apply the same rotation to the camera's up vector to maintain its orientation
-            // camera.camera.up = Vector3Transform(camera.camera.up, rotationMatrix);
+            camera.camera.position = transform.position;
 
             if (camera.isMainCamera) {
 
@@ -156,16 +182,6 @@ void Scene::Update(float dt)
 
                 UpdateCamera(&camera.camera, camera.cameraMode);
             }
-        }
-    }
-
-    {
-
-        auto view = m_Registry.view<CameraComponent>();
-        for (auto e : view) {
-            Tabby::GameObject gameObject = { e, this };
-            auto& transform = gameObject.GetComponent<TransformComponent>();
-            auto& camera = gameObject.GetComponent<CameraComponent>();
         }
     }
 
@@ -222,9 +238,9 @@ void Scene::LateUpdate(float dt)
             b2Body* body = (b2Body*)rb.RuntimeBody;
 
             const auto& position = body->GetPosition();
-            transform.Position.x = position.x;
-            transform.Position.y = position.y;
-            transform.Rotation.z = rb.GetAngle();
+            transform.position.x = position.x;
+            transform.position.y = position.y;
+            transform.rotation.z = rb.GetAngle();
 
             if (gameObject.HasComponent<BoxCollider2DComponent>()) {
                 auto& bc2D = gameObject.GetComponent<BoxCollider2DComponent>();
@@ -275,7 +291,7 @@ void Scene::Draw()
             auto& transform = gameObject.GetComponent<TransformComponent>();
             auto& sprite = gameObject.GetComponent<SpriteRendererComponent>();
 
-            Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.Position, transform.Rotation, { 0.0f, 0.0f }, { transform.Scale.x, transform.Scale.y }, sprite.Tint);
+            Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.position, transform.rotation, { 0.0f, 0.0f }, { transform.scale.x, transform.scale.y }, sprite.Tint);
         }
     }
 
@@ -293,5 +309,4 @@ void Scene::OnDestroy()
         });
     }
 }
-
 }
