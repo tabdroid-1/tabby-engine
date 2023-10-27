@@ -10,14 +10,15 @@ Planned Features / To-do list
 
 - <s>ImGui implementation for easy component value editing without rebuilding.</s> Done
 - <s>Parent-Child system or whatever.</s> Done
-- Out of screen texture culling. (Currently working on this)
-- Audio component
-- Scene manager rework(switching scenes. scene pool etc.)
+- <s>Out of screen texture culling.</s> Done
+- Asset Manager. (Currently working on this)
+- Audio component.
+- Scene manager rework. (switching scenes. scene pool etc.)
 - Physics rework. (Hinges, make components more editable etc.)
-- More advanced animation system
-- LDtk tile map and make each layer has its own position
-- <s>Better 3D support<\s> Priorities
-- <s>Steamworks API implementation<\s> Priorities...
+- More advanced animation system.
+- LDtk tile map and make each layer has its own position.
+- <s>Better 3D support</s> Priorities
+- <s>Steamworks API implementation</s> Priorities...
 - <s>Web, Chrome OS, FreeBSD, Raspberry Pi and Android builds </s> Too far-fetched for now.
 - <s>More advanced asset manager. Assets will be stored in the code and (some) will be encrypted using AES encryption to complicate data mining/revers engineering, but there will be option to use files instead of storing in code.(might be in a private branch though) </s> Too far-fetched for now.
 - <s>Clean the f*kin "CMakeLists.txt" to be more understandable and useable. It looks hideous.</s> Extremely far-fetched for now.
