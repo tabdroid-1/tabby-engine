@@ -48,6 +48,7 @@ void CameraMove::Move()
 
     // std::cout << "X: " << cameraTransform.Position.x << "  Y: " << cameraTransform.Position.y << "\n";
 
+    // std::cout << GetFPS() << "\n";
     camera.camera.target = { cameraTransform.position.x, cameraTransform.position.y, cameraTransform.position.z - 1 };
 
     if (IsKeyDown(KEY_T)) {

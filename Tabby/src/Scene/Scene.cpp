@@ -273,6 +273,7 @@ void Scene::LateUpdate(float dt)
 
 void Scene::Draw()
 {
+    bool isItTrueeeeeeee = false;
 
     BeginMode3D(ActiveCamera);
 
@@ -285,13 +286,44 @@ void Scene::Draw()
 #endif // DEBUG
 
     {
+        // auto view = m_Registry.view<SpriteRendererComponent>();
+        // for (auto e : view) {
+        //     Tabby::GameObject gameObject = { e, this };
+        //     auto& transform = gameObject.GetComponent<TransformComponent>();
+        //     auto& sprite = gameObject.GetComponent<SpriteRendererComponent>();
+        //
+        //     Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.position, transform.rotation, { 0.0f, 0.0f }, { transform.scale.x, transform.scale.y }, sprite.Tint);
+        // }
+
         auto view = m_Registry.view<SpriteRendererComponent>();
-        for (auto e : view) {
-            Tabby::GameObject gameObject = { e, this };
+
+        std::vector<entt::entity> sortedEntities;
+        sortedEntities.reserve(view.size());
+
+        for (entt::entity entity : view) {
+
+            Tabby::GameObject gameObject = { entity, this };
+            auto& transform = gameObject.GetComponent<TransformComponent>();
+
+            if (Tabby::Graphics::IsSphereInFrustrum(ActiveCamera, transform.position, transform.scale.x > transform.scale.y ? transform.scale.x / 2 : transform.scale.y / 2)) {
+                sortedEntities.push_back(entity);
+            }
+        }
+
+        std::sort(sortedEntities.begin(), sortedEntities.end(), [this](const entt::entity& a, const entt::entity& b) {
+            auto& transformA = m_Registry.get<TransformComponent>(a);
+            auto& transformB = m_Registry.get<TransformComponent>(b);
+            return transformA.position.z < transformB.position.z;
+        });
+
+        for (const entt::entity& entity : sortedEntities) {
+            Tabby::GameObject gameObject = { entity, this };
             auto& transform = gameObject.GetComponent<TransformComponent>();
             auto& sprite = gameObject.GetComponent<SpriteRendererComponent>();
 
-            Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.position, transform.rotation, { 0.0f, 0.0f }, { transform.scale.x, transform.scale.y }, sprite.Tint);
+            if (Tabby::Graphics::IsSphereInFrustrum(ActiveCamera, transform.position, transform.scale.x > transform.scale.y ? transform.scale.x / 2 : transform.scale.y / 2)) {
+                Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.position, transform.rotation, { 0.0f, 0.0f }, { transform.scale.x, transform.scale.y }, sprite.Tint);
+            }
         }
     }
 

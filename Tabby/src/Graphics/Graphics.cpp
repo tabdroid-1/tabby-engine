@@ -3,6 +3,7 @@
 #include "raymath.h"
 #include "rlgl.h"
 #include <cmath>
+#include <rcamera.h>
 
 namespace Tabby {
 
@@ -108,11 +109,29 @@ void Graphics::Draw3DBillboardRec(Camera camera, Texture2D texture, Rectangle so
     rlPopMatrix();
 }
 
+bool Graphics::IsSphereInFrustrum(Camera Camera, Vector3 Position, float Radius)
+{
+
+    Matrix viewMatrix = GetCameraViewMatrix(&Camera);
+    Matrix projectionMatrix = GetCameraProjectionMatrix(&Camera, GetScreenWidth() / GetScreenHeight());
+
+    Vector3 sphereCenterWorldSpace = Position;
+    Vector3 sphereCenterCameraSpace = Vector3Transform(Position, viewMatrix);
+
+    // Vector3 sphereCenterClipSpace = projectionMatrix * sphereCenterCameraSpace;
+    Vector3 sphereCenterClipSpace = Vector3Transform(sphereCenterCameraSpace, projectionMatrix);
+
+    bool isInsideFrustum = (sphereCenterClipSpace.z + Radius >= -1.0f) && (sphereCenterClipSpace.z - Radius <= 1.0f) && (sphereCenterClipSpace.x + Radius >= -1.0f) && (sphereCenterClipSpace.x - Radius <= 1.0f) && (sphereCenterClipSpace.y + Radius >= -1.0f) && (sphereCenterClipSpace.y - Radius <= 1.0f);
+
+    return isInsideFrustum;
+}
+
 // void Graphics::DrawSprite2(Matrix mat, Texture2D texture, Rectangle source, Vector3 position, Vector3 rotation, Vector3 origin, Vector2 size, Color tint)
 // {
 //     rlPushMatrix();
 //
 //     // peel off just the rotation
+//
 //     // Quaternion quat = QuaternionFromMatrix(mat);
 //     // mat = QuaternionToMatrix(quat);
 //

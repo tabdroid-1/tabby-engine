@@ -9,21 +9,10 @@
 int main(int argc, char** argv);
 
 namespace Tabby {
-struct ApplicationCommandLineArgs {
-    int Count = 0;
-    char** Args = nullptr;
-
-    const char* operator[](int index) const
-    {
-        TB_ASSERT(index < Count, "ERROR: Application.h");
-        return Args[index];
-    }
-};
 
 struct ApplicationSpecification {
     std::string Name = "Tabby Application";
     std::string WorkingDirectory;
-    ApplicationCommandLineArgs CommandLineArgs;
 };
 
 class Application {
@@ -54,5 +43,5 @@ private:
     friend int ::main(int argc, char** argv);
 };
 
-Application* CreateApplication(ApplicationCommandLineArgs args);
+Application* CreateApplication();
 }

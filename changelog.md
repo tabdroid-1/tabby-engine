@@ -1,4 +1,5 @@
-Version: 26-10-2023_1 Alpha
+Version: 27-10-2023_1 Alpha
 Changes:
-- Added hierarchy support for GameObjects(parent-child)
-- Maybe some bug fixes. I forgot to record what i did.
+- Fixed an oversight which caused ImGui to not be setup in release.
+- Added frustrum culling
+

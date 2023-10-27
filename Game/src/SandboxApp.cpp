@@ -3,8 +3,6 @@
 #include <Tabby.h>
 #include <cstdio>
 
-#include "Sandbox2D.h"
-
 namespace Tabby {
 
 class Sandbox : public Application {
@@ -12,6 +10,10 @@ public:
     Sandbox(const ApplicationSpecification& specification)
         : Application(specification)
     {
+
+        // SetTargetFPS(520);
+        ClearWindowState(FLAG_VSYNC_HINT);
+
         ToggleFullscreen();
 
         std::shared_ptr<TitleScreenScene> splashScreen = std::make_shared<TitleScreenScene>(sceneManager);
@@ -30,12 +32,13 @@ public:
     }
 };
 
-Application* CreateApplication(ApplicationCommandLineArgs args)
+// Application* CreateApplication(ApplicationCommandLineArgs args)
+Application* CreateApplication()
 {
 
     ApplicationSpecification spec;
     spec.Name = "Tabby Engine - Library Test";
-    spec.CommandLineArgs = args;
+    // spec.CommandLineArgs = args;
 
     return new Sandbox(spec);
 }
@@ -44,7 +47,7 @@ Application* CreateApplication(ApplicationCommandLineArgs args)
 
 int main(int argc, char** argv)
 {
-    auto* app = Tabby::CreateApplication({ argc, argv });
+    auto* app = Tabby::CreateApplication();
 
     app->Run();
 

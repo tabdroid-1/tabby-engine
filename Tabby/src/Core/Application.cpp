@@ -27,14 +27,9 @@ Application::Application(const ApplicationSpecification& specification)
     if (GetScreenHeight() > maxHeight)
         SetWindowSize(GetScreenWidth(), maxHeight);
 
-#if DEBUG
-
     rlImGuiSetup(true);
 
-#endif // DEBUG
-
     SetExitKey(0);
-    SetTargetFPS(60);
 }
 
 Application::~Application()
