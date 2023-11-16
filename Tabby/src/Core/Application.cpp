@@ -57,6 +57,8 @@ void Application::Run()
         DrawTexturePro(frameBuffer.texture, { 0, 0, (float)frameBuffer.texture.width, -(float)frameBuffer.texture.height },
             { 0, 0, (float)GetMonitorWidth(GetCurrentMonitor()), (float)GetMonitorHeight(GetCurrentMonitor()) }, { 0, 0 }, 0, WHITE);
 
+        sceneManager.DrawHud();
+
         rlImGuiBegin();
 
         sceneManager.DrawImGui();

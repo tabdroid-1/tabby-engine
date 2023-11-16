@@ -1,11 +1,8 @@
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
+#include <tbpch.h>
 
 #include <Scene/Scene.h>
-
 #include <entt/entt.hpp>
 
 namespace Tabby {

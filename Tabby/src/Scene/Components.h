@@ -246,4 +246,9 @@ struct NativeScriptComponent {
         DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
     }
 };
+
+// struct OctreComponent {
+//     Octree* octree = nullptr;
+// };
+
 }

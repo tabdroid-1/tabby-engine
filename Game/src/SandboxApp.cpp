@@ -11,8 +11,8 @@ public:
         : Application(specification)
     {
 
-        // SetTargetFPS(520);
-        ClearWindowState(FLAG_VSYNC_HINT);
+        SetTargetFPS(60);
+        // ClearWindowState(FLAG_VSYNC_HINT);
 
         ToggleFullscreen();
 

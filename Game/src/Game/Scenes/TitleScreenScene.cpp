@@ -7,7 +7,7 @@
 #include <Graphics/Graphics.h>
 #include <Tabby.h>
 
-TitleScreenScene::TitleScreenScene(SceneStateMachine& sceneStateMachine)
+TitleScreenScene::TitleScreenScene(Tabby::SceneStateMachine& sceneStateMachine)
     : sceneStateMachine(sceneStateMachine)
     , switchToState(0)
     , currentSeconds(0.f)
@@ -92,14 +92,17 @@ void TitleScreenScene::OnActivate()
         auto& cameraPosition = cameraObject.GetComponent<Tabby::TransformComponent>().position;
         cameraPosition = { 0.0f, 2.0f, 10.0f };
         auto& camera = cameraObject.AddComponent<Tabby::CameraComponent>();
-        camera.camera.target = { cameraPosition.x, cameraPosition.y, cameraPosition.z - 1 };
+        camera.debugCameraMovement = true;
+        camera.cameraMode = CAMERA_FIRST_PERSON;
+        camera.camera.position = cameraPosition;
         camera.isMainCamera = true;
-        camera.camera.projection = CAMERA_ORTHOGRAPHIC;
-        camera.camera.fovy = 10.0f;
+        camera.camera.projection = CAMERA_PERSPECTIVE;
+        camera.camera.fovy = 60.0f;
+        // camera.camera.target = { cameraPosition.x, cameraPosition.y, cameraPosition.z - 1 };
 
-        auto& cameraMovement = cameraObject.AddComponent<Tabby::NativeScriptComponent>();
-        cameraMovement.Bind<CameraMove>();
-        auto cameraMovementScript = static_cast<CameraMove*>(cameraMovement.Instance);
+        // auto& cameraMovement = cameraObject.AddComponent<Tabby::NativeScriptComponent>();
+        // cameraMovement.Bind<CameraMove>();
+        // auto cameraMovementScript = static_cast<CameraMove*>(cameraMovement.Instance);
     }
     // ---------- Ground ----------
     {
@@ -109,8 +112,13 @@ void TitleScreenScene::OnActivate()
         groundRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Static;
 
         auto& groundBoxCollider = ground.AddComponent<Tabby::BoxCollider2DComponent>();
-        groundBoxCollider.Size = { 50.0f, 1.0f };
+        groundBoxCollider.Size = { 5.0f, 0.5f };
     }
+}
+
+void TitleScreenScene::DrawHud()
+{
+    DrawText(TextFormat("Width: %i  -  Height: %i", GetScreenWidth(), GetScreenHeight()), 10, 20, 20, WHITE);
 }
 
 void TitleScreenScene::DrawImGui()

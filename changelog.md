@@ -1,5 +1,5 @@
-Version: 27-10-2023_1 Alpha
+Version: 16-11-2023_1 Alpha
 Changes:
-- Fixed an oversight which caused ImGui to not be setup in release.
-- Added frustrum culling
+- Now hud can be drawn using DrawHud() Function in scenes.
+- Rewrote whole frustum culling because previous one was not working...
 
