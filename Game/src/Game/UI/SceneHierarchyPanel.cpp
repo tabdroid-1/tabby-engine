@@ -277,39 +277,57 @@ void SceneHierarchyPanel::DrawComponents(Tabby::GameObject entity)
     }
 
     DrawComponent<Tabby::CameraComponent>("Camera", entity, [](auto& component) {
-        // auto& camera = component.Camera;
+        auto& camera = component;
         //
-        // ImGui::Checkbox("Primary", &component.Primary);
+        ImGui::Checkbox("Primary", &component.isMainCamera);
 
-        // const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-        // const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
-        // if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
-        //     for (int i = 0; i < 2; i++) {
-        //         bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
-        //         if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
-        //             currentProjectionTypeString = projectionTypeStrings[i];
-        //             // camera.SetProjectionType((SceneCamera::ProjectionType)i);
-        //         }
-        //
-        //         if (isSelected)
-        //             ImGui::SetItemDefaultFocus();
-        //     }
-        //
-        //     ImGui::EndCombo();
+        const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
+        const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.camera.projection];
+        if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
+            for (int i = 0; i < 2; i++) {
+                bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
+                if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
+                    currentProjectionTypeString = projectionTypeStrings[i];
+                    // camera.SetProjectionType((SceneCamera::ProjectionType)i);
+                    camera.camera.projection = i;
+                }
+
+                if (isSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+
+            ImGui::EndCombo();
+        }
+
+        // if (camera.camera.projection == CAMERA_PERSPECTIVE) {
+        float perspectiveVerticalFov = camera.camera.fovy;
+
+        if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFov))
+            camera.camera.fovy = perspectiveVerticalFov;
+
+        // ImGui::DragFloat4("Frustum Plane Back", &camera.frustum->Planes[0].x, camera.frustum->Planes[0].y, camera.frustum->Planes[0].z, camera.frustum->Planes[0].w);
+        // ImGui::DragFloat4("Frustum Plane Front", &camera.frustum->Planes[0].x, camera.frustum->Planes[0].y, camera.frustum->Planes[0].z, camera.frustum->Planes[0].w);
+        // ImGui::DragFloat4("Frustum Plane back", &camera.frustum->Planes[0].x, camera.frustum->Planes[0].y, camera.frustum->Planes[0].z, camera.frustum->Planes[0].w);
+        // ImGui::DragFloat4("Frustum Plane back", &camera.frustum->Planes[0].x, camera.frustum->Planes[0].y, camera.frustum->Planes[0].z, camera.frustum->Planes[0].w);
+        // ImGui::DragFloat4("Frustum Plane Left", &camera.frustum->Planes[0].x, camera.frustum->Planes[0].y, camera.frustum->Planes[0].z, camera.frustum->Planes[0].w);
+        // ImGui::DragFloat4("Frustum Plane Max", &camera.frustum->Planes[0].x, camera.frustum->Planes[0].y, camera.frustum->Planes[0].z, camera.frustum->Planes[0].w);
+        // ImGui::DragFloat4("Frustum plane back", &camera.frustum->Planes[0]);
+
+        // Back = 0,
+        // Front = 1,
+        // Bottom = 2,
+        // Top = 3,
+        // Right = 4,
+        // Left = 5,
+        // MAX = 6
+
         // }
-
-        // if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective) {
-        //     float perspectiveVerticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
+        //
+        // if (camera.camera.projection == CAMERA_ORTHOGRAPHIC) {
+        //     float perspectiveVerticalFov = camera.camera.fovy;
+        //
         //     if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFov))
-        //         camera.SetPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFov));
-        //
-        //     float perspectiveNear = camera.GetPerspectiveNearClip();
-        //     if (ImGui::DragFloat("Near", &perspectiveNear))
-        //         camera.SetPerspectiveNearClip(perspectiveNear);
-        //
-        //     float perspectiveFar = camera.GetPerspectiveFarClip();
-        //     if (ImGui::DragFloat("Far", &perspectiveFar))
-        //         camera.SetPerspectiveFarClip(perspectiveFar);
+        //         camera.camera.fovy = perspectiveVerticalFov;
         // }
 
         // if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic) {

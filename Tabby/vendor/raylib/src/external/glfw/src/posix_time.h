@@ -29,11 +29,13 @@
 
 #include <stdint.h>
 #include <time.h>
-typedef int clockid_t;
+
 
 // POSIX-specific global timer data
 //
-typedef struct _GLFWtimerPOSIX {
-    clockid_t clock;
-    uint64_t frequency;
+typedef struct _GLFWtimerPOSIX
+{
+    clockid_t   clock;
+    uint64_t    frequency;
 } _GLFWtimerPOSIX;
+

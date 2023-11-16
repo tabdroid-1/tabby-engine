@@ -10,7 +10,7 @@ Planned Features / To-do list
 
 - <s>ImGui implementation for easy component value editing without rebuilding and more.</s> Done
 - <s>Parent-Child system or whatever.</s> Done
-- Out of screen texture culling.
+- <s>Out of screen texture culling.</s> Done
 - Octree. (Currently working on this)
 - Make engine run using a function instead of having to create main function in executable.
 - Remove float dt from every function. There is no need for it. There is a function to get deltatime.
@@ -21,12 +21,12 @@ Planned Features / To-do list
 - Serialization(aka saving).
 - Custom profiling implementation (tracy Profiler).
 - Scene manager rework. (switching scenes. scene pool etc.)
+- Multi-threading
 - Physics rework. (Hinges, make components more editable, callbacks like onTriggerEnter, onRaycastHit etc.)
 - More advanced animation system.
-- Particle system.
 - Script public variable reflection.
-- LDtk tile map and make each layer has its own position.
-- Multi-threading
+- Particle system.
+- LDtk tile map.
 - <s>Better 3D support</s> Priorities...
 - <s>Steamworks API implementation</s> Priorities...
 - <s>Web, Chrome OS, FreeBSD, Raspberry Pi and Android builds </s> Too far-fetched for now.

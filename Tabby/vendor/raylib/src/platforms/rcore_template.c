@@ -21,8 +21,8 @@
 *           Custom flag for rcore on target platform -not used-
 *
 *   DEPENDENCIES:
-*       - Dependency 01
-*       - Dependency 02
+*       - <platform-specific SDK dependency>
+*       - gestures: Gestures system for touch-ready devices (or simulated from mouse inputs)
 *
 *
 *   LICENSE: zlib/libpng
@@ -431,6 +431,12 @@ void PollInputEvents(void)
 // Initialize platform: graphics, inputs and more
 int InitPlatform(void)
 {
+    // TODO: Initialize graphic device: display/window
+    // It usually requires setting up the platform display system configuration
+    // and connexion with the GPU through some system graphic API
+    // raylib uses OpenGL so, platform should create that kind of connection
+    // Below example illustrates that process using EGL library
+    //----------------------------------------------------------------------------
     CORE.Window.fullscreen = true;
     CORE.Window.flags |= FLAG_FULLSCREEN_MODE;
 
@@ -496,35 +502,27 @@ int InitPlatform(void)
     }
 
     // Create an EGL window surface
-    //---------------------------------------------------------------------------------
     EGLint displayFormat = 0;
 
     // EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is guaranteed to be accepted by ANativeWindow_setBuffersGeometry()
     // As soon as we picked a EGLConfig, we can safely reconfigure the ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID
     eglGetConfigAttrib(platform.device, platform.config, EGL_NATIVE_VISUAL_ID, &displayFormat);
 
-    // At this point we need to manage render size vs screen size
-    // NOTE: This function use and modify global module variables:
-    //  -> CORE.Window.screen.width/CORE.Window.screen.height
-    //  -> CORE.Window.render.width/CORE.Window.render.height
-    //  -> CORE.Window.screenScale
-    SetupFramebuffer(CORE.Window.display.width, CORE.Window.display.height);
-
-    ANativeWindow_setBuffersGeometry(platform.app->window, CORE.Window.render.width, CORE.Window.render.height, displayFormat);
-    //ANativeWindow_setBuffersGeometry(platform.app->window, 0, 0, displayFormat);       // Force use of native display size
+    // Android specific call
+    ANativeWindow_setBuffersGeometry(platform.app->window, 0, 0, displayFormat);       // Force use of native display size
 
     platform.surface = eglCreateWindowSurface(platform.device, platform.config, platform.app->window, NULL);
 
     // There must be at least one frame displayed before the buffers are swapped
-    //eglSwapInterval(platform.device, 1);
+    eglSwapInterval(platform.device, 1);
 
-    if (eglMakeCurrent(platform.device, platform.surface, platform.surface, platform.context) == EGL_FALSE)
+    EGLBoolean result = eglMakeCurrent(platform.device, platform.surface, platform.surface, platform.context);
+
+    // Check surface and context activation
+    if (result != EGL_FALSE)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to attach EGL rendering context to EGL surface");
-        return -1;
-    }
-    else
-    {
+        CORE.Window.ready = true;
+
         CORE.Window.render.width = CORE.Window.screen.width;
         CORE.Window.render.height = CORE.Window.screen.height;
         CORE.Window.currentFbo.width = CORE.Window.render.width;
@@ -536,21 +534,50 @@ int InitPlatform(void)
         TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
         TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
     }
+    else
+    {
+        TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphics device");
+        return -1;
+    }
+    //----------------------------------------------------------------------------
 
-    // Load OpenGL extensions
+    // If everything work as expected, we can continue
+    CORE.Window.render.width = CORE.Window.screen.width;
+    CORE.Window.render.height = CORE.Window.screen.height;
+    CORE.Window.currentFbo.width = CORE.Window.render.width;
+    CORE.Window.currentFbo.height = CORE.Window.render.height;
+
+    TRACELOG(LOG_INFO, "DISPLAY: Device initialized successfully");
+    TRACELOG(LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
+    TRACELOG(LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
+    TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
+    TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
+
+    // TODO: Load OpenGL extensions
     // NOTE: GL procedures address loader is required to load extensions
+    //----------------------------------------------------------------------------
     rlLoadExtensions(eglGetProcAddress);
+    //----------------------------------------------------------------------------
 
-    CORE.Window.ready = true;
+    // TODO: Initialize input events system
+    // It could imply keyboard, mouse, gamepad, touch...
+    // Depending on the platform libraries/SDK it could use a callbacks mechanims
+    // For system events and inputs evens polling on a per-frame basis, use PollInputEvents()
+    //----------------------------------------------------------------------------
+    // ...
+    //----------------------------------------------------------------------------
 
-    // If graphic device is no properly initialized, we end program
-    if (!CORE.Window.ready) { TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphic device"); return -1; }
-
-    // Initialize hi-res timer
+    // TODO: Initialize timming system
+    //----------------------------------------------------------------------------
     InitTimer();
+    //----------------------------------------------------------------------------
 
-    // Initialize base path for storage
+    // TODO: Initialize storage system
+    //----------------------------------------------------------------------------
     CORE.Storage.basePath = GetWorkingDirectory();
+    //----------------------------------------------------------------------------
+
+    TRACELOG(LOG_INFO, "PLATFORM: CUSTOM: Initialized successfully");
 
     return 0;
 }

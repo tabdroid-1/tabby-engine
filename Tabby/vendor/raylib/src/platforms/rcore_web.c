@@ -20,8 +20,8 @@
 *           Custom flag for rcore on target platform -not used-
 *
 *   DEPENDENCIES:
-*       emscripten - Allow interaction between browser API and C
-*       gestures - Gestures system for touch-ready devices (or simulated from mouse inputs)
+*       - emscripten: Allow interaction between browser API and C
+*       - gestures: Gestures system for touch-ready devices (or simulated from mouse inputs)
 *
 *
 *   LICENSE: zlib/libpng
@@ -45,9 +45,9 @@
 *
 **********************************************************************************************/
 
-#define GLFW_INCLUDE_ES2                // GLFW3: Enable OpenGL ES 2.0 (translated to WebGL)
-// #define GLFW_INCLUDE_ES3               // GLFW3: Enable OpenGL ES 3.0 (transalted to WebGL2?)
-#include "GLFW/glfw3.h"                 // GLFW3: Windows, OpenGL context and Input management
+#define GLFW_INCLUDE_NONE       // Disable the standard OpenGL header inclusion on GLFW3
+                                // NOTE: Already provided by rlgl implementation (on glad.h)
+#include "GLFW/glfw3.h"         // GLFW3: Windows, OpenGL context and Input management
 
 #include <emscripten/emscripten.h>      // Emscripten functionality for C
 #include <emscripten/html5.h>           // Emscripten HTML5 library
@@ -94,7 +94,7 @@ static void ErrorCallback(int error, const char *description);                  
 // Window callbacks events
 static void WindowSizeCallback(GLFWwindow *window, int width, int height);          // GLFW3 WindowSize Callback, runs when window is resized
 static void WindowIconifyCallback(GLFWwindow *window, int iconified);               // GLFW3 WindowIconify Callback, runs when window is minimized/restored
-static void WindowMaximizeCallback(GLFWwindow *window, int maximized);              // GLFW3 Window Maximize Callback, runs when window is maximized
+//static void WindowMaximizeCallback(GLFWwindow *window, int maximized);              // GLFW3 Window Maximize Callback, runs when window is maximized
 static void WindowFocusCallback(GLFWwindow *window, int focused);                   // GLFW3 WindowFocus Callback, runs when window get/lose focus
 static void WindowDropCallback(GLFWwindow *window, int count, const char **paths);  // GLFW3 Window Drop Callback, runs when drop files into window
 
@@ -559,12 +559,11 @@ void PollInputEvents(void)
     // Reset keys/chars pressed registered
     CORE.Input.Keyboard.keyPressedQueueCount = 0;
     CORE.Input.Keyboard.charPressedQueueCount = 0;
-    // Reset key repeats
-    for (int i = 0; i < MAX_KEYBOARD_KEYS; i++) CORE.Input.Keyboard.keyRepeatInFrame[i] = 0;
 
     // Reset last gamepad button/axis registered state
     CORE.Input.Gamepad.lastButtonPressed = 0;       // GAMEPAD_BUTTON_UNKNOWN
     //CORE.Input.Gamepad.axisCount = 0;
+
     // Keyboard/Mouse input polling (automatically managed by GLFW3 through callback)
 
     // Register previous keys states
@@ -592,7 +591,6 @@ void PollInputEvents(void)
     // so, if mouse is not moved it returns a (0, 0) position... this behaviour should be reviewed!
     //for (int i = 0; i < MAX_TOUCH_POINTS; i++) CORE.Input.Touch.position[i] = (Vector2){ 0, 0 };
 
-    CORE.Window.resizedLastFrame = false;
 
     // Gamepad support using emscripten API
     // NOTE: GLFW3 joystick functionality not available in web
@@ -661,8 +659,13 @@ void PollInputEvents(void)
             CORE.Input.Gamepad.axisCount[i] = gamepadState.numAxes;
         }
     }
-}
 
+    CORE.Window.resizedLastFrame = false;
+
+    // TODO: This code does not seem to do anything??
+    //if (CORE.Window.eventWaiting) glfwWaitEvents();     // Wait for in input events before continue (drawing is paused)
+    //else glfwPollEvents(); // Poll input events: keyboard/mouse/window events (callbacks) --> WARNING: Where is key input reseted?
+}
 
 //----------------------------------------------------------------------------------
 // Module Internal Functions Definition
@@ -677,6 +680,8 @@ int InitPlatform(void)
     int result = glfwInit();
     if (result == GLFW_FALSE) { TRACELOG(LOG_WARNING, "GLFW: Failed to initialize GLFW"); return -1; }
 
+    // Initialize graphic device: display/window and graphic context
+    //----------------------------------------------------------------------------
     glfwDefaultWindowHints(); // Set default windows hints
     // glfwWindowHint(GLFW_RED_BITS, 8);             // Framebuffer red color component bits
     // glfwWindowHint(GLFW_GREEN_BITS, 8);           // Framebuffer green color component bits
@@ -759,6 +764,7 @@ int InitPlatform(void)
     }
     else if (rlGetVersion() == RL_OPENGL_ES_30) // Request OpenGL ES 3.0 context
     {
+        // TODO: It seems WebGL 2.0 context is not set despite being requested
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
@@ -862,43 +868,45 @@ int InitPlatform(void)
     glfwSetCursorEnterCallback(platform.handle, CursorEnterCallback);
 
     glfwMakeContextCurrent(platform.handle);
+    result = true; // TODO: WARNING: glfwGetError(NULL); symbol can not be found in Web
+
+    // Check context activation
+    if (result == true) //(result != GLFW_NO_WINDOW_CONTEXT) && (result != GLFW_PLATFORM_ERROR))
+    {
+        CORE.Window.ready = true;
+
+        int fbWidth = CORE.Window.screen.width;
+        int fbHeight = CORE.Window.screen.height;
+
+        CORE.Window.render.width = fbWidth;
+        CORE.Window.render.height = fbHeight;
+        CORE.Window.currentFbo.width = fbWidth;
+        CORE.Window.currentFbo.height = fbHeight;
+
+        TRACELOG(LOG_INFO, "DISPLAY: Device initialized successfully");
+        TRACELOG(LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
+        TRACELOG(LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
+        TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
+        TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
+    }
+    else
+    {
+        TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphics device");
+        return -1;
+    }
+
+    if ((CORE.Window.flags & FLAG_WINDOW_MINIMIZED) > 0) MinimizeWindow();
+
+    // If graphic device is no properly initialized, we end program
+    if (!CORE.Window.ready) { TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphic device"); return -1; }
 
     // Load OpenGL extensions
     // NOTE: GL procedures address loader is required to load extensions
     rlLoadExtensions(glfwGetProcAddress);
+    //----------------------------------------------------------------------------
 
-    if ((CORE.Window.flags & FLAG_WINDOW_MINIMIZED) > 0) MinimizeWindow();
-
-    // Try to enable GPU V-Sync, so frames are limited to screen refresh rate (60Hz -> 60 FPS)
-    // NOTE: V-Sync can be enabled by graphic driver configuration, it doesn't need
-    // to be activated on web platforms since VSync is enforced there.
-
-    int fbWidth = CORE.Window.screen.width;
-    int fbHeight = CORE.Window.screen.height;
-
-    CORE.Window.render.width = fbWidth;
-    CORE.Window.render.height = fbHeight;
-    CORE.Window.currentFbo.width = fbWidth;
-    CORE.Window.currentFbo.height = fbHeight;
-
-    TRACELOG(LOG_INFO, "DISPLAY: Device initialized successfully");
-    TRACELOG(LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
-    TRACELOG(LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
-    TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
-    TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
-
-    CORE.Window.ready = true;   // TODO: Proper validation on windows/context creation
-
-    // If graphic device is no properly initialized, we end program
-    if (!CORE.Window.ready) { TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphic device"); return -1; }
-    else SetWindowPosition(GetMonitorWidth(GetCurrentMonitor())/2 - CORE.Window.screen.width/2, GetMonitorHeight(GetCurrentMonitor())/2 - CORE.Window.screen.height/2);
-
-    // Initialize hi-res timer
-    InitTimer();
-
-    // Initialize base path for storage
-    CORE.Storage.basePath = GetWorkingDirectory();
-
+    // Initialize input events callbacks
+    //----------------------------------------------------------------------------
     // Setup callback functions for the DOM events
     emscripten_set_fullscreenchange_callback("#canvas", NULL, 1, EmscriptenFullscreenChangeCallback);
 
@@ -927,6 +935,19 @@ int InitPlatform(void)
     // Support gamepad events (not provided by GLFW3 on emscripten)
     emscripten_set_gamepadconnected_callback(NULL, 1, EmscriptenGamepadCallback);
     emscripten_set_gamepaddisconnected_callback(NULL, 1, EmscriptenGamepadCallback);
+    //----------------------------------------------------------------------------
+
+    // Initialize timming system
+    //----------------------------------------------------------------------------
+    InitTimer();
+    //----------------------------------------------------------------------------
+
+    // Initialize storage system
+    //----------------------------------------------------------------------------
+    CORE.Storage.basePath = GetWorkingDirectory();
+    //----------------------------------------------------------------------------
+
+    TRACELOG(LOG_INFO, "PLATFORM: WEB: Initialized successfully");
 
     return 0;
 }
@@ -937,7 +958,6 @@ void ClosePlatform(void)
     glfwDestroyWindow(platform.handle);
     glfwTerminate();
 }
-
 
 // GLFW3 Error Callback, runs on GLFW3 error
 static void ErrorCallback(int error, const char *description)
@@ -982,11 +1002,13 @@ static void WindowIconifyCallback(GLFWwindow *window, int iconified)
     else CORE.Window.flags &= ~FLAG_WINDOW_MINIMIZED;           // The window was restored
 }
 
+/*
 // GLFW3 Window Maximize Callback, runs when window is maximized
 static void WindowMaximizeCallback(GLFWwindow *window, int maximized)
 {
     // TODO.
 }
+*/
 
 // GLFW3 WindowFocus Callback, runs when window get/lose focus
 static void WindowFocusCallback(GLFWwindow *window, int focused)
@@ -1044,65 +1066,6 @@ static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, i
 
     // Check the exit key to set close window
     if ((key == CORE.Input.Keyboard.exitKey) && (action == GLFW_PRESS)) glfwSetWindowShouldClose(platform.handle, GLFW_TRUE);
-
-#if defined(SUPPORT_SCREEN_CAPTURE)
-    if ((key == GLFW_KEY_F12) && (action == GLFW_PRESS))
-    {
-#if defined(SUPPORT_GIF_RECORDING)
-        if (mods & GLFW_MOD_CONTROL)
-        {
-            if (gifRecording)
-            {
-                gifRecording = false;
-
-                MsfGifResult result = msf_gif_end(&gifState);
-
-                SaveFileData(TextFormat("%s/screenrec%03i.gif", CORE.Storage.basePath, screenshotCounter), result.data, (unsigned int)result.dataSize);
-                msf_gif_free(result);
-
-                // Download file from MEMFS (emscripten memory filesystem)
-                // saveFileFromMEMFSToDisk() function is defined in raylib/templates/web_shel/shell.html
-                emscripten_run_script(TextFormat("saveFileFromMEMFSToDisk('%s','%s')", TextFormat("screenrec%03i.gif", screenshotCounter - 1), TextFormat("screenrec%03i.gif", screenshotCounter - 1)));
-
-                TRACELOG(LOG_INFO, "SYSTEM: Finish animated GIF recording");
-            }
-            else
-            {
-                gifRecording = true;
-                gifFrameCounter = 0;
-
-                Vector2 scale = GetWindowScaleDPI();
-                msf_gif_begin(&gifState, (int)((float)CORE.Window.render.width*scale.x), (int)((float)CORE.Window.render.height*scale.y));
-                screenshotCounter++;
-
-                TRACELOG(LOG_INFO, "SYSTEM: Start animated GIF recording: %s", TextFormat("screenrec%03i.gif", screenshotCounter));
-            }
-        }
-        else
-#endif  // SUPPORT_GIF_RECORDING
-        {
-            TakeScreenshot(TextFormat("screenshot%03i.png", screenshotCounter));
-            screenshotCounter++;
-        }
-    }
-#endif  // SUPPORT_SCREEN_CAPTURE
-
-#if defined(SUPPORT_EVENTS_AUTOMATION)
-    if ((key == GLFW_KEY_F11) && (action == GLFW_PRESS))
-    {
-        eventsRecording = !eventsRecording;
-
-        // On finish recording, we export events into a file
-        if (!eventsRecording) ExportAutomationEvents("eventsrec.rep");
-    }
-    else if ((key == GLFW_KEY_F9) && (action == GLFW_PRESS))
-    {
-        LoadAutomationEvents("eventsrec.rep");
-        eventsPlaying = true;
-
-        TRACELOG(LOG_WARNING, "eventsPlaying enabled!");
-    }
-#endif
 }
 
 // GLFW3 Char Key Callback, runs on key down (gets equivalent unicode char value)
