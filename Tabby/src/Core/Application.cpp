@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "raylib.h"
 #include "rlImGui/rlImGui.h"
+#include <GLFW/glfw3.h>
 
 namespace Tabby {
 
@@ -15,13 +16,14 @@ Application::Application(const ApplicationSpecification& specification)
     TB_ASSERT(!s_Instance, "Application already exists!");
     s_Instance = this;
 
-    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI);
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    SetConfigFlags(FLAG_WINDOW_HIGHDPI);
+    SetConfigFlags(FLAG_VSYNC_HINT);
+
     int monitor = GetCurrentMonitor();
     InitWindow(GetMonitorWidth(monitor), GetMonitorHeight(monitor), m_Specification.Name.c_str());
 
     frameBuffer = LoadRenderTexture(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
-
-    SetConfigFlags(FLAG_VSYNC_HINT);
 
     int maxHeight = GetMonitorHeight(monitor) - 40;
     if (GetScreenHeight() > maxHeight)

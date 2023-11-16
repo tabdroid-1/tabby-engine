@@ -1,5 +1,4 @@
-Version: 16-11-2023_1 Alpha
+Version: 16-11-2023_2 Alpha
 Changes:
-- Now hud can be drawn using DrawHud() Function in scenes.
-- Rewrote whole frustum culling because previous one was not working...
+- Moved Frustum culling to different file
 

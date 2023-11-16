@@ -5,8 +5,7 @@
 *   PLATFORM: DESKTOP: SDL
 *       - Windows (Win32, Win64)
 *       - Linux (X11/Wayland desktop mode)
-*       - FreeBSD, OpenBSD, NetBSD, DragonFly (X11 desktop)
-*       - OSX/macOS (x64, arm64)
+*       - Others (not tested)
 *
 *   LIMITATIONS:
 *       - Limitation 01
@@ -24,8 +23,8 @@
 *           Custom flag for rcore on target platform -not used-
 *
 *   DEPENDENCIES:
-*       - SDL 2 (main library)
-*       - Dependency 02
+*       - SDL 2 (main library): Windowing and inputs management
+*       - gestures: Gestures system for touch-ready devices (or simulated from mouse inputs)
 *
 *
 *   LICENSE: zlib/libpng
@@ -48,8 +47,6 @@
 *     3. This notice may not be removed or altered from any source distribution.
 *
 **********************************************************************************************/
-
-#include "rcore.h"
 
 #include "SDL.h"            // SDL base library (window/rendered, input, timming... functionality)
 #include "SDL_opengl.h"     // SDL OpenGL functionality (if required, instead of internal renderer)
@@ -76,7 +73,7 @@ static PlatformData platform = { 0 };   // Platform specific data
 //----------------------------------------------------------------------------------
 // Local Variables Definition
 //----------------------------------------------------------------------------------
-#define SCANCODE_MAPPED_NUM 100
+#define SCANCODE_MAPPED_NUM 232
 static const KeyboardKey ScancodeToKey[SCANCODE_MAPPED_NUM] = {
     KEY_NULL,           // SDL_SCANCODE_UNKNOWN
     0,
@@ -177,7 +174,28 @@ static const KeyboardKey ScancodeToKey[SCANCODE_MAPPED_NUM] = {
     KEY_KP_8,           // SDL_SCANCODE_KP_8
     KEY_KP_9,           // SDL_SCANCODE_KP_9
     KEY_KP_0,           // SDL_SCANCODE_KP_0
-    KEY_KP_DECIMAL      // SDL_SCANCODE_KP_PERIOD
+    KEY_KP_DECIMAL,     // SDL_SCANCODE_KP_PERIOD
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0,
+    KEY_LEFT_CONTROL,   //SDL_SCANCODE_LCTRL
+    KEY_LEFT_SHIFT,     //SDL_SCANCODE_LSHIFT
+    KEY_LEFT_ALT,       //SDL_SCANCODE_LALT
+    KEY_LEFT_SUPER,     //SDL_SCANCODE_LGUI
+    KEY_RIGHT_CONTROL,  //SDL_SCANCODE_RCTRL
+    KEY_RIGHT_SHIFT,    //SDL_SCANCODE_RSHIFT
+    KEY_RIGHT_ALT,      //SDL_SCANCODE_RALT
+    KEY_RIGHT_SUPER     //SDL_SCANCODE_RGUI
 };
 
 static const int CursorsLUT[] = {
@@ -618,6 +636,8 @@ void SetWindowMonitor(int monitor)
 // Set window minimum dimensions (FLAG_WINDOW_RESIZABLE)
 void SetWindowMinSize(int width, int height)
 {
+    SDL_SetWindowMinimumSize(platform.window, width, height);
+
     CORE.Window.screenMin.width = width;
     CORE.Window.screenMin.height = height;
 }
@@ -625,6 +645,8 @@ void SetWindowMinSize(int width, int height)
 // Set window maximum dimensions (FLAG_WINDOW_RESIZABLE)
 void SetWindowMaxSize(int width, int height)
 {
+    SDL_SetWindowMaximumSize(platform.window, width, height);
+
     CORE.Window.screenMax.width = width;
     CORE.Window.screenMax.height = height;
 }
@@ -889,9 +911,15 @@ double GetTime(void)
 }
 
 // Open URL with default system browser (if available)
+// NOTE: This function is only safe to use if you control the URL given.
+// A user could craft a malicious string performing another action.
+// Only call this function yourself not with user input or make sure to check the string yourself.
+// Ref: https://github.com/raysan5/raylib/issues/686
 void OpenURL(const char *url)
 {
-    SDL_OpenURL(url);
+    // Security check to (partially) avoid malicious code
+    if (strchr(url, '\'') != NULL) TRACELOG(LOG_WARNING, "SYSTEM: Provided URL could be potentially malicious, avoid [\'] character");
+    else SDL_OpenURL(url);
 }
 
 //----------------------------------------------------------------------------------
@@ -956,6 +984,15 @@ void PollInputEvents(void)
     // so, if mouse is not moved it returns a (0, 0) position... this behaviour should be reviewed!
     //for (int i = 0; i < MAX_TOUCH_POINTS; i++) CORE.Input.Touch.position[i] = (Vector2){ 0, 0 };
 
+    // Map touch position to mouse position for convenience
+    // WARNING: If the target desktop device supports touch screen, this behavious should be reviewed!
+    // https://www.codeproject.com/Articles/668404/Programming-for-Multi-Touch
+    // https://docs.microsoft.com/en-us/windows/win32/wintouch/getting-started-with-multi-touch-messages
+    CORE.Input.Touch.position[0] = CORE.Input.Mouse.currentPosition;
+
+    int touchAction = -1;       // 0-TOUCH_ACTION_UP, 1-TOUCH_ACTION_DOWN, 2-TOUCH_ACTION_MOVE
+    bool gestureUpdate = false; // Flag to note gestures require to update
+
     // Register previous keys states
     // NOTE: Android supports up to 260 keys
     for (int i = 0; i < MAX_KEYBOARD_KEYS; i++)
@@ -979,6 +1016,8 @@ void PollInputEvents(void)
     }
     */
 
+    CORE.Window.resizedLastFrame = false;
+
     SDL_Event event = { 0 };
     while (SDL_PollEvent(&event) != 0)
     {
@@ -987,11 +1026,50 @@ void PollInputEvents(void)
         {
             case SDL_QUIT: CORE.Window.shouldClose = true; break;
 
+            case SDL_DROPFILE:      // Dropped file
+            {
+                if (CORE.Window.dropFileCount == 0)
+                {
+                    // When a new file is dropped, we reserve a fixed number of slots for all possible dropped files
+                    // at the moment we limit the number of drops at once to 1024 files but this behaviour should probably be reviewed
+                    // TODO: Pointers should probably be reallocated for any new file added...
+                    CORE.Window.dropFilepaths = (char **)RL_CALLOC(1024, sizeof(char *));
+
+                    CORE.Window.dropFilepaths[CORE.Window.dropFileCount] = (char *)RL_CALLOC(MAX_FILEPATH_LENGTH, sizeof(char));
+                    strcpy(CORE.Window.dropFilepaths[CORE.Window.dropFileCount], event.drop.file);
+                    SDL_free(event.drop.file);
+
+                    CORE.Window.dropFileCount++;
+                }
+                else if (CORE.Window.dropFileCount < 1024)
+                {
+                    CORE.Window.dropFilepaths[CORE.Window.dropFileCount] = (char *)RL_CALLOC(MAX_FILEPATH_LENGTH, sizeof(char));
+                    strcpy(CORE.Window.dropFilepaths[CORE.Window.dropFileCount], event.drop.file);
+                    SDL_free(event.drop.file);
+
+                    CORE.Window.dropFileCount++;
+                }
+                else TRACELOG(LOG_WARNING, "FILE: Maximum drag and drop files at once is limited to 1024 files!");
+
+            } break;
+
             // Window events are also polled (Minimized, maximized, close...)
             case SDL_WINDOWEVENT:
             {
                 switch (event.window.event)
                 {
+                    case SDL_WINDOWEVENT_RESIZED:
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                    {
+                        const int width = event.window.data1;
+                        const int height = event.window.data2;
+                        SetupViewport(width, height);
+                        CORE.Window.screen.width = width;
+                        CORE.Window.screen.height = height;
+                        CORE.Window.currentFbo.width = width;
+                        CORE.Window.currentFbo.height = height;
+                        CORE.Window.resizedLastFrame = true;
+                    } break;
                     case SDL_WINDOWEVENT_LEAVE:
                     case SDL_WINDOWEVENT_HIDDEN:
                     case SDL_WINDOWEVENT_MINIMIZED:
@@ -1027,11 +1105,29 @@ void PollInputEvents(void)
             // Check mouse events
             case SDL_MOUSEBUTTONDOWN:
             {
-                CORE.Input.Mouse.currentButtonState[event.button.button - 1] = 1;
+                // NOTE: SDL2 mouse button order is LEFT, MIDDLE, RIGHT, but raylib uses LEFT, RIGHT, MIDDLE like GLFW
+                //       The following conditions align SDL with raylib.h MouseButton enum order
+                int btn = event.button.button - 1;
+                if (btn == 2) btn = 1;
+                else if (btn == 1) btn = 2;
+
+                CORE.Input.Mouse.currentButtonState[btn] = 1;
+
+                touchAction = 1;
+                gestureUpdate = true;
             } break;
             case SDL_MOUSEBUTTONUP:
             {
-                CORE.Input.Mouse.currentButtonState[event.button.button - 1] = 0;
+                // NOTE: SDL2 mouse button order is LEFT, MIDDLE, RIGHT, but raylib uses LEFT, RIGHT, MIDDLE like GLFW
+                //       The following conditions align SDL with raylib.h MouseButton enum order
+                int btn = event.button.button - 1;
+                if (btn == 2) btn = 1;
+                else if (btn == 1) btn = 2;
+
+                CORE.Input.Mouse.currentButtonState[btn] = 0;
+
+                touchAction = 0;
+                gestureUpdate = true;
             } break;
             case SDL_MOUSEWHEEL:
             {
@@ -1051,6 +1147,10 @@ void PollInputEvents(void)
                     CORE.Input.Mouse.currentPosition.x = (float)event.motion.x;
                     CORE.Input.Mouse.currentPosition.y = (float)event.motion.y;
                 }
+
+                CORE.Input.Touch.position[0] = CORE.Input.Mouse.currentPosition;
+                touchAction = 2;
+                gestureUpdate = true;
             } break;
 
             // Check gamepad events
@@ -1073,10 +1173,37 @@ void PollInputEvents(void)
             } break;
             default: break;
         }
+
+#if defined(SUPPORT_GESTURES_SYSTEM)
+        if (gestureUpdate)
+        {
+            // Process mouse events as touches to be able to use mouse-gestures
+            GestureEvent gestureEvent = { 0 };
+
+            // Register touch actions
+            gestureEvent.touchAction = touchAction;
+
+            // Assign a pointer ID
+            gestureEvent.pointId[0] = 0;
+
+            // Register touch points count
+            gestureEvent.pointCount = 1;
+
+            // Register touch points position, only one point registered
+            if (touchAction == 2) gestureEvent.position[0] = CORE.Input.Touch.position[0];
+            else gestureEvent.position[0] = GetMousePosition();
+
+            // Normalize gestureEvent.position[0] for CORE.Window.screen.width and CORE.Window.screen.height
+            gestureEvent.position[0].x /= (float)GetScreenWidth();
+            gestureEvent.position[0].y /= (float)GetScreenHeight();
+
+            // Gesture data is sent to gestures-system for processing
+            ProcessGestureEvent(gestureEvent);
+        }
+#endif
     }
     //-----------------------------------------------------------------------------
 }
-
 
 //----------------------------------------------------------------------------------
 // Module Internal Functions Definition
@@ -1089,6 +1216,8 @@ int InitPlatform(void)
     int result = SDL_Init(SDL_INIT_EVERYTHING);
     if (result < 0) { TRACELOG(LOG_WARNING, "SDL: Failed to initialize SDL"); return -1; }
 
+    // Initialize graphic device: display/window and graphic context
+    //----------------------------------------------------------------------------
     unsigned int flags = 0;
     flags |= SDL_WINDOW_SHOWN;
     flags |= SDL_WINDOW_OPENGL;
@@ -1125,10 +1254,44 @@ int InitPlatform(void)
     //if ((CORE.Window.flags & FLAG_FULLSCREEN_DESKTOP) > 0) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
     // NOTE: Some OpenGL context attributes must be set before window creation
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+
+    // Check selection OpenGL version
+    if (rlGetVersion() == RL_OPENGL_21)
+    {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    }
+    else if (rlGetVersion() == RL_OPENGL_33)
+    {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+#if defined(__APPLE__)
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);  // OSX Requires forward compatibility
+#else
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
+    }
+    else if (rlGetVersion() == RL_OPENGL_43)
+    {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#if defined(RLGL_ENABLE_OPENGL_DEBUG_CONTEXT)
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);   // Enable OpenGL Debug Context
+#endif
+    }
+    else if (rlGetVersion() == RL_OPENGL_ES_20)                 // Request OpenGL ES 2.0 context
+    {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    }
+    else if (rlGetVersion() == RL_OPENGL_ES_30)                 // Request OpenGL ES 3.0 context
+    {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    }
 
     if (CORE.Window.flags & FLAG_VSYNC_HINT)
     {
@@ -1152,7 +1315,7 @@ int InitPlatform(void)
     {
         CORE.Window.ready = true;
 
-        SDL_DisplayMode displayMode;
+        SDL_DisplayMode displayMode = { 0 };
         SDL_GetCurrentDisplayMode(GetCurrentMonitor(), &displayMode);
 
         CORE.Window.display.width = displayMode.w;
@@ -1169,30 +1332,45 @@ int InitPlatform(void)
         TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
         TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
     }
-    else { TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphic device"); return -1; }
+    else
+    {
+        TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphics device");
+        return -1;
+    }
 
     // Load OpenGL extensions
     // NOTE: GL procedures address loader is required to load extensions
     rlLoadExtensions(SDL_GL_GetProcAddress);
+    //----------------------------------------------------------------------------
 
-
-    // Init input gamepad
+    // Initialize input events system
+    //----------------------------------------------------------------------------
     if (SDL_NumJoysticks() >= 1)
     {
-        SDL_Joystick *gamepad = SDL_JoystickOpen(0);
-        //if (SDL_Joystick *gamepad == NULL) SDL_Log("WARNING: Unable to open game controller! SDL Error: %s\n", SDL_GetError());
+        platform.gamepad = SDL_JoystickOpen(0);
+        //if (platform.gamepadgamepad == NULL) TRACELOG(LOG_WARNING, "PLATFORM: Unable to open game controller [ERROR: %s]", SDL_GetError());
     }
 
-    // Initialize hi-res timer
-    //InitTimer();
-    CORE.Time.previous = GetTime();     // Get time as double
+    SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+    //----------------------------------------------------------------------------
 
-    // Initialize base path for storage
-    CORE.Storage.basePath = GetWorkingDirectory();
+    // Initialize timming system
+    //----------------------------------------------------------------------------
+    // NOTE: No need to call InitTimer(), let SDL manage it internally
+    CORE.Time.previous = GetTime();     // Get time as double
+    //----------------------------------------------------------------------------
+
+    // Initialize storage system
+    //----------------------------------------------------------------------------
+    CORE.Storage.basePath = GetWorkingDirectory();  // Define base path for storage
+    //----------------------------------------------------------------------------
+
+    TRACELOG(LOG_INFO, "PLATFORM: DESKTOP (SDL): Initialized successfully");
 
     return 0;
 }
 
+// Close platform
 void ClosePlatform(void)
 {
     SDL_FreeCursor(platform.cursor); // Free cursor
@@ -1201,7 +1379,7 @@ void ClosePlatform(void)
     SDL_Quit(); // Deinitialize SDL internal global state
 }
 
-
+// Scancode to keycode mapping
 static KeyboardKey ConvertScancodeToKey(SDL_Scancode sdlScancode)
 {
     if (sdlScancode >= 0 && sdlScancode < SCANCODE_MAPPED_NUM)

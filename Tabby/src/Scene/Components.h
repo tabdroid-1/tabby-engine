@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Graphics/Camera/CameraTools.h"
 #include "box2d/b2_body.h"
 #include <Graphics/Animation.h>
 #include <Scene/Scene.h>
@@ -137,8 +138,9 @@ struct CameraComponent {
     // TODO: Experiment with adding second camera for 3D to be able to toggle between perspective and orthographic camera view;
     Camera camera = { 0 };
     int cameraMode = CAMERA_FIRST_PERSON;
-    bool isMainCamera;
+    bool isMainCamera = false;
     bool debugCameraMovement = false;
+    CameraTools::Frustum frustum;
 
     bool FixedAspectRatio = false;
 

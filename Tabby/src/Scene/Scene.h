@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Graphics/Camera/CameraTools.h"
 #include "raylib.h"
 #include <Core/UUID.h>
 #include <Physics/Physics.h>
@@ -30,7 +31,7 @@ public:
     virtual void DrawHud() {}; // Draws ingame ui. These will be always on top
     virtual void DrawImGui() {}; // Draws mostly debugging related ui using Dear ImGui.
 
-    void SetActiveCamera(const Camera& camera) { ActiveCamera = camera; }
+    void SetActiveCamera(const entt::entity camera) { m_ActiveCamera = camera; }
 
     GameObject CreateEntity(const std::string& name = std::string());
     GameObject CreateEntityWithUUID(UUID uuid, const std::string& name);
@@ -44,7 +45,7 @@ public:
 private:
     Physics* physics = new Physics();
     Octree* octree;
-    Camera ActiveCamera;
+    entt::entity m_ActiveCamera;
 
     friend class GameObject;
 };

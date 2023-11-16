@@ -205,7 +205,7 @@ void Scene::Update(float dt)
 
             if (camera.isMainCamera) {
 
-                SetActiveCamera(camera.camera);
+                SetActiveCamera(entity);
             }
 
             if (camera.debugCameraMovement) {
@@ -307,7 +307,19 @@ void Scene::Draw()
 
     bool isTrue = false;
 
-    BeginMode3D(ActiveCamera);
+    BeginMode3D(m_Registry.get<CameraComponent>(m_ActiveCamera).camera);
+
+    {
+        auto view = m_Registry.view<CameraComponent>();
+        for (auto& entity : view) {
+
+            auto& camera = view.get<CameraComponent>(entity);
+
+            if (camera.isMainCamera) {
+                camera.frustum = CameraTools::ExtractFrustum();
+            }
+        }
+    }
 
     physics->Draw();
 
@@ -330,9 +342,9 @@ void Scene::Draw()
             Tabby::GameObject gameObject = { entity, this };
             auto& transform = gameObject.GetComponent<TransformComponent>();
 
-            // if (Tabby::Graphics::IsSphereInFrustrum(ActiveCamera, transform.position, transform.scale.x > transform.scale.y ? transform.scale.x : transform.scale.y)) {
-            sortedEntities.push_back(entity);
-            // }
+            if (Tabby::CameraTools::IsSphereInFrustum(m_Registry.get<CameraComponent>(m_ActiveCamera).frustum, transform.position, transform.scale.x > transform.scale.y ? transform.scale.x : transform.scale.y)) {
+                sortedEntities.push_back(entity);
+            }
         }
 
         std::sort(sortedEntities.begin(), sortedEntities.end(), [this](const entt::entity& a, const entt::entity& b) {
@@ -346,9 +358,9 @@ void Scene::Draw()
             auto& transform = gameObject.GetComponent<TransformComponent>();
             auto& sprite = gameObject.GetComponent<SpriteRendererComponent>();
 
-            if (Tabby::Graphics::IsSphereInFrustum(ActiveCamera, transform.position, transform.scale.x > transform.scale.y ? transform.scale.x : transform.scale.y)) {
+            Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.position, transform.rotation, { 0.0f, 0.0f }, { transform.scale.x, transform.scale.y }, sprite.Tint);
+            if (Tabby::CameraTools::IsSphereInFrustum(m_Registry.get<CameraComponent>(m_ActiveCamera).frustum, transform.position, transform.scale.x > transform.scale.y ? transform.scale.x : transform.scale.y)) {
                 isTrue = true;
-                Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.position, transform.rotation, { 0.0f, 0.0f }, { transform.scale.x, transform.scale.y }, sprite.Tint);
             } else {
                 isTrue = false;
             }
