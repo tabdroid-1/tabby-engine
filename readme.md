@@ -8,16 +8,26 @@ Engine is mainly for 2D games but it also supports 3D.
 Planned Features / To-do list
 -----------------------------
 
-- <s>ImGui implementation for easy component value editing without rebuilding.</s> Done
+- <s>ImGui implementation for easy component value editing without rebuilding and more.</s> Done
 - <s>Parent-Child system or whatever.</s> Done
-- <s>Out of screen texture culling.</s> Done
-- Asset Manager. (Currently working on this)
-- Audio component.
+- Out of screen texture culling.
+- Octree. (Currently working on this)
+- Make engine run using a function instead of having to create main function in executable.
+- Remove float dt from every function. There is no need for it. There is a function to get deltatime.
+- Function to search and get GameObjects using name tag from active scene.
+- Asset Manager. 
+- Basic UI implementation.
+- Audio and audio component.
+- Serialization(aka saving).
+- Custom profiling implementation (tracy Profiler).
 - Scene manager rework. (switching scenes. scene pool etc.)
-- Physics rework. (Hinges, make components more editable etc.)
+- Physics rework. (Hinges, make components more editable, callbacks like onTriggerEnter, onRaycastHit etc.)
 - More advanced animation system.
+- Particle system.
+- Script public variable reflection.
 - LDtk tile map and make each layer has its own position.
-- <s>Better 3D support</s> Priorities
+- Multi-threading
+- <s>Better 3D support</s> Priorities...
 - <s>Steamworks API implementation</s> Priorities...
 - <s>Web, Chrome OS, FreeBSD, Raspberry Pi and Android builds </s> Too far-fetched for now.
 - <s>More advanced asset manager. Assets will be stored in the code and (some) will be encrypted using AES encryption to complicate data mining/revers engineering, but there will be option to use files instead of storing in code.(might be in a private branch though) </s> Too far-fetched for now.

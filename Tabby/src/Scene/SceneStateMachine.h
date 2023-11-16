@@ -1,8 +1,10 @@
 #pragma once
 
-#include <Scene/Scene.h>
-#include <memory>
-#include <unordered_map>
+#include <tbpch.h>
+
+namespace Tabby {
+
+class Scene;
 
 class SceneStateMachine {
 
@@ -12,6 +14,7 @@ public:
     void Update(float deltaTime);
     void LateUpdate(float deltaTime);
     void Draw();
+    void DrawHud();
     void DrawImGui();
 
     unsigned int Add(std::shared_ptr<Tabby::Scene> scene);
@@ -23,3 +26,5 @@ private:
     std::shared_ptr<Tabby::Scene> curScene;
     unsigned int insertedSceneID;
 };
+
+}

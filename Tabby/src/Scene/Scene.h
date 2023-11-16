@@ -3,8 +3,8 @@
 #include "raylib.h"
 #include <Core/UUID.h>
 #include <Physics/Physics.h>
+#include <Scene/Octree/Octree.h>
 #include <box2d/b2_world.h>
-#include <cstdio>
 #include <entt/entt.hpp>
 
 namespace Tabby {
@@ -23,12 +23,12 @@ public:
     virtual void OnActivate() {}; // Called whenever a scene is activated.
     virtual void OnDeactivate() {}; // Called whenever a scene is deactivated.
 
-    void InitPhysics();
     void InitScene();
     void Update(float deltaTime);
     void LateUpdate(float deltaTime);
     void Draw();
-    virtual void DrawImGui() {}; // Called whenever a scene is deactivated.
+    virtual void DrawHud() {}; // Draws ingame ui. These will be always on top
+    virtual void DrawImGui() {}; // Draws mostly debugging related ui using Dear ImGui.
 
     void SetActiveCamera(const Camera& camera) { ActiveCamera = camera; }
 
@@ -43,6 +43,7 @@ public:
 
 private:
     Physics* physics = new Physics();
+    Octree* octree;
     Camera ActiveCamera;
 
     friend class GameObject;

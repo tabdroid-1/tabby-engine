@@ -7,12 +7,13 @@
 
 class TitleScreenScene : public Tabby::Scene {
 public:
-    TitleScreenScene(SceneStateMachine& sceneStateMachine);
+    TitleScreenScene(Tabby::SceneStateMachine& sceneStateMachine);
 
     void OnCreate() override;
     void OnActivate() override;
     void OnDestroy() override;
 
+    void DrawHud() override;
     void DrawImGui() override;
 
     void SetSwitchToScene(unsigned int id);
@@ -21,7 +22,7 @@ private:
     SceneHierarchyPanel m_Panel;
 
 private:
-    SceneStateMachine& sceneStateMachine;
+    Tabby::SceneStateMachine& sceneStateMachine;
 
     float showForSeconds; // We want to show this scene for a set amount of time
     float currentSeconds; // How long the scene has currently been visible.

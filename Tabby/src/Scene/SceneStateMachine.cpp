@@ -1,7 +1,8 @@
 #include "SceneStateMachine.h"
-#include <cstdio>
-#include <iostream>
-#include <vector>
+
+#include <Scene/Scene.h>
+
+namespace Tabby {
 
 SceneStateMachine::SceneStateMachine()
     : scenes(0)
@@ -27,6 +28,13 @@ void SceneStateMachine::Draw()
 {
     if (curScene) {
         curScene->Draw();
+    }
+}
+
+void SceneStateMachine::DrawHud()
+{
+    if (curScene) {
+        curScene->DrawHud();
     }
 }
 
@@ -92,6 +100,7 @@ void SceneStateMachine::SwitchTo(unsigned int id)
         std::cout << "Switched to Scene ID " << id << "\n";
         curScene->OnActivate();
         curScene->InitScene();
-        curScene->InitPhysics();
     }
+}
+
 }

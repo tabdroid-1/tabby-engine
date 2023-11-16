@@ -23,18 +23,32 @@ void CameraMove::Move()
 {
     input = { 0, 0 };
 
-    if (IsKeyDown(KEY_RIGHT)) {
-        input.x = 1;
+    // if (IsKeyDown(KEY_RIGHT)) {
+    //     input.x = 5 * GetFrameTime();
+    // }
+    // if (IsKeyDown(KEY_LEFT)) {
+    //     input.x = -5 * GetFrameTime();
+    // }
+    //
+    // if (IsKeyDown(KEY_UP)) {
+    //     input.y = 5 * GetFrameTime();
+    // }
+    // if (IsKeyDown(KEY_DOWN)) {
+    //     input.y = -5 * GetFrameTime();
+    // }
+
+    if (IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
+        input.x = 5 * GetFrameTime();
     }
-    if (IsKeyDown(KEY_LEFT)) {
-        input.x = -1;
+    if (IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT)) {
+        input.x = -5 * GetFrameTime();
     }
 
-    if (IsKeyDown(KEY_UP)) {
-        input.y = 1;
+    if (IsKeyDown(KEY_UP) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP)) {
+        input.y = 5 * GetFrameTime();
     }
-    if (IsKeyDown(KEY_DOWN)) {
-        input.y = -1;
+    if (IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN)) {
+        input.y = -5 * GetFrameTime();
     }
 
     velocity = { input.x * moveSpeed, input.y * moveSpeed };
