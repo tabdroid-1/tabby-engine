@@ -8,8 +8,8 @@ public:
     // PlayerMove(GameObject* owner);
 
     void Load(float speed);
-    void Update(float deltaTime) override;
-    void LateUpdate(float deltaTime) override;
+    void Update() override;
+    void LateUpdate() override;
 
     void Move();
     void CheckIfShouldFlip();

@@ -133,7 +133,7 @@ void Scene::InitScene()
     }
 }
 
-void Scene::Update(float dt)
+void Scene::Update()
 {
     {
         m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
@@ -144,7 +144,7 @@ void Scene::Update(float dt)
                 nsc.Instance->m_GameObject = { entity, this };
                 nsc.Instance->OnCreate();
             }
-            nsc.Instance->Update(dt);
+            nsc.Instance->Update();
         });
     }
 
@@ -223,7 +223,7 @@ void Scene::Update(float dt)
             auto [animator, sprite] = group.get<AnimationComponent, SpriteRendererComponent>(entity);
 
             if (animator.currentAnimation.first != "null") {
-                bool newFrame = animator.currentAnimation.second->UpdateFrame(dt);
+                bool newFrame = animator.currentAnimation.second->UpdateFrame(GetFrameTime());
 
                 if (newFrame) {
                     const FrameData* data = animator.currentAnimation.second->GetCurrentFrame();
@@ -238,7 +238,7 @@ void Scene::Update(float dt)
     }
 }
 
-void Scene::LateUpdate(float dt)
+void Scene::LateUpdate()
 {
 
     {
@@ -250,7 +250,7 @@ void Scene::LateUpdate(float dt)
                 nsc.Instance->m_GameObject = { entity, this };
                 nsc.Instance->OnCreate();
             }
-            nsc.Instance->LateUpdate(dt);
+            nsc.Instance->LateUpdate();
         });
     }
 
@@ -259,7 +259,7 @@ void Scene::LateUpdate(float dt)
         const int32_t positionIterations = 2;
 
         // m_PhysiscWorld->Step(dt, velocityIteration, positionIterations);
-        physics->Update(dt);
+        physics->Update(GetFrameTime());
         auto view = m_Registry.view<RigidBodyComponent>();
         for (auto e : view) {
             Tabby::GameObject gameObject = { e, this };

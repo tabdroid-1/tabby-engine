@@ -6,8 +6,8 @@
 class CameraMove : public Tabby::ScriptableEntity {
 public:
     void Load(float speed);
-    void Update(float deltaTime) override;
-    void LateUpdate(float deltaTime) override;
+    void Update() override;
+    void LateUpdate() override;
 
     void Move();
 

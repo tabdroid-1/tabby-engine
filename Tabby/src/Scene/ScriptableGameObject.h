@@ -26,8 +26,8 @@ public:
 protected:
     virtual void OnCreate() { }
     virtual void OnDestroy() { }
-    virtual void Update(float dt) { }
-    virtual void LateUpdate(float dt) { }
+    virtual void Update() { }
+    virtual void LateUpdate() { }
 
 private:
     GameObject m_GameObject;

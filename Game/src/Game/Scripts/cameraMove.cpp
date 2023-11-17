@@ -10,11 +10,11 @@ void CameraMove::Load(float speed)
     moveSpeed = speed;
 }
 
-void CameraMove::Update(float dt)
+void CameraMove::Update()
 {
 }
 
-void CameraMove::LateUpdate(float dt)
+void CameraMove::LateUpdate()
 {
     Move();
 }

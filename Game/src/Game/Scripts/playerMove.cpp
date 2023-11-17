@@ -11,13 +11,13 @@ void PlayerMove::Load(float speed)
     playerSpeed = speed;
 }
 
-void PlayerMove::Update(float dt)
+void PlayerMove::Update()
 {
 
     CheckIfShouldFlip();
 }
 
-void PlayerMove::LateUpdate(float dt)
+void PlayerMove::LateUpdate()
 {
     Move();
 }

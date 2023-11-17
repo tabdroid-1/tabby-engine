@@ -11,8 +11,8 @@ class SceneStateMachine {
 public:
     SceneStateMachine();
 
-    void Update(float deltaTime);
-    void LateUpdate(float deltaTime);
+    void Update();
+    void LateUpdate();
     void Draw();
     void DrawHud();
     void DrawImGui();
