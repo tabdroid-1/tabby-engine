@@ -21,6 +21,7 @@ void TitleScreenScene::OnCreate()
 
 void TitleScreenScene::OnActivate()
 {
+
     m_Panel.SetContext(*this);
     DisableCursor();
 

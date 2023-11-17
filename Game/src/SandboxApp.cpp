@@ -1,4 +1,4 @@
-// #include <Core/EntryPoint.h>
+#include <Core/EntryPoint.h>
 #include <Game/Scenes/Scenes.h>
 #include <Tabby.h>
 #include <cstdio>
@@ -32,25 +32,14 @@ public:
     }
 };
 
-// Application* CreateApplication(ApplicationCommandLineArgs args)
-Application* CreateApplication()
+Application* CreateApplication(ApplicationCommandLineArgs args)
 {
 
     ApplicationSpecification spec;
-    spec.Name = "Tabby Engine - Library Test";
-    // spec.CommandLineArgs = args;
+    spec.Name = "Tabby Engine - Test";
+    spec.CommandLineArgs = args;
 
     return new Sandbox(spec);
 }
 
-}
-
-int main(int argc, char** argv)
-{
-    auto* app = Tabby::CreateApplication();
-
-    app->Run();
-
-    delete app;
-    return 0;
 }

@@ -1,4 +1,4 @@
-Version: 16-11-2023_2 Alpha
+Version: 17-11-2023_1 Alpha
 Changes:
-- Moved Frustum culling to different file
+- Now you can use function to create an executable instead of having to create main function.
 
