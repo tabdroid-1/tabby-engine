@@ -12,11 +12,11 @@ Planned Features / To-do list
 - <s>Parent-Child system or whatever.</s> Done
 - <s>Out of screen texture culling.</s> Done
 - <s>Make engine run using a function instead of having to create main function in executable.</s> Done
+- <s>Remove float dt from every function. There is no need for it. There is a function to get deltatime. </s> Done
+- <s>Basic UI implementation.</s> Done
 - Octree. (Currently working on this)
-- Remove float dt from every function. There is no need for it. There is a function to get deltatime.
 - Function to search and get GameObjects using name tag from active scene.
 - Asset Manager. 
-- Basic UI implementation.
 - Audio and audio component.
 - Serialization(aka saving).
 - Custom profiling implementation (tracy Profiler).
