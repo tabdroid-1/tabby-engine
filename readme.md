@@ -11,8 +11,8 @@ Planned Features / To-do list
 - <s>ImGui implementation for easy component value editing without rebuilding and more.</s> Done
 - <s>Parent-Child system or whatever.</s> Done
 - <s>Out of screen texture culling.</s> Done
+- <s>Make engine run using a function instead of having to create main function in executable.</s> Done
 - Octree. (Currently working on this)
-- Make engine run using a function instead of having to create main function in executable.
 - Remove float dt from every function. There is no need for it. There is a function to get deltatime.
 - Function to search and get GameObjects using name tag from active scene.
 - Asset Manager. 

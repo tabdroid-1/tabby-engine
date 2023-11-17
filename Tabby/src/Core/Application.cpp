@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "rlImGui/rlImGui.h"
 #include <GLFW/glfw3.h>
+#include <filesystem>
 
 namespace Tabby {
 
@@ -15,6 +16,9 @@ Application::Application(const ApplicationSpecification& specification)
 
     TB_ASSERT(!s_Instance, "Application already exists!");
     s_Instance = this;
+
+    if (!m_Specification.WorkingDirectory.empty())
+        std::filesystem::current_path(m_Specification.WorkingDirectory);
 
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     SetConfigFlags(FLAG_WINDOW_HIGHDPI);
