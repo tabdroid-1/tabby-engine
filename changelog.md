@@ -1,4 +1,4 @@
-Version: 17-11-2023_1 Alpha
+Version: 17-11-2023_2 Alpha
 Changes:
-- Now you can use function to create an executable instead of having to create main function.
+- Removed float dt from every function since there is no need(use GetFrameTime()).
 

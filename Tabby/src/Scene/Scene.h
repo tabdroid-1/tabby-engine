@@ -25,8 +25,8 @@ public:
     virtual void OnDeactivate() {}; // Called whenever a scene is deactivated.
 
     void InitScene();
-    void Update(float deltaTime);
-    void LateUpdate(float deltaTime);
+    void Update();
+    void LateUpdate();
     void Draw();
     virtual void DrawHud() {}; // Draws ingame ui. These will be always on top
     virtual void DrawImGui() {}; // Draws mostly debugging related ui using Dear ImGui.

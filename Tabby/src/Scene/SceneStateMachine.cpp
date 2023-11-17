@@ -10,17 +10,17 @@ SceneStateMachine::SceneStateMachine()
 {
 }
 
-void SceneStateMachine::Update(float deltaTime)
+void SceneStateMachine::Update()
 {
     if (curScene) {
-        curScene->Update(deltaTime);
+        curScene->Update();
     }
 }
 
-void SceneStateMachine::LateUpdate(float deltaTime)
+void SceneStateMachine::LateUpdate()
 {
     if (curScene) {
-        curScene->LateUpdate(deltaTime);
+        curScene->LateUpdate();
     }
 }
 
