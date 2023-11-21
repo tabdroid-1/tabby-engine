@@ -15,16 +15,16 @@ Planned Features / To-do list
 - <s>Remove float dt from every function. There is no need for it. There is a function to get deltatime. </s> Done
 - <s>Basic UI implementation.</s> Done
 - Octree. (Currently working on this)
+- Script public variable reflection.
+- Custom profiling implementation (tracy Profiler).
 - Function to search and get GameObjects using name tag from active scene.
+- Physics rework. (Hinges, make components more editable, callbacks like onTriggerEnter, onRaycastHit etc.)
 - Asset Manager. 
 - Audio and audio component.
 - Serialization(aka saving).
-- Custom profiling implementation (tracy Profiler).
 - Scene manager rework. (switching scenes. scene pool etc.)
 - Multi-threading
-- Physics rework. (Hinges, make components more editable, callbacks like onTriggerEnter, onRaycastHit etc.)
 - More advanced animation system.
-- Script public variable reflection.
 - Particle system.
 - LDtk tile map.
 - <s>Better 3D support</s> Priorities...
@@ -55,12 +55,12 @@ Compiling
     cmake .. -DOPENGL_VERSION="ES 2.0" && make
     ```
 
-    (u can also use opengl 2.1, 3.3, 4,3 or even 1.1 but that might cause error/visual bugs)
+    (u can also use opengl 2.1, 3.3, 4,3 or even 1.1 but that might cause errors and/or visual bugs)
 
 Note From the author
  --------------------
 
-- If you are going to use this game engine, pls support as much platform as possible (eh. You do not have to support Chrome OS or FreeBSD) and support more architectures(like x86_32, x86_64, aarch64). You do not have to that but if you do it you would make me happi. :3
+- If you are going to use this game engine, pls support as much platform as possible (eh. You do not have to support Chrome OS or FreeBSD) and support more architectures like x86_32, x86_64, aarch64. You do not have to that but if you do it you would make me happi. :3
 
 Special Thanks
  --------------

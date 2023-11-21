@@ -1,4 +1,5 @@
-Version: 17-11-2023_2 Alpha
+Version: 21-11-2023_1 Alpha
 Changes:
-- Removed float dt from every function since there is no need(use GetFrameTime()).
+- Removed removed frustum culling from scene file to be manually set up by user.
+- Initial Octree implementation.
 

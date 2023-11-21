@@ -31,7 +31,7 @@ Application::Application(const ApplicationSpecification& specification)
 
     rlImGuiSetup(true);
 
-    SetExitKey(0);
+    // SetExitKey(0);
 }
 
 Application::~Application()

@@ -4,7 +4,6 @@
 #include "raylib.h"
 #include <Core/UUID.h>
 #include <Physics/Physics.h>
-#include <Scene/Octree/Octree.h>
 #include <box2d/b2_world.h>
 #include <entt/entt.hpp>
 
@@ -44,7 +43,7 @@ public:
 
 private:
     Physics* physics = new Physics();
-    Octree* octree;
+    // Octree* octree;
     entt::entity m_ActiveCamera;
 
     friend class GameObject;

@@ -4,7 +4,7 @@
 #include "box2d/b2_body.h"
 #include <Graphics/Animation.h>
 #include <Scene/Scene.h>
-#include <Scene/ScriptableGameObject.h>
+// #include <Scene/ScriptableGameObject.h>
 #include <raylib.h>
 #include <raymath.h>
 #include <vector>
@@ -42,20 +42,20 @@ struct TagComponent {
 };
 
 struct TransformComponent {
-    Vector3 position = { 0.0f, 0.0f };
-    Vector3 scale = { 1.0f, 1.0f, 1.0f };
-    Vector3 rotation = { 0.0f, 0.0f, 0.0f };
-    Vector3 localPosition = { 0.0f, 0.0f };
-    Vector3 localScale = { 1.0f, 1.0f, 1.0f };
-    Vector3 localRotation = { 0.0f, 0.0f, 0.0f };
+    Vector3 Position = { 0.0f, 0.0f };
+    Vector3 Scale = { 1.0f, 1.0f, 1.0f };
+    Vector3 Rotation = { 0.0f, 0.0f, 0.0f };
+    Vector3 LocalPosition = { 0.0f, 0.0f };
+    Vector3 LocalScale = { 1.0f, 1.0f, 1.0f };
+    Vector3 LocalRotation = { 0.0f, 0.0f, 0.0f };
 
-    entt::entity parent { entt::null };
-    std::vector<entt::entity> children;
+    entt::entity Parent { entt::null };
+    std::vector<entt::entity> Children;
 
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
     TransformComponent(const Vector3& position)
-        : position(position)
+        : Position(position)
     {
     }
 
@@ -63,17 +63,18 @@ struct TransformComponent {
     {
         Matrix mat = MatrixIdentity();
 
-        mat = MatrixMultiply(mat, MatrixTranslate(position.x, position.y, position.z));
-        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 1.0f, 0.0f, 0.0f }, rotation.x * DEG2RAD));
-        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 1.0f, 0.0f }, rotation.y * DEG2RAD));
-        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 0.0f, 1.0f }, rotation.z * DEG2RAD));
-        mat = MatrixMultiply(mat, MatrixScale(scale.x, scale.y, scale.y));
+        mat = MatrixMultiply(mat, MatrixTranslate(Position.x, Position.y, Position.z));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 1.0f, 0.0f, 0.0f }, Rotation.x * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 1.0f, 0.0f }, Rotation.y * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 0.0f, 1.0f }, Rotation.z * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixScale(Scale.x, Scale.y, Scale.y));
 
         return mat;
     }
 };
 
 struct SpriteRendererComponent {
+    bool Active = true;
     Color Tint = WHITE;
     Texture2D Texture;
     Rectangle srcRec = { 0, 0, 100, 100 };
@@ -95,64 +96,64 @@ struct SpriteRendererComponent {
 };
 
 struct AnimationComponent {
-
-    std::shared_ptr<SpriteRendererComponent> sprite;
-    std::map<std::string, std::shared_ptr<Animation>> animations;
-    std::pair<std::string, std::shared_ptr<Animation>> currentAnimation;
-    Texture currentTexture;
+    bool Active = true;
+    std::shared_ptr<SpriteRendererComponent> Sprite;
+    std::map<std::string, std::shared_ptr<Animation>> Animations;
+    std::pair<std::string, std::shared_ptr<Animation>> CurrentAnimation;
+    Texture CurrentTexture;
 
     AnimationComponent() = default;
     AnimationComponent(const AnimationComponent&) = default;
 
     void AddAnimation(std::string Name, std::shared_ptr<Animation> Animation)
     {
-        auto inserted = animations.insert(std::make_pair(Name, Animation));
+        auto inserted = Animations.insert(std::make_pair(Name, Animation));
 
-        if (currentAnimation.first == "null") {
+        if (CurrentAnimation.first == "null") {
             PlayAnimation(Name);
         }
     }
     void PlayAnimation(const std::string& Name)
     {
-        if (currentAnimation.first == Name) {
+        if (CurrentAnimation.first == Name) {
             return;
         }
 
-        auto animation = animations.find(Name);
-        if (animation != animations.end()) {
-            currentAnimation.first = animation->first;
-            currentAnimation.second = animation->second;
+        auto animation = Animations.find(Name);
+        if (animation != Animations.end()) {
+            CurrentAnimation.first = animation->first;
+            CurrentAnimation.second = animation->second;
 
             // owner->GetComponent<C_Sprite>()->Load(animation->second->GetCurrentFrame()->texturePath, true);
-            currentTexture = LoadTexture(animation->second->GetCurrentFrame()->texturePath.c_str());
-            currentAnimation.second->Reset();
+            CurrentTexture = LoadTexture(animation->second->GetCurrentFrame()->texturePath.c_str());
+            CurrentAnimation.second->Reset();
         }
     }
     const std::string& GetAnimationName() const
     {
-        return currentAnimation.first;
+        return CurrentAnimation.first;
     }
 };
 
 struct CameraComponent {
-    // TODO: Experiment with adding second camera for 3D to be able to toggle between perspective and orthographic camera view;
-    Camera camera = { 0 };
-    int cameraMode = CAMERA_FIRST_PERSON;
-    bool isMainCamera = false;
-    bool debugCameraMovement = false;
-    CameraTools::Frustum frustum;
+    bool Active = true;
+    Camera3D Camera = { 0 };
+    int CameraMode = CAMERA_FIRST_PERSON;
+    bool IsMainCamera = false;
+    bool DebugCameraMovement = false;
+    CameraTools::Frustum Frustum;
 
     bool FixedAspectRatio = false;
 
     // CameraComponent() = default;
     CameraComponent()
     {
-        camera = { 0 };
-        camera.position = (Vector3) { 0.0f, 0.0f, 0.0f }; // Camera position
-        camera.target = (Vector3) { 0.0f, 0.0f, 0.0f }; // Camera looking at point
-        camera.up = (Vector3) { 0.0f, 1.0f, 0.0f }; // Camera up vector (rotation towards target)
-        camera.fovy = 60.0f; // Camera field-of-view Y
-        camera.projection = CAMERA_PERSPECTIVE; // Camera projection type
+        Camera = { 0 };
+        Camera.position = (Vector3) { 0.0f, 0.0f, 0.0f }; // Camera position
+        Camera.target = (Vector3) { 0.0f, 0.0f, 0.0f }; // Camera looking at point
+        Camera.up = (Vector3) { 0.0f, 1.0f, 0.0f }; // Camera up vector (rotation towards target)
+        Camera.fovy = 60.0f; // Camera field-of-view Y
+        Camera.projection = CAMERA_PERSPECTIVE; // Camera projection type
     };
     CameraComponent(const CameraComponent&) = default;
 };
@@ -210,6 +211,7 @@ struct RigidBodyComponent {
 };
 
 struct BoxCollider2DComponent {
+    bool Active = true;
     Vector2 Offset = { 0.0f, 0.0f };
     Vector2 Size = { 0.5f, 0.5f };
 
@@ -222,18 +224,20 @@ struct BoxCollider2DComponent {
     BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
 };
 
-struct CapsuleCollider2DComponent {
-    Vector2 Offset = { 0.0f, 0.0f };
-    Vector2 Size = { 0.5f, 0.5f };
+// struct CapsuleCollider2DComponent {
+//     Vector2 Offset = { 0.0f, 0.0f };
+//     Vector2 Size = { 0.5f, 0.5f };
+//
+//     float Density = 1.0f;
+//     float Friction = 0.5f;
+//     float Bounce = 0.5f, BounceThreshold = 0.5f;
+//
+//     void* RuntimeFixture = nullptr;
+//     CapsuleCollider2DComponent() = default;
+//     CapsuleCollider2DComponent(const CapsuleCollider2DComponent&) = default;
+// };
 
-    float Density = 1.0f;
-    float Friction = 0.5f;
-    float Bounce = 0.5f, BounceThreshold = 0.5f;
-
-    void* RuntimeFixture = nullptr;
-    CapsuleCollider2DComponent() = default;
-    CapsuleCollider2DComponent(const CapsuleCollider2DComponent&) = default;
-};
+class ScriptableEntity;
 
 struct NativeScriptComponent {
     ScriptableEntity* Instance = nullptr;
@@ -249,8 +253,15 @@ struct NativeScriptComponent {
     }
 };
 
-// struct OctreComponent {
-//     Octree* octree = nullptr;
-// };
+class Octree;
+
+struct OctreeComponent {
+    Octree* Tree = nullptr;
+    float MinNodeSize = 0.5f;
+    Color DrawColor = GREEN;
+    bool DebugDraw = true;
+
+    OctreeComponent() = default;
+};
 
 }

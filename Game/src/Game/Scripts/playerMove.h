@@ -20,5 +20,5 @@ private:
     Vector2 input = { 0, 0 };
     Vector2 velocity;
 
-    float playerSpeed = 0.5;
+    float playerSpeed = 2.5f;
 };
