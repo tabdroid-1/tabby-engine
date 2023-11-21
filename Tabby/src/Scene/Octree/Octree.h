@@ -4,19 +4,26 @@
 
 #include <entt/entt.hpp>
 #include <raylib.h>
+#include <raymath.h>
 
 namespace Tabby {
 
 class Scene;
+class GameObject;
 
 class Octree {
 public:
-    Octree(std::vector<entt::entity> GameObjects, float minNodeSize, Scene* Scene);
-    // void Insert(const GameObject& object, const BoundingBox& objectBounds)
-    // {
-    //     root->Insert(object, objectBounds);
-    // }
-    //
+    Octree(float minNodeSize, Color DrawColor, Scene* Scene);
+    void Insert(const GameObject& object)
+    {
+        Insert(object);
+    }
+
+    void Insert(entt::entity object)
+    {
+        root->Insert(object);
+    }
+
     // void Query(const BoundingBox& region, std::vector<GameObject>& result)
     // {
     //     root->Query(region, result);
@@ -29,30 +36,19 @@ public:
 
 private:
     // ----- Octree Node -----
+
     class OctreeNode {
     public:
-        OctreeNode(const BoundingBox& bounds, float MinNodeSize, Vector3 BoundCenter, Vector3 BoundSize)
-            : bound(bounds)
-            , boundCenter(BoundCenter)
-            , boundSize(BoundSize)
-        {
-            for (int i = 0; i < 8; i++) {
-                children[i] = nullptr;
-            }
-        }
-
-        // void Insert(const GameObject& object, const BoundingBox& objectBounds)
-        // {
-        // }
-
+        OctreeNode(const BoundingBox& bounds, float MinNodeSize, Vector3 BoundCenter, Vector3 BoundSize, Color DrawColor, Scene* scene);
+        void Insert(entt::entity object);
         // void Query(const BoundingBox& region, std::vector<GameObject>& result)
         // {
         // }
 
-        void Draw()
-        {
-            DrawCubeWiresV(boundCenter, boundSize, GREEN);
-        }
+        void Draw();
+
+    private:
+        void DivideAndInsert(entt::entity object);
 
     private:
         BoundingBox bound;
@@ -60,7 +56,12 @@ private:
         Vector3 boundSize;
         float minSize;
         std::vector<entt::entity> objects;
-        OctreeNode* children[8];
+        Color drawColor = GREEN;
+        BoundingBox childBounds[8];
+        Vector3 childBoundCenter[8];
+        Vector3 childBoundSize;
+        OctreeNode* children[8] { nullptr };
+        Scene* m_Scene = nullptr;
     };
     // -----------------------
 

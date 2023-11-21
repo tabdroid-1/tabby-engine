@@ -33,10 +33,10 @@ void PlayerMove::CheckIfShouldFlip()
 void PlayerMove::Flip()
 {
     auto& playerTransform = GetComponent<Tabby::TransformComponent>();
-    if (playerTransform.rotation.y == 0) {
-        playerTransform.rotation.y = 180;
+    if (playerTransform.Rotation.y == 0) {
+        playerTransform.Rotation.y = 180;
     } else {
-        playerTransform.rotation.y = 0;
+        playerTransform.Rotation.y = 0;
     }
     facingDirection *= -1;
 }
@@ -46,10 +46,10 @@ void PlayerMove::Move()
     input = { 0, 0 };
 
     if (IsKeyDown(KEY_X)) {
-        GetComponent<Tabby::TransformComponent>().rotation.y -= 10;
+        GetComponent<Tabby::TransformComponent>().Rotation.y -= 10;
     }
     if (IsKeyDown(KEY_C)) {
-        GetComponent<Tabby::TransformComponent>().rotation.y += 10;
+        GetComponent<Tabby::TransformComponent>().Rotation.y += 10;
     }
     if (IsKeyDown(KEY_D)) {
         input.x = 1;
@@ -89,10 +89,10 @@ void PlayerMove::Move()
             // playerTransform.Rotation.z += 2;
         }
         if (IsKeyDown(KEY_T)) {
-            playerTransform.rotation.x += 2;
+            playerTransform.Rotation.x += 2;
         }
         if (IsKeyDown(KEY_Y)) {
-            playerTransform.rotation.y += 2;
+            playerTransform.Rotation.y += 2;
         }
     }
 }

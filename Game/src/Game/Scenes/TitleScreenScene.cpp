@@ -23,13 +23,13 @@ void TitleScreenScene::OnActivate()
 {
 
     m_Panel.SetContext(*this);
-    DisableCursor();
+    // DisableCursor();
 
     {
 
         // ---------- Tabby -----------
         Tabby::GameObject tabbySpriteHolder = CreateEntity("tabbySprite");
-        tabbySpriteHolder.GetComponent<Tabby::TransformComponent>().localPosition = { 0.0f, 0.0f, -1.0f };
+        tabbySpriteHolder.GetComponent<Tabby::TransformComponent>().Position = { 0.0f, -3.0f, -1.0f };
 
         auto& tabbySprite = tabbySpriteHolder.AddComponent<Tabby::SpriteRendererComponent>();
         /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
@@ -37,16 +37,16 @@ void TitleScreenScene::OnActivate()
 
         // ---------- Player ----------
         Tabby::GameObject player = CreateEntity("player");
-        player.GetComponent<Tabby::TransformComponent>().position = {
+        player.GetComponent<Tabby::TransformComponent>().Position = {
             0.0f,
-            3.0f,
+            1.0f,
             1.0f,
         };
 
-        player.AddChild(tabbySpriteHolder);
+        // player.AddChild(tabbySpriteHolder);
 
         /* player.GetComponent<Tabby::TransformComponent>().Size = { 48.0f, 48.0f }; */
-        player.GetComponent<Tabby::TransformComponent>().scale = { 1.25f, 1.25f };
+        player.GetComponent<Tabby::TransformComponent>().Scale = { 1.25f, 1.25f };
 
         auto& playerSprite = player.AddComponent<Tabby::SpriteRendererComponent>();
         /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
@@ -90,16 +90,16 @@ void TitleScreenScene::OnActivate()
     // ---------- Camera ----------
     {
         Tabby::GameObject cameraObject = CreateEntity("mainCamera");
-        auto& cameraPosition = cameraObject.GetComponent<Tabby::TransformComponent>().position;
-        cameraPosition = { 0.0f, 2.0f, 10.0f };
+        auto& cameraPosition = cameraObject.GetComponent<Tabby::TransformComponent>().Position;
+        cameraPosition = { 0.0f, 2.0f, 2.0f };
         auto& camera = cameraObject.AddComponent<Tabby::CameraComponent>();
-        camera.debugCameraMovement = true;
-        camera.cameraMode = CAMERA_FIRST_PERSON;
-        camera.camera.position = cameraPosition;
-        camera.isMainCamera = true;
-        camera.camera.projection = CAMERA_PERSPECTIVE;
-        camera.camera.fovy = 60.0f;
-        // camera.camera.target = { cameraPosition.x, cameraPosition.y, cameraPosition.z - 1 };
+        camera.DebugCameraMovement = true;
+        camera.CameraMode = CAMERA_FIRST_PERSON;
+        camera.Camera.position = cameraPosition;
+        camera.IsMainCamera = true;
+        camera.Camera.projection = CAMERA_PERSPECTIVE;
+        camera.Camera.fovy = 60.0f;
+        camera.Camera.target = { cameraPosition.x, cameraPosition.y, cameraPosition.z - 1 };
 
         // auto& cameraMovement = cameraObject.AddComponent<Tabby::NativeScriptComponent>();
         // cameraMovement.Bind<CameraMove>();
@@ -107,13 +107,23 @@ void TitleScreenScene::OnActivate()
     }
     // ---------- Ground ----------
     {
-        Tabby::GameObject ground = CreateEntity("ground");
-        ground.GetComponent<Tabby::TransformComponent>().position = { 3.0f, -1.0f };
-        auto& groundRigidbody = ground.AddComponent<Tabby::RigidBodyComponent>();
-        groundRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Static;
+        // Tabby::GameObject ground = CreateEntity("ground");
+        // ground.GetComponent<Tabby::TransformComponent>().Position = { 3.0f, -1.0f };
+        // auto& groundRigidbody = ground.AddComponent<Tabby::RigidBodyComponent>();
+        // groundRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Static;
+        //
+        // auto& groundBoxCollider = ground.AddComponent<Tabby::BoxCollider2DComponent>();
+        // groundBoxCollider.Size = { 5.0f, 0.5f };
+        // groundBoxCollider.Offset = { 0.5f, -2.5f };
+    }
 
-        auto& groundBoxCollider = ground.AddComponent<Tabby::BoxCollider2DComponent>();
-        groundBoxCollider.Size = { 5.0f, 0.5f };
+    // ---------- Octree ----------
+    {
+        Tabby::GameObject octreeObject = CreateEntity("Octree");
+        auto& octreeComponent = octreeObject.AddComponent<Tabby::OctreeComponent>();
+        octreeComponent.DebugDraw = true;
+        octreeComponent.MinNodeSize = 1;
+        octreeComponent.DrawColor = RED;
     }
 }
 

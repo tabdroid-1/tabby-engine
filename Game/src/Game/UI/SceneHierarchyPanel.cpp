@@ -229,7 +229,7 @@ void SceneHierarchyPanel::DrawComponents(Tabby::GameObject entity)
         DisplayAddComponentEntry<Tabby::SpriteRendererComponent>("Sprite Renderer");
         DisplayAddComponentEntry<Tabby::RigidBodyComponent>("Rigidbody 2D");
         DisplayAddComponentEntry<Tabby::BoxCollider2DComponent>("Box Collider 2D");
-        DisplayAddComponentEntry<Tabby::CapsuleCollider2DComponent>("Circle Collider 2D");
+        // DisplayAddComponentEntry<Tabby::CapsuleCollider2DComponent>("Circle Collider 2D");
         // DisplayAddComponentEntry<Tabby::TextComponent>("Text Component");
 
         ImGui::EndPopup();
@@ -262,13 +262,13 @@ void SceneHierarchyPanel::DrawComponents(Tabby::GameObject entity)
 
     DrawComponent<Tabby::TransformComponent>("Transform", entity, [](auto& component) {
         if (!useLocalTransform) {
-            DrawVec3Control("Position", component.position);
-            DrawVec3Control("Rotation", component.rotation);
-            DrawVec3Control("Scale", component.scale, 1.0f);
+            DrawVec3Control("Position", component.Position);
+            DrawVec3Control("Rotation", component.Rotation);
+            DrawVec3Control("Scale", component.Scale, 1.0f);
         } else {
-            DrawVec3Control("Local Position", component.localPosition);
-            DrawVec3Control("Local Rotation", component.localRotation);
-            DrawVec3Control("Local Scale", component.localScale, 1.0f);
+            DrawVec3Control("Local Position", component.LocalPosition);
+            DrawVec3Control("Local Rotation", component.LocalRotation);
+            DrawVec3Control("Local Scale", component.LocalScale, 1.0f);
         }
     });
 
@@ -279,17 +279,17 @@ void SceneHierarchyPanel::DrawComponents(Tabby::GameObject entity)
     DrawComponent<Tabby::CameraComponent>("Camera", entity, [](auto& component) {
         auto& camera = component;
         //
-        ImGui::Checkbox("Primary", &component.isMainCamera);
+        ImGui::Checkbox("Primary", &component.IsMainCamera);
 
         const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-        const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.camera.projection];
+        const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.Camera.projection];
         if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
             for (int i = 0; i < 2; i++) {
                 bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
                 if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
                     currentProjectionTypeString = projectionTypeStrings[i];
                     // camera.SetProjectionType((SceneCamera::ProjectionType)i);
-                    camera.camera.projection = i;
+                    camera.Camera.projection = i;
                 }
 
                 if (isSelected)
@@ -300,10 +300,10 @@ void SceneHierarchyPanel::DrawComponents(Tabby::GameObject entity)
         }
 
         // if (camera.camera.projection == CAMERA_PERSPECTIVE) {
-        float perspectiveVerticalFov = camera.camera.fovy;
+        float perspectiveVerticalFov = camera.Camera.fovy;
 
         if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFov))
-            camera.camera.fovy = perspectiveVerticalFov;
+            camera.Camera.fovy = perspectiveVerticalFov;
 
         // ImGui::DragFloat4("Frustum Plane Back", &camera.frustum->Planes[0].x, camera.frustum->Planes[0].y, camera.frustum->Planes[0].z, camera.frustum->Planes[0].w);
         // ImGui::DragFloat4("Frustum Plane Front", &camera.frustum->Planes[0].x, camera.frustum->Planes[0].y, camera.frustum->Planes[0].z, camera.frustum->Planes[0].w);
@@ -484,8 +484,10 @@ void SceneHierarchyPanel::DrawComponents(Tabby::GameObject entity)
     });
 
     DrawComponent<Tabby::BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component) {
-        // ImGui::DragFloat2("Offset", component.Offset);
-        // ImGui::DragFloat2("Size", glm::value_ptr(component.Size));
+        float* offset[2] = { &component.Offset.x, &component.Offset.y };
+        ImGui::DragFloat2("Offset", *offset);
+        float* size[2] = { &component.Size.x, &component.Size.y };
+        ImGui::DragFloat2("Size", *size);
         ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
         ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
         // ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);

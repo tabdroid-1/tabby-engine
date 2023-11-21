@@ -11,8 +11,8 @@ GameObject::GameObject(entt::entity handle, Scene* scene)
 
 void GameObject::AddChild(GameObject& child)
 {
-    child.GetComponent<TransformComponent>().parent = this->m_EntityHandle;
-    this->GetComponent<TransformComponent>().children.emplace_back(child.m_EntityHandle);
+    child.GetComponent<TransformComponent>().Parent = this->m_EntityHandle;
+    this->GetComponent<TransformComponent>().Children.emplace_back(child.m_EntityHandle);
 }
 
 UUID GameObject::GetUUID()
