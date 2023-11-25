@@ -1,5 +1,5 @@
-Version: 21-11-2023_1 Alpha
+Version: 25-11-2023_1 Alpha
 Changes:
-- Removed removed frustum culling from scene file to be manually set up by user.
-- Initial Octree implementation.
-
+ - Combined Update LateUpdate and Draw in scene.
+ - Reworked Scene State Machine. Now its a singleton and uses strings to switch scenes instead of IDs.
+ - Created Name in tag component.

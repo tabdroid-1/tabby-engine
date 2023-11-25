@@ -11,20 +11,22 @@ public:
         : Application(specification)
     {
 
-        SetTargetFPS(60);
-        // ClearWindowState(FLAG_VSYNC_HINT);
+        SetTargetFPS(1200);
+        ClearWindowState(FLAG_VSYNC_HINT);
 
         ToggleFullscreen();
 
-        std::shared_ptr<TitleScreenScene> splashScreen = std::make_shared<TitleScreenScene>(sceneManager);
+        std::shared_ptr<TitleScreenScene> splashScreen = std::make_shared<TitleScreenScene>();
         // std::shared_ptr<DevTestScene> gameScene = std::make_shared<DevTestScene>(sceneManager);
         //
-        unsigned int splashScreenID = sceneManager.Add(splashScreen);
+        SceneStateMachine::Add("TitleScreen", splashScreen);
+        // unsigned int splashScreenID = sceneManager.Add(splashScreen);
         // unsigned int gameSceneID = sceneManager.Add(gameScene);
+
         //
         // splashScreen->SetSwitchToScene(gameSceneID);
 
-        sceneManager.SwitchTo(splashScreenID);
+        SceneStateMachine::SwitchTo("TitleScreen");
     }
 
     ~Sandbox()

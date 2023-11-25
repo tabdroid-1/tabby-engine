@@ -17,6 +17,8 @@ Application::Application(const ApplicationSpecification& specification)
     TB_ASSERT(!s_Instance, "Application already exists!");
     s_Instance = this;
 
+    auto sceneStateMachine = new SceneStateMachine();
+
     if (!m_Specification.WorkingDirectory.empty())
         std::filesystem::current_path(m_Specification.WorkingDirectory);
 
@@ -29,9 +31,8 @@ Application::Application(const ApplicationSpecification& specification)
     if (GetScreenHeight() > maxHeight)
         SetWindowSize(GetScreenWidth(), maxHeight);
 
-    rlImGuiSetup(true);
-
     // SetExitKey(0);
+    rlImGuiSetup(true);
 }
 
 Application::~Application()
@@ -44,24 +45,24 @@ void Application::Run()
 
     while (IsRunning()) {
 
-        sceneManager.Update();
-        sceneManager.LateUpdate();
-
         BeginTextureMode(frameBuffer);
         // textures and stuff goes here
         ClearBackground(BLACK);
-        sceneManager.Draw();
+        SceneStateMachine::Update();
+        // sceneManager.Update();
         EndTextureMode();
 
         BeginDrawing();
         DrawTexturePro(frameBuffer.texture, { 0, 0, (float)frameBuffer.texture.width, -(float)frameBuffer.texture.height },
             { 0, 0, (float)GetMonitorWidth(GetCurrentMonitor()), (float)GetMonitorHeight(GetCurrentMonitor()) }, { 0, 0 }, 0, WHITE);
 
-        sceneManager.DrawHud();
+        SceneStateMachine::DrawHud();
+        // sceneManager.DrawHud();
 
         rlImGuiBegin();
 
-        sceneManager.DrawImGui();
+        SceneStateMachine::DrawImGui();
+        // sceneManager.DrawImGui();
 
         rlImGuiEnd();
 

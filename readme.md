@@ -14,19 +14,20 @@ Planned Features / To-do list
 - <s>Make engine run using a function instead of having to create main function in executable.</s> Done
 - <s>Remove float dt from every function. There is no need for it. There is a function to get deltatime. </s> Done
 - <s>Basic UI implementation.</s> Done
-- Octree. (Currently working on this)
-- Script public variable reflection.
-- Custom profiling implementation (tracy Profiler).
+- <s>Combine Update LateUpdate and Draw in scene. </s> Done
+- <s>Scene manager rework. (switching scenes. scene pool etc.) </s> Done. Converted SceneStateMatchine to Global
 - Function to search and get GameObjects using name tag from active scene.
-- Physics rework. (Hinges, make components more editable, callbacks like onTriggerEnter, onRaycastHit etc.)
-- Asset Manager. 
 - Audio and audio component.
+- Asset Manager. 
+- Custom profiling implementation (tracy Profiler).
+- Physics rework. (Hinges, make components more editable, callbacks like onTriggerEnter, onRaycastHit etc.)
+- Script public variable reflection.
 - Serialization(aka saving).
-- Scene manager rework. (switching scenes. scene pool etc.)
 - Multi-threading
 - More advanced animation system.
 - Particle system.
 - LDtk tile map.
+- Octree. (nvm i will figure this out later)
 - <s>Better 3D support</s> Priorities...
 - <s>Steamworks API implementation</s> Priorities...
 - <s>Web, Chrome OS, FreeBSD, Raspberry Pi and Android builds </s> Too far-fetched for now.

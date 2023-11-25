@@ -44,7 +44,7 @@ public:
 
 public:
     RenderTexture2D frameBuffer;
-    SceneStateMachine sceneManager;
+    // SceneStateMachine sceneManager;
 
 private:
     bool isRunning = true;

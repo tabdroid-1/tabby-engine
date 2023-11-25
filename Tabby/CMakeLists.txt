@@ -71,7 +71,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${PROJECT_VENDOR_DIR}
         )
 
-# add_subdirectory(${RAYLIB})
+add_subdirectory(${RAYLIB})
 # add_subdirectory(${RAYLIBTMX})
 add_subdirectory(${LDTKLOADER})
 add_subdirectory(${BOX2D})
@@ -79,8 +79,9 @@ add_subdirectory(${RLIMGUI})
 add_subdirectory(${IMGUI})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/raylib_sdl2_lib/libraylib.a"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/raylib_sdl2_lib/sdl2/lib/aarch64/libSDL2-2.0.so"
+        # "${CMAKE_CURRENT_SOURCE_DIR}/vendor/raylib_sdl2_lib/libraylib.a"
+        # "${CMAKE_CURRENT_SOURCE_DIR}/vendor/raylib_sdl2_lib/sdl2/lib/aarch64/libSDL2-2.0.so"
+        raylib
         # raylib-tmx
         rlImGui
         imgui

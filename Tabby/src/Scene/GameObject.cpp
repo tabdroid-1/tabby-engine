@@ -22,7 +22,7 @@ UUID GameObject::GetUUID()
 
 const std::string& GameObject::GetName()
 {
-    return GetComponent<TagComponent>().Tag;
+    return GetComponent<TagComponent>().Name;
 }
 
 }

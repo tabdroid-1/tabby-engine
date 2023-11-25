@@ -6,13 +6,13 @@
 
 namespace Tabby {
 
-Octree::Octree(float minNodeSize, Color DrawColor, Scene* Scene)
+Octree::Octree(std::vector<entt::entity> entities, float minNodeSize, Scene* Scene)
     : m_Scene(Scene)
 {
 
     BoundingBox bounds = { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } };
 
-    for (auto& entity : m_Scene->m_Registry.view<TransformComponent>()) {
+    for (auto& entity : entities) {
         auto transform = m_Scene->m_Registry.get<TransformComponent>(entity);
         if (m_Scene->m_Registry.any_of<BoxCollider2DComponent>(entity) && !(m_Scene->m_Registry.any_of<OctreeComponent>(entity) || m_Scene->m_Registry.any_of<CameraComponent>(entity))) {
 
@@ -70,23 +70,17 @@ Octree::Octree(float minNodeSize, Color DrawColor, Scene* Scene)
     bounds.min = { boundCenter.x - boundSize.x, boundCenter.y - boundSize.y, boundCenter.z - boundSize.z };
     bounds.max = { boundCenter.x + boundSize.x, boundCenter.y + boundSize.y, boundCenter.z + boundSize.z };
 
-    root = new OctreeNode(bounds, minNodeSize, boundCenter, boundSize, DrawColor, m_Scene);
+    root = new OctreeNode(bounds, minNodeSize, boundCenter, boundSize, m_Scene);
 
-    for (auto entity : m_Scene->m_Registry.view<TransformComponent>()) {
-
-        if (m_Scene->m_Registry.any_of<OctreeComponent>(entity) || m_Scene->m_Registry.any_of<CameraComponent>(entity)) {
-            continue;
-        }
+    for (auto entity : entities)
         Insert(entity);
-    }
 }
 
-Octree::OctreeNode::OctreeNode(const BoundingBox& bounds, float MinNodeSize, Vector3 BoundCenter, Vector3 BoundSize, Color DrawColor, Scene* scene)
+Octree::OctreeNode::OctreeNode(const BoundingBox& bounds, float MinNodeSize, Vector3 BoundCenter, Vector3 BoundSize, Scene* scene)
     : bound(bounds)
     , boundCenter(BoundCenter)
     , boundSize(BoundSize)
     , minSize(MinNodeSize)
-    , drawColor(DrawColor)
 {
 
     m_Scene = scene;
@@ -150,7 +144,7 @@ void Octree::OctreeNode::DivideAndInsert(entt::entity object)
     bool dividing = false;
     for (int i = 0; i < 8; i++) {
         if (children[i] == nullptr) {
-            children[i] = new OctreeNode(childBounds[i], minSize, childBoundCenter[i], childBoundSize, drawColor, m_Scene);
+            children[i] = new OctreeNode(childBounds[i], minSize, childBoundCenter[i], childBoundSize, m_Scene);
         }
 
         BoundingBox objectBound;
@@ -189,6 +183,7 @@ void Octree::OctreeNode::DivideAndInsert(entt::entity object)
         if (CheckCollisionBoxes(childBounds[i], objectBound)) {
             dividing = true;
             children[i]->DivideAndInsert(object);
+            children[i]->objects.push_back(object);
         }
     }
 
@@ -200,14 +195,34 @@ void Octree::OctreeNode::DivideAndInsert(entt::entity object)
     }
 }
 
-void Octree::OctreeNode::Draw()
+std::vector<entt::entity>& Octree::OctreeNode::Query(const BoundingBox& queryBounds)
 {
-    DrawCubeWiresV(boundCenter, boundSize, drawColor);
+
+    std::vector<entt::entity> result;
+
+    if (CheckCollisionBoxes(bound, queryBounds)) {
+        // result.insert(result.end(), objects.begin(), objects.end());
+
+        // Recursively query child nodes
+        for (int i = 0; i < 8; ++i) {
+            if (children[i] != nullptr) {
+                auto childResult = children[i]->Query(queryBounds);
+                result.insert(result.end(), childResult.begin(), childResult.end());
+            }
+        }
+    }
+
+    return result;
+}
+
+void Octree::OctreeNode::Draw(Color Color)
+{
+    DrawCubeWiresV(boundCenter, boundSize, Color);
 
     if (children != nullptr) {
         for (auto child : children) {
             if (child != nullptr) {
-                child->Draw();
+                child->Draw(Color);
             }
         }
     }

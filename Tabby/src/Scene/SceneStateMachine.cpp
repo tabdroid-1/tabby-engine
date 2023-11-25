@@ -4,102 +4,90 @@
 
 namespace Tabby {
 
+SceneStateMachine* SceneStateMachine::s_Instance = nullptr;
+
 SceneStateMachine::SceneStateMachine()
     : scenes(0)
     , curScene(0)
 {
+    TB_ASSERT(!s_Instance, "Scene State Machine already exists!");
+    s_Instance = this;
 }
 
 void SceneStateMachine::Update()
 {
-    if (curScene) {
-        curScene->Update();
-    }
-}
-
-void SceneStateMachine::LateUpdate()
-{
-    if (curScene) {
-        curScene->LateUpdate();
-    }
-}
-
-void SceneStateMachine::Draw()
-{
-    if (curScene) {
-        curScene->Draw();
+    if (s_Instance->curScene) {
+        s_Instance->curScene->Update();
     }
 }
 
 void SceneStateMachine::DrawHud()
 {
-    if (curScene) {
-        curScene->DrawHud();
+    if (s_Instance->curScene) {
+        s_Instance->curScene->DrawHud();
     }
 }
 
 void SceneStateMachine::DrawImGui()
 {
-    if (curScene) {
-        curScene->DrawImGui();
+    if (s_Instance->curScene) {
+        s_Instance->curScene->DrawImGui();
     }
 }
 
-unsigned int SceneStateMachine::Add(std::shared_ptr<Tabby::Scene> scene)
+void SceneStateMachine::Add(std::string SceneName, std::shared_ptr<Tabby::Scene> Scene)
 {
-    auto inserted = scenes.insert(std::make_pair(insertedSceneID, scene));
+    auto inserted = s_Instance->scenes.insert(std::make_pair(SceneName, Scene));
 
     inserted.first->second->OnCreate();
 
-    std::cout << "ID " << insertedSceneID << " Scene Added."
+    std::cout << "Scene \"" << SceneName << "\" Added."
               << "\n";
-
-    return insertedSceneID++;
 }
 
-void SceneStateMachine::Remove(unsigned int id)
+void SceneStateMachine::Remove(std::string SceneName)
 {
-    auto it = scenes.find(id);
-    if (it != scenes.end()) {
-        if (curScene == it->second) {
-            curScene = nullptr;
+    auto it = s_Instance->scenes.find(SceneName);
+    if (it != s_Instance->scenes.end()) {
+        if (s_Instance->curScene == it->second) {
+            s_Instance->curScene = nullptr;
         }
 
         it->second->OnDestroy();
 
-        std::cout << "ID " << id << " Scene Removed."
+        std::cout << "ID \"" << SceneName << "\" Scene Removed."
                   << "\n";
-        scenes.erase(it);
+        s_Instance->scenes.erase(it);
     } else {
 
-        std::cout << "ID " << id << " Scene Not Found."
+        std::cout << "ID \"" << SceneName << "\" Scene Not Found."
                   << "\n";
     }
 }
 
-void SceneStateMachine::SwitchTo(unsigned int id)
+void SceneStateMachine::SwitchTo(std::string SceneName)
 {
 
     // std::vector<std::shared_ptr<GameObject>> persistentGameObjects;
 
-    if (curScene != 0) {
+    if (s_Instance->curScene != 0) {
         // persistentGameObjects = curScene->gameObjects.GetPersistentGameObjects();
     }
 
-    auto it = scenes.find(id);
-    if (it != scenes.end()) {
-        if (curScene) {
-            curScene->OnDeactivate();
+    auto it = s_Instance->scenes.find(SceneName);
+    if (it != s_Instance->scenes.end()) {
+        if (s_Instance->curScene) {
+            s_Instance->curScene->OnDeactivate();
         }
 
         // if (!persistentGameObjects.empty()) {
         // it->second->gameObjects.Add(persistentGameObjects);
         // }
-        curScene = it->second;
+        s_Instance->curScene = it->second;
 
-        std::cout << "Switched to Scene ID " << id << "\n";
-        curScene->OnActivate();
-        curScene->InitScene();
+        std::cout << "Switched to Scene \"" << SceneName << "\"\n";
+        s_Instance->curScene->OnActivate();
+        s_Instance->curScene->InitScene();
     }
 }
 

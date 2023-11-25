@@ -67,11 +67,11 @@ void SceneHierarchyPanel::SetSelectedEntity(Tabby::GameObject entity)
 
 void SceneHierarchyPanel::DrawEntityNode(Tabby::GameObject entity)
 {
-    auto& tag = entity.GetComponent<Tabby::TagComponent>().Tag;
+    auto& name = entity.GetComponent<Tabby::TagComponent>().Name;
 
     ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
     flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-    bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
+    bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, name.c_str());
     if (ImGui::IsItemClicked()) {
         m_SelectionContext = entity;
     }
@@ -86,7 +86,7 @@ void SceneHierarchyPanel::DrawEntityNode(Tabby::GameObject entity)
 
     if (opened) {
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-        bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
+        bool opened = ImGui::TreeNodeEx((void*)9817239, flags, name.c_str());
         if (opened)
             ImGui::TreePop();
         ImGui::TreePop();
@@ -207,13 +207,13 @@ bool useLocalTransform = false;
 void SceneHierarchyPanel::DrawComponents(Tabby::GameObject entity)
 {
     if (entity.HasComponent<Tabby::TagComponent>()) {
-        auto& tag = entity.GetComponent<Tabby::TagComponent>().Tag;
+        auto& name = entity.GetComponent<Tabby::TagComponent>().Name;
 
         char buffer[256];
         memset(buffer, 0, sizeof(buffer));
-        strcpy(buffer, tag.c_str());
-        if (ImGui::InputText("##Tag", buffer, sizeof(buffer))) {
-            tag = std::string(buffer);
+        strcpy(buffer, name.c_str());
+        if (ImGui::InputText("##Name", buffer, sizeof(buffer))) {
+            name = std::string(buffer);
         }
     }
 
