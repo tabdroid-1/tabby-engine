@@ -15,7 +15,7 @@ Planned Features / To-do list
 - <s>Remove float dt from every function. There is no need for it. There is a function to get deltatime. </s> Done
 - <s>Basic UI implementation.</s> Done
 - <s>Combine Update LateUpdate and Draw in scene. </s> Done
-- <s>Scene manager rework. (switching scenes. scene pool etc.) </s> Done. Converted SceneStateMatchine to Global
+- <s>Scene manager rework. (switching scenes. scene pool etc.) </s> Done. 
 - Function to search and get GameObjects using name tag from active scene.
 - Audio and audio component.
 - Asset Manager. 
