@@ -11,20 +11,20 @@ class SceneStateMachine {
 public:
     SceneStateMachine();
 
-    void Update();
-    void LateUpdate();
-    void Draw();
-    void DrawHud();
-    void DrawImGui();
+    static void Update();
+    static void DrawHud();
+    static void DrawImGui();
 
-    unsigned int Add(std::shared_ptr<Tabby::Scene> scene);
-    void SwitchTo(unsigned int id);
-    void Remove(unsigned int id);
+    static void Add(std::string SceneName, std::shared_ptr<Tabby::Scene> Scene);
+    static void SwitchTo(std::string SceneName);
+    static void Remove(std::string SceneName);
 
 private:
-    std::unordered_map<unsigned int, std::shared_ptr<Tabby::Scene>> scenes;
+    std::unordered_map<std::string, std::shared_ptr<Tabby::Scene>> scenes;
     std::shared_ptr<Tabby::Scene> curScene;
-    unsigned int insertedSceneID;
+
+private:
+    static SceneStateMachine* s_Instance;
 };
 
 }

@@ -18,6 +18,7 @@ struct IDComponent {
 };
 
 struct TagComponent {
+    std::string Name = "UnNamed";
     std::string Tag = "UnTagged";
     std::string Layer = "Default";
     bool IsPersistent = false;
@@ -257,11 +258,16 @@ class Octree;
 
 struct OctreeComponent {
     Octree* Tree = nullptr;
+    std::vector<entt::entity> Entities;
     float MinNodeSize = 0.5f;
     Color DrawColor = GREEN;
     bool DebugDraw = true;
 
     OctreeComponent() = default;
+    ~OctreeComponent()
+    {
+        delete Tree;
+    }
 };
 
 }

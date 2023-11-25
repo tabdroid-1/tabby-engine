@@ -7,11 +7,7 @@
 #include <Graphics/Graphics.h>
 #include <Tabby.h>
 
-TitleScreenScene::TitleScreenScene(Tabby::SceneStateMachine& sceneStateMachine)
-    : sceneStateMachine(sceneStateMachine)
-    , switchToState(0)
-    , currentSeconds(0.f)
-    , showForSeconds(1.f)
+TitleScreenScene::TitleScreenScene()
 {
 }
 
@@ -24,68 +20,76 @@ void TitleScreenScene::OnActivate()
 
     m_Panel.SetContext(*this);
     // DisableCursor();
-
-    {
-
-        // ---------- Tabby -----------
-        Tabby::GameObject tabbySpriteHolder = CreateEntity("tabbySprite");
-        tabbySpriteHolder.GetComponent<Tabby::TransformComponent>().Position = { 0.0f, -3.0f, -1.0f };
-
-        auto& tabbySprite = tabbySpriteHolder.AddComponent<Tabby::SpriteRendererComponent>();
-        /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
-        tabbySprite.SetTexture("assets/random/tabby.png");
-
-        // ---------- Player ----------
-        Tabby::GameObject player = CreateEntity("player");
-        player.GetComponent<Tabby::TransformComponent>().Position = {
-            0.0f,
-            1.0f,
-            1.0f,
-        };
-
-        // player.AddChild(tabbySpriteHolder);
-
-        /* player.GetComponent<Tabby::TransformComponent>().Size = { 48.0f, 48.0f }; */
-        player.GetComponent<Tabby::TransformComponent>().Scale = { 1.25f, 1.25f };
-
-        auto& playerSprite = player.AddComponent<Tabby::SpriteRendererComponent>();
-        /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
-        playerSprite.SetTexture("assets/spritesheets/player/player_idle.png");
-
-        // auto& playerRigidbody = player.AddComponent<Tabby::RigidBodyComponent>();
-        // playerRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Dynamic;
-        // playerRigidbody.FixedRotation = true;
-        // auto& playerCapsuleCollider = player.AddComponent<Tabby::BoxCollider2DComponent>();
-        // playerCapsuleCollider.Size = { 0.2f, 0.50f };
-        // playerCapsuleCollider.Friction = 1;
-        // playerCapsuleCollider.Density = 1;
-        // playerCapsuleCollider.Bounce = 0;
-        // playerCapsuleCollider.BounceThreshold = 0;
-
-        auto& playerAnimator = player.AddComponent<Tabby::AnimationComponent>();
-        std::shared_ptr<Animation> idleAnimation = std::make_shared<Animation>();
-
-        const int frameWidth = 48;
-        const int frameHeight = 48;
-
-        const float idleAnimFrameSeconds = 0.2f;
-        idleAnimation->AddFrame(0, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        idleAnimation->AddFrame(48, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        idleAnimation->AddFrame(96, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        idleAnimation->AddFrame(144, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        idleAnimation->AddFrame(192, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        idleAnimation->AddFrame(240, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        idleAnimation->AddFrame(288, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        idleAnimation->AddFrame(336, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        idleAnimation->AddFrame(384, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        idleAnimation->AddFrame(432, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
-        playerAnimator.AddAnimation("idle", idleAnimation);
-        playerAnimator.PlayAnimation("idle");
-
-        // auto& playerMovement = player.AddComponent<Tabby::NativeScriptComponent>();
-        // playerMovement.Bind<PlayerMove>();
-        // auto playerMovementScript = static_cast<PlayerMove*>(playerMovement.Instance);
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+        if (IsCursorHidden())
+            EnableCursor();
+        else
+            DisableCursor();
     }
+
+    // Tabby::GameObject tabbySpriteHolder = CreateEntity("tabbySprite");
+    // {
+    //
+    //     // ---------- Tabby -----------
+    //     tabbySpriteHolder.GetComponent<Tabby::TransformComponent>().Position = { 0.0f, -3.0f, -1.0f };
+    //
+    //     auto& tabbySprite = tabbySpriteHolder.AddComponent<Tabby::SpriteRendererComponent>();
+    //     /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
+    //     tabbySprite.SetTexture("assets/random/tabby.png");
+    // }
+    //
+    // Tabby::GameObject player = CreateEntity("player");
+    // {
+    //     // ---------- Player ----------
+    //     player.GetComponent<Tabby::TransformComponent>().Position = {
+    //         0.0f,
+    //         1.0f,
+    //         1.0f,
+    //     };
+    //
+    //     // player.AddChild(tabbySpriteHolder);
+    //
+    //     /* player.GetComponent<Tabby::TransformComponent>().Size = { 48.0f, 48.0f }; */
+    //     player.GetComponent<Tabby::TransformComponent>().Scale = { 1.25f, 1.25f };
+    //
+    //     auto& playerSprite = player.AddComponent<Tabby::SpriteRendererComponent>();
+    //     /* playerSprite.Texture = LoadTexture("assets/spritesheets/player/player_idle.png"); */
+    //     playerSprite.SetTexture("assets/spritesheets/player/player_idle.png");
+    //
+    //     // auto& playerRigidbody = player.AddComponent<Tabby::RigidBodyComponent>();
+    //     // playerRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Dynamic;
+    //     // playerRigidbody.FixedRotation = true;
+    //     // auto& playerCapsuleCollider = player.AddComponent<Tabby::BoxCollider2DComponent>();
+    //     // playerCapsuleCollider.Size = { 0.2f, 0.50f };
+    //     // playerCapsuleCollider.Friction = 1;
+    //     // playerCapsuleCollider.Density = 1;
+    //     // playerCapsuleCollider.Bounce = 0;
+    //     // playerCapsuleCollider.BounceThreshold = 0;
+    //
+    //     auto& playerAnimator = player.AddComponent<Tabby::AnimationComponent>();
+    //     std::shared_ptr<Animation> idleAnimation = std::make_shared<Animation>();
+    //
+    //     const int frameWidth = 48;
+    //     const int frameHeight = 48;
+    //
+    //     const float idleAnimFrameSeconds = 0.2f;
+    //     idleAnimation->AddFrame(0, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     idleAnimation->AddFrame(48, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     idleAnimation->AddFrame(96, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     idleAnimation->AddFrame(144, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     idleAnimation->AddFrame(192, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     idleAnimation->AddFrame(240, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     idleAnimation->AddFrame(288, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     idleAnimation->AddFrame(336, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     idleAnimation->AddFrame(384, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     idleAnimation->AddFrame(432, 0, frameWidth, frameHeight, idleAnimFrameSeconds, "assets/spritesheets/player/player_idle.png");
+    //     playerAnimator.AddAnimation("idle", idleAnimation);
+    //     playerAnimator.PlayAnimation("idle");
+    //
+    //     // auto& playerMovement = player.AddComponent<Tabby::NativeScriptComponent>();
+    //     // playerMovement.Bind<PlayerMove>();
+    //     // auto playerMovementScript = static_cast<PlayerMove*>(playerMovement.Instance);
+    // }
 
     // ---------- Camera ----------
     {
@@ -106,30 +110,53 @@ void TitleScreenScene::OnActivate()
         // auto cameraMovementScript = static_cast<CameraMove*>(cameraMovement.Instance);
     }
     // ---------- Ground ----------
-    {
-        // Tabby::GameObject ground = CreateEntity("ground");
-        // ground.GetComponent<Tabby::TransformComponent>().Position = { 3.0f, -1.0f };
-        // auto& groundRigidbody = ground.AddComponent<Tabby::RigidBodyComponent>();
-        // groundRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Static;
-        //
-        // auto& groundBoxCollider = ground.AddComponent<Tabby::BoxCollider2DComponent>();
-        // groundBoxCollider.Size = { 5.0f, 0.5f };
-        // groundBoxCollider.Offset = { 0.5f, -2.5f };
-    }
-
+    // Tabby::GameObject groundEntity = CreateEntity("ground");
+    // {
+    //     groundEntity.GetComponent<Tabby::TransformComponent>().Position = { 3.0f, -1.0f };
+    //     auto& groundRigidbody = groundEntity.AddComponent<Tabby::RigidBodyComponent>();
+    //     groundRigidbody.Type = Tabby::RigidBodyComponent::BodyType::Static;
+    //
+    //     auto& groundBoxCollider = groundEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+    //     groundBoxCollider.Size = { 5.0f, 0.5f };
+    //     groundBoxCollider.Offset = { 0.5f, -2.5f };
+    // }
+    //
     // ---------- Octree ----------
-    {
-        Tabby::GameObject octreeObject = CreateEntity("Octree");
-        auto& octreeComponent = octreeObject.AddComponent<Tabby::OctreeComponent>();
-        octreeComponent.DebugDraw = true;
-        octreeComponent.MinNodeSize = 1;
-        octreeComponent.DrawColor = RED;
+    // {
+    Tabby::GameObject octreeObject = CreateEntity("Octree");
+    auto& octreeComponent = octreeObject.AddComponent<Tabby::OctreeComponent>();
+    octreeComponent.DebugDraw = true;
+    octreeComponent.MinNodeSize = 1.0f;
+    octreeComponent.DrawColor = RED;
+    // octreeComponent.Entities.push_back(groundEntity);
+    // octreeComponent.Entities.push_back(tabbySpriteHolder);
+    // octreeComponent.Entities.push_back(player);
+    // }
+
+    Texture sprite = LoadTexture("assets/random/tabby.png");
+
+    for (int i = 0; i < 10; i++) {
+
+        for (int k = 0; k < 10; k++) {
+
+            for (int l = 0; l < 10; l++) {
+
+                Tabby::GameObject testEntity = CreateEntity("TestEntity");
+                testEntity.GetComponent<Tabby::TransformComponent>().Position = { -10.0f + l, -10.0f + k, -10.0f + i };
+                auto& tabbySprite = testEntity.AddComponent<Tabby::SpriteRendererComponent>();
+                Color color = ColorFromNormalized({ (i + 5.0f) / 10.0f, (l + 5.0f) / 10.0f, (k + 5.0f) / 10.0f, 1.0f });
+                tabbySprite.Tint = color;
+
+                octreeComponent.Entities.push_back(testEntity);
+            }
+        }
     }
 }
 
 void TitleScreenScene::DrawHud()
 {
     DrawText(TextFormat("Width: %i  -  Height: %i", GetScreenWidth(), GetScreenHeight()), 10, 20, 20, WHITE);
+    DrawFPS(20, 40);
 }
 
 void TitleScreenScene::DrawImGui()

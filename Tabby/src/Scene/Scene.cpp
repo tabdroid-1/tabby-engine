@@ -31,7 +31,7 @@ GameObject Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
     entity.AddComponent<TransformComponent>();
     entity.AddComponent<IDComponent>(uuid);
     auto& tag = entity.AddComponent<TagComponent>();
-    tag.Tag = name.empty() ? "Entity" : name;
+    tag.Name = name.empty() ? "Entity" : name;
     return entity;
 }
 
@@ -168,9 +168,8 @@ void Scene::InitScene()
 
     // Init Octree
     {
-
         m_Registry.view<OctreeComponent>().each([=](auto entity, auto& octree) {
-            octree.Tree = new Octree(octree.MinNodeSize, octree.DrawColor, this);
+            octree.Tree = new Octree(octree.Entities, octree.MinNodeSize, this);
         });
     }
 }
@@ -187,6 +186,7 @@ void Scene::Update()
                 nsc.Instance->OnCreate();
             }
             nsc.Instance->Update();
+            nsc.Instance->LateUpdate();
         });
     }
 
@@ -278,23 +278,6 @@ void Scene::Update()
             sprite.Texture = animator.CurrentTexture;
         }
     }
-}
-
-void Scene::LateUpdate()
-{
-
-    {
-        m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
-            // Scene On ScenePlay
-            if (!nsc.Instance) {
-
-                nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_GameObject = { entity, this };
-                nsc.Instance->OnCreate();
-            }
-            nsc.Instance->LateUpdate();
-        });
-    }
 
     {
         const int32_t velocityIteration = 6;
@@ -342,73 +325,72 @@ void Scene::LateUpdate()
             // }
         }
     }
-}
 
-void Scene::Draw()
-{
-    BeginMode3D(m_Registry.get<CameraComponent>(m_ActiveCamera).Camera);
-    rlEnableDepthTest();
-    // Update Camera Frustum
     {
-        auto view = m_Registry.view<CameraComponent>();
-        for (auto& entity : view) {
+        BeginMode3D(m_Registry.get<CameraComponent>(m_ActiveCamera).Camera);
+        rlEnableDepthTest();
+        // Update Camera Frustum
+        {
+            auto view = m_Registry.view<CameraComponent>();
+            for (auto& entity : view) {
 
-            auto& camera = view.get<CameraComponent>(entity);
+                auto& camera = view.get<CameraComponent>(entity);
 
-            if (camera.IsMainCamera) {
-                camera.Frustum = CameraTools::ExtractFrustum();
+                if (camera.IsMainCamera) {
+                    camera.Frustum = CameraTools::ExtractFrustum();
+                }
             }
         }
-    }
 
-    // Draw Octree
-    {
-        auto view = m_Registry.view<OctreeComponent>();
-        for (auto& entity : view) {
+        // Draw Octree
+        {
+            auto view = m_Registry.view<OctreeComponent>();
+            for (auto& entity : view) {
 
-            auto& octree = view.get<OctreeComponent>(entity);
+                auto& octree = view.get<OctreeComponent>(entity);
 
-            if (octree.DebugDraw) {
-                octree.Tree->Draw();
+                if (octree.DebugDraw) {
+                    octree.Tree->Draw(octree.DrawColor);
+                }
             }
         }
-    }
 
-    physics->Draw();
+        physics->Draw();
 
-    rlDisableBackfaceCulling();
+        rlDisableBackfaceCulling();
 
-    // #ifdef DEBUG
-    //     DrawGrid(100, 1.0f);
-    // #endif // DEBUG
+        // #ifdef DEBUG
+        //     DrawGrid(100, 1.0f);
+        // #endif // DEBUG
 
-    // Draw Sprite
-    // NOTE: have sort entities to fix transparent part of sprite now showing whats behind
-    {
-        auto view = m_Registry.view<SpriteRendererComponent, TransformComponent>();
+        // Draw Sprite
+        // NOTE: have sort entities to fix transparent part of sprite now showing whats behind
+        {
+            auto view = m_Registry.view<SpriteRendererComponent, TransformComponent>();
 
-        std::vector<entt::entity> sortedEntities;
+            // std::vector<entt::entity> sortedEntities;
 
-        for (entt::entity entity : view) {
-            if (m_Registry.get<SpriteRendererComponent>(entity).Active == true)
-                sortedEntities.push_back(entity);
+            // for (entt::entity entity : view) {
+            //     if (m_Registry.get<SpriteRendererComponent>(entity).Active == true)
+            //         sortedEntities.push_back(entity);
+            // }
+            //
+            // std::sort(sortedEntities.begin(), sortedEntities.end(), [this](const entt::entity& a, const entt::entity& b) {
+            //     auto& transformA = m_Registry.get<TransformComponent>(a);
+            //     auto& transformB = m_Registry.get<TransformComponent>(b);
+            //     return transformA.Position.z < transformB.Position.z;
+            // });
+
+            for (const entt::entity entity : view) {
+                auto transform = m_Registry.get<TransformComponent>(entity);
+                auto sprite = m_Registry.get<SpriteRendererComponent>(entity);
+
+                Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.Position, transform.Rotation, { 0.0f, 0.0f }, { transform.Scale.x, transform.Scale.y }, sprite.Tint);
+            }
         }
 
-        std::sort(sortedEntities.begin(), sortedEntities.end(), [this](const entt::entity& a, const entt::entity& b) {
-            auto& transformA = m_Registry.get<TransformComponent>(a);
-            auto& transformB = m_Registry.get<TransformComponent>(b);
-            return transformA.Position.z < transformB.Position.z;
-        });
-
-        for (const entt::entity entity : sortedEntities) {
-            auto transform = m_Registry.get<TransformComponent>(entity);
-            auto sprite = m_Registry.get<SpriteRendererComponent>(entity);
-
-            Graphics::DrawSprite(transform.GetTransform(), sprite.Texture, sprite.srcRec, transform.Position, transform.Rotation, { 0.0f, 0.0f }, { transform.Scale.x, transform.Scale.y }, sprite.Tint);
-        }
+        EndMode3D();
     }
-
-    EndMode3D();
 }
 
 void Scene::OnDestroy()

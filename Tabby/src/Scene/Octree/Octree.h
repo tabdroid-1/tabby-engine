@@ -13,7 +13,7 @@ class GameObject;
 
 class Octree {
 public:
-    Octree(float minNodeSize, Color DrawColor, Scene* Scene);
+    Octree(std::vector<entt::entity> entities, float minNodeSize, Scene* Scene);
     void Insert(const GameObject& object)
     {
         Insert(object);
@@ -24,14 +24,14 @@ public:
         root->Insert(object);
     }
 
-    // void Query(const BoundingBox& region, std::vector<GameObject>& result)
-    // {
-    //     root->Query(region, result);
-    // }
-
-    void Draw()
+    std::vector<GameObject>& Query(const BoundingBox& region)
     {
-        root->Draw();
+        root->Query(region);
+    }
+
+    void Draw(Color Color)
+    {
+        root->Draw(Color);
     }
 
 private:
@@ -39,13 +39,10 @@ private:
 
     class OctreeNode {
     public:
-        OctreeNode(const BoundingBox& bounds, float MinNodeSize, Vector3 BoundCenter, Vector3 BoundSize, Color DrawColor, Scene* scene);
+        OctreeNode(const BoundingBox& bounds, float MinNodeSize, Vector3 BoundCenter, Vector3 BoundSize, Scene* scene);
         void Insert(entt::entity object);
-        // void Query(const BoundingBox& region, std::vector<GameObject>& result)
-        // {
-        // }
-
-        void Draw();
+        std::vector<entt::entity>& Query(const BoundingBox& region);
+        void Draw(Color Color);
 
     private:
         void DivideAndInsert(entt::entity object);
@@ -56,7 +53,6 @@ private:
         Vector3 boundSize;
         float minSize;
         std::vector<entt::entity> objects;
-        Color drawColor = GREEN;
         BoundingBox childBounds[8];
         Vector3 childBoundCenter[8];
         Vector3 childBoundSize;
@@ -68,5 +64,4 @@ private:
     OctreeNode* root;
     Scene* m_Scene = nullptr;
 };
-
-}
+} // namespace Tabby
