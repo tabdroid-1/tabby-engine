@@ -43,7 +43,7 @@ struct TagComponent {
 };
 
 struct TransformComponent {
-    Vector3 Position = { 0.0f, 0.0f };
+    Vector3 Position = { 0.0f, 0.0f, 0.0f };
     Vector3 Scale = { 1.0f, 1.0f, 1.0f };
     Vector3 Rotation = { 0.0f, 0.0f, 0.0f };
     Vector3 LocalPosition = { 0.0f, 0.0f };
@@ -69,6 +69,18 @@ struct TransformComponent {
         mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 1.0f, 0.0f }, Rotation.y * DEG2RAD));
         mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 0.0f, 1.0f }, Rotation.z * DEG2RAD));
         mat = MatrixMultiply(mat, MatrixScale(Scale.x, Scale.y, Scale.y));
+
+        return mat;
+    }
+    Matrix GetLocalTransform() const
+    {
+        Matrix mat = MatrixIdentity();
+
+        mat = MatrixMultiply(mat, MatrixTranslate(LocalPosition.x, LocalPosition.y, LocalPosition.z));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 1.0f, 0.0f, 0.0f }, LocalRotation.x * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 1.0f, 0.0f }, LocalRotation.y * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixRotate(Vector3 { 0.0f, 0.0f, 1.0f }, LocalRotation.z * DEG2RAD));
+        mat = MatrixMultiply(mat, MatrixScale(LocalScale.x, LocalScale.y, LocalScale.y));
 
         return mat;
     }

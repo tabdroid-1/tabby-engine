@@ -5,10 +5,10 @@
 namespace Tabby {
 
 SceneStateMachine* SceneStateMachine::s_Instance = nullptr;
+std::shared_ptr<Tabby::Scene> Tabby::SceneStateMachine::curScene;
 
 SceneStateMachine::SceneStateMachine()
     : scenes(0)
-    , curScene(0)
 {
     TB_ASSERT(!s_Instance, "Scene State Machine already exists!");
     s_Instance = this;
@@ -41,7 +41,7 @@ void SceneStateMachine::Add(std::string SceneName, std::shared_ptr<Tabby::Scene>
 
     inserted.first->second->OnCreate();
 
-    std::cout << "Scene \"" << SceneName << "\" Added."
+    std::cout << "INFO: Scene \"" << SceneName << "\" Added."
               << "\n";
 }
 
@@ -55,12 +55,12 @@ void SceneStateMachine::Remove(std::string SceneName)
 
         it->second->OnDestroy();
 
-        std::cout << "ID \"" << SceneName << "\" Scene Removed."
+        std::cout << "INFO: ID \"" << SceneName << "\" Scene Removed."
                   << "\n";
         s_Instance->scenes.erase(it);
     } else {
 
-        std::cout << "ID \"" << SceneName << "\" Scene Not Found."
+        std::cout << "INFO: ID \"" << SceneName << "\" Scene Not Found."
                   << "\n";
     }
 }
@@ -85,10 +85,15 @@ void SceneStateMachine::SwitchTo(std::string SceneName)
         // }
         s_Instance->curScene = it->second;
 
-        std::cout << "Switched to Scene \"" << SceneName << "\"\n";
+        std::cout << "INFO: Switched to Scene \"" << SceneName << "\"\n";
         s_Instance->curScene->OnActivate();
         s_Instance->curScene->InitScene();
     }
+}
+
+Tabby::Scene* SceneStateMachine::GetCurrentScene()
+{
+    return curScene.get();
 }
 
 }

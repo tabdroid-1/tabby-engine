@@ -23,8 +23,6 @@ void Graphics::DrawSprite(Matrix mat, Texture2D texture, Rectangle source, Vecto
     float width = size.x / 2;
     float height = size.y / 2;
 
-    Color color = WHITE;
-
     rlCheckRenderBatchLimit(16);
 
     rlSetTexture(texture.id);
@@ -59,12 +57,6 @@ void Graphics::Draw3DBillboardRec(Camera camera, Texture2D texture, Rectangle so
 
     // get the camera view matrix
     Matrix mat = MatrixInvert(MatrixLookAt(camera.position, camera.target, camera.up));
-
-    std::cout << mat.m0 << "  " << mat.m1 << "  " << mat.m2 << "  " << mat.m3 << "\n"
-              << mat.m4 << "  " << mat.m5 << "  " << mat.m6 << "  " << mat.m7 << " \n "
-              << mat.m8 << "  " << mat.m9 << "  " << mat.m10 << "  " << mat.m11 << " \n "
-              << mat.m12 << "  " << mat.m13 << "  " << mat.m14 << "  " << mat.m15 << " \n "
-              << "\n";
 
     // peel off just the rotation
     Quaternion quat = QuaternionFromMatrix(mat);

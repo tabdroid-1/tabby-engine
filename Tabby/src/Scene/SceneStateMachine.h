@@ -19,9 +19,11 @@ public:
     static void SwitchTo(std::string SceneName);
     static void Remove(std::string SceneName);
 
+    static Tabby::Scene* GetCurrentScene();
+
 private:
     std::unordered_map<std::string, std::shared_ptr<Tabby::Scene>> scenes;
-    std::shared_ptr<Tabby::Scene> curScene;
+    static std::shared_ptr<Tabby::Scene> curScene;
 
 private:
     static SceneStateMachine* s_Instance;
