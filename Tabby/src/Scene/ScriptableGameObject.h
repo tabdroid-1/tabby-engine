@@ -11,6 +11,8 @@ class ScriptableEntity {
 public:
     virtual ~ScriptableEntity() { }
 
+    GameObject FindGameObject(const std::string& GameObjectName);
+
     template <typename T>
     T& GetComponent()
     {

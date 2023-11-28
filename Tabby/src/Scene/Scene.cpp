@@ -174,6 +174,28 @@ void Scene::InitScene()
     }
 }
 
+// Function to extract position from a transformation matrix
+Vector3 MatrixToPosition(Matrix mat)
+{
+    return { mat.m12, mat.m13, mat.m14 };
+}
+
+// Function to extract rotation from a transformation matrix (in degrees)
+Vector3 MatrixToRotation(Matrix mat)
+{
+    float pitch = -asinf(mat.m9);
+    float yaw = atan2f(mat.m8, mat.m10);
+    float roll = -atan2f(mat.m4, mat.m5);
+
+    return { RAD2DEG * pitch, RAD2DEG * yaw, RAD2DEG * roll };
+}
+
+// Function to extract scale from a transformation matrix
+Vector3 MatrixToScale(Matrix mat)
+{
+    return { mat.m0, mat.m5, mat.m10 };
+}
+
 void Scene::Update()
 {
     {
@@ -195,46 +217,63 @@ void Scene::Update()
 
             auto& transform = m_Registry.get<TransformComponent>(entity);
 
-            if (transform.Rotation.x >= 360) {
-                float rot = transform.Rotation.x - 360.0f;
-                transform.Rotation.x = rot;
-            }
+            // if (transform.Rotation.x >= 360) {
+            //     float rot = transform.Rotation.x - 360.0f;
+            //     transform.Rotation.x = rot;
+            // }
+            //
+            // if (transform.Rotation.y >= 360) {
+            //     float rot = transform.Rotation.y - 360.0f;
+            //     transform.Rotation.y = rot;
+            // }
+            //
+            // if (transform.Rotation.z >= 360) {
+            //     float rot = transform.Rotation.z - 360.0f;
+            //     transform.Rotation.z = rot;
+            // }
 
-            if (transform.Rotation.y >= 360) {
-                float rot = transform.Rotation.y - 360.0f;
-                transform.Rotation.y = rot;
-            }
-
-            if (transform.Rotation.z >= 360) {
-                float rot = transform.Rotation.z - 360.0f;
-                transform.Rotation.z = rot;
-            }
+            transform.Rotation.x = fmod(transform.Rotation.x, 360.0f);
+            transform.Rotation.y = fmod(transform.Rotation.y, 360.0f);
+            transform.Rotation.z = fmod(transform.Rotation.z, 360.0f);
 
             if (transform.Parent != entt::null) {
 
                 GameObject parent = { transform.Parent, this };
 
-                Vector3 position = {
-                    parent.GetComponent<TransformComponent>().Position.x + transform.LocalPosition.x,
-                    parent.GetComponent<TransformComponent>().Position.y + transform.LocalPosition.y,
-                    parent.GetComponent<TransformComponent>().Position.z + transform.LocalPosition.z,
-                };
+                Matrix parentTransform = parent.GetComponent<TransformComponent>().GetTransform();
+                Matrix localTransform = transform.GetLocalTransform();
+                Matrix globalTransform = MatrixMultiply(localTransform, parentTransform);
 
-                Vector3 rotation = {
-                    parent.GetComponent<TransformComponent>().Rotation.x + transform.LocalRotation.x,
-                    parent.GetComponent<TransformComponent>().Rotation.y + transform.LocalRotation.y,
-                    parent.GetComponent<TransformComponent>().Rotation.z + transform.LocalRotation.z,
-                };
+                transform.Position = Vector3Multiply({ -1.0f, -1.0f, -1.0f }, Vector3Transform(Vector3Zero(), MatrixInvert(globalTransform)));
+                transform.Rotation = Vector3RotateByQuaternion(transform.Rotation, QuaternionFromMatrix(globalTransform));
+                // transform.Scale = { -asinf(globalTransform.m8), atan2f(globalTransform.m2, globalTransform.m0), -atan2f(globalTransform.m9, globalTransform.m10) };
+                // transform.Scale = { globalTransform.m0, globalTransform.m5, globalTransform.m10 };
 
-                Vector3 scale = {
-                    parent.GetComponent<TransformComponent>().Scale.x * transform.LocalScale.x,
-                    parent.GetComponent<TransformComponent>().Scale.y * transform.LocalScale.y,
-                    parent.GetComponent<TransformComponent>().Scale.z * transform.LocalScale.z,
-                };
-
-                transform.Position = position;
-                transform.Rotation = rotation;
-                transform.Scale = scale;
+                // Extract position, rotation, scale from the composed matrix
+                // transform.Position = MatrixTranslate(globalTransform);
+                // transform.Rotation = MatrixRotateToVector(globalTransform);
+                // transform.Scale = MatrixScaleToVector(globalTransform);
+                // Vector3 position = {
+                //     parent.GetComponent<TransformComponent>().Position.x + transform.LocalPosition.x,
+                //     parent.GetComponent<TransformComponent>().Position.y + transform.LocalPosition.y,
+                //     parent.GetComponent<TransformComponent>().Position.z + transform.LocalPosition.z,
+                // };
+                //
+                // Vector3 rotation = {
+                //     parent.GetComponent<TransformComponent>().Rotation.x + transform.LocalRotation.x,
+                //     parent.GetComponent<TransformComponent>().Rotation.y + transform.LocalRotation.y,
+                //     parent.GetComponent<TransformComponent>().Rotation.z + transform.LocalRotation.z,
+                // };
+                //
+                // Vector3 scale = {
+                //     parent.GetComponent<TransformComponent>().Scale.x * transform.LocalScale.x,
+                //     parent.GetComponent<TransformComponent>().Scale.y * transform.LocalScale.y,
+                //     parent.GetComponent<TransformComponent>().Scale.z * transform.LocalScale.z,
+                // };
+                //
+                // transform.Position = position;
+                // transform.Rotation = rotation;
+                // transform.Scale = scale;
             }
         }
     }
@@ -368,20 +407,29 @@ void Scene::Update()
         {
             auto view = m_Registry.view<SpriteRendererComponent, TransformComponent>();
 
-            // std::vector<entt::entity> sortedEntities;
+            std::vector<entt::entity> sortedEntities;
 
-            // for (entt::entity entity : view) {
-            //     if (m_Registry.get<SpriteRendererComponent>(entity).Active == true)
-            //         sortedEntities.push_back(entity);
-            // }
-            //
-            // std::sort(sortedEntities.begin(), sortedEntities.end(), [this](const entt::entity& a, const entt::entity& b) {
-            //     auto& transformA = m_Registry.get<TransformComponent>(a);
-            //     auto& transformB = m_Registry.get<TransformComponent>(b);
-            //     return transformA.Position.z < transformB.Position.z;
-            // });
+            for (entt::entity entity : view) {
+                if (m_Registry.get<SpriteRendererComponent>(entity).Active == true)
+                    sortedEntities.push_back(entity);
+            }
 
-            for (const entt::entity entity : view) {
+            std::sort(sortedEntities.begin(), sortedEntities.end(), [this](const entt::entity& a, const entt::entity& b) {
+                // Vector3 forward = Vector3Normalize(Vector3Subtract(m_Registry.get<CameraComponent>(m_ActiveCamera).Camera.target, m_Registry.get<CameraComponent>(m_ActiveCamera).Camera.position));
+                // float distanceA = Vector3DotProduct(Vector3Subtract(m_Registry.get<TransformComponent>(a).Position, m_Registry.get<CameraComponent>(m_ActiveCamera).Camera.position), forward);
+                // float distanceB = Vector3DotProduct(Vector3Subtract(m_Registry.get<TransformComponent>(b).Position, m_Registry.get<CameraComponent>(m_ActiveCamera).Camera.position), forward);
+                // return distanceA < distanceB;
+                //
+                float distanceA = Vector3Distance(m_Registry.get<TransformComponent>(a).Position, m_Registry.get<CameraComponent>(m_ActiveCamera).Camera.position);
+                float distanceB = Vector3Distance(m_Registry.get<TransformComponent>(b).Position, m_Registry.get<CameraComponent>(m_ActiveCamera).Camera.position);
+                return distanceA > distanceB;
+                //
+                // auto& transformA = m_Registry.get<TransformComponent>(a);
+                // auto& transformB = m_Registry.get<TransformComponent>(b);
+                // return transformA.Position.z < transformB.Position.z;
+            });
+
+            for (const entt::entity entity : sortedEntities) {
                 auto transform = m_Registry.get<TransformComponent>(entity);
                 auto sprite = m_Registry.get<SpriteRendererComponent>(entity);
 

@@ -16,6 +16,7 @@ Planned Features / To-do list
 - <s>Basic UI implementation.</s> Done
 - <s>Combine Update LateUpdate and Draw in scene. </s> Done
 - <s>Scene manager rework. (switching scenes. scene pool etc.) </s> Done. 
+- Fix child rotating around it self instead of rotating around parent.
 - Function to search and get GameObjects using name tag from active scene.
 - Audio and audio component.
 - Asset Manager. 
