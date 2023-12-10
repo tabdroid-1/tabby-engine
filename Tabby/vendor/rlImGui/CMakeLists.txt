@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.19)
+
+project(rlImGui)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(PROJECT_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}")
+
+file(GLOB_RECURSE PROJECT_SOURCES
+        "${PROJECT_SOURCE_DIR}/*.h"
+        "${PROJECT_SOURCE_DIR}/*.cpp"
+        )
+
+add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
