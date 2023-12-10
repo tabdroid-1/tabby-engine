@@ -5,8 +5,6 @@ A game engine made using Raylib in C++.
 This engine is meant to be ran on older computers. (Android and Web versions planned).
 Engine is mainly for 2D games.
 
-3D elements from engine will be removed from the engine.
-
 Planned Features / To-do list
 -----------------------------
 
@@ -25,12 +23,12 @@ Planned Features / To-do list
 - Custom profiling implementation (tracy Profiler).
 - Physics rework. (Hinges, make components more editable, callbacks like onTriggerEnter, onRaycastHit etc.)
 - Script public variable reflection.
+- LDtk tile map.
 - Serialization(aka saving).
 - Multi-threading
 - More advanced animation system.
 - Particle system.
-- LDtk tile map.
-- Octree. (nvm i will figure this out later)
+- Quadtree.
 - <s>Steamworks API implementation</s> Priorities...
 - <s>Web, Chrome OS, FreeBSD, Raspberry Pi and Android builds </s> Too far-fetched for now.
 - <s>More advanced asset manager. Assets will be stored in the code and (some) will be encrypted using AES encryption to complicate data mining/revers engineering, but there will be option to use files instead of storing in code.(might be in a private branch though) </s> Too far-fetched for now.
