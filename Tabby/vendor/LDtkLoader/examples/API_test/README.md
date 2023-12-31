@@ -1,1 +1,0 @@
-The `all_features.ldtk` file is a copy of the `Test_file_for_API_showing_all_features.ldtk` file provided as a sample with the LDtk software.

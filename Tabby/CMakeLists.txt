@@ -1,138 +1,115 @@
-cmake_minimum_required(VERSION 3.22)
-project(tabby CXX)
-
+cmake_minimum_required(VERSION 3.20)
+project(Tabby)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(APPLE)
+    enable_language(OBJC)
+    enable_language(OBJCXX)
+    message(STATUS "Including Objective-C++ for APPLE")
+    list(APPEND LANGUAGES OBJC)
+    list(APPEND LANGUAGES OBJCXX)
+    set(CMAKE_OBJCXX_STANDARD 14)
+    set(CMAKE_OBJCXX_STANDARD_REQUIRED ON)
+    set(CMAKE_OBJCXX_EXTENSIONS OFF)
+endif()
 
-# ##############################################################################
-# Add dependencies with FetchContent
-# ##############################################################################
+###################################################################
+# Local variables
+###################################################################
+set(PROJECT_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
+set(PROJECT_VENDOR_DIR "${CMAKE_CURRENT_LIST_DIR}/vendor")
 
-# function(add_git_dependency libName gitURL gitTag) FetchContent_Declare(
-# ${libName} GIT_REPOSITORY ${gitURL} GIT_TAG ${gitTag} GIT_SHALLOW TRUE
-# GIT_PROGRESS TRUE) FetchContent_MakeAvailable(${libName})
-# target_compile_options(${libName} PRIVATE "-w") endfunction()
-set(PROJECT_SOURCE_DIR "src")
-set(PROJECT_VENDOR_DIR "vendor")
+find_package(PkgConfig REQUIRED)
 
-set(RAYLIB "${PROJECT_VENDOR_DIR}/raylib")
-set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
-set(RAYLIBTMX "${PROJECT_VENDOR_DIR}/raylib-tmx")
-set(LDTKLOADER "${PROJECT_VENDOR_DIR}/LDtkLoader")
-set(ENTT "${PROJECT_VENDOR_DIR}/entt")
-set(RLIMGUI "${PROJECT_VENDOR_DIR}/rlImGui")
+# Vendor/Libraries
+set(BOX2D "${PROJECT_VENDOR_DIR}/box2D")
 set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
+set(GLAD "${PROJECT_VENDOR_DIR}/glad")
+set(GLFW "${PROJECT_VENDOR_DIR}/glfw")
+set(GLM "${PROJECT_VENDOR_DIR}/glm")
+set(SPDLOG "${PROJECT_VENDOR_DIR}/spdlog")
+set(STB "${PROJECT_VENDOR_DIR}/stb_image")
+set(ENTT "${PROJECT_VENDOR_DIR}/entt")
+set(YAML "${PROJECT_VENDOR_DIR}/yaml-cpp")
+set(IMGUIZMO "${PROJECT_VENDOR_DIR}/ImGuizmo")
 
-# Add Raylib
-set(BUILD_EXAMPLES
-    OFF
-    CACHE BOOL "" FORCE) # don't build the supplied examples
-set(BUILD_GAMES
-    OFF
-    CACHE BOOL "" FORCE) # don't build the supplied example games
-# Add Box2d
-set(BOX2D_BUILD_UNIT_TESTS
-    OFF
-    CACHE BOOL "" FORCE)
-set(BOX2D_BUILD_TESTBED
-    OFF
-    CACHE BOOL "" FORCE)
-
-# ##############################################################################
-# Project executable setup
-# ##############################################################################
-
-# Adding our source files Define PROJECT_SOURCES as a list of all source files
-# file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
-#      "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src/*.h"
-#      "${CMAKE_CURRENT_LIST_DIR}/src/*.hpp")
-
-file(GLOB_RECURSE PROJECT_SOURCES 
+###################################################################
+# Project Sources and add library
+###################################################################
+file(GLOB_RECURSE PROJECT_SOURCES
         "${PROJECT_SOURCE_DIR}/*.h"
         "${PROJECT_SOURCE_DIR}/*.cpp"
         )
-# # Additional project sources (vendors, etc.)
+
+include_directories(${IMGUI})
+include_directories(${STB})
+include_directories(${ENTT})
+include_directories(${IMGUIZMO})
+include_directories(${GLFW})
+
+# Additional project sources (vendors, etc.)
 list(APPEND PROJECT_SOURCES
-        "${ENTT}/entt.hpp" # entity component system
-        "${RAYLIB}/src/raylib.h" 
+        # Vendor sources --------------------------
+        "${STB}/stb_image.h"
+        "${STB}/stb_image.cpp"
+        # -----------------------------------------
         )
 
-
-# Declaring our executable
+# Add library
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
-include_directories(SYSTEM
-        "src"
-        "${RAYLIB}/src"
+# Include directories
+target_include_directories(${PROJECT_NAME} PUBLIC
+        "${PROJECT_SOURCE_DIR}"
+        "${PROJECT_VENDOR_DIR}"
         )
 
-target_include_directories(${PROJECT_NAME} PUBLIC 
-        ${PROJECT_SOURCES_DIR}
-        ${PROJECT_VENDOR_DIR}
-        )
-
-add_subdirectory(${RAYLIB})
-# add_subdirectory(${RAYLIBTMX})
-add_subdirectory(${LDTKLOADER})
-add_subdirectory(${BOX2D})
-add_subdirectory(${RLIMGUI})
+###################################################################
+# Libraries
+###################################################################
+add_subdirectory(${SPDLOG})
+add_subdirectory(${IMGUIZMO})
+add_subdirectory(${GLM})
 add_subdirectory(${IMGUI})
+add_subdirectory(${YAML})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE 
-        # "${CMAKE_CURRENT_SOURCE_DIR}/vendor/raylib_sdl2_lib/libraylib.a"
-        # "${CMAKE_CURRENT_SOURCE_DIR}/vendor/raylib_sdl2_lib/sdl2/lib/aarch64/libSDL2-2.0.so"
-        raylib
-        # raylib-tmx
-        rlImGui
+#BOX2D-------------------------------------------
+set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
+add_subdirectory(${BOX2D})
+#GLFW--------------------------------------------
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+add_subdirectory(${GLFW})
+#----------------------------------------------
+
+target_link_libraries(${PROJECT_NAME} PUBLIC
+        spdlog
+        glfw
+        glm::glm
         imgui
-        LDtkLoader
         box2d
+        glm
+        imguizmo
+		yaml-cpp
         )
 
-# ##############################################################################
-# Project build settings
-# ##############################################################################
+###################################################################
+# Compiler options
+###################################################################
+target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE=1 Dosmesa=true)
 
-add_definitions(-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})
+if(WIN32)
 
-# Setting ASSETS_PATH
-if(CMAKE_BUILD_TYPE MATCHES "Debug")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC TB_DEBUG=1 TB_PLATFORM_WINDOWS=1 TB_BUILD_DLL=1 BUILD_SHARED_LIBS=1)
 
-  # Set the asset path macro to the absolute path on the dev machine
-  target_compile_definitions(
-    ${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
-else()
-  # Set the asset path macro in release mode to a relative path that assumes the
-  # assets folder is in the same directory as the game executable
-  target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="./assets/")
-endif()
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
+    include_directories(GL)
 
-# Set common compiler flags SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall
-# -Wswitch")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+endif(WIN32)
 
-# if(${PLATFORM} STREQUAL "Web")
-#   # Tell Emscripten to build an .html file.
-#   set(CMAKE_EXECUTABLE_SUFFIX ".html")
-#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
-#   set(CMAKE_EXE_LINKER_FLAGS
-#       "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -Os -Wall -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 --preload-file assets/ --shell-file ../src/minshell.html"
-#   )
-#   set(CMAKE_EXECUTABLE_SUFFIX ".html")
-#   # This line is used to set your executable to build with the emscripten html
-#   # template so that you can directly open it.
-#   set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".html")
-#   target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="/assets/")
-#   # Set the asset path macro in release mode to a relative path that assumes the
-#   # assets folder is in the same directory as the game executable
-# endif()
-
-# Ensure that hot-reload is enabled for VS
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /ZI")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
-endif()
-
+###################################################################
+# Precompiled header
+###################################################################
 target_precompile_headers(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/tbpch.h")
