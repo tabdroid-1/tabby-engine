@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Components.h"
 #include "Scene.h"
+#include "Tabby/Core/UUID.h"
 
 #include <entt/entt.hpp>
 
@@ -16,7 +18,17 @@ public:
     T& AddComponent(Args&&... args)
     {
         TB_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
-        return m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        m_Scene->OnComponentAdded<T>(*this, component);
+        return component;
+    }
+
+    template <typename T, typename... Args>
+    T& AddOrReplaceComponent(Args&&... args)
+    {
+        T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        m_Scene->OnComponentAdded<T>(*this, component);
+        return component;
     }
 
     template <typename T>
@@ -29,7 +41,7 @@ public:
     template <typename T>
     bool HasComponent()
     {
-        return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
+        return m_Scene->m_Registry.has<T>(m_EntityHandle);
     }
 
     template <typename T>
@@ -40,7 +52,11 @@ public:
     }
 
     operator bool() const { return m_EntityHandle != entt::null; }
+    operator entt::entity() const { return m_EntityHandle; }
     operator uint32_t() const { return (uint32_t)m_EntityHandle; }
+
+    UUID GetUUID() { return GetComponent<IDComponent>().ID; }
+    const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
 
     bool operator==(const Entity& other) const
     {
