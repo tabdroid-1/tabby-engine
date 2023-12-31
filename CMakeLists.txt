@@ -11,5 +11,5 @@ endif ()
 
 add_definitions(-w) # disables warnings
 
-add_subdirectory(Game)
 add_subdirectory(Tabby)
+add_subdirectory(Sandbox)

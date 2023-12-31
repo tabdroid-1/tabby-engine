@@ -1,62 +1,47 @@
 Tabby Engine
 =============================
 
-A game engine made using Raylib in C++.
+Simple game engine written .
 This engine is meant to be ran on older computers. (Android and Web versions planned).
 Engine is mainly for 2D games.
+
+In this engine you mostly do everything using code.
+There is Prefab/Level editor planned since its hard to make levels using just code.
 
 Planned Features / To-do list
 -----------------------------
 
-- <s>ImGui implementation for easy component value editing without rebuilding and more.</s> Done
-- <s>Parent-Child system or whatever.</s> Done
-- <s>Out of screen texture culling.</s> Done
-- <s>Make engine run using a function instead of having to create main function in executable.</s> Done
-- <s>Remove float dt from every function. There is no need for it. There is a function to get deltatime. </s> Done
-- <s>Basic UI implementation.</s> Done
-- <s>Combine Update LateUpdate and Draw in scene. </s> Done
-- <s>Scene manager rework. (switching scenes. scene pool etc.) </s> Done. 
-- Fix child rotating around it self instead of rotating around parent.
+- Scene manager. (switching scenes. scene pool etc.) </s> Done. 
 - Function to search and get GameObjects using name tag from active scene.
 - Audio and audio component.
 - Asset Manager. 
-- Custom profiling implementation (tracy Profiler).
-- Physics rework. (Hinges, make components more editable, callbacks like onTriggerEnter, onRaycastHit etc.)
-- Script public variable reflection.
-- LDtk tile map.
+- Profiling implementation (tracy Profiler).
 - Serialization(aka saving).
 - Multi-threading
-- More advanced animation system.
-- Particle system.
-- Quadtree.
-- <s>Steamworks API implementation</s> Priorities...
-- <s>Web, Chrome OS, FreeBSD, Raspberry Pi and Android builds </s> Too far-fetched for now.
-- <s>More advanced asset manager. Assets will be stored in the code and (some) will be encrypted using AES encryption to complicate data mining/revers engineering, but there will be option to use files instead of storing in code.(might be in a private branch though) </s> Too far-fetched for now.
-- <s>Clean the f*kin "CMakeLists.txt" to be more understandable and useable. It looks hideous.</s> Extremely far-fetched for now.
+- <s>Web, Raspberry Pi and Android builds </s> Too far-fetched for now.
 
 Engine Dependencies
 -------------------
 
-- raylib
 - box2d
 - entt
-- LDtkLoader
-- raylib-tmx
 - ImGui
-- rlImGui
+- glfw
+- glm
+- imguizmo
+- spdlog
+- stb_image
+- yaml-cpp
 
 Compiling
 ---------
 
  1. ```shell
-    git clone https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
+    git clone -b customRenderer https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
     ```
 
  2. ```shell
-    cmake .. -DOPENGL_VERSION="ES 2.0" && make
-    ```
-
-    (u can also use opengl 2.1, 3.3, 4,3 or even 1.1 but that might cause errors and/or visual bugs)
+    cmake .. && make
 
 Note From the author
  --------------------
@@ -66,4 +51,4 @@ Note From the author
 Special Thanks
  --------------
 
-- JeffM for answering my stupid questions (Discord: jefferym)
+- Jonny Hotbody
