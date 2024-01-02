@@ -11,7 +11,7 @@ public:
     enum class API {
         None = 0,
         OpenGL33 = 1,
-        OpenGLES31 = 2
+        OpenGLES3 = 2
     };
 
 public:

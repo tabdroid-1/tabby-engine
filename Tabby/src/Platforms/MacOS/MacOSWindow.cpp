@@ -1,3 +1,6 @@
+#include <Tabby/Core/KeyCodes.h>
+#include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Renderer/RendererAPI.h>
 #ifdef TB_PLATFORM_MACOS
 
 #include "Platforms/MacOS/MacOSWindow.h"
@@ -54,14 +57,26 @@ void MacOSWindow::Init(const WindowProps& props)
 
     {
         TB_PROFILE_SCOPE("glfwCreateWindow");
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+
+        if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
+
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #if defined(TB_DEBUG)
-        if (Renderer::GetAPI() == RendererAPI::API::OpenGL33)
             glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
+        } else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3) {
+
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+#if defined(TB_DEBUG)
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
+        }
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
         ++s_GLFWWindowCount;
     }

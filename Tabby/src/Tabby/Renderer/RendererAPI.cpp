@@ -2,6 +2,7 @@
 #include "tbpch.h"
 
 #include "Drivers/gl33/OpenGL33RendererAPI.h"
+#include "Drivers/gles3/OpenGLES3RendererAPI.h"
 
 namespace Tabby {
 
@@ -15,9 +16,8 @@ Scope<RendererAPI> RendererAPI::Create()
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateScope<OpenGL33RendererAPI>();
-    case RendererAPI::API::OpenGLES31:
-        TB_CORE_ASSERT(false, "RendererAPI::OpenGLES31 is currently not supported!");
-        return nullptr;
+    case RendererAPI::API::OpenGLES3:
+        return CreateScope<OpenGLES3RendererAPI>();
     }
 
     TB_CORE_ASSERT(false, "Unknown RendererAPI!");
