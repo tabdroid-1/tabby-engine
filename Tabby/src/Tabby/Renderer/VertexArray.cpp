@@ -1,6 +1,7 @@
 #include "tbpch.h"
 
 #include "Drivers/gl33/OpenGL33VertexArray.h"
+#include "Drivers/gles3/OpenGLES3VertexArray.h"
 #include "Tabby/Renderer/Renderer.h"
 #include "Tabby/Renderer/VertexArray.h"
 
@@ -14,6 +15,8 @@ Ref<VertexArray> VertexArray::Create()
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateRef<OpenGL33VertexArray>();
+    case RendererAPI::API::OpenGLES3:
+        return CreateRef<OpenGLES3VertexArray>();
     }
 
     TB_CORE_ASSERT(false, "Unknown RendererAPI!");

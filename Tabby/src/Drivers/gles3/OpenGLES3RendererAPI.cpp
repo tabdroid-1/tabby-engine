@@ -1,8 +1,8 @@
-#include "Drivers/gl33/OpenGL33RendererAPI.h"
-#include "Drivers/gl33/GL33.h"
+#include "Drivers/gles3/OpenGLES3RendererAPI.h"
+#include "Drivers/gles3/GLES3.h"
 #include "tbpch.h"
 
-#include <glad/gl33.h>
+#include <glad/gles3.h>
 
 namespace Tabby {
 
@@ -25,7 +25,7 @@ namespace Tabby {
 //     TB_CORE_ASSERT(false, "Unknown severity level!");
 // }
 
-void OpenGL33RendererAPI::Init()
+void OpenGLES3RendererAPI::Init()
 {
     // TB_PROFILE_FUNCTION();
 
@@ -37,44 +37,44 @@ void OpenGL33RendererAPI::Init()
     // glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 #endif
 
-    GL33::GL()->Enable(GL_BLEND);
-    GL33::GL()->BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    GLES3::GL()->Enable(GL_BLEND);
+    GLES3::GL()->BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    GL33::GL()->Enable(GL_DEPTH_TEST);
-    GL33::GL()->Enable(GL_LINE_SMOOTH);
+    GLES3::GL()->Enable(GL_DEPTH_TEST);
+    // glEnable(GL_LINE_SMOOTH);
 }
 
-void OpenGL33RendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+void OpenGLES3RendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 {
-    GL33::GL()->Viewport(x, y, width, height);
+    GLES3::GL()->Viewport(x, y, width, height);
 }
 
-void OpenGL33RendererAPI::SetClearColor(const glm::vec4& color)
+void OpenGLES3RendererAPI::SetClearColor(const glm::vec4& color)
 {
-    GL33::GL()->ClearColor(color.r, color.g, color.b, color.a);
+    GLES3::GL()->ClearColor(color.r, color.g, color.b, color.a);
 }
 
-void OpenGL33RendererAPI::Clear()
+void OpenGLES3RendererAPI::Clear()
 {
-    GL33::GL()->Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GLES3::GL()->Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenGL33RendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
+void OpenGLES3RendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 {
     vertexArray->Bind();
     uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
-    GL33::GL()->DrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+    GLES3::GL()->DrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 }
 
-void OpenGL33RendererAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+void OpenGLES3RendererAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
 {
     vertexArray->Bind();
-    GL33::GL()->DrawArrays(GL_LINES, 0, vertexCount);
+    GLES3::GL()->DrawArrays(GL_LINES, 0, vertexCount);
 }
 
-void OpenGL33RendererAPI::SetLineWidth(float width)
+void OpenGLES3RendererAPI::SetLineWidth(float width)
 {
-    GL33::GL()->LineWidth(width);
+    GLES3::GL()->LineWidth(width);
 }
 
 }

@@ -13,6 +13,7 @@ Engine is based on Hazel engine.
 Planned Features / To-do list
 -----------------------------
 
+- Use SDL for window creation instead of GLFW.
 - Audio and audio component.
 - Asset Manager. 
 - Profiling implementation (tracy Profiler).

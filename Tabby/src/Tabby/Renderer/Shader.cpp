@@ -2,6 +2,7 @@
 #include "tbpch.h"
 
 #include "Drivers/gl33/OpenGL33Shader.h"
+#include "Drivers/gles3/OpenGLES3Shader.h"
 #include "Tabby/Renderer/Renderer.h"
 
 namespace Tabby {
@@ -14,6 +15,8 @@ Ref<Shader> Shader::Create(const std::string& filepath)
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateRef<OpenGL33Shader>(filepath);
+    case RendererAPI::API::OpenGLES3:
+        return CreateRef<OpenGLES3Shader>(filepath);
     }
 
     TB_CORE_ASSERT(false, "Unknown RendererAPI!");
@@ -28,6 +31,8 @@ Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateRef<OpenGL33Shader>(name, vertexSrc, fragmentSrc);
+    case RendererAPI::API::OpenGLES3:
+        return CreateRef<OpenGLES3Shader>(name, vertexSrc, fragmentSrc);
     }
 
     TB_CORE_ASSERT(false, "Unknown RendererAPI!");

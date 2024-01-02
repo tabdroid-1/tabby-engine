@@ -1,10 +1,10 @@
-#include "Drivers/gl33/OpenGL33Shader.h"
-#include "Drivers/gl33/GL33.h"
+#include "Drivers/gles3/OpenGLES3Shader.h"
+#include "Drivers/gles3/GLES3.h"
 #include "Tabby/Core/Timer.h"
 #include "tbpch.h"
 
 #include <fstream>
-#include <glad/gl33.h>
+#include <glad/gles3.h>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
@@ -25,7 +25,7 @@ static GLenum ShaderTypeFromString(const std::string& type)
     return 0;
 }
 
-OpenGL33Shader::OpenGL33Shader(const std::string& filepath)
+OpenGLES3Shader::OpenGLES3Shader(const std::string& filepath)
 {
     // TB_PROFILE_FUNCTION();
 
@@ -44,7 +44,7 @@ OpenGL33Shader::OpenGL33Shader(const std::string& filepath)
     m_Name = filepath.substr(lastSlash, count);
 }
 
-OpenGL33Shader::OpenGL33Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
+OpenGLES3Shader::OpenGLES3Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
     : m_Name(name)
 {
     // TB_PROFILE_FUNCTION();
@@ -55,14 +55,14 @@ OpenGL33Shader::OpenGL33Shader(const std::string& name, const std::string& verte
     Compile(sources, "Name: " + name);
 }
 
-OpenGL33Shader::~OpenGL33Shader()
+OpenGLES3Shader::~OpenGLES3Shader()
 {
     // TB_PROFILE_FUNCTION();
 
-    GL33::GL()->DeleteProgram(m_RendererID);
+    GLES3::GL()->DeleteProgram(m_RendererID);
 }
 
-std::unordered_map<GLenum, std::string> OpenGL33Shader::PreProcess(const std::string& source)
+std::unordered_map<GLenum, std::string> OpenGLES3Shader::PreProcess(const std::string& source)
 {
     std::unordered_map<GLenum, std::string> shaderSources;
 
@@ -83,7 +83,7 @@ std::unordered_map<GLenum, std::string> OpenGL33Shader::PreProcess(const std::st
     return shaderSources;
 }
 
-std::string OpenGL33Shader::ReadFile(const std::string& filepath)
+std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
 {
     std::string result;
     std::ifstream in(filepath, std::ios::in | std::ios::binary);
@@ -102,11 +102,11 @@ std::string OpenGL33Shader::ReadFile(const std::string& filepath)
 }
 
 // NOTE: ShaderInfo holds name or path of shader. this is to show path or name for the shader with error
-void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSource, const std::string& shaderInfo)
+void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSource, const std::string& shaderInfo)
 {
     // TB_PROFILE_FUNCTION();
 
-    GLuint program = GL33::GL()->CreateProgram();
+    GLuint program = GLES3::GL()->CreateProgram();
     TB_CORE_ASSERT(shaderSource.size() <= 2, "Only 3 shaders are supported");
     std::array<GLenum, 3> glShaderIDs;
     int glShaderIDIndex = 0;
@@ -114,24 +114,24 @@ void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shad
         GLenum type = kv_pair.first;
         const std::string& sourceBase = kv_pair.second;
 
-        GLuint shader = GL33::GL()->CreateShader(type);
+        GLuint shader = GLES3::GL()->CreateShader(type);
 
         const GLchar* source = sourceBase.c_str();
-        GL33::GL()->ShaderSource(shader, 1, &source, 0);
+        GLES3::GL()->ShaderSource(shader, 1, &source, 0);
 
         // Compile the vertex shader
-        GL33::GL()->CompileShader(shader);
+        GLES3::GL()->CompileShader(shader);
 
         GLint isCompiled = 0;
-        GL33::GL()->GetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+        GLES3::GL()->GetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
         if (isCompiled == GL_FALSE) {
             GLint maxLength = 0;
-            GL33::GL()->GetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+            GLES3::GL()->GetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
             std::vector<GLchar> infoLog(maxLength);
-            GL33::GL()->GetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+            GLES3::GL()->GetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
-            GL33::GL()->DeleteShader(shader);
+            GLES3::GL()->DeleteShader(shader);
 
             TB_CORE_ERROR("Shader compilation error for {0}!", shaderInfo);
             TB_CORE_ERROR("{0}", infoLog.data());
@@ -139,26 +139,26 @@ void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shad
 
             break;
         }
-        GL33::GL()->AttachShader(program, shader);
+        GLES3::GL()->AttachShader(program, shader);
         glShaderIDs[glShaderIDIndex++] = shader;
     }
 
-    GL33::GL()->LinkProgram(program);
+    GLES3::GL()->LinkProgram(program);
     GLint isLinked = 0;
-    GL33::GL()->GetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
+    GLES3::GL()->GetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
     if (isLinked != 1) {
         GLint maxLength = 0;
-        GL33::GL()->GetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+        GLES3::GL()->GetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
         // The maxLength includes the NULL character
         std::vector<GLchar> infoLog(maxLength);
-        GL33::GL()->GetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+        GLES3::GL()->GetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
         // We don't need the program anymore.
-        GL33::GL()->DeleteProgram(program);
+        GLES3::GL()->DeleteProgram(program);
 
         for (auto id : glShaderIDs)
-            GL33::GL()->DeleteShader(id);
+            GLES3::GL()->DeleteShader(id);
 
         TB_CORE_ERROR("Linking shader error for {0}!", shaderInfo);
         TB_CORE_ERROR("{0}", infoLog.data());
@@ -166,118 +166,118 @@ void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shad
         return;
     }
     for (auto id : glShaderIDs)
-        GL33::GL()->DetachShader(program, id);
+        GLES3::GL()->DetachShader(program, id);
 
     m_RendererID = program;
 }
 
-void OpenGL33Shader::Bind() const
+void OpenGLES3Shader::Bind() const
 {
     // TB_PROFILE_FUNCTION();
 
-    GL33::GL()->UseProgram(m_RendererID);
+    GLES3::GL()->UseProgram(m_RendererID);
 }
 
-void OpenGL33Shader::Unbind() const
+void OpenGLES3Shader::Unbind() const
 {
     // TB_PROFILE_FUNCTION();
 
-    GL33::GL()->UseProgram(0);
+    GLES3::GL()->UseProgram(0);
 }
 
-void OpenGL33Shader::SetInt(const std::string& name, int value)
+void OpenGLES3Shader::SetInt(const std::string& name, int value)
 {
     // TB_PROFILE_FUNCTION();
 
     UploadUniformInt(name, value);
 }
 
-void OpenGL33Shader::SetIntArray(const std::string& name, int* values, uint32_t count)
+void OpenGLES3Shader::SetIntArray(const std::string& name, int* values, uint32_t count)
 {
     UploadUniformIntArray(name, values, count);
 }
 
-void OpenGL33Shader::SetFloat(const std::string& name, float value)
+void OpenGLES3Shader::SetFloat(const std::string& name, float value)
 {
     // TB_PROFILE_FUNCTION();
 
     UploadUniformFloat(name, value);
 }
 
-void OpenGL33Shader::SetFloat2(const std::string& name, const glm::vec2& value)
+void OpenGLES3Shader::SetFloat2(const std::string& name, const glm::vec2& value)
 {
     // TB_PROFILE_FUNCTION();
 
     UploadUniformFloat2(name, value);
 }
 
-void OpenGL33Shader::SetFloat3(const std::string& name, const glm::vec3& value)
+void OpenGLES3Shader::SetFloat3(const std::string& name, const glm::vec3& value)
 {
     // TB_PROFILE_FUNCTION();
 
     UploadUniformFloat3(name, value);
 }
 
-void OpenGL33Shader::SetFloat4(const std::string& name, const glm::vec4& value)
+void OpenGLES3Shader::SetFloat4(const std::string& name, const glm::vec4& value)
 {
     // TB_PROFILE_FUNCTION();
 
     UploadUniformFloat4(name, value);
 }
 
-void OpenGL33Shader::SetMat4(const std::string& name, const glm::mat4& value)
+void OpenGLES3Shader::SetMat4(const std::string& name, const glm::mat4& value)
 {
     // TB_PROFILE_FUNCTION();
 
     UploadUniformMat4(name, value);
 }
 
-void OpenGL33Shader::UploadUniformInt(const std::string& name, int value)
+void OpenGLES3Shader::UploadUniformInt(const std::string& name, int value)
 {
-    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GL33::GL()->Uniform1i(location, value);
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->Uniform1i(location, value);
 }
 
-void OpenGL33Shader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
+void OpenGLES3Shader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
 {
-    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GL33::GL()->Uniform1iv(location, count, values);
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->Uniform1iv(location, count, values);
 }
 
-void OpenGL33Shader::UploadUniformFloat(const std::string& name, float value)
+void OpenGLES3Shader::UploadUniformFloat(const std::string& name, float value)
 {
-    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GL33::GL()->Uniform1f(location, value);
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->Uniform1f(location, value);
 }
 
-void OpenGL33Shader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
+void OpenGLES3Shader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
 {
-    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GL33::GL()->Uniform2f(location, value.x, value.y);
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->Uniform2f(location, value.x, value.y);
 }
 
-void OpenGL33Shader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
+void OpenGLES3Shader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
 {
-    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GL33::GL()->Uniform3f(location, value.x, value.y, value.z);
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->Uniform3f(location, value.x, value.y, value.z);
 }
 
-void OpenGL33Shader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
+void OpenGLES3Shader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
 {
-    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GL33::GL()->Uniform4f(location, value.x, value.y, value.z, value.w);
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->Uniform4f(location, value.x, value.y, value.z, value.w);
 }
 
-void OpenGL33Shader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
+void OpenGLES3Shader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
 {
-    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GL33::GL()->UniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->UniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-void OpenGL33Shader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
+void OpenGLES3Shader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 {
-    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GL33::GL()->UniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->UniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 }

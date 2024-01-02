@@ -2,6 +2,7 @@
 #include "tbpch.h"
 
 #include "Drivers/gl33/OpenGL33UniformBuffer.h"
+#include "Drivers/gles3/OpenGLES3UniformBuffer.h"
 #include "Tabby/Renderer/Renderer.h"
 
 namespace Tabby {
@@ -14,6 +15,8 @@ Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateRef<OpenGL33UniformBuffer>(size, binding);
+    case RendererAPI::API::OpenGLES3:
+        return CreateRef<OpenGLES3UniformBuffer>(size, binding);
     }
 
     TB_CORE_ASSERT(false, "Unknown RendererAPI!");

@@ -2,6 +2,7 @@
 #include "tbpch.h"
 
 #include "Drivers/gl33/OpenGL33Texture.h"
+#include "Drivers/gles3/OpenGLES3Texture.h"
 #include "Tabby/Renderer/Renderer.h"
 
 namespace Tabby {
@@ -14,6 +15,8 @@ Ref<Texture2D> Texture2D::Create(const TextureSpecification& specification)
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateRef<OpenGL33Texture2D>(specification);
+    case RendererAPI::API::OpenGLES3:
+        return CreateRef<OpenGLES3Texture2D>(specification);
     }
 
     TB_CORE_ASSERT(false, "Unknown RendererAPI!");
@@ -28,6 +31,8 @@ Ref<Texture2D> Texture2D::Create(const std::string& path)
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateRef<OpenGL33Texture2D>(path);
+    case RendererAPI::API::OpenGLES3:
+        return CreateRef<OpenGLES3Texture2D>(path);
     }
 
     TB_CORE_ASSERT(false, "Unknown RendererAPI!");
