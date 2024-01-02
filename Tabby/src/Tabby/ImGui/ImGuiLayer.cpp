@@ -1,6 +1,7 @@
 #include "Tabby/ImGui/ImGuiLayer.h"
 #include "tbpch.h"
 
+#include <Tabby/Renderer/RendererAPI.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 
@@ -64,7 +65,10 @@ void ImGuiLayer::OnAttach()
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330 core");
+    if (RendererAPI::GetAPI() == RendererAPI::API::OpenGL33)
+        ImGui_ImplOpenGL3_Init("#version 330 core");
+    else if (RendererAPI::GetAPI() == RendererAPI::API::OpenGLES3)
+        ImGui_ImplOpenGL3_Init("#version 300 es");
 }
 
 void ImGuiLayer::OnDetach()
