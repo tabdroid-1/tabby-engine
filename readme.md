@@ -13,8 +13,6 @@ Engine is based on Hazel engine.
 Planned Features / To-do list
 -----------------------------
 
-- Scene manager. (switching scenes. scene pool etc.) </s> Done. 
-- Function to search and get GameObjects using name tag from active scene.
 - Audio and audio component.
 - Asset Manager. 
 - Profiling implementation (tracy Profiler).
