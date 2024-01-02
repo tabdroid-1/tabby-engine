@@ -39,12 +39,29 @@ Engine Dependencies
 Compiling
 ---------
 
+- Native
+
  1. ```shell
     git clone -b customRenderer https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
     ```
 
  2. ```shell
     cmake .. && make
+    ```
+
+- Emscripten 
+
+ 1. ```shell
+    git clone -b customRenderer https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
+    ```
+
+ 2. ```shell
+    emcmake cmake .. && make
+    ```
+
+ 2. ```shell
+    python3 -m http.server 8080
+    ```
 
 Note From the author
  --------------------
