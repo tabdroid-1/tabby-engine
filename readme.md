@@ -13,13 +13,11 @@ Engine is based on Hazel engine.
 Planned Features / To-do list
 -----------------------------
 
-- Use SDL for window creation instead of GLFW.
 - Audio and audio component.
 - Asset Manager. 
 - Profiling implementation (tracy Profiler).
 - Serialization(aka saving).
 - Multi-threading
-- <s>Web, Raspberry Pi and Android builds </s> Too far-fetched for now.
 
 Engine Dependencies
 -------------------
