@@ -1,5 +1,4 @@
 #include <Tabby.h>
-#include <Tabby/Core/EntryPoint.h>
 
 // #include "ExampleLayer.h"
 #include "Sandbox2D.h"
@@ -27,3 +26,28 @@ Tabby::Application* Tabby::CreateApplication(Tabby::ApplicationCommandLineArgs a
 
     return new Sandbox(spec);
 }
+
+#ifdef TB_PLATFORM_WEB
+
+#include <emscripten.h>
+
+void run()
+{
+    Tabby::Application::Get().Run();
+}
+
+int main(int argc, char** argv)
+{
+    Tabby::Log::Init();
+
+    auto app = Tabby::CreateApplication({ argc, argv });
+
+    emscripten_set_main_loop(&run, 0, 1);
+
+    delete app;
+}
+#else
+
+#include <Tabby/Core/EntryPoint.h>
+
+#endif

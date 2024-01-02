@@ -27,5 +27,5 @@ add_library(imgui STATIC
 
 
 target_link_libraries(imgui
-        OpenGL::GL
+        # OpenGL::GL
         )

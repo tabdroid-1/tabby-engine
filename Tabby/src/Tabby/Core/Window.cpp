@@ -7,6 +7,8 @@
 #include "Platforms/Linux/LinuxWindow.h"
 #elif defined(TB_PLATFORM_MACOS)
 #include "Platforms/MacOS/MacOSWindow.h"
+#elif defined(TB_PLATFORM_WEB)
+#include "Platforms/Web/WebWindow.h"
 #endif
 
 namespace Tabby {
@@ -18,6 +20,8 @@ Scope<Window> Window::Create(const WindowProps& props)
     return CreateScope<LinuxWindow>(props);
 #elif defined(TB_PLATFORM_MACOS)
     return CreateScope<MacOSWindow>(props);
+#elif defined(TB_PLATFORM_WEB)
+    return CreateScope<WebWindow>(props);
 #else
     TB_CORE_ASSERT(false, "Unknown platform!");
     return nullptr;
