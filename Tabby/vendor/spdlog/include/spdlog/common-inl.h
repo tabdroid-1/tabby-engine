@@ -4,7 +4,7 @@
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include <spdlog/common.h>
+#    include <spdlog/common.h>
 #endif
 
 #include <algorithm>
@@ -16,7 +16,7 @@ namespace level {
 #if __cplusplus >= 201703L
 constexpr
 #endif
-static string_view_t level_string_views[] SPDLOG_LEVEL_NAMES;
+    static string_view_t level_string_views[] SPDLOG_LEVEL_NAMES;
 
 static const char *short_level_names[] SPDLOG_SHORT_LEVEL_NAMES;
 
@@ -56,7 +56,7 @@ SPDLOG_INLINE spdlog_ex::spdlog_ex(std::string msg)
 SPDLOG_INLINE spdlog_ex::spdlog_ex(const std::string &msg, int last_errno)
 {
     memory_buf_t outbuf;
-    fmt::format_system_error(outbuf, last_errno, msg);
+    fmt::format_system_error(outbuf, last_errno, msg.c_str());
     msg_ = fmt::to_string(outbuf);
 }
 

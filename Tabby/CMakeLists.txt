@@ -1,9 +1,8 @@
-cmake_minimum_required(VERSION 3.20)
-project(Tabby)
+cmake_minimum_required(VERSION 3.22)
+project(tabby CXX)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(APPLE)
-    enable_language(OBJC)
-    enable_language(OBJCXX)
     message(STATUS "Including Objective-C++ for APPLE")
     list(APPEND LANGUAGES OBJC)
     list(APPEND LANGUAGES OBJCXX)
@@ -12,104 +11,133 @@ if(APPLE)
     set(CMAKE_OBJCXX_EXTENSIONS OFF)
 endif()
 
-###################################################################
-# Local variables
-###################################################################
-set(PROJECT_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
-set(PROJECT_VENDOR_DIR "${CMAKE_CURRENT_LIST_DIR}/vendor")
+set(PROJECT_SOURCE_DIR "src")
+set(PROJECT_VENDOR_DIR "vendor")
 
-find_package(PkgConfig REQUIRED)
+# ##############################################################################
+# Add dependencies 
+# ##############################################################################
 
-# Vendor/Libraries
-set(BOX2D "${PROJECT_VENDOR_DIR}/box2D")
-set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
-set(GLAD "${PROJECT_VENDOR_DIR}/glad")
 set(GLFW "${PROJECT_VENDOR_DIR}/glfw")
+set(GLAD "${PROJECT_VENDOR_DIR}/glad")
 set(GLM "${PROJECT_VENDOR_DIR}/glm")
+set(STB "${PROJECT_VENDOR_DIR}/stb")
 set(SPDLOG "${PROJECT_VENDOR_DIR}/spdlog")
-set(STB "${PROJECT_VENDOR_DIR}/stb_image")
+set(FREETYPE "${PROJECT_VENDOR_DIR}/freetype")
+set(YAML-CPP "${PROJECT_VENDOR_DIR}/yaml-cpp")
+set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
-set(YAML "${PROJECT_VENDOR_DIR}/yaml-cpp")
-set(IMGUIZMO "${PROJECT_VENDOR_DIR}/ImGuizmo")
+set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
+set(IMGUIZMO "${PROJECT_VENDOR_DIR}/imguizmo")
 
-###################################################################
-# Project Sources and add library
-###################################################################
-file(GLOB_RECURSE PROJECT_SOURCES
+# Box2d
+set(BOX2D_BUILD_UNIT_TESTS
+    OFF
+    CACHE BOOL "" FORCE)
+set(BOX2D_BUILD_TESTBED
+    OFF
+    CACHE BOOL "" FORCE)
+
+# ##############################################################################
+# Project executable setup
+# ##############################################################################
+
+file(GLOB_RECURSE PROJECT_SOURCES 
         "${PROJECT_SOURCE_DIR}/*.h"
         "${PROJECT_SOURCE_DIR}/*.cpp"
         )
 
-include_directories(${IMGUI})
-include_directories(${STB})
-include_directories(${ENTT})
-include_directories(${IMGUIZMO})
-include_directories(${GLFW})
-
-# Additional project sources (vendors, etc.)
+# # Additional project sources (vendors, etc.)
 list(APPEND PROJECT_SOURCES
-        # Vendor sources --------------------------
+        "${ENTT}/entt.hpp" # entity component system
+
+        "${SPDLOG}/include/spdlog/spdlog.h" # For logging
         "${STB}/stb_image.h"
         "${STB}/stb_image.cpp"
-        # -----------------------------------------
         )
 
-# Add library
+
+# Declaring our executable
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
-# Include directories
-target_include_directories(${PROJECT_NAME} PUBLIC
-        "${PROJECT_SOURCE_DIR}"
-        "${PROJECT_VENDOR_DIR}"
+target_include_directories(${PROJECT_NAME} PUBLIC 
+        ${PROJECT_SOURCES_DIR}
+        ${PROJECT_VENDOR_DIR}
+        ${GLM}
+        ${SPDLOG}/include
         )
 
-###################################################################
-# Libraries
-###################################################################
-add_subdirectory(${SPDLOG})
-add_subdirectory(${IMGUIZMO})
-add_subdirectory(${GLM})
-add_subdirectory(${IMGUI})
-add_subdirectory(${YAML})
+include_directories(SYSTEM src)
+include_directories(${IMGUIZMO})
+include_directories(${IMGUI})
+include_directories(${STB})
+include_directories(${GLM})
 
-#BOX2D-------------------------------------------
-set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
-set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
-add_subdirectory(${BOX2D})
-#GLFW--------------------------------------------
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(${GLFW})
-#----------------------------------------------
+add_subdirectory(${GLM})
+add_subdirectory(${FREETYPE})
+add_subdirectory(${YAML-CPP})
+add_subdirectory(${SPDLOG})
+add_subdirectory(${BOX2D})
+add_subdirectory(${IMGUI})
+add_subdirectory(${IMGUIZMO})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-        spdlog
-        glfw
-        glm::glm
+target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
+        spdlog
+        glfw
         glm
+        # glm::glm
+        yaml-cpp
+        freetype
         imguizmo
-		yaml-cpp
         )
 
-###################################################################
-# Compiler options
-###################################################################
-target_compile_definitions(${PROJECT_NAME} PRIVATE GLFW_INCLUDE_NONE=1 Dosmesa=true)
+# ##############################################################################
+# Project build settings
+# ##############################################################################
 
-if(WIN32)
+add_definitions(-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})
 
-    target_compile_definitions(${PROJECT_NAME} PUBLIC TB_DEBUG=1 TB_PLATFORM_WINDOWS=1 TB_BUILD_DLL=1 BUILD_SHARED_LIBS=1)
+# Setting ASSETS_PATH
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG")
 
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-    include_directories(GL)
+  # Set the asset path macro to the absolute path on the dev machine
+  target_compile_definitions(
+    ${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+else()
+  # Set the asset path macro in release mode to a relative path that assumes the
+  # assets folder is in the same directory as the game executable
+  target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="./assets/")
+endif()
 
-endif(WIN32)
+# Set common compiler flags SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall
+# -Wswitch")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-###################################################################
-# Precompiled header
-###################################################################
+# if(${PLATFORM} STREQUAL "Web")
+#   # Tell Emscripten to build an .html file.
+#   set(CMAKE_EXECUTABLE_SUFFIX ".html")
+#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
+#   set(CMAKE_EXE_LINKER_FLAGS
+#       "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -Os -Wall -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 --preload-file assets/ --shell-file ../src/minshell.html"
+#   )
+#   set(CMAKE_EXECUTABLE_SUFFIX ".html")
+#   # This line is used to set your executable to build with the emscripten html
+#   # template so that you can directly open it.
+#   set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".html")
+#   target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="/assets/")
+#   # Set the asset path macro in release mode to a relative path that assumes the
+#   # assets folder is in the same directory as the game executable
+# endif()
+
+# Ensure that hot-reload is enabled for VS
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /ZI")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+endif()
+
 target_precompile_headers(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/tbpch.h")

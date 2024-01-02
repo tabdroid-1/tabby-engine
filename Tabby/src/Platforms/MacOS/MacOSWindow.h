@@ -5,6 +5,7 @@
 #include "Tabby/Core/Window.h"
 #include "Tabby/Renderer/GraphicsContext.h"
 
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 namespace Tabby {

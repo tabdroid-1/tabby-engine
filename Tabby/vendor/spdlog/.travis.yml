@@ -5,7 +5,7 @@
 sudo: required
 language: cpp
 
-# gcc 4.8
+# gcc t
 addons: &gcc48
   apt:
     packages:
@@ -20,6 +20,16 @@ addons: &gcc7
       - g++-7
     sources:
       - ubuntu-toolchain-r-test
+
+
+# gcc 9.0
+addons: &gcc9
+  apt:
+    packages:
+      - g++-9
+    sources:
+      - ubuntu-toolchain-r-test
+
 
 # Clang 3.5
 addons: &clang35
@@ -44,42 +54,42 @@ addons: &clang10
 
 matrix:
   include:
-    # Test gcc-4.8: C++11, Build=Debug/Release
-    - env: GCC_VERSION=4.8 BUILD_TYPE=Debug CPP=11
-      os: linux
-      addons: *gcc48
-
+    # Test gcc-4.8: C++11, Build=Release
     - env: GCC_VERSION=4.8 BUILD_TYPE=Release CPP=11
       os: linux
       addons: *gcc48
-
+      
+    # Test gcc-7: C++11, Build=Release
     - env: GCC_VERSION=7 BUILD_TYPE=Release CPP=11
       os: linux
       addons: *gcc7
-
-    # Test clang-3.5: C++11, Build=Debug/Release
-    - env: CLANG_VERSION=3.5 BUILD_TYPE=Debug CPP=11
+      
+     # Test gcc-9: C++17, Build=Release
+    - env: GCC_VERSION=9 BUILD_TYPE=Release CPP=17
       os: linux
-      addons: *clang35
+      addons: *gcc9
 
+    # Test clang-3.5: C++11, Build=Release
     - env: CLANG_VERSION=3.5 BUILD_TYPE=Release CPP=11
       os: linux
       addons: *clang35
 
-      # osx
+    # Text osx
     - env: BUILD_TYPE=Release CPP=11 ASAN=Off TSAN=Off
       os: osx
 
-    # Test clang-10.0: C++11, Build=Debug/Release
-    - env: CLANG_VERSION=10 BUILD_TYPE=Debug CPP=11
-      os: linux
-      dist: bionic
-      addons: *clang10
-
+    # Test clang-10.0: C++11, Build=Release
     - env: CLANG_VERSION=10 BUILD_TYPE=Release CPP=11 ASAN=On
       os: linux
       dist: bionic
       addons: *clang10
+      
+    # Test clang-10.0: C++17, Build=Debug
+    - env: CLANG_VERSION=10 BUILD_TYPE=Debug CPP=17 ASAN=Off
+      os: linux
+      dist: bionic
+      addons: *clang10
+            
 
 
 before_script:

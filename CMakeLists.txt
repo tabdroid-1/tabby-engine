@@ -12,4 +12,4 @@ endif ()
 add_definitions(-w) # disables warnings
 
 add_subdirectory(Tabby)
-add_subdirectory(Sandbox)
+add_subdirectory(App)

@@ -1,8 +1,8 @@
-#include "Tabby/Renderer/VertexArray.h"
 #include "tbpch.h"
 
-#include "Drivers/OpenGL33/OpenGL33VertexArray.h"
+#include "Drivers/gl33/OpenGL33VertexArray.h"
 #include "Tabby/Renderer/Renderer.h"
+#include "Tabby/Renderer/VertexArray.h"
 
 namespace Tabby {
 

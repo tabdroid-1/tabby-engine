@@ -1,7 +1,6 @@
 #ifdef TB_PLATFORM_MACOS
 
 #include "Platforms/MacOS/MacOSWindow.h"
-#include "tbpch.h"
 
 #include "Tabby/Core/Input.h"
 
@@ -9,9 +8,9 @@
 #include "Tabby/Events/KeyEvent.h"
 #include "Tabby/Events/MouseEvent.h"
 
-#include "Tabby/Renderer/Renderer.h"
-
-#include "Drivers/OpenGL33/OpenGL33Context.h"
+// #include "Tabby/Renderer/Renderer.h"
+//
+#include "Drivers/gl33/OpenGL33Context.h"
 
 namespace Tabby {
 
@@ -51,17 +50,16 @@ void MacOSWindow::Init(const WindowProps& props)
         int success = glfwInit();
         TB_CORE_ASSERT(success, "Could not initialize GLFW!");
         glfwSetErrorCallback(GLFWErrorCallback);
-
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); // Required on Mac
     }
 
     {
         TB_PROFILE_SCOPE("glfwCreateWindow");
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #if defined(TB_DEBUG)
-        if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
+        if (Renderer::GetAPI() == RendererAPI::API::OpenGL33)
             glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
@@ -149,17 +147,6 @@ void MacOSWindow::Init(const WindowProps& props)
         MouseMovedEvent event((float)xPos, (float)yPos);
         data.EventCallback(event);
     });
-
-    // glfwSetDropCallback(m_Window, [](GLFWwindow* window, int pathCount, const char* paths[]) {
-    //     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-    //
-    //     std::vector<std::filesystem::path> filepaths(pathCount);
-    //     for (int i = 0; i < pathCount; i++)
-    //         filepaths[i] = paths[i];
-    //
-    //     WindowDropEvent event(std::move(filepaths));
-    //     data.EventCallback(event);
-    // });
 }
 
 void MacOSWindow::Shutdown()

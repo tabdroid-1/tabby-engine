@@ -22,7 +22,8 @@ void syslog_example();
 void custom_flags_example();
 
 #include "spdlog/spdlog.h"
-#include "spdlog/cfg/env.h" // support for loading levels from the environment variable
+#include "spdlog/cfg/env.h"  // support for loading levels from the environment variable
+#include "spdlog/fmt/ostr.h" // support for user defined types
 
 int main(int, char *[])
 {
@@ -221,7 +222,6 @@ void multi_sink_example()
 }
 
 // User defined types logging by implementing operator<<
-#include "spdlog/fmt/ostr.h" // must be included
 struct my_type
 {
     int i;
@@ -246,7 +246,7 @@ void err_handler_example()
 
 // syslog example (linux/osx/freebsd)
 #ifndef _WIN32
-#include "spdlog/sinks/syslog_sink.h"
+#    include "spdlog/sinks/syslog_sink.h"
 void syslog_example()
 {
     std::string ident = "spdlog-example";
@@ -257,7 +257,7 @@ void syslog_example()
 
 // Android example.
 #if defined(__ANDROID__)
-#include "spdlog/sinks/android_sink.h"
+#    include "spdlog/sinks/android_sink.h"
 void android_example()
 {
     std::string tag = "spdlog-android";

@@ -3,7 +3,7 @@
 
 #include "Tabby/Renderer/Renderer.h"
 
-#include "Drivers/OpenGL33/OpenGL33Buffer.h"
+#include "Drivers/gl33/OpenGL33Buffer.h"
 
 namespace Tabby {
 
