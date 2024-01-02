@@ -2,6 +2,11 @@
 #include "tbpch.h"
 #include <Drivers/gles3/GLES3.h>
 
+#ifdef TB_PLATFORM_WEB
+#define GLAD_PLATFORM_EMSCRIPTEN
+#include <emscripten.h>
+#endif
+
 #define GLAD_GLES2_IMPLEMENTATION
 #include <glad/gles3.h>
 

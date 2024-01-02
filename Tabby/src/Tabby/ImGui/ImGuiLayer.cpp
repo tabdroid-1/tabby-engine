@@ -9,9 +9,11 @@
 
 #include "Tabby/Core/Application.h"
 
-// TEMPORARY
-
+#ifdef TB_PLATFORM_WEB
+#define GLFW_INCLUDE_ES3
+#else
 #define GLFW_INCLUDE_NONE
+#endif
 #include <GLFW/glfw3.h>
 #include <glad/gl33.h>
 
