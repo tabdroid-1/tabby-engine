@@ -75,6 +75,7 @@ target_link_options(${PROJECT_NAME} PRIVATE
    "-s NO_DISABLE_EXCEPTION_CATCHING=1"
    "-s ALLOW_MEMORY_GROWTH=1"
    "-Os"
+   "-sGL_ENABLE_GET_PROC_ADDRESS=1"
    "-Wall"
    "-s GL_SUPPORT_AUTOMATIC_ENABLE_EXTENSIONS=1"
     "-s --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/src/minshell.html"
