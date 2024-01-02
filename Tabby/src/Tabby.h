@@ -33,6 +33,4 @@
 #include "Tabby/Renderer/Shader.h"
 #include "Tabby/Renderer/Texture.h"
 #include "Tabby/Renderer/VertexArray.h"
-
-#include "Tabby/Renderer/OrthographicCamera.h"
 // -----------------------------------

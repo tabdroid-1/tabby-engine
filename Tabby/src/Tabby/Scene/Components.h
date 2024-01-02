@@ -1,13 +1,24 @@
 #pragma once
 
+#include "SceneCamera.h"
+#include "Tabby/Core/UUID.h"
+// #include "Tabby/Renderer/Font.h"
+#include "Tabby/Renderer/Texture.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "SceneCamera.h"
-#include "ScriptableEntity.h"
-#include "Tabby/Renderer/Texture.h"
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 namespace Tabby {
+
+struct IDComponent {
+    UUID ID;
+
+    IDComponent() = default;
+    IDComponent(const IDComponent&) = default;
+};
 
 struct TagComponent {
     std::string Tag;
@@ -34,9 +45,7 @@ struct TransformComponent {
 
     glm::mat4 GetTransform() const
     {
-        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), Rotation.x, { 1, 0, 0 })
-            * glm::rotate(glm::mat4(1.0f), Rotation.y, { 0, 1, 0 })
-            * glm::rotate(glm::mat4(1.0f), Rotation.z, { 0, 0, 1 });
+        glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
 
         return glm::translate(glm::mat4(1.0f), Translation)
             * rotation
@@ -57,6 +66,15 @@ struct SpriteRendererComponent {
     }
 };
 
+struct CircleRendererComponent {
+    glm::vec4 Color { 1.0f, 1.0f, 1.0f, 1.0f };
+    float Thickness = 1.0f;
+    float Fade = 0.005f;
+
+    CircleRendererComponent() = default;
+    CircleRendererComponent(const CircleRendererComponent&) = default;
+};
+
 struct CameraComponent {
     SceneCamera Camera;
     bool Primary = true; // TODO: think about moving to Scene
@@ -65,6 +83,16 @@ struct CameraComponent {
     CameraComponent() = default;
     CameraComponent(const CameraComponent&) = default;
 };
+
+struct ScriptComponent {
+    std::string ClassName;
+
+    ScriptComponent() = default;
+    ScriptComponent(const ScriptComponent&) = default;
+};
+
+// Forward declaration
+class ScriptableEntity;
 
 struct NativeScriptComponent {
     ScriptableEntity* Instance = nullptr;
@@ -129,4 +157,22 @@ struct CircleCollider2DComponent {
     CircleCollider2DComponent() = default;
     CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
 };
+
+struct TextComponent {
+    std::string TextString;
+    // Ref<Font> FontAsset = Font::GetDefault();
+    glm::vec4 Color { 1.0f };
+    float Kerning = 0.0f;
+    float LineSpacing = 0.0f;
+};
+
+template <typename... Component>
+struct ComponentGroup {
+};
+
+using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
+    CircleRendererComponent, CameraComponent, ScriptComponent,
+    NativeScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent,
+    CircleCollider2DComponent, TextComponent>;
+
 }

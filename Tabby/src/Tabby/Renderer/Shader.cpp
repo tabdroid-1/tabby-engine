@@ -1,7 +1,7 @@
 #include "Tabby/Renderer/Shader.h"
 #include "tbpch.h"
 
-#include "Drivers/OpenGL33/OpenGL33Shader.h"
+#include "Drivers/gl33/OpenGL33Shader.h"
 #include "Tabby/Renderer/Renderer.h"
 
 namespace Tabby {

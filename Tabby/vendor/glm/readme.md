@@ -15,10 +15,9 @@ This library works perfectly with *[OpenGL](https://www.opengl.org)* but it also
 - [*Apple Clang 6.0*](https://developer.apple.com/library/mac/documentation/CompilerTools/Conceptual/LLVMCompilerOverview/index.html) and higher
 - [*Visual C++*](http://www.visualstudio.com/) 2013 and higher
 - [*CUDA*](https://developer.nvidia.com/about-cuda) 9.0 and higher (experimental)
-- [*SYCL*](https://www.khronos.org/sycl/) (experimental: only [ComputeCpp](https://codeplay.com/products/computesuite/computecpp) implementation has been tested).
 - Any C++11 compiler
 
-For more information about *GLM*, please have a look at the [manual](manual.md) and the [API reference documentation](http://glm.g-truc.net/0.9.8/api/index.html).
+For more information about *GLM*, please have a look at the [manual](manual.md) and the [API reference documentation](http://glm.g-truc.net/0.9.9/api/modules.html).
 The source code and the documentation are licensed under either the [Happy Bunny License (Modified MIT) or the MIT License](manual.md#section0).
 
 Thanks for contributing to the project by [submitting pull requests](https://github.com/g-truc/glm/pulls).
@@ -46,19 +45,54 @@ glm::mat4 camera(float Translate, glm::vec2 const& Rotate)
 
 ## Project Health
 
-| Service | System | Compiler | Status |
-| ------- | ------ | -------- | ------ |
-| [Travis CI](https://travis-ci.org/g-truc/glm)| MacOSX, Linux 64 bits | Clang 3.6, Clang 5.0, GCC 4.9, GCC 7.3 | [![Travis CI](https://travis-ci.org/g-truc/glm.svg?branch=master)](https://travis-ci.org/g-truc/glm)
-| [AppVeyor](https://ci.appveyor.com/project/Groovounet/glm)| Windows 32 and 64 | Visual Studio 2013, Visual Studio 2015, Visual Studio 2017 | [![AppVeyor](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/Groovounet/glm)
+| Service | Status |
+| ------- | ------ |
+| [GitHub actions](https://github.com/g-truc/glm/actions)| [![.github/workflows/ci.yml](https://github.com/g-truc/glm/actions/workflows/ci.yml/badge.svg)](https://github.com/g-truc/glm/actions/workflows/ci.yml)
+
+## Build and Install
+
+```shell
+cd /path/to/glm
+cmake \
+    -DGLM_BUILD_TESTS=OFF \
+    -DBUILD_SHARED_LIBS=OFF \
+    -B build .
+cmake --build build -- all
+cmake --build build -- install
+```
+
+Passing `-DBUILD_SHARED_LIBS=ON` to build shared library
+
+And then in your `CMakeLists.txt`:
+
+```cmake
+find_package(glm CONFIG REQUIRED)
+target_link_libraries(main PRIVATE glm::glm)
+```
+
+If your perfer to use header-only version of GLM
+
+```cmake
+find_package(glm CONFIG REQUIRED)
+target_link_libraries(main PRIVATE glm::glm-header-only)
+```
+
+## Vcpkg
+
+```shell
+vcpkg install glm
+```
 
 ## Release notes
 
-### [GLM 0.9.9.9](https://github.com/g-truc/glm/releases/tag/0.9.9.9) - 2020-XX-XX
+### [GLM 0.9.9.9](https://github.com/g-truc/glm/releases/tag/0.9.9.9) - 2024-01-XX
 #### Features:
 - Added *GLM_EXT_scalar_reciprocal* with tests
 - Added *GLM_EXT_vector_reciprocal* with tests
 - Added `glm::iround` and `glm::uround` to *GLM_EXT_scalar_common* and *GLM_EXT_vector_common*
 - Added *GLM_EXT_matrix_integer* with tests
+- Added Github Actions
+- Added GLM_FORCE_UNRESTRICTED_FLOAT to prevent static asserts when using other scalar types with function expecting floats. 
 
 #### Improvements:
 - Added `constexpr` qualifier for `cross` product #1040

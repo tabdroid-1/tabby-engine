@@ -1,8 +1,9 @@
 #pragma once
-#include <functional>
 
 #include "Tabby/Core/Base.h"
 #include "Tabby/Debug/Instrumentor.h"
+
+#include <functional>
 
 namespace Tabby {
 

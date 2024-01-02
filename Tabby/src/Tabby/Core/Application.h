@@ -2,10 +2,10 @@
 
 #include "Tabby/Core/Base.h"
 
-#include "Tabby/Core/LayerStack.h"
 #include "Tabby/Core/Window.h"
-#include "Tabby/Events/ApplicationEvent.h"
+#include "Tabby/Core/LayerStack.h"
 #include "Tabby/Events/Event.h"
+#include "Tabby/Events/ApplicationEvent.h"
 
 #include "Tabby/Core/Timestep.h"
 
@@ -15,43 +15,70 @@ int main(int argc, char** argv);
 
 namespace Tabby {
 
-class Application {
-public:
-    Application(const std::string& name = "Tabby App");
-    virtual ~Application();
+	struct ApplicationCommandLineArgs
+	{
+		int Count = 0;
+		char** Args = nullptr;
 
-    void OnEvent(Event& e);
+		const char* operator[](int index) const
+		{
+			TB_CORE_ASSERT(index < Count);
+			return Args[index];
+		}
+	};
 
-    void PushLayer(Layer* layer);
-    void PushOverlay(Layer* layer);
+	struct ApplicationSpecification
+	{
+		std::string Name = "Tabby Application";
+		std::string WorkingDirectory;
+		ApplicationCommandLineArgs CommandLineArgs;
+	};
 
-    Window& GetWindow() { return *m_Window; }
+	class Application
+	{
+	public:
+		Application(const ApplicationSpecification& specification);
+		virtual ~Application();
 
-    void Close();
+		void OnEvent(Event& e);
 
-    ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
 
-    static Application& Get() { return *s_Instance; }
+		Window& GetWindow() { return *m_Window; }
 
-private:
-    void Run();
-    bool OnWindowClose(WindowCloseEvent& e);
-    bool OnWindowResize(WindowResizeEvent& e);
+		void Close();
 
-private:
-    std::unique_ptr<Window> m_Window;
-    ImGuiLayer* m_ImGuiLayer;
-    bool m_Running = true;
-    bool m_Minimized = false;
-    LayerStack m_LayerStack;
-    float m_LastFrameTime = 0.0f;
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
-private:
-    static Application* s_Instance;
-    friend int ::main(int argc, char** argv);
-};
+		static Application& Get() { return *s_Instance; }
 
-// To be defined in CLIENT
-Application* CreateApplication();
+		const ApplicationSpecification& GetSpecification() const { return m_Specification; }
+
+		void SubmitToMainThread(const std::function<void()>& function);
+	private:
+		void Run();
+		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
+
+		void ExecuteMainThreadQueue();
+	private:
+		ApplicationSpecification m_Specification;
+		Scope<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
+		bool m_Running = true;
+		bool m_Minimized = false;
+		LayerStack m_LayerStack;
+		float m_LastFrameTime = 0.0f;
+
+		std::vector<std::function<void()>> m_MainThreadQueue;
+		std::mutex m_MainThreadQueueMutex;
+	private:
+		static Application* s_Instance;
+		friend int ::main(int argc, char** argv);
+	};
+
+	// To be defined in CLIENT
+	Application* CreateApplication(ApplicationCommandLineArgs args);
 
 }

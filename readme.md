@@ -1,12 +1,14 @@
 Tabby Engine
 =============================
 
-Simple game engine written .
+Simple game engine written in C++.
 This engine is meant to be ran on older computers. (Android and Web versions planned).
 Engine is mainly for 2D games.
 
 In this engine you mostly do everything using code.
 There is Prefab/Level editor planned since its hard to make levels using just code.
+
+Engine is based on Hazel engine.
 
 Planned Features / To-do list
 -----------------------------
@@ -26,12 +28,14 @@ Engine Dependencies
 - box2d
 - entt
 - ImGui
+- glad
 - glfw
 - glm
 - imguizmo
 - spdlog
 - stb_image
 - yaml-cpp
+- tracy
 
 Compiling
 ---------
@@ -52,3 +56,4 @@ Special Thanks
  --------------
 
 - Jonny Hotbody
+- Ronald McDonald

@@ -1,4 +1,4 @@
-#ifdef TB_PLATFORM_MACOS
+#ifdef  TB_PLATFORM_MACOS
 
 #include "Tabby/Utils/PlatformUtils.h"
 
@@ -6,10 +6,10 @@
 
 namespace Tabby {
 
-float Time::GetTime()
-{
-    return glfwGetTime();
-}
+	float Time::GetTime()
+	{
+		return glfwGetTime();
+	}
 
 }
 

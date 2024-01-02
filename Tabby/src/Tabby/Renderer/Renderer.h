@@ -1,9 +1,13 @@
 #pragma once
 
+#include <tbpch.h>
+
 #include "Tabby/Renderer/RenderCommand.h"
 
 #include "Tabby/Renderer/OrthographicCamera.h"
 #include "Tabby/Renderer/Shader.h"
+
+#include "Tabby/Renderer/RendererAPI.h"
 
 namespace Tabby {
 
