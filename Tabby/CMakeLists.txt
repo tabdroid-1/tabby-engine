@@ -140,10 +140,6 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 if (DEFINED EMSCRIPTEN)
-    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -sGL_ENABLE_GET_PROC_ADDRESS=1")
-    # set(CMAKE_EXE_LINKER_FLAGS
-    #   "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s USE_WEBGL2=1 -s FULL_ES3=1 -s ASSERTIONS=1 -s WASM=1 -Os -Wall -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 --preload-file assets/ --shell-file ../src/minshell.html"
-    # )
 target_link_options(${PROJECT_NAME} PRIVATE
    "-s USE_GLFW=3"
    "-s FULL_ES3=1"
@@ -153,7 +149,6 @@ target_link_options(${PROJECT_NAME} PRIVATE
    "-s NO_DISABLE_EXCEPTION_CATCHING=1"
    "-s ALLOW_MEMORY_GROWTH=1"
    "-Os"
-   "-sGL_ENABLE_GET_PROC_ADDRESS=1"
    "-Wall"
    "-s GL_SUPPORT_AUTOMATIC_ENABLE_EXTENSIONS=1"
     "-s --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/src/minshell.html"
