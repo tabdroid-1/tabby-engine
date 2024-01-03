@@ -1,4 +1,7 @@
-// Basic Texture Shader
+//--------------------------
+// - Tabby -
+// Renderer2D Quad Shader
+// --------------------------
 
 #type vertex
 #version 300 es

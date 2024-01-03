@@ -1,4 +1,7 @@
-// Basic Texture Shader
+//--------------------------
+// - Tabby -
+// Renderer2D Quad Shader
+// --------------------------
 
 #type vertex
 #version 330 core
@@ -22,7 +25,6 @@ flat out int v_EntityID;
 uniform Camera {
     mat4 u_ViewProjection;
 };
-// uniform mat4 u_ViewProjection;
 
 void main() {
     Output.Color = a_Color;
@@ -49,7 +51,6 @@ flat in int v_EntityID;
 out vec4 color;
 
 uniform sampler2D u_Textures[16];
-// layout (binding = 0) uniform sampler2D u_Textures[16];
 
 void main() {
     vec4 texColor = Input.Color;
