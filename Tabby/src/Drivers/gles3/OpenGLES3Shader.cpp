@@ -3,16 +3,17 @@
 #include "Tabby/Core/Timer.h"
 #include "tbpch.h"
 
+#include <Tabby/Core/Log.h>
 #include <fstream>
 #include <glad/gles3.h>
 
+#include <dirent.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
-
-// #include <shaderc/shaderc.hpp>
-// #include <spirv_cross/spirv_cross.hpp>
-// #include <spirv_cross/spirv_glsl.hpp>
-
+#ifdef TB_PLATFORM_WEB
+#include <emscripten.h>
+#include <emscripten/fetch.h>
+#endif // TB_PLATFORM_WEB
 namespace Tabby {
 
 static GLenum ShaderTypeFromString(const std::string& type)
@@ -86,6 +87,35 @@ std::unordered_map<GLenum, std::string> OpenGLES3Shader::PreProcess(const std::s
 std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
 {
     std::string result;
+
+    // #ifdef TB_PLATFORM_WEB
+    //     // Initialize the fetch attributes
+    //     emscripten_fetch_attr_t attr;
+    //     emscripten_fetch_attr_init(&attr);
+    //     strcpy(attr.requestMethod, "GET");
+    //     attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
+    //
+    //     // Create a structure to hold the fetch and content data
+    //     FileReadData fileData = { nullptr, "", false };
+    //
+    //     // Set the fetch user data to the address of the fileData structure
+    //     attr.userData = &fileData;
+    //
+    //     // Perform the file fetch asynchronously
+    //     fileData.fetch = emscripten_fetch(&attr, filepath.c_str());
+    //
+    //     // Wait for the fetch to complete with a timeout of 10 seconds
+    //     while (!fileData.fetchComplete) {
+    //         emscripten_sleep(10); // Sleep for a short time (adjust as needed)
+    //     }
+    //
+    //     // Clean up the fetch
+    //     emscripten_fetch_close(fileData.fetch);
+    //     // Return the file content
+    //     result = fileData.content;
+    //     TB_CORE_INFO("File Content: {0}", result);
+    // #else
+
     std::ifstream in(filepath, std::ios::in | std::ios::binary);
 
     if (in) {
@@ -98,6 +128,7 @@ std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
         TB_CORE_ERROR("Could not open file {0}", filepath);
         TB_CORE_INFO("Current working dir: {0}", std::filesystem::current_path());
     }
+
     return result;
 }
 
@@ -166,9 +197,9 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
         return;
     }
     for (auto id : glShaderIDs)
-        GLES3::GL()->DetachShader(program, id);
+        // GLES3::GL()->DetachShader(program, id);
 
-    m_RendererID = program;
+        m_RendererID = program;
 }
 
 void OpenGLES3Shader::Bind() const

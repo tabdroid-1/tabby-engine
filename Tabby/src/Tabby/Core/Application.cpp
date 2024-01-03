@@ -1,14 +1,12 @@
 #include "Tabby/Core/Application.h"
+#include "Tabby/Renderer/Renderer.h"
 #include "tbpch.h"
 
-#include "Tabby/Core/Log.h"
-
-#include "Tabby/Renderer/Renderer.h"
-// #include "Tabby/Scripting/ScriptEngine.h"
-
-#include "Tabby/Core/Input.h"
 #include "Tabby/Utils/PlatformUtils.h"
 
+#ifdef TB_PLATFORM_WEB
+#include <emscripten.h>
+#endif
 namespace Tabby {
 
 Application* Application::s_Instance = nullptr;
@@ -24,7 +22,6 @@ Application::Application(const ApplicationSpecification& specification)
     // Set working directory here
     if (!m_Specification.WorkingDirectory.empty())
         std::filesystem::current_path(m_Specification.WorkingDirectory);
-
     m_Window = Window::Create(WindowProps(m_Specification.Name));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
