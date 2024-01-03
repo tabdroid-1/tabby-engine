@@ -3,7 +3,7 @@
 #ifdef  TB_PLATFORM_LINUX
 
 #include "Tabby/Core/Window.h"
-// #include "Tabby/Renderer/GraphicsContext.h"
+#include "Tabby/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
 
@@ -31,7 +31,7 @@ namespace Tabby {
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
-		// Scope<GraphicsContext> m_Context;
+		Scope<GraphicsContext> m_Context;
 
 		struct WindowData
 		{
