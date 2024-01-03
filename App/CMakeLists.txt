@@ -90,7 +90,6 @@ target_link_options(${PROJECT_NAME} PRIVATE
   # assets folder is in the same directory as the game executable
 
 endif (DEFINED EMSCRIPTEN)
-
 add_custom_target(copy_assets_sandbox
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${PROJECT_ASSETS_DIR} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
