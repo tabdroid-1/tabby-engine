@@ -11,19 +11,42 @@ if(APPLE)
     set(CMAKE_OBJCXX_EXTENSIONS OFF)
 endif()
 
+macro(append_linker_flags FLAGS)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAGS}")
+endmacro()
 
 option(WEB "Enable Web Build" OFF)
 if (EMSCRIPTEN)
     set(WEB ON CACHE BOOL "Enable Web")
-    set(GLFW_BUILD_TESTS OFF CACHE BOOL "Build GLFW tests" FORCE)
-    set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build GLFW documentation" FORCE)
+
+	set(CMAKE_EXECUTABLE_SUFFIX ".html")
     set(GLFW_VULKAN_STATIC OFF CACHE BOOL "Assume Vulkan is a dynamic library" FORCE)
     # set(GLFW_USE_OSMESA OFF CACHE BOOL "Use OSMesa for offscreen context creation" FORCE)
     # set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "Use Wayland for window creation" FORCE)
     set(GLFW_BUILD_X11 OFF CACHE BOOL "Use X11 for window creation" FORCE)
-    find_package(glfw3)
-endif()
+    set(GLFW_BUILD_SHARED_LIBS OPT_BUILD_SHARED_LIBS CACHE BOOL "Build GLFW as shared library.")
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Do not build GLFW examples.")
+    set(GLFW_BUILD_TESTS    OFF CACHE BOOL "Do not run GLFW tests.")
+    set(GLFW_BUILD_DOCS     OFF CACHE BOOL "Do not build GLFW documentation.")
+    set(GLFW_INSTALL        OFF CACHE BOOL "Do not generate install targets.")
+    # find_package(glfw3)
 
+    append_linker_flags("-USE_GLFW=3")
+    append_linker_flags("-FULL_ES3=1")
+	append_linker_flags("-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2")
+	append_linker_flags("-lGL")
+	append_linker_flags("-sMINIMAL_RUNTIME=2")
+	append_linker_flags("-Oz")
+	append_linker_flags("-sENVIRONMENT=web")
+	append_linker_flags("-sMIN_FIREFOX_VERSION=70")
+	append_linker_flags("-sMIN_SAFARI_VERSION=130000")
+	append_linker_flags("-sMIN_IE_VERSION=0x7FFFFFFF") # Do not support Internet Explorer at all (this is the Emscripten default, shown here for posterity)
+	append_linker_flags("-sMIN_EDGE_VERSION=79") # Require Chromium-based Edge browser
+	append_linker_flags("-sMIN_CHROME_VERSION=80")
+
+	add_definitions(-DMAX_WEBGL_VERSION=2)
+
+endif (EMSCRIPTEN)
 
 
 set(PROJECT_SOURCE_DIR "src")
@@ -122,6 +145,24 @@ endif()
 
 add_definitions(-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})
 
+if (EMSCRIPTEN)
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+    set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".html")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="/assets/")
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+        imgui
+        box2d
+        spdlog
+        glfw
+        glm
+        # glm::glm
+        yaml-cpp
+        freetype
+        imguizmo
+        )
+endif()
+
 # Setting ASSETS_PATH
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG")
@@ -139,41 +180,8 @@ endif()
 # -Wswitch")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-if (DEFINED EMSCRIPTEN)
-target_link_options(${PROJECT_NAME} PRIVATE
-   "-s MIN_WEBGL_VERSION=2"
-   "-s MAX_WEBGL_VERSION=2"
-   "-s USE_GLFW=3"
-   "-s FULL_ES3=1"
-   "-s WASM=1"
-   "-s NO_DISABLE_EXCEPTION_CATCHING=1"
-   "-s ALLOW_MEMORY_GROWTH=1"
-   "-Os"
-   "-Wall"
-   "-s GL_SUPPORT_AUTOMATIC_ENABLE_EXTENSIONS=1"
-    "-s --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/src/minshell.html"
-)
-    set(CMAKE_EXECUTABLE_SUFFIX ".html")
-    # This line is used to set your executable to build with the emscripten html
-    # template so that you can directly open it.
-    set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".html")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="/assets/")
-    # set(CMAKE_EXECUTABLE_SUFFIX ".wasm")
-  # Set the asset path macro in release mode to a relative path that assumes the
-  # assets folder is in the same directory as the game executable
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE 
-        imgui
-        box2d
-        spdlog
-        glfw3
-        glm
-        # glm::glm
-        yaml-cpp
-        freetype
-        imguizmo
-        )
-endif (DEFINED EMSCRIPTEN)
+
 
 # Ensure that hot-reload is enabled for VS
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")

@@ -7,9 +7,9 @@
 namespace Tabby {
 
 // #ifdef TB_PLATFORM_WEB
-//  RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGLES3;
+ RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGLES3;
 // #else
-RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL33;
+// RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL33;
 // #endif
 
 Scope<RendererAPI> RendererAPI::Create()

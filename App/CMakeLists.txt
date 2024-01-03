@@ -2,6 +2,23 @@ cmake_minimum_required(VERSION 3.20)
 project(App)
 set(CMAKE_CXX_STANDARD 17)
 
+
+
+if (EMSCRIPTEN)
+	append_linker_flags("-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2")
+    append_linker_flags("-USE_GLFW=3")
+    append_linker_flags("-FULL_ES3=1")
+	append_linker_flags("-lGL")
+	append_linker_flags("-sMINIMAL_RUNTIME=2")
+	append_linker_flags("-Oz")
+	append_linker_flags("-sMIN_FIREFOX_VERSION=70")
+	append_linker_flags("-sMIN_SAFARI_VERSION=130000")
+	append_linker_flags("-sMIN_IE_VERSION=0x7FFFFFFF") # Do not support Internet Explorer at all (this is the Emscripten default, shown here for posterity)
+	append_linker_flags("-sMIN_EDGE_VERSION=79") # Require Chromium-based Edge browser
+	append_linker_flags("-sMIN_CHROME_VERSION=80")
+
+endif (EMSCRIPTEN)
+
 ###################################################################
 # Local variables
 ###################################################################
@@ -61,25 +78,11 @@ if (WIN32)
     # -------------------------------------------------------------
 endif ()
 
+macro(append_linker_flags FLAGS)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAGS}")
+endmacro()
+
 if (DEFINED EMSCRIPTEN)
-    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -sGL_ENABLE_GET_PROC_ADDRESS=1")
-    # set(CMAKE_EXE_LINKER_FLAGS
-    #   "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s USE_WEBGL2=1 -s FULL_ES3=1 -s ASSERTIONS=1 -s WASM=1 -Os -Wall -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 --preload-file assets/ --shell-file ../src/minshell.html"
-    # )
-target_link_options(${PROJECT_NAME} PRIVATE
-   "-s MIN_WEBGL_VERSION=2"
-   "-s MAX_WEBGL_VERSION=2"
-   "-s FULL_ES3=1"
-   "-s USE_GLFW=3"
-   "-s WASM=1"
-   "-s NO_DISABLE_EXCEPTION_CATCHING=1"
-   "-s ALLOW_MEMORY_GROWTH=1"
-   "-Os"
-   # "-sGL_ENABLE_GET_PROC_ADDRESS=1"
-   "-Wall"
-   "-s GL_SUPPORT_AUTOMATIC_ENABLE_EXTENSIONS=1"
-    "-s --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/src/minshell.html"
-)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
     # This line is used to set your executable to build with the emscripten html
     # template so that you can directly open it.
