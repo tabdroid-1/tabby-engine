@@ -1,6 +1,6 @@
 #ifdef TB_PLATFORM_LINUX
 
-#include "Platform/Linux/LinuxWindow.h"
+#include "Platforms/Linux/LinuxWindow.h"
 #include "tbpch.h"
 
 #include "Tabby/Core/Input.h"
@@ -9,9 +9,8 @@
 #include "Tabby/Events/KeyEvent.h"
 #include "Tabby/Events/MouseEvent.h"
 
-// #include "Tabby/Renderer/Renderer.h"
-//
-// #include "Platform/OpenGL/OpenGLContext.h"
+#include "Tabby/Renderer/Renderer.h"
+#include "Drivers/gl33/OpenGL33Context.h"
 
 namespace Tabby {
 
@@ -68,7 +67,6 @@ void LinuxWindow::Init(const WindowProps& props)
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
             glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #if defined(TB_DEBUG)
             glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
@@ -77,8 +75,8 @@ void LinuxWindow::Init(const WindowProps& props)
         ++s_GLFWWindowCount;
     }
 
-    // m_Context = GraphicsContext::Create(m_Window);
-    // m_Context->Init();
+    m_Context = GraphicsContext::Create(m_Window);
+    m_Context->Init();
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
     SetVSync(true);
@@ -177,7 +175,7 @@ void LinuxWindow::OnUpdate()
     TB_PROFILE_FUNCTION();
 
     glfwPollEvents();
-    // m_Context->SwapBuffers();
+    m_Context->SwapBuffers();
 }
 
 void LinuxWindow::SetVSync(bool enabled)

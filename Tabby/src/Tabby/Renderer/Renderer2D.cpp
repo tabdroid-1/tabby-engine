@@ -195,13 +195,28 @@ void Renderer2D::Init()
     for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
         samplers[i] = i;
 
-    s_Data.QuadShader = Shader::Create("assets/shaders/Renderer2D_Quad.glsl");
-    s_Data.QuadShader->Bind();
-    s_Data.QuadShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
+    switch (RendererAPI::GetAPI()) {
+    case RendererAPI::API::OpenGL33:
+        s_Data.QuadShader = Shader::Create("assets/shaders/gl33/Renderer2D_Quad.glsl");
+        s_Data.QuadShader->Bind();
+        s_Data.QuadShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
 
-    s_Data.CircleShader = Shader::Create("assets/shaders/Renderer2D_Circle.glsl");
-    s_Data.LineShader = Shader::Create("assets/shaders/Renderer2D_Line.glsl");
-    s_Data.TextShader = Shader::Create("assets/shaders/Renderer2D_Text.glsl");
+        s_Data.CircleShader = Shader::Create("assets/shaders/gl33/Renderer2D_Circle.glsl");
+        s_Data.LineShader = Shader::Create("assets/shaders/gl33/Renderer2D_Line.glsl");
+        s_Data.TextShader = Shader::Create("assets/shaders/gl33/Renderer2D_Text.glsl");
+        break;
+    case RendererAPI::API::OpenGLES3:
+        s_Data.QuadShader = Shader::Create("assets/shaders/gles3/Renderer2D_Quad.glsl");
+        s_Data.QuadShader->Bind();
+        s_Data.QuadShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
+
+        s_Data.CircleShader = Shader::Create("assets/shaders/gles3/Renderer2D_Circle.glsl");
+        s_Data.LineShader = Shader::Create("assets/shaders/gles3/Renderer2D_Line.glsl");
+        s_Data.TextShader = Shader::Create("assets/shaders/gles3/Renderer2D_Text.glsl");
+    default:
+
+        break;
+    }
 
     // Set first texture slot to 0
     s_Data.TextureSlots[0] = s_Data.WhiteTexture;
