@@ -9,12 +9,20 @@ if (EMSCRIPTEN)
     append_linker_flags("-USE_GLFW=3")
     append_linker_flags("-FULL_ES3=1")
 	append_linker_flags("-lGL")
-	append_linker_flags("-sMINIMAL_RUNTIME=2")
+	append_linker_flags("-sGL_ENABLE_GET_PROC_ADDRESS=1")
+	append_linker_flags("-sFORCE_FILESYSTEM")
+	append_linker_flags("-sFETCH=1")
+	append_linker_flags("-sasyncify=1")
+    append_linker_flags("--preload-file assets/shaders/gles3/Renderer2D_Quad.glsl")
+
+    # append_linker_flags("-preload-file ./assets/")
+	# append_linker_flags("-sMINIMAL_RUNTIME=0")
+
 	append_linker_flags("-Oz")
 	append_linker_flags("-sMIN_FIREFOX_VERSION=70")
 	append_linker_flags("-sMIN_SAFARI_VERSION=130000")
 	append_linker_flags("-sMIN_IE_VERSION=0x7FFFFFFF") # Do not support Internet Explorer at all (this is the Emscripten default, shown here for posterity)
-	append_linker_flags("-sMIN_EDGE_VERSION=79") # Require Chromium-based Edge browser
+	# append_linker_flags("-sMIN_EDGE_VERSION=79") # Require Chromium-based Edge browser
 	append_linker_flags("-sMIN_CHROME_VERSION=80")
 
 endif (EMSCRIPTEN)

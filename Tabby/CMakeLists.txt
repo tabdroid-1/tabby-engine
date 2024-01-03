@@ -20,29 +20,32 @@ if (EMSCRIPTEN)
     set(WEB ON CACHE BOOL "Enable Web")
 
 	set(CMAKE_EXECUTABLE_SUFFIX ".html")
-    set(GLFW_VULKAN_STATIC OFF CACHE BOOL "Assume Vulkan is a dynamic library" FORCE)
+    # set(GLFW_VULKAN_STATIC OFF CACHE BOOL "Assume Vulkan is a dynamic library" FORCE)
     # set(GLFW_USE_OSMESA OFF CACHE BOOL "Use OSMesa for offscreen context creation" FORCE)
     # set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "Use Wayland for window creation" FORCE)
     set(GLFW_BUILD_X11 OFF CACHE BOOL "Use X11 for window creation" FORCE)
-    set(GLFW_BUILD_SHARED_LIBS OPT_BUILD_SHARED_LIBS CACHE BOOL "Build GLFW as shared library.")
+    # set(GLFW_BUILD_SHARED_LIBS OPT_BUILD_SHARED_LIBS CACHE BOOL "Build GLFW as shared library.")
     set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Do not build GLFW examples.")
     set(GLFW_BUILD_TESTS    OFF CACHE BOOL "Do not run GLFW tests.")
     set(GLFW_BUILD_DOCS     OFF CACHE BOOL "Do not build GLFW documentation.")
-    set(GLFW_INSTALL        OFF CACHE BOOL "Do not generate install targets.")
-    # find_package(glfw3)
+    # set(GLFW_INSTALL        OFF CACHE BOOL "Do not generate install targets.")
+    find_package(glfw3)
 
     append_linker_flags("-USE_GLFW=3")
     append_linker_flags("-FULL_ES3=1")
 	append_linker_flags("-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2")
 	append_linker_flags("-lGL")
-	append_linker_flags("-sMINIMAL_RUNTIME=2")
+	append_linker_flags("-sFORCE_FILESYSTEM=1")
+	append_linker_flags("-sFETCH=1")
+	append_linker_flags("-sASYNCIFY=1")
+	# append_linker_flags("-sMINIMAL_RUNTIME=2")
 	append_linker_flags("-Oz")
 	append_linker_flags("-sENVIRONMENT=web")
-	append_linker_flags("-sMIN_FIREFOX_VERSION=70")
-	append_linker_flags("-sMIN_SAFARI_VERSION=130000")
-	append_linker_flags("-sMIN_IE_VERSION=0x7FFFFFFF") # Do not support Internet Explorer at all (this is the Emscripten default, shown here for posterity)
-	append_linker_flags("-sMIN_EDGE_VERSION=79") # Require Chromium-based Edge browser
-	append_linker_flags("-sMIN_CHROME_VERSION=80")
+	# append_linker_flags("-sMIN_FIREFOX_VERSION=70")
+	# append_linker_flags("-sMIN_SAFARI_VERSION=130000")
+	# append_linker_flags("-sMIN_IE_VERSION=0x7FFFFFFF") # Do not support Internet Explorer at all (this is the Emscripten default, shown here for posterity)
+	# append_linker_flags("-sMIN_EDGE_VERSION=79") # Require Chromium-based Edge browser
+	# append_linker_flags("-sMIN_CHROME_VERSION=80")
 
 	add_definitions(-DMAX_WEBGL_VERSION=2)
 
@@ -154,7 +157,7 @@ if (EMSCRIPTEN)
         imgui
         box2d
         spdlog
-        glfw
+        glfw3
         glm
         # glm::glm
         yaml-cpp
