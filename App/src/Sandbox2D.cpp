@@ -1,4 +1,6 @@
 #include "Sandbox2D.h"
+#include "Tabby/Renderer/Renderer2D.h"
+#include "glm/fwd.hpp"
 #include <imgui/imgui.h>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,6 +16,8 @@ Sandbox2D::Sandbox2D()
 void Sandbox2D::OnAttach()
 {
     TB_PROFILE_FUNCTION();
+
+    Tabby::Renderer2D::SetLineWidth(10.0f);
 
     m_CheckerboardTexture = Tabby::Texture2D::Create("assets/textures/Checkerboard.png");
     m_NoTexture = Tabby::Texture2D::Create("assets/textures/Tabby.png");
@@ -47,9 +51,15 @@ void Sandbox2D::OnUpdate(Tabby::Timestep ts)
         Tabby::Renderer2D::BeginScene(m_CameraController.GetCamera());
         Tabby::Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, -45.0f, { 0.8f, 0.2f, 0.3f, 1.0f });
         Tabby::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+        Tabby::Renderer2D::DrawCircle({ -1.0f, 2.0f, 0.0f }, { 0.8f, 0.8f }, 0.0f, { 0.8f, 0.2f, 0.3f, 1.0f }, 3, 0.01);
         Tabby::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, m_SquareColor);
         Tabby::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 20.0f, 20.0f }, m_CheckerboardTexture, 10.0f);
         Tabby::Renderer2D::DrawRotatedQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, rotation, m_NoTexture, 2.0f);
+        Tabby::Renderer2D::DrawRect({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f }, 1);
+
+        glm::vec3 p2 = { -1.0f, 2.0f, 0.0f };
+        Tabby::Renderer2D::DrawLine({ 3.0f, -1.0f, 0.0f }, p2, { 0.8f, 0.2f, 0.3f, 1.0f }, -1);
+
         Tabby::Renderer2D::EndScene();
 
         Tabby::Renderer2D::BeginScene(m_CameraController.GetCamera());

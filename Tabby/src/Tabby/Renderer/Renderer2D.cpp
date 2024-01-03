@@ -474,6 +474,15 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
     DrawQuad(transform, texture, tilingFactor, tintColor);
 }
 
+void Renderer2D::DrawCircle(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color, float thickness /*= 1.0f*/, float fade /*= 0.005f*/)
+{
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+        * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+        * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+
+    DrawCircle(transform, color, thickness, fade, -1);
+}
+
 void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness /*= 1.0f*/, float fade /*= 0.005f*/, int entityID /*= -1*/)
 {
     // TB_PROFILE_FUNCTION();
