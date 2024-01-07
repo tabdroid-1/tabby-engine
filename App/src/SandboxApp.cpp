@@ -1,4 +1,5 @@
 #include <Base.h>
+#include <GameOfLifeBase.h>
 #include <Tabby.h>
 
 // #include "ExampleLayer.h"
@@ -10,7 +11,8 @@ public:
         : Tabby::Application(specification)
     {
         // PushLayer(new Sandbox2D());
-        PushLayer(new Base());
+        // PushLayer(new Base());
+        PushLayer(new GameOfLifeBase());
     }
 
     ~Sandbox()
@@ -21,7 +23,7 @@ public:
 Tabby::Application* Tabby::CreateApplication(Tabby::ApplicationCommandLineArgs args)
 {
     ApplicationSpecification spec;
-    spec.Name = "Sandbox";
+    spec.Name = "GameOfLife";
     spec.WorkingDirectory = "";
     spec.CommandLineArgs = args;
 
