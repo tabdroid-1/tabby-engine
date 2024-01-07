@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(tabby CXX)
+project(tabby)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(APPLE)
@@ -41,11 +41,6 @@ if (EMSCRIPTEN)
 	# append_linker_flags("-sMINIMAL_RUNTIME=2")
 	append_linker_flags("-Oz")
 	append_linker_flags("-sENVIRONMENT=web")
-	# append_linker_flags("-sMIN_FIREFOX_VERSION=70")
-	# append_linker_flags("-sMIN_SAFARI_VERSION=130000")
-	# append_linker_flags("-sMIN_IE_VERSION=0x7FFFFFFF") # Do not support Internet Explorer at all (this is the Emscripten default, shown here for posterity)
-	# append_linker_flags("-sMIN_EDGE_VERSION=79") # Require Chromium-based Edge browser
-	# append_linker_flags("-sMIN_CHROME_VERSION=80")
 
 	add_definitions(-DMAX_WEBGL_VERSION=2)
 
@@ -65,6 +60,7 @@ set(GLM "${PROJECT_VENDOR_DIR}/glm")
 set(STB "${PROJECT_VENDOR_DIR}/stb")
 set(SPDLOG "${PROJECT_VENDOR_DIR}/spdlog")
 set(FREETYPE "${PROJECT_VENDOR_DIR}/freetype")
+set(MSDF-ATLAS-GEN "${PROJECT_VENDOR_DIR}/msdf-atlas-gen")
 set(YAML-CPP "${PROJECT_VENDOR_DIR}/yaml-cpp")
 set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
@@ -108,6 +104,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${PROJECT_VENDOR_DIR}
         ${GLM}
         ${SPDLOG}/include
+        # ${FREETYPE}/include
+        ${MSDF-ATLAS-GEN}/msdf-atlas-gen
         )
 
 include_directories(SYSTEM src)
@@ -120,7 +118,11 @@ if (NOT EMSCRIPTEN)
 add_subdirectory(${GLFW})
 endif()
 add_subdirectory(${GLM})
-add_subdirectory(${FREETYPE})
+
+set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
+set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
+set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
+add_subdirectory(${MSDF-ATLAS-GEN})
 add_subdirectory(${YAML-CPP})
 add_subdirectory(${SPDLOG})
 add_subdirectory(${BOX2D})
@@ -128,27 +130,19 @@ add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
 
 
-if (NOT EMSCRIPTEN)
+if (NOT EMSCRIPTEN AND NOT APPLE)
 target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
         spdlog
         glfw
         glm
-        # glm::glm
         yaml-cpp
         freetype
         imguizmo
+        ${FREETYPE_LIBRARIES}
         )
-endif()
-
-# ##############################################################################
-# Project build settings
-# ##############################################################################
-
-add_definitions(-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})
-
-if (EMSCRIPTEN)
+elseif (EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
     set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".html")
     target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="/assets/")
@@ -159,10 +153,22 @@ if (EMSCRIPTEN)
         spdlog
         glfw3
         glm
-        # glm::glm
         yaml-cpp
         freetype
         imguizmo
+        ${FREETYPE_LIBRARIES}
+        )
+elseif (APPLE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+        imgui
+        box2d
+        spdlog
+        glfw
+        glm
+        yaml-cpp
+        msdf-atlas-gen 
+        imguizmo
+        # ${FREETYPE_LIBRARIES}
         )
 endif()
 
