@@ -2,7 +2,7 @@
 
 #include "SceneCamera.h"
 #include "Tabby/Core/UUID.h"
-// #include "Tabby/Renderer/Font.h"
+#include "Tabby/Renderer/Font.h"
 #include "Tabby/Renderer/Texture.h"
 
 #include <glm/glm.hpp>
@@ -160,7 +160,7 @@ struct CircleCollider2DComponent {
 
 struct TextComponent {
     std::string TextString;
-    // Ref<Font> FontAsset = Font::GetDefault();
+    Ref<Font> FontAsset = Font::GetDefault();
     glm::vec4 Color { 1.0f };
     float Kerning = 0.0f;
     float LineSpacing = 0.0f;

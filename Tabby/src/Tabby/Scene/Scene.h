@@ -1,8 +1,9 @@
 #pragma once
 
+#include <tbpch.h>
+
 #include "Tabby/Core/Timestep.h"
 #include "Tabby/Core/UUID.h"
-// #include "Tabby/Renderer/EditorCamera.h"
 
 #include "entt/entt.hpp"
 
@@ -17,21 +18,22 @@ public:
     Scene();
     ~Scene();
 
+    virtual void OnCreate() {}; // Called when scene initially created. Called once per scene.
+    virtual void OnActivate() {}; // Called once when scene is activated.
+    virtual void OnDeactivate() {}; // Called when switched to other scene.
+    virtual void DrawImGui() {}; // Draws mostly debugging related ui using Dear ImGui.
+
     static Ref<Scene> Copy(Ref<Scene> other);
 
     Entity CreateEntity(const std::string& name = std::string());
     Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
     void DestroyEntity(Entity entity);
 
-    void OnRuntimeStart();
-    void OnRuntimeStop();
+    void OnStart();
+    void OnStop();
 
-    // void OnSimulationStart();
-    // void OnSimulationStop();
+    void OnUpdate(Timestep ts);
 
-    void OnUpdateRuntime(Timestep ts);
-    // void OnUpdateSimulation(Timestep ts, EditorCamera& camera);
-    // void OnUpdateEditor(Timestep ts, EditorCamera& camera);
     void OnViewportResize(uint32_t width, uint32_t height);
 
     Entity DuplicateEntity(Entity entity);
@@ -60,8 +62,6 @@ private:
 
     void OnPhysics2DStart();
     void OnPhysics2DStop();
-
-    // void RenderScene(EditorCamera& camera);
 
 private:
     entt::registry m_Registry;

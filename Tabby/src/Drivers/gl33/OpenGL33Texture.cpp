@@ -53,20 +53,12 @@ OpenGL33Texture2D::OpenGL33Texture2D(const TextureSpecification& specification)
     // Allocate storage for the texture using glTexImage2D
     GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
+    GL33::GL()->PixelStorei(GL_UNPACK_ALIGNMENT, specification.UnpackAlignment);
     // Set texture parameters
     GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    // glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-    // glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
-    //
-    // glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    // glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //
-    // glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    // glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 OpenGL33Texture2D::OpenGL33Texture2D(const std::string& path)
@@ -113,18 +105,6 @@ OpenGL33Texture2D::OpenGL33Texture2D(const std::string& path)
         GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        // glGenerateMipmap(GL_TEXTURE_2D);
-
-        // glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-        // glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
-        //
-        // glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        // glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        //
-        // glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        // glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        //
-        // glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
     }
@@ -141,10 +121,6 @@ void OpenGL33Texture2D::SetData(void* data, uint32_t size)
 {
     // TB_PROFILE_FUNCTION();
 
-    // uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-    // TB_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
-    // glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
-
     uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
     // Ensure that the provided size matches the expected size
     TB_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be the entire texture!");
@@ -152,6 +128,14 @@ void OpenGL33Texture2D::SetData(void* data, uint32_t size)
     // Update the texture data using glTexSubImage2D
     GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
     GL33::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+}
+
+void OpenGL33Texture2D::SetSubData(void* data, uint32_t width, uint32_t height)
+{
+    // TB_PROFILE_FUNCTION();
+
+    GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
+    GL33::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 }
 
 void OpenGL33Texture2D::Bind(uint32_t slot) const
@@ -163,7 +147,5 @@ void OpenGL33Texture2D::Bind(uint32_t slot) const
 
     // Bind the texture to the active texture unit
     GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
-
-    // glBindTextureUnit(slot, m_RendererID);
 }
 }

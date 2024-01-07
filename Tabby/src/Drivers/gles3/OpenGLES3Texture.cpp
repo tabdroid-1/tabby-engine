@@ -59,15 +59,6 @@ OpenGLES3Texture2D::OpenGLES3Texture2D(const TextureSpecification& specification
     GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    // glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-    // glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
-    //
-    // glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    // glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //
-    // glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    // glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 OpenGLES3Texture2D::OpenGLES3Texture2D(const std::string& path)
@@ -115,18 +106,6 @@ OpenGLES3Texture2D::OpenGLES3Texture2D(const std::string& path)
         GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         // glGenerateMipmap(GL_TEXTURE_2D);
-
-        // glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-        // glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
-        //
-        // glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        // glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        //
-        // glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        // glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        //
-        // glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
-
         stbi_image_free(data);
     }
 }
@@ -142,10 +121,6 @@ void OpenGLES3Texture2D::SetData(void* data, uint32_t size)
 {
     // TB_PROFILE_FUNCTION();
 
-    // uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-    // TB_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
-    // glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
-
     uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
     // Ensure that the provided size matches the expected size
     TB_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be the entire texture!");
@@ -153,6 +128,14 @@ void OpenGLES3Texture2D::SetData(void* data, uint32_t size)
     // Update the texture data using glTexSubImage2D
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
     GLES3::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+}
+
+void OpenGLES3Texture2D::SetSubData(void* data, uint32_t width, uint32_t height)
+{
+    // TB_PROFILE_FUNCTION();
+
+    GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
+    GLES3::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 }
 
 void OpenGLES3Texture2D::Bind(uint32_t slot) const
@@ -164,7 +147,5 @@ void OpenGLES3Texture2D::Bind(uint32_t slot) const
 
     // Bind the texture to the active texture unit
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
-
-    // glBindTextureUnit(slot, m_RendererID);
 }
 }
