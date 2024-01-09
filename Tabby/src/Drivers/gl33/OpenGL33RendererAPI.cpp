@@ -41,7 +41,8 @@ void OpenGL33RendererAPI::Init()
     GL33::GL()->BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     GL33::GL()->Enable(GL_DEPTH_TEST);
-    GL33::GL()->Enable(GL_LINE_SMOOTH);
+    GL33::GL()->Enable(GL_MULTISAMPLE);
+    // GL33::GL()->Enable(GL_LINE_SMOOTH);
 }
 
 void OpenGL33RendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)

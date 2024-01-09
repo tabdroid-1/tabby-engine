@@ -1,7 +1,7 @@
 #include "Drivers/gl33/OpenGL33Texture.h"
 #include "Drivers/gl33/GL33.h"
 #include "tbpch.h"
-
+#include <Tabby/Core/Log.h>
 #include <stb_image.h>
 
 namespace Tabby {
@@ -87,6 +87,9 @@ OpenGL33Texture2D::OpenGL33Texture2D(const std::string& path)
         } else if (channels == 3) {
             internalFormat = GL_RGB8;
             dataFormat = GL_RGB;
+        } else {
+
+            TB_CORE_ERROR("Format not supported! \"{0}\"", path);
         }
 
         m_InternalFormat = internalFormat;
@@ -107,6 +110,9 @@ OpenGL33Texture2D::OpenGL33Texture2D(const std::string& path)
         GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         stbi_image_free(data);
+    } else {
+        TB_CORE_ERROR("Failed to load \"{0}\"!", path);
+        TB_CORE_ERROR("  Failure reason: {0}", stbi_failure_reason());
     }
 }
 

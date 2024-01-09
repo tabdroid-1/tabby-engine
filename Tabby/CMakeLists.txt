@@ -137,6 +137,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         spdlog
         glfw
         glm
+        gli
         yaml-cpp
         freetype
         imguizmo

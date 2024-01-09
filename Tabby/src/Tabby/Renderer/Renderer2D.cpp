@@ -431,6 +431,55 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& text
     s_Data.Stats.QuadCount++;
 }
 
+void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int horizontalFrames, int verticalFrames, int currentXFrame, int currentYFrame, int entityID)
+
+{
+    // TB_PROFILE_FUNCTION();
+
+    constexpr size_t quadVertexCount = 4;
+
+    glm::vec2 textureCoords[] = {
+        { currentXFrame / (float)horizontalFrames, currentYFrame / (float)verticalFrames },
+        { (currentXFrame + 1) / (float)horizontalFrames, currentYFrame / (float)verticalFrames },
+        { (currentXFrame + 1) / (float)horizontalFrames, (currentYFrame + 1) / (float)verticalFrames },
+        { currentXFrame / (float)horizontalFrames, (currentYFrame + 1) / (float)verticalFrames }
+    };
+
+    if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+        NextBatch();
+
+    float textureIndex = 0.0f;
+    for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++) {
+        if (*s_Data.TextureSlots[i] == *texture) {
+            textureIndex = (float)i;
+            break;
+        }
+    }
+
+    if (textureIndex == 0.0f) {
+        if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
+            NextBatch();
+
+        textureIndex = (float)s_Data.TextureSlotIndex;
+        s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+        s_Data.TextureSlotIndex++;
+    }
+
+    for (size_t i = 0; i < quadVertexCount; i++) {
+        s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+        s_Data.QuadVertexBufferPtr->Color = tintColor;
+        s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+        s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+        s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+        s_Data.QuadVertexBufferPtr->EntityID = entityID;
+        s_Data.QuadVertexBufferPtr++;
+    }
+
+    s_Data.QuadIndexCount += 6;
+
+    s_Data.Stats.QuadCount++;
+}
+
 void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
 {
     DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, color);
@@ -538,7 +587,8 @@ void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, in
 void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
 {
     if (src.Texture)
-        DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
+        // DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
+        DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, src.hFrames, src.vFrames, src.xFrame, src.yFrame, entityID);
     else
         DrawQuad(transform, src.Color, entityID);
 }

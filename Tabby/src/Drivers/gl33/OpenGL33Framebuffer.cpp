@@ -6,7 +6,7 @@
 
 namespace Tabby {
 
-static const uint32_t s_MaxFramebufferSize = 8192;
+static const uint32_t s_MaxFramebufferSize = 16384;
 
 namespace Utils {
 
@@ -19,7 +19,6 @@ namespace Utils {
     {
         GL33::GL()->GenTextures(count, outID);
         GL33::GL()->BindTexture(TextureTarget(multisampled), *outID);
-        // glCreateTextures(TextureTarget(multisampled), count, outID);
     }
 
     static void BindTexture(bool multisampled, uint32_t id)
@@ -36,7 +35,7 @@ namespace Utils {
             GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
 
             GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
             GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -52,10 +51,9 @@ namespace Utils {
             GL33::GL()->TexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
         } else {
             GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-            // glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
 
             GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
             GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -162,7 +160,7 @@ void OpenGL33Framebuffer::Invalidate()
         GL33::GL()->DrawBuffer(GL_NONE);
     }
 
-    TB_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+    TB_CORE_ASSERT(GL33::GL()->CheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 
     GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -202,19 +200,12 @@ int OpenGL33Framebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 
 void OpenGL33Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 {
-
     TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
     auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
-
     GL33::GL()->BindTexture(GL_TEXTURE_2D, m_ColorAttachments[attachmentIndex]);
     GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, Utils::TabbyFBTextureFormatToGL(spec.TextureFormat), m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_INT, &value);
     GL33::GL()->BindTexture(GL_TEXTURE_2D, 0);
-
-    // TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
-    //
-    // auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
-    // glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::TabbyFBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
 }
 
 }
