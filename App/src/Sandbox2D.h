@@ -16,7 +16,6 @@ public:
 
 private:
     Tabby::OrthographicCameraController m_CameraController;
-    // Tabby::Camera m_Camera;
 
     // Temp
     Tabby::Ref<Tabby::VertexArray> m_SquareVA;

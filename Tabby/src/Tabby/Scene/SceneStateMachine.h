@@ -20,7 +20,7 @@ public:
     static void SwitchTo(std::string SceneName);
     static void Remove(std::string SceneName);
 
-    static Scene* GetCurrentScene();
+    static Ref<Scene> GetCurrentScene();
 
 private:
     std::unordered_map<std::string, Ref<Tabby::Scene>> scenes;

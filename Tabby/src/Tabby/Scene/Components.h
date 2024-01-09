@@ -56,6 +56,10 @@ struct TransformComponent {
 struct SpriteRendererComponent {
     glm::vec4 Color { 1.0f, 1.0f, 1.0f, 1.0f };
     Ref<Texture2D> Texture;
+    int hFrames = 1;
+    int vFrames = 1;
+    int xFrame = 0;
+    int yFrame = 0;
     float TilingFactor = 1.0f;
 
     SpriteRendererComponent() = default;

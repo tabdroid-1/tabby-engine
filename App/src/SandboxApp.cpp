@@ -1,5 +1,4 @@
 #include <Base.h>
-#include <GameOfLifeBase.h>
 #include <Tabby.h>
 
 // #include "ExampleLayer.h"
@@ -11,8 +10,8 @@ public:
         : Tabby::Application(specification)
     {
         // PushLayer(new Sandbox2D());
-        // PushLayer(new Base());
-        PushLayer(new GameOfLifeBase());
+        PushLayer(new Base());
+        // PushLayer(new GameOfLifeBase());
     }
 
     ~Sandbox()
