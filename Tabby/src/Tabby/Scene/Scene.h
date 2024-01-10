@@ -70,6 +70,7 @@ private:
     bool m_IsPaused = false;
     int m_StepFrames = 0;
 
+    bool m_PhysicsInitialized = false;
     b2World* m_PhysicsWorld = nullptr;
 
     std::unordered_map<UUID, entt::entity> m_EntityMap;

@@ -18,13 +18,16 @@ void TestScene::OnCreate()
 void TestScene::OnActivate()
 {
 
-    Tabby::Entity RigidbodyEntity = CreateEntity("RigidbodyEntity");
+    Tabby::Entity RigidbodyEntity = CreateEntity("RigidbodyEntity2");
     {
+
+        RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.x = 0.25f;
+        RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 5.25f;
         auto& rigidbodyComponent = RigidbodyEntity.AddComponent<Tabby::Rigidbody2DComponent>();
         rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
 
         auto& boxColliderComponent = RigidbodyEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-        boxColliderComponent.Size = { 0.5f, 0.5f };
+        boxColliderComponent.Size = { 0.19f, 0.24f };
     }
 
     Tabby::Entity GroundEntity = CreateEntity("RigidbodyEntity");
@@ -59,6 +62,8 @@ void TestScene::OnActivate()
 
     Tabby::Entity SpriteEntity = CreateEntity("SpriteEntity");
     {
+
+        SpriteEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 5.9f;
         auto& spriteComponent = SpriteEntity.AddComponent<Tabby::SpriteRendererComponent>();
         // texture = Tabby::Texture2D::Create("assets/textures/Alive.png");
         texture = Tabby::Texture2D::Create("assets/spritesheets/player/player_packed.png");
@@ -67,6 +72,12 @@ void TestScene::OnActivate()
         spriteComponent.vFrames = 5;
         spriteComponent.xFrame = 2;
         spriteComponent.yFrame = 4;
+
+        auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+
+        auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        boxColliderComponent.Size = { 0.19f, 0.24f };
     }
 }
 

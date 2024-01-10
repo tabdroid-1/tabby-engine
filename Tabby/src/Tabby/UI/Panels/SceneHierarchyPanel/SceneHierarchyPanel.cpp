@@ -2,6 +2,8 @@
 #include "Tabby/Scene/Components.h"
 
 #include "Tabby/UI/UI.h"
+#include "box2d/b2_body.h"
+#include "glm/fwd.hpp"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -347,6 +349,9 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
         }
 
         ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+        b2Body* body = (b2Body*)component.RuntimeBody;
+        glm::vec2 vel = { body->GetLinearVelocity().x, body->GetLinearVelocity().y };
+        ImGui::DragFloat2("Velocity", glm::value_ptr(vel));
     });
 
     DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component) {

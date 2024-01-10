@@ -22,8 +22,6 @@ void Base::OnAttach()
 {
     TB_PROFILE_FUNCTION();
 
-    Tabby::Renderer2D::SetLineWidth(1840344432);
-
     Tabby::Ref<TestScene> testScene = Tabby::CreateRef<TestScene>();
 
     Tabby::SceneStateMachine::Add("Test", testScene);
@@ -73,11 +71,11 @@ void Base::OnUpdate(Tabby::Timestep ts)
 
     m_Framebuffer->Unbind();
 
-    if (!ImGuizmo::IsUsing() && Tabby::Input::IsKeyPressed(Tabby::Key::Q))
+    if (Tabby::Input::IsKeyPressed(Tabby::Key::Q))
         m_GizmoType = -1;
-    if (!ImGuizmo::IsUsing() && Tabby::Input::IsKeyPressed(Tabby::Key::T))
+    if (Tabby::Input::IsKeyPressed(Tabby::Key::T))
         m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-    if (!ImGuizmo::IsUsing() && Tabby::Input::IsKeyPressed(Tabby::Key::R))
+    if (Tabby::Input::IsKeyPressed(Tabby::Key::R))
         m_GizmoType = ImGuizmo::OPERATION::ROTATE;
 }
 
@@ -187,7 +185,7 @@ void Base::OnImGuiRender()
     // Gizmos
     Tabby::Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
     if (selectedEntity && m_GizmoType != -1) {
-        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetOrthographic(true);
         ImGuizmo::SetDrawlist();
 
         ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);

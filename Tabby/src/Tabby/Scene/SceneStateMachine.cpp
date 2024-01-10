@@ -32,20 +32,19 @@ void SceneStateMachine::DrawImGui()
     }
 }
 
-void SceneStateMachine::Add(std::string SceneName, Ref<Tabby::Scene> Scene)
+void SceneStateMachine::Add(std::string sceneName, Ref<Tabby::Scene> scene)
 {
 
     if (!s_Instance) {
         s_Instance = new SceneStateMachine();
     }
 
-    auto inserted = s_Instance->scenes.insert(std::make_pair(SceneName, Scene));
-
-    if (inserted.second) {
+    if (scene) {
+        auto inserted = s_Instance->scenes.insert(std::make_pair(sceneName, scene));
         inserted.first->second->OnCreate();
-        TB_INFO("Scene {0} Added", SceneName);
+        TB_INFO("Scene {0} Added", sceneName);
     } else {
-        TB_WARN("Failed to add Scene {0}. The key may already exist or the Scene pointer is invalid", SceneName);
+        TB_WARN("Failed to add Scene {0}. The key may already exist or the Scene pointer is invalid", sceneName);
     }
 }
 
@@ -81,7 +80,7 @@ void SceneStateMachine::SwitchTo(std::string SceneName)
         TB_INFO("Switched to scene {0}", SceneName);
 
         s_Instance->curScene->OnStart();
-        s_Instance->curScene->OnActivate();
+        // s_Instance->curScene->OnActivate();
     }
 }
 
