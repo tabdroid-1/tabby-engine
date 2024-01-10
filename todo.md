@@ -1,0 +1,14 @@
+Todo
+---- 
+ - Sprite renderer render order.
+ - Physics stuff. (raycast triggers etc)
+ - Animation
+ - Asset manager
+ - Audio player
+ - tbpf (TabbyPrefabFormat) format and Prefab editor. (kinda like level editor that generates tbpf format) 
+   - tbpf file will contain
+     - entity prefabs(player, npc, level elemets etc.)
+     - levels (basically compilation of prefabs)
+   - individual prefabs and/or level can be spawned. preferably each app should hold 1 tbpf file which will hold everything.
+ - Tracy profiler
+ - <s>Fix android and web builds.</s> (maybe later)

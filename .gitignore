@@ -1,6 +1,7 @@
 build/
 .cache/
 Editor/
+.vscode/
 
 
 CMakeLists.txt.user
