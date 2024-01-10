@@ -32,6 +32,7 @@ Engine Dependencies
 - spdlog
 - stb_image
 - yaml-cpp
+- msdf-atlas-gen
 - tracy
 
 Compiling
@@ -70,4 +71,4 @@ Special Thanks
  --------------
 
 - Jonny Hotbody
-- Ronald McDonald
+- Peppino Spaghetti

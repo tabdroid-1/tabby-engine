@@ -120,6 +120,8 @@ void Scene::OnStart()
 {
     m_IsRunning = true;
 
+    OnActivate();
+
     OnPhysics2DStart();
 }
 
@@ -128,10 +130,13 @@ void Scene::OnStop()
     m_IsRunning = false;
 
     OnPhysics2DStop();
+
+    OnDeactivate();
 }
 
 void Scene::OnUpdate(Timestep ts)
 {
+
     if (!m_IsPaused || m_StepFrames-- > 0) {
         // Update scripts
         {
@@ -160,8 +165,6 @@ void Scene::OnUpdate(Timestep ts)
                 auto& transform = entity.GetComponent<TransformComponent>();
                 auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
                 b2Body* body = (b2Body*)rb2d.RuntimeBody;
-
-                body->SetType((b2BodyType)rb2d.Type);
 
                 const auto& position = body->GetPosition();
                 transform.Translation.x = position.x;
@@ -288,7 +291,8 @@ Entity Scene::GetEntityByUUID(UUID uuid)
 
 void Scene::OnPhysics2DStart()
 {
-    m_PhysicsWorld = new b2World({ 0.0f, -30.8f });
+    b2Vec2 gravity(0.0f, -20.8f);
+    m_PhysicsWorld = new b2World(gravity);
 
     auto view = m_Registry.view<Rigidbody2DComponent>();
     for (auto e : view) {
@@ -337,6 +341,8 @@ void Scene::OnPhysics2DStart()
 
         rb2d.RuntimeBody = body;
     }
+
+    m_PhysicsInitialized = true;
 }
 
 void Scene::OnPhysics2DStop()
@@ -397,47 +403,51 @@ template <>
 void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component)
 {
 
-    auto& transform = entity.GetComponent<TransformComponent>();
-    auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+    if (m_PhysicsWorld && m_PhysicsInitialized) {
 
-    b2BodyDef bodyDef;
-    bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
-    bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
-    bodyDef.angle = transform.Rotation.z;
+        auto& transform = entity.GetComponent<TransformComponent>();
+        auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
-    b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
-    body->SetFixedRotation(rb2d.FixedRotation);
-    rb2d.RuntimeBody = body;
+        b2BodyDef bodyDef;
+        bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
+        bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
+        bodyDef.angle = transform.Rotation.z;
 
-    if (entity.HasComponent<BoxCollider2DComponent>()) {
-        auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+        b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+        body->SetFixedRotation(rb2d.FixedRotation);
 
-        b2PolygonShape boxShape;
-        boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
+        if (entity.HasComponent<BoxCollider2DComponent>()) {
+            auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 
-        b2FixtureDef fixtureDef;
-        fixtureDef.shape = &boxShape;
-        fixtureDef.density = bc2d.Density;
-        fixtureDef.friction = bc2d.Friction;
-        fixtureDef.restitution = bc2d.Restitution;
-        fixtureDef.restitutionThreshold = bc2d.RestitutionThreshold;
-        body->CreateFixture(&fixtureDef);
-    }
+            b2PolygonShape boxShape;
+            boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
 
-    if (entity.HasComponent<CircleCollider2DComponent>()) {
-        auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+            b2FixtureDef fixtureDef;
+            fixtureDef.shape = &boxShape;
+            fixtureDef.density = bc2d.Density;
+            fixtureDef.friction = bc2d.Friction;
+            fixtureDef.restitution = bc2d.Restitution;
+            fixtureDef.restitutionThreshold = bc2d.RestitutionThreshold;
+            body->CreateFixture(&fixtureDef);
+        }
 
-        b2CircleShape circleShape;
-        circleShape.m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
-        circleShape.m_radius = transform.Scale.x * cc2d.Radius;
+        if (entity.HasComponent<CircleCollider2DComponent>()) {
+            auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
 
-        b2FixtureDef fixtureDef;
-        fixtureDef.shape = &circleShape;
-        fixtureDef.density = cc2d.Density;
-        fixtureDef.friction = cc2d.Friction;
-        fixtureDef.restitution = cc2d.Restitution;
-        fixtureDef.restitutionThreshold = cc2d.RestitutionThreshold;
-        body->CreateFixture(&fixtureDef);
+            b2CircleShape circleShape;
+            circleShape.m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
+            circleShape.m_radius = transform.Scale.x * cc2d.Radius;
+
+            b2FixtureDef fixtureDef;
+            fixtureDef.shape = &circleShape;
+            fixtureDef.density = cc2d.Density;
+            fixtureDef.friction = cc2d.Friction;
+            fixtureDef.restitution = cc2d.Restitution;
+            fixtureDef.restitutionThreshold = cc2d.RestitutionThreshold;
+            body->CreateFixture(&fixtureDef);
+        }
+
+        rb2d.RuntimeBody = body;
     }
 }
 
