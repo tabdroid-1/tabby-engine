@@ -2,21 +2,20 @@ Tabby Engine
 =============================
 
 Simple game engine written in C++.
-This engine is meant to be ran on older computers. (Android and Web versions planned).
-Engine is mainly for 2D games.
+This engines main focus is compatibility for most New and old platforms.
+Engine is mainly for 2D games but has 3d elements. Further 3D support planned.
 
 In this engine you mostly do everything using code.
 There is Prefab/Level editor planned since its hard to make levels using just code.
 
 Engine is based on Hazel engine.
 
-Engine Dependencies
+External Dependencies
 -------------------
-
 - box2d
 - entt
 - ImGui
-- glad
+- glad2
 - glfw
 - glm
 - imguizmo
@@ -24,34 +23,55 @@ Engine Dependencies
 - stb_image
 - yaml-cpp
 - msdf-atlas-gen
-- tracy
+- tracy profiler
+
+Supported Graphics Apis
+-----------------------
+- OpenGL 3.3
+- OpenGL 3.0 es
+
+Supported Platforms
+-------------------
+- Linux
+- Windows (probably. not tested)
+- MacOS
+- Web (broken)
 
 Compiling
 ---------
 
+You might have to install some libraries for building.
+For building web install emscriptem from their git repo. Installing from package manager may give compilation errors.
+
 - Native
+  - For Unix:  
 
- 1. ```shell
-    git clone -b customRenderer https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
-    ```
+    1. ```shell
+        git clone -b customRenderer https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
+        ```
 
- 2. ```shell
-    cmake .. && make
-    ```
+    2. ```shell
+        cmake .. && make
+        ```
+    
+  - For Windows:  
+    1. ```shell
+        Todo
+        ```
 
-- Emscripten 
+- For web 
 
- 1. ```shell
-    git clone -b customRenderer https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
-    ```
+  1. ```shell
+     git clone -b customRenderer https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
+     ```
 
- 2. ```shell
-    emcmake cmake .. && make
-    ```
+  2. ```shell
+     emcmake cmake .. && make
+     ```
 
- 2. ```shell
-    python3 -m http.server 8080
-    ```
+  3. ```shell
+     python3 -m http.server 8080
+     ```
 
 Note From the author
  --------------------
