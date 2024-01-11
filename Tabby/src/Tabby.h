@@ -9,6 +9,8 @@
 #include "Tabby/Core/Layer.h"
 #include "Tabby/Core/Log.h"
 
+#include "Tabby/Debug/Instrumentor.h"
+
 #include "Tabby/Core/Timestep.h"
 
 #include "Tabby/Core/Input.h"
