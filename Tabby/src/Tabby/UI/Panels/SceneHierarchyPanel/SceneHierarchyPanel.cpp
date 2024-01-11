@@ -245,6 +245,12 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
         DrawVec3Control("Rotation", rotation);
         component.Rotation = glm::radians(rotation);
         DrawVec3Control("Scale", component.Scale, 1.0f);
+
+        DrawVec3Control("Local Translation", component.LocalTranslation);
+        glm::vec3 localRotation = glm::degrees(component.LocalRotation);
+        DrawVec3Control("Local Rotation", localRotation);
+        component.LocalRotation = glm::radians(localRotation);
+        DrawVec3Control("Local Scale", component.LocalScale, 1.0f);
     });
 
     DrawComponent<CameraComponent>("Camera", entity, [](auto& component) {
@@ -317,6 +323,8 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
             ImGui::EndDragDropTarget();
         }
 
+        ImGui::DragInt("Render order", &component.renderOrder);
+
         ImGui::DragInt("Horizontal Frames", &component.hFrames);
         ImGui::DragInt("Vertical Frames", &component.vFrames);
         ImGui::DragInt("X Frame", &component.xFrame);
@@ -334,7 +342,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
         const char* bodyTypeStrings[] = { "Static", "Dynamic", "Kinematic" };
         const char* currentBodyTypeString = bodyTypeStrings[(int)component.Type];
         if (ImGui::BeginCombo("Body Type", currentBodyTypeString)) {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 3; i++) {
                 bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
                 if (ImGui::Selectable(bodyTypeStrings[i], isSelected)) {
                     currentBodyTypeString = bodyTypeStrings[i];

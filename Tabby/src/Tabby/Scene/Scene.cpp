@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Entity.h"
+#include "glm/fwd.hpp"
 #include "tbpch.h"
 
 #include "Components.h"
@@ -7,6 +8,7 @@
 #include "Tabby/Physics/Physics2D.h"
 #include "Tabby/Renderer/Renderer2D.h"
 
+#include <algorithm>
 #include <glm/glm.hpp>
 
 #include "Entity.h"
@@ -137,6 +139,20 @@ void Scene::OnStop()
 void Scene::OnUpdate(Timestep ts)
 {
 
+    // Apply transform to children
+    {
+        auto view = m_Registry.view<TransformComponent>();
+
+        for (auto entity : view) {
+            auto& transform = m_Registry.get<TransformComponent>(entity);
+
+            for (entt::entity child : transform.Children) {
+                auto& childTransform = m_Registry.get<TransformComponent>(child);
+                childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
+            }
+        };
+    }
+
     if (!m_IsPaused || m_StepFrames-- > 0) {
         // Update scripts
         {
@@ -193,16 +209,6 @@ void Scene::OnUpdate(Timestep ts)
     if (mainCamera) {
         Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
-        // Draw sprites
-        {
-            auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-            for (auto entity : group) {
-                auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
-            }
-        }
-
         // Draw circles
         {
             auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
@@ -210,6 +216,28 @@ void Scene::OnUpdate(Timestep ts)
                 auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
 
                 Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+            }
+        }
+
+        // Draw sprites
+        {
+
+            std::vector<entt::entity> sortedEntities;
+
+            auto view = m_Registry.view<SpriteRendererComponent>();
+            for (auto entity : view) {
+                sortedEntities.push_back(entity);
+            }
+
+            std::sort(sortedEntities.begin(), sortedEntities.end(), [this](const entt::entity& a, const entt::entity& b) {
+                return m_Registry.get<SpriteRendererComponent>(a).renderOrder < m_Registry.get<SpriteRendererComponent>(b).renderOrder;
+            });
+
+            for (const entt::entity entity : sortedEntities) {
+                auto transform = m_Registry.get<TransformComponent>(entity);
+                auto sprite = m_Registry.get<SpriteRendererComponent>(entity);
+
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
             }
         }
 
