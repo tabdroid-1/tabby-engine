@@ -10,15 +10,6 @@ There is Prefab/Level editor planned since its hard to make levels using just co
 
 Engine is based on Hazel engine.
 
-Planned Features / To-do list
------------------------------
-
-- Audio and audio component.
-- Asset Manager. 
-- Profiling implementation (tracy Profiler).
-- Serialization(aka saving).
-- Multi-threading
-
 Engine Dependencies
 -------------------
 
