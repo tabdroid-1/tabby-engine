@@ -22,7 +22,7 @@ public:
 Tabby::Application* Tabby::CreateApplication(Tabby::ApplicationCommandLineArgs args)
 {
     ApplicationSpecification spec;
-    spec.Name = "GameOfLife";
+    spec.Name = "A winfow";
     spec.WorkingDirectory = "";
     spec.CommandLineArgs = args;
 

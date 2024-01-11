@@ -1,6 +1,6 @@
 Todo
 ---- 
- - Sprite renderer render order.
+ - Maybe instead of putting render order to spriterenderer put it in component all entities have.
  - Physics stuff. (raycast triggers etc)
  - Animation
  - Asset manager

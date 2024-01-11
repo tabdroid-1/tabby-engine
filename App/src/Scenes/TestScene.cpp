@@ -60,8 +60,14 @@ void TestScene::OnActivate()
         textComponent.TextString = "Opensans";
     }
 
+    Tabby::Entity ChildEntity = CreateEntity("ChildEntity");
+    {
+        auto& spriteComponent = ChildEntity.AddComponent<Tabby::SpriteRendererComponent>();
+    }
+
     Tabby::Entity SpriteEntity = CreateEntity("SpriteEntity");
     {
+        SpriteEntity.AddChild(ChildEntity);
 
         SpriteEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 5.9f;
         auto& spriteComponent = SpriteEntity.AddComponent<Tabby::SpriteRendererComponent>();
@@ -73,11 +79,11 @@ void TestScene::OnActivate()
         spriteComponent.xFrame = 2;
         spriteComponent.yFrame = 4;
 
-        auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
-        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
-
-        auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-        boxColliderComponent.Size = { 0.19f, 0.24f };
+        // auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        // rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+        //
+        // auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        // boxColliderComponent.Size = { 0.19f, 0.24f };
     }
 }
 
