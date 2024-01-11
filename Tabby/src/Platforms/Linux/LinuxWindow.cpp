@@ -9,8 +9,8 @@
 #include "Tabby/Events/KeyEvent.h"
 #include "Tabby/Events/MouseEvent.h"
 
-#include "Tabby/Renderer/Renderer.h"
 #include "Drivers/gl33/OpenGL33Context.h"
+#include "Tabby/Renderer/Renderer.h"
 
 namespace Tabby {
 
@@ -79,7 +79,7 @@ void LinuxWindow::Init(const WindowProps& props)
     m_Context->Init();
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
-    SetVSync(true);
+    SetVSync(false);
 
     // Set GLFW callbacks
     glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {

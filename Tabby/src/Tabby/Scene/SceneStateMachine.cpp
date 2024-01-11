@@ -42,9 +42,9 @@ void SceneStateMachine::Add(std::string sceneName, Ref<Tabby::Scene> scene)
     if (scene) {
         auto inserted = s_Instance->scenes.insert(std::make_pair(sceneName, scene));
         inserted.first->second->OnCreate();
-        TB_INFO("Scene {0} Added", sceneName);
+        TB_CORE_INFO("Scene {0} Added", sceneName);
     } else {
-        TB_WARN("Failed to add Scene {0}. The key may already exist or the Scene pointer is invalid", sceneName);
+        TB_CORE_WARN("Failed to add Scene {0}. The key may already exist or the Scene pointer is invalid", sceneName);
     }
 }
 
@@ -59,10 +59,10 @@ void SceneStateMachine::Remove(std::string SceneName)
 
         s_Instance->scenes.erase(it);
 
-        TB_INFO("Scene {0} Removed", SceneName);
+        TB_CORE_INFO("Scene {0} Removed", SceneName);
     } else {
 
-        TB_ERROR("Scene {0} not found", SceneName);
+        TB_CORE_ERROR("Scene {0} not found", SceneName);
     }
 }
 
@@ -77,7 +77,7 @@ void SceneStateMachine::SwitchTo(std::string SceneName)
 
         s_Instance->curScene = it->second;
 
-        TB_INFO("Switched to scene {0}", SceneName);
+        TB_CORE_INFO("Switched to scene {0}", SceneName);
 
         s_Instance->curScene->OnStart();
         // s_Instance->curScene->OnActivate();

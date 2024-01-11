@@ -27,7 +27,7 @@ namespace Tabby {
 
 void OpenGL33RendererAPI::Init()
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
 #ifdef TB_DEBUG
     // glEnable(GL_DEBUG_OUTPUT);
@@ -42,7 +42,6 @@ void OpenGL33RendererAPI::Init()
 
     GL33::GL()->Enable(GL_DEPTH_TEST);
     GL33::GL()->Enable(GL_MULTISAMPLE);
-    // GL33::GL()->Enable(GL_LINE_SMOOTH);
 }
 
 void OpenGL33RendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
@@ -62,6 +61,7 @@ void OpenGL33RendererAPI::Clear()
 
 void OpenGL33RendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 {
+    TB_PROFILE_SCOPE();
     vertexArray->Bind();
     uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
     GL33::GL()->DrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);

@@ -1,34 +1,3 @@
-// #pragma once
-//
-// #include <tbpch.h>
-//
-// #include "Tabby/Core/Base.h"
-// #include "Tabby/Renderer/Texture.h"
-// #include "freetype/freetype.h"
-//
-// namespace Tabby {
-//
-// struct Character {
-//     Ref<Texture> Texture;
-//     glm::ivec2 Size;
-//     glm::ivec2 Bearing;
-//     unsigned int Advance;
-// };
-//
-// class Font {
-// public:
-//     Font(FT_Library& library, const std::string& fontPath);
-//     ~Font();
-//
-//     Character GetCharacter(char character) { return m_Characters.find(character)->second; }
-//
-// private:
-//     std::unordered_map<char, Character> m_Characters;
-//     FT_Face m_Font;
-// };
-//
-// }
-
 #pragma once
 
 #include <filesystem>

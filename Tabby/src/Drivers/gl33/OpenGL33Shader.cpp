@@ -9,10 +9,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 
-// #include <shaderc/shaderc.hpp>
-// #include <spirv_cross/spirv_cross.hpp>
-// #include <spirv_cross/spirv_glsl.hpp>
-
 namespace Tabby {
 
 static GLenum ShaderTypeFromString(const std::string& type)
@@ -27,14 +23,13 @@ static GLenum ShaderTypeFromString(const std::string& type)
 
 OpenGL33Shader::OpenGL33Shader(const std::string& filepath)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     auto source = ReadFile(filepath);
     auto shaderSources = PreProcess(source);
 
     Compile(shaderSources, "Path: " + filepath);
 
-    // Assets/Shaders/TextureCombined.glsl
     auto lastSlash = filepath.find_last_of("/\\");
     lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
     auto lastDot = filepath.rfind('.');
@@ -47,7 +42,7 @@ OpenGL33Shader::OpenGL33Shader(const std::string& filepath)
 OpenGL33Shader::OpenGL33Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
     : m_Name(name)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     std::unordered_map<GLenum, std::string> sources;
     sources[GL_VERTEX_SHADER] = vertexSource;
@@ -57,7 +52,7 @@ OpenGL33Shader::OpenGL33Shader(const std::string& name, const std::string& verte
 
 OpenGL33Shader::~OpenGL33Shader()
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Delete Shader");
 
     GL33::GL()->DeleteProgram(m_RendererID);
 }
@@ -104,7 +99,7 @@ std::string OpenGL33Shader::ReadFile(const std::string& filepath)
 // NOTE: ShaderInfo holds name or path of shader. this is to show path or name for the shader with error
 void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSource, const std::string& shaderInfo)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Compile Shader");
 
     GLuint program = GL33::GL()->CreateProgram();
     TB_CORE_ASSERT(shaderSource.size() <= 2, "Only 3 shaders are supported");
@@ -173,61 +168,63 @@ void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shad
 
 void OpenGL33Shader::Bind() const
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Bind");
 
     GL33::GL()->UseProgram(m_RendererID);
 }
 
 void OpenGL33Shader::Unbind() const
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Unbind");
 
     GL33::GL()->UseProgram(0);
 }
 
 void OpenGL33Shader::SetInt(const std::string& name, int value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Set int");
 
     UploadUniformInt(name, value);
 }
 
 void OpenGL33Shader::SetIntArray(const std::string& name, int* values, uint32_t count)
 {
+    TB_PROFILE_SCOPE_NAME("Set int array");
+
     UploadUniformIntArray(name, values, count);
 }
 
 void OpenGL33Shader::SetFloat(const std::string& name, float value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Set float");
 
     UploadUniformFloat(name, value);
 }
 
 void OpenGL33Shader::SetFloat2(const std::string& name, const glm::vec2& value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Set float 2");
 
     UploadUniformFloat2(name, value);
 }
 
 void OpenGL33Shader::SetFloat3(const std::string& name, const glm::vec3& value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Set float 3");
 
     UploadUniformFloat3(name, value);
 }
 
 void OpenGL33Shader::SetFloat4(const std::string& name, const glm::vec4& value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Set float 4");
 
     UploadUniformFloat4(name, value);
 }
 
 void OpenGL33Shader::SetMat4(const std::string& name, const glm::mat4& value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Set mat 4");
 
     UploadUniformMat4(name, value);
 }

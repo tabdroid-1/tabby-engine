@@ -39,35 +39,35 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 
 OpenGL33VertexArray::OpenGL33VertexArray()
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     GL33::GL()->GenVertexArrays(1, &m_RendererID);
 }
 
 OpenGL33VertexArray::~OpenGL33VertexArray()
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     GL33::GL()->DeleteVertexArrays(1, &m_RendererID);
 }
 
 void OpenGL33VertexArray::Bind() const
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     GL33::GL()->BindVertexArray(m_RendererID);
 }
 
 void OpenGL33VertexArray::Unbind() const
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     GL33::GL()->BindVertexArray(0);
 }
 
 void OpenGL33VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     TB_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
@@ -131,7 +131,7 @@ void OpenGL33VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 
 void OpenGL33VertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     GL33::GL()->BindVertexArray(m_RendererID);
     indexBuffer->Bind();

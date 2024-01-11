@@ -141,7 +141,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         yaml-cpp
         freetype
         imguizmo
-        ${FREETYPE_LIBRARIES}
         )
 elseif (EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
@@ -157,7 +156,6 @@ elseif (EMSCRIPTEN)
         yaml-cpp
         freetype
         imguizmo
-        ${FREETYPE_LIBRARIES}
         )
 elseif (APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
@@ -169,21 +167,20 @@ elseif (APPLE)
         yaml-cpp
         msdf-atlas-gen 
         imguizmo
-        # ${FREETYPE_LIBRARIES}
         )
 endif()
 
 # Setting ASSETS_PATH
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE")
 
   # Set the asset path macro to the absolute path on the dev machine
-  target_compile_definitions(
-    ${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+    target_compile_definitions(
+        ${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 else()
-  # Set the asset path macro in release mode to a relative path that assumes the
-  # assets folder is in the same directory as the game executable
-  target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="./assets/")
+# Set the asset path macro in release mode to a relative path that assumes the
+# assets folder is in the same directory as the game executable
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="./assets/")
 endif()
 
 # Set common compiler flags SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall
