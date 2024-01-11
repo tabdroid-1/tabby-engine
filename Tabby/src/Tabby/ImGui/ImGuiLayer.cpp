@@ -29,7 +29,7 @@ ImGuiLayer::ImGuiLayer()
 
 void ImGuiLayer::OnAttach()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -73,7 +73,7 @@ void ImGuiLayer::OnAttach()
 
 void ImGuiLayer::OnDetach()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -91,7 +91,7 @@ void ImGuiLayer::OnEvent(Event& e)
 
 void ImGuiLayer::Begin()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -101,7 +101,7 @@ void ImGuiLayer::Begin()
 
 void ImGuiLayer::End()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     ImGuiIO& io = ImGui::GetIO();
     Application& app = Application::Get();

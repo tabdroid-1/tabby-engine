@@ -1,6 +1,5 @@
 Todo
 ---- 
- - Maybe instead of putting render order to spriterenderer put it in component all entities have.
  - Physics stuff. (raycast triggers etc)
  - Animation
  - Asset manager
@@ -10,5 +9,9 @@ Todo
      - entity prefabs(player, npc, level elemets etc.)
      - levels (basically compilation of prefabs)
    - individual prefabs and/or level can be spawned. preferably each app should hold 1 tbpf file which will hold everything.
- - Tracy profiler
+ - Maybe instead of putting render order to spriterenderer put it in component all entities have.
  - <s>Fix android and web builds.</s> (maybe later)
+
+Bugs
+----
+ - CurrentYFrame picks seamingly picks random coords from texture.

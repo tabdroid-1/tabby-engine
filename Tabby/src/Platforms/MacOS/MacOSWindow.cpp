@@ -26,21 +26,21 @@ static void GLFWErrorCallback(int error, const char* description)
 
 MacOSWindow::MacOSWindow(const WindowProps& props)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     Init(props);
 }
 
 MacOSWindow::~MacOSWindow()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     Shutdown();
 }
 
 void MacOSWindow::Init(const WindowProps& props)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
@@ -49,14 +49,14 @@ void MacOSWindow::Init(const WindowProps& props)
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
     if (s_GLFWWindowCount == 0) {
-        TB_PROFILE_SCOPE("glfwInit");
+        TB_PROFILE_SCOPE_NAME("glfwInit");
         int success = glfwInit();
         TB_CORE_ASSERT(success, "Could not initialize GLFW!");
         glfwSetErrorCallback(GLFWErrorCallback);
     }
 
     {
-        TB_PROFILE_SCOPE("glfwCreateWindow");
+        TB_PROFILE_SCOPE_NAME("glfwCreateWindow");
 
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
 
@@ -167,7 +167,7 @@ void MacOSWindow::Init(const WindowProps& props)
 
 void MacOSWindow::Shutdown()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     glfwDestroyWindow(m_Window);
     --s_GLFWWindowCount;
@@ -179,7 +179,7 @@ void MacOSWindow::Shutdown()
 
 void MacOSWindow::OnUpdate()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     glfwPollEvents();
     m_Context->SwapBuffers();
@@ -187,7 +187,7 @@ void MacOSWindow::OnUpdate()
 
 void MacOSWindow::SetVSync(bool enabled)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     if (enabled)
         glfwSwapInterval(1);

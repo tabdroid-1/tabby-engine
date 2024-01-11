@@ -8,6 +8,8 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#include <Tabby/Debug/Tracy/TracyOpenGL.hpp>
+
 namespace Tabby {
 
 OpenGL33Context::OpenGL33Context(GLFWwindow* windowHandle)
@@ -18,7 +20,7 @@ OpenGL33Context::OpenGL33Context(GLFWwindow* windowHandle)
 
 void OpenGL33Context::Init()
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     glfwMakeContextCurrent(m_WindowHandle);
 
@@ -29,9 +31,7 @@ void OpenGL33Context::Init()
     TB_CORE_ASSERT(status, "Failed to initialize Glad!");
 
     GL33::Init(context);
-
-    // int status = gladLoadGL(glfwGetProcAddress);
-    // TB_CORE_ASSERT(status, "Failed to initialize Glad!");
+    TracyGpuContext;
 
     TB_CORE_INFO("OpenGL Info:");
     TB_CORE_INFO("  Vendor: {0}", GL33::GL()->GetString(GL_VENDOR));
@@ -43,9 +43,10 @@ void OpenGL33Context::Init()
 
 void OpenGL33Context::SwapBuffers()
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     glfwSwapBuffers(m_WindowHandle);
+    TracyGpuCollect;
 }
 
 }

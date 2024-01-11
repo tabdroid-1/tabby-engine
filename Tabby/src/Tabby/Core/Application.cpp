@@ -3,10 +3,10 @@
 #include "tbpch.h"
 
 #include "Tabby/Utils/PlatformUtils.h"
-
 #ifdef TB_PLATFORM_WEB
 #include <emscripten.h>
 #endif
+
 namespace Tabby {
 
 Application* Application::s_Instance = nullptr;
@@ -14,7 +14,7 @@ Application* Application::s_Instance = nullptr;
 Application::Application(const ApplicationSpecification& specification)
     : m_Specification(specification)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     TB_CORE_ASSERT(!s_Instance, "Application already exists!");
     s_Instance = this;
@@ -33,15 +33,14 @@ Application::Application(const ApplicationSpecification& specification)
 
 Application::~Application()
 {
-    // TB_PROFILE_FUNCTION();
-
+    TB_PROFILE_SCOPE();
     // ScriptEngine::Shutdown();
     Renderer::Shutdown();
 }
 
 void Application::PushLayer(Layer* layer)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     m_LayerStack.PushLayer(layer);
     layer->OnAttach();
@@ -49,7 +48,7 @@ void Application::PushLayer(Layer* layer)
 
 void Application::PushOverlay(Layer* layer)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     m_LayerStack.PushOverlay(layer);
     layer->OnAttach();
@@ -69,7 +68,7 @@ void Application::SubmitToMainThread(const std::function<void()>& function)
 
 void Application::OnEvent(Event& e)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<WindowCloseEvent>(TB_BIND_EVENT_FN(Application::OnWindowClose));
@@ -84,10 +83,10 @@ void Application::OnEvent(Event& e)
 
 void Application::Run()
 {
-    // TB_PROFILE_FUNCTION();
 
     while (m_Running) {
-        // TB_PROFILE_SCOPE("RunLoop");
+        // TB_PROFILE_SCOPE_NAME("Application Update");
+        TB_PROFILE_FRAME("Application");
 
         float time = Time::GetTime();
         Timestep timestep = time - m_LastFrameTime;
@@ -97,7 +96,7 @@ void Application::Run()
 
         if (!m_Minimized) {
             {
-                // TB_PROFILE_SCOPE("LayerStack OnUpdate");
+                TB_PROFILE_SCOPE_NAME("LayerStack OnUpdate");
 
                 for (Layer* layer : m_LayerStack)
                     layer->OnUpdate(timestep);
@@ -105,7 +104,7 @@ void Application::Run()
 
             m_ImGuiLayer->Begin();
             {
-                // TB_PROFILE_SCOPE("LayerStack OnImGuiRender");
+                TB_PROFILE_SCOPE_NAME("LayerStack OnImGuiRender");
 
                 for (Layer* layer : m_LayerStack)
                     layer->OnImGuiRender();
@@ -125,7 +124,7 @@ bool Application::OnWindowClose(WindowCloseEvent& e)
 
 bool Application::OnWindowResize(WindowResizeEvent& e)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     if (e.GetWidth() == 0 || e.GetHeight() == 0) {
         m_Minimized = true;
@@ -133,7 +132,7 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
     }
 
     m_Minimized = false;
-    // Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+    Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
     return false;
 }

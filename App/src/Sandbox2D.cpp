@@ -15,7 +15,7 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     Tabby::Renderer2D::SetLineWidth(10.0f);
 
@@ -25,12 +25,12 @@ void Sandbox2D::OnAttach()
 
 void Sandbox2D::OnDetach()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 }
 
 void Sandbox2D::OnUpdate(Tabby::Timestep ts)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     // Update
     m_CameraController.OnUpdate(ts);
@@ -38,7 +38,7 @@ void Sandbox2D::OnUpdate(Tabby::Timestep ts)
     // Render
     Tabby::Renderer2D::ResetStats();
     {
-        TB_PROFILE_SCOPE("Renderer Prep");
+        TB_PROFILE_SCOPE_NAME("Renderer Prep");
         Tabby::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         Tabby::RenderCommand::Clear();
     }
@@ -47,7 +47,7 @@ void Sandbox2D::OnUpdate(Tabby::Timestep ts)
         static float rotation = 0.0f;
         rotation += ts * 50.0f;
 
-        TB_PROFILE_SCOPE("Renderer Draw");
+        TB_PROFILE_SCOPE_NAME("Renderer Draw");
         Tabby::Renderer2D::BeginScene(m_CameraController.GetCamera());
         Tabby::Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, -45.0f, { 0.8f, 0.2f, 0.3f, 1.0f });
         Tabby::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
@@ -75,7 +75,7 @@ void Sandbox2D::OnUpdate(Tabby::Timestep ts)
 
 void Sandbox2D::OnImGuiRender()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     ImGui::Begin("Settings");
 

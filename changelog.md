@@ -1,4 +1,4 @@
-Version: 10-01-2024_2 Alpha
+Version: 11-01-2024_1 Alpha
 Changes:
- - Child-parent relationship added
+ - Tracy profiler support.
 

@@ -1,16 +1,20 @@
 #include "Base.h"
 #include "Tabby/Core/Input.h"
 #include "Tabby/Core/KeyCodes.h"
+#include "Tabby/Core/Log.h"
+#include "Tabby/Debug/Tracy/common/TracyQueue.hpp"
 #include "Tabby/Math/Math.h"
 #include "Tabby/Scene/SceneStateMachine.h"
 #include <Scenes/TestScene.h>
 
+#include <Tabby/Debug/Tracy/Tracy.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
 #include <imguizmo/ImGuizmo.h>
 
 static Tabby::Ref<Tabby::Font> s_Font;
+float fps = 0;
 
 Base::Base()
     : Layer("Base")
@@ -20,7 +24,7 @@ Base::Base()
 
 void Base::OnAttach()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     Tabby::Ref<TestScene> testScene = Tabby::CreateRef<TestScene>();
 
@@ -38,12 +42,11 @@ void Base::OnAttach()
 
 void Base::OnDetach()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 }
 
 void Base::OnUpdate(Tabby::Timestep ts)
 {
-    TB_PROFILE_FUNCTION();
 
     Tabby::SceneStateMachine::GetCurrentScene()->OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
 
@@ -51,15 +54,13 @@ void Base::OnUpdate(Tabby::Timestep ts)
         m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
         (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y)) {
         m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-        // m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
-        // m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
     }
 
     Tabby::Renderer2D::ResetStats();
 
     m_Framebuffer->Bind();
     {
-        TB_PROFILE_SCOPE("Renderer Prep");
+        TB_PROFILE_SCOPE_NAME("Renderer Prep");
         Tabby::RenderCommand::SetClearColor({ 0.5f, 0.5f, 0.5f, 1 });
         Tabby::RenderCommand::Clear();
     }
@@ -70,18 +71,23 @@ void Base::OnUpdate(Tabby::Timestep ts)
     OnOverlayRender();
 
     m_Framebuffer->Unbind();
+    // tracy::QueueType::FrameImage(m_Framebuffer->GetColorAttachmentRendererID(), 320, 180, m_Framebuffer->GetColorAttachmentRendererID(), true);
 
     if (Tabby::Input::IsKeyPressed(Tabby::Key::Q))
         m_GizmoType = -1;
     if (Tabby::Input::IsKeyPressed(Tabby::Key::T))
         m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+    if (Tabby::Input::IsKeyPressed(Tabby::Key::S))
+        m_GizmoType = ImGuizmo::OPERATION::SCALE;
     if (Tabby::Input::IsKeyPressed(Tabby::Key::R))
         m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+
+    fps = 1.0f / ts;
 }
 
 void Base::OnImGuiRender()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     Tabby::SceneStateMachine::DrawImGui();
 
@@ -148,6 +154,7 @@ void Base::OnImGuiRender()
 
     ImGui::Begin("Settings");
 
+    ImGui::Text("FPS: %.2f", fps);
     ImGui::DragFloat2("Size", glm::value_ptr(m_ViewportSize));
     ImGui::Checkbox("Show physics colliders", &m_ShowPhysicsColliders);
 

@@ -17,17 +17,23 @@ namespace Utils {
 
     static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count)
     {
+        TB_PROFILE_SCOPE_NAME("(Framebuffer) Generate Texture");
+
         GL33::GL()->GenTextures(count, outID);
         GL33::GL()->BindTexture(TextureTarget(multisampled), *outID);
     }
 
     static void BindTexture(bool multisampled, uint32_t id)
     {
+        TB_PROFILE_SCOPE_NAME("(Framebuffer) Bind Texture");
+
         GL33::GL()->BindTexture(TextureTarget(multisampled), id);
     }
 
     static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index)
     {
+        TB_PROFILE_SCOPE_NAME("(Framebuffer) Attch Color Texture");
+
         bool multisampled = samples > 1;
         if (multisampled) {
             GL33::GL()->TexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
@@ -46,6 +52,8 @@ namespace Utils {
 
     static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, uint32_t width, uint32_t height)
     {
+        TB_PROFILE_SCOPE_NAME("(Framebuffer) Attch Depth Texture");
+
         bool multisampled = samples > 1;
         if (multisampled) {
             GL33::GL()->TexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
@@ -109,6 +117,8 @@ OpenGL33Framebuffer::~OpenGL33Framebuffer()
 
 void OpenGL33Framebuffer::Invalidate()
 {
+    TB_PROFILE_SCOPE_NAME("(Framebuffer) Invalidate");
+
     if (m_RendererID) {
         GL33::GL()->DeleteFramebuffers(1, &m_RendererID);
         GL33::GL()->DeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
@@ -167,12 +177,16 @@ void OpenGL33Framebuffer::Invalidate()
 
 void OpenGL33Framebuffer::Bind()
 {
+    TB_PROFILE_SCOPE_NAME("(Framebuffer) Bind");
+
     GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
     GL33::GL()->Viewport(0, 0, m_Specification.Width, m_Specification.Height);
 }
 
 void OpenGL33Framebuffer::Unbind()
 {
+    TB_PROFILE_SCOPE_NAME("(Framebuffer) Unbind");
+
     GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -190,6 +204,8 @@ void OpenGL33Framebuffer::Resize(uint32_t width, uint32_t height)
 
 int OpenGL33Framebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 {
+    TB_PROFILE_SCOPE_NAME("(Framebuffer) Read Pixel");
+
     TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
     GL33::GL()->ReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
@@ -200,6 +216,8 @@ int OpenGL33Framebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 
 void OpenGL33Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 {
+    TB_PROFILE_SCOPE_NAME("(Framebuffer) Clear Attachment");
+
     TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
     auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
