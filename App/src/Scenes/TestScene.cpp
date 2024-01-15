@@ -2,6 +2,7 @@
 
 #include "Tabby/Core/Base.h"
 #include "Tabby/Scene/Components.h"
+#include "Tabby/Sound/SoundBuffer.h"
 #include "TestScene.h"
 #include "imgui/imgui.h"
 
@@ -79,8 +80,9 @@ void TestScene::OnActivate()
         spriteComponent.xFrame = 2;
         spriteComponent.yFrame = 4;
 
-        // auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
-        // rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+        auto& soundComponent = SpriteEntity.AddComponent<Tabby::SoundComponent>();
+        soundComponent.Sound = Tabby::CreateRef<Tabby::SoundBuffer>("assets/audio/sunflower-street.mp3");
+        soundComponent.Playing = true;
         //
         // auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
         // boxColliderComponent.Size = { 0.19f, 0.24f };

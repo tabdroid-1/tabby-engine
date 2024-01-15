@@ -1,9 +1,9 @@
 Todo
 ---- 
+ - More controll over audio.
  - Physics stuff. (raycast triggers etc)
  - Animation
  - Asset manager
- - Audio player
  - tbpf (TabbyPrefabFormat) format and Prefab editor. (kinda like level editor that generates tbpf format) 
    - tbpf file will contain
      - entity prefabs(player, npc, level elemets etc.)
@@ -14,4 +14,4 @@ Todo
 
 Bugs
 ----
- - CurrentYFrame picks seamingly picks random coords from texture.
+ - CurrentYFrame picks seamingly random coordinates from texture.

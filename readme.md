@@ -8,29 +8,36 @@ Engine is mainly for 2D games but has 3d elements. Further 3D support planned.
 In this engine you mostly do everything using code.
 There is Prefab/Level editor planned since its hard to make levels using just code.
 
-Engine is based on Hazel engine.
+Engine architecture is based on Hazel engine.
 
 External Dependencies
 -------------------
-- box2d
-- entt
-- ImGui
-- glad2
-- glfw
-- glm
-- imguizmo
-- spdlog
-- stb_image
-- yaml-cpp
-- msdf-atlas-gen
-- tracy profiler
+- Bundled with engine
+  - box2d
+  - entt
+  - ImGui
+  - glad2
+  - glfw
+  - glm
+  - imguizmo
+  - spdlog
+  - stb_image
+  - yaml-cpp
+  - msdf-atlas-gen
+  - tracy profiler
+
+- Manual installition might be required
+  - Freetype
+  - tinyxml2
+  - PNG
+  - Threads
 
 Supported Graphics Apis
 -----------------------
 - OpenGL 3.3
 - OpenGL 3.0 es
 
-Supported Platforms
+(Kinda)Supported Platforms
 -------------------
 - Linux
 - Windows (probably. not tested)
@@ -75,11 +82,9 @@ For building web install emscriptem from their git repo. Installing from package
 
 Note From the author
  --------------------
-
 - If you are going to use this game engine, pls support as much platform as possible (eh. You do not have to support Chrome OS or FreeBSD) and support more architectures like x86_32, x86_64, aarch64. You do not have to that but if you do it you would make me happi. :3
 
 Special Thanks
  --------------
-
 - Jonny Hotbody
 - Peppino Spaghetti

@@ -3,9 +3,7 @@
 #include "tbpch.h"
 
 #include "Tabby/Utils/PlatformUtils.h"
-#ifdef TB_PLATFORM_WEB
-#include <emscripten.h>
-#endif
+#include <Tabby/Sound/SoundDevice.h>
 
 namespace Tabby {
 
@@ -19,12 +17,13 @@ Application::Application(const ApplicationSpecification& specification)
     TB_CORE_ASSERT(!s_Instance, "Application already exists!");
     s_Instance = this;
 
-    // Set working directory here
     if (!m_Specification.WorkingDirectory.empty())
         std::filesystem::current_path(m_Specification.WorkingDirectory);
+
     m_Window = Window::Create(WindowProps(m_Specification.Name));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
+    SoundDevice::Init();
     Renderer::Init();
 
     m_ImGuiLayer = new ImGuiLayer();
@@ -34,7 +33,6 @@ Application::Application(const ApplicationSpecification& specification)
 Application::~Application()
 {
     TB_PROFILE_SCOPE();
-    // ScriptEngine::Shutdown();
     Renderer::Shutdown();
 }
 
@@ -85,7 +83,6 @@ void Application::Run()
 {
 
     while (m_Running) {
-        // TB_PROFILE_SCOPE_NAME("Application Update");
         TB_PROFILE_FRAME("Application");
 
         float time = Time::GetTime();

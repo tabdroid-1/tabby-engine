@@ -1,4 +1,5 @@
-Version: 11-01-2024_1 Alpha
+Version: 15-01-2024_1 Alpha
 Changes:
- - Tracy profiler support.
+ - Initial audio support.
+ - Config.h which will contain macros that will be used by engine.
 

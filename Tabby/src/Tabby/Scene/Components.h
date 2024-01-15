@@ -6,6 +6,7 @@
 #include "Tabby/Renderer/Texture.h"
 
 #include "entt/entt.hpp"
+#include <Tabby/Sound/SoundBuffer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -174,11 +175,16 @@ struct CameraComponent {
     CameraComponent(const CameraComponent&) = default;
 };
 
-struct ScriptComponent {
-    std::string ClassName;
+class SoundBuffer;
 
-    ScriptComponent() = default;
-    ScriptComponent(const ScriptComponent&) = default;
+struct SoundComponent {
+    Ref<SoundBuffer> Sound;
+    float Gain = 1.0f;
+    bool Playing = false;
+    bool Loop = false;
+
+    SoundComponent() = default;
+    SoundComponent(const SoundComponent&) = default;
 };
 
 // Forward declaration
@@ -263,7 +269,7 @@ struct ComponentGroup {
 };
 
 using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
-    CircleRendererComponent, CameraComponent, ScriptComponent,
+    CircleRendererComponent, CameraComponent, SoundComponent,
     NativeScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent,
     CircleCollider2DComponent, TextComponent>;
 
