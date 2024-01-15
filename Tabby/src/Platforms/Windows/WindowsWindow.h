@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef  TB_PLATFORM_WINDOWS
+#ifdef TB_PLATFORM_WINDOWS
 
 #include "Tabby/Core/Window.h"
 #include "Tabby/Renderer/GraphicsContext.h"
@@ -9,42 +9,42 @@
 
 namespace Tabby {
 
-	class WindowsWindow : public Window
-	{
-	public:
-		WindowsWindow(const WindowProps& props);
-		virtual ~WindowsWindow();
+class WindowsWindow : public Window {
+public:
+    WindowsWindow(const WindowProps& props);
+    virtual ~WindowsWindow();
 
-		void OnUpdate() override;
+    void OnUpdate() override;
 
-		unsigned int GetWidth() const override { return m_Data.Width; }
-		unsigned int GetHeight() const override { return m_Data.Height; }
+    unsigned int GetWidth() const override { return m_Data.Width; }
+    unsigned int GetHeight() const override { return m_Data.Height; }
 
-		// Window attributes
-		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-		void SetVSync(bool enabled) override;
-		bool IsVSync() const override;
+    // Window attributes
+    void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+    void SetVSync(bool enabled) override;
+    bool IsVSync() const override;
 
-		virtual void* GetNativeWindow() const { return m_Window; }
-	private:
-		virtual void Init(const WindowProps& props);
-		virtual void Shutdown();
-	private:
-		GLFWwindow* m_Window;
-		// Scope<GraphicsContext> m_Context;
+    virtual void* GetNativeWindow() const { return m_Window; }
 
-		struct WindowData
-		{
-			std::string Title;
-			unsigned int Width, Height;
-			bool VSync;
+private:
+    virtual void Init(const WindowProps& props);
+    virtual void Shutdown();
 
-			EventCallbackFn EventCallback;
-		};
+private:
+    GLFWwindow* m_Window;
+    Scope<GraphicsContext> m_Context;
 
-		WindowData m_Data;
-	};
+    struct WindowData {
+        std::string Title;
+        unsigned int Width, Height;
+        bool VSync;
+
+        EventCallbackFn EventCallback;
+    };
+
+    WindowData m_Data;
+};
 
 }
 
-#endif 
+#endif
