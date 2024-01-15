@@ -8,6 +8,7 @@
 #include "Tabby/Events/ApplicationEvent.h"
 #include "Tabby/Events/KeyEvent.h"
 #include "Tabby/Events/MouseEvent.h"
+#include <Tabby/Debug/Instrumentor.h>
 
 // #include "Tabby/Renderer/Renderer.h"
 
@@ -24,21 +25,21 @@ static void GLFWErrorCallback(int error, const char* description)
 
 WindowsWindow::WindowsWindow(const WindowProps& props)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     Init(props);
 }
 
 WindowsWindow::~WindowsWindow()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     Shutdown();
 }
 
 void WindowsWindow::Init(const WindowProps& props)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
@@ -47,14 +48,14 @@ void WindowsWindow::Init(const WindowProps& props)
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
     if (s_GLFWWindowCount == 0) {
-        TB_PROFILE_SCOPE("glfwInit");
+        TB_PROFILE_SCOPE_NAME("glfwInit");
         int success = glfwInit();
         TB_CORE_ASSERT(success, "Could not initialize GLFW!");
         glfwSetErrorCallback(GLFWErrorCallback);
     }
 
     {
-        TB_PROFILE_SCOPE("glfwCreateWindow");
+        TB_PROFILE_SCOPE_NAME("glfwCreateWindow");
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
 
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -68,7 +69,6 @@ void WindowsWindow::Init(const WindowProps& props)
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
             glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #if defined(TB_DEBUG)
             glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
@@ -77,8 +77,8 @@ void WindowsWindow::Init(const WindowProps& props)
         ++s_GLFWWindowCount;
     }
 
-    // m_Context = GraphicsContext::Create(m_Window);
-    // m_Context->Init();
+    m_Context = GraphicsContext::Create(m_Window);
+    m_Context->Init();
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
     SetVSync(true);
@@ -162,7 +162,7 @@ void WindowsWindow::Init(const WindowProps& props)
 
 void WindowsWindow::Shutdown()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     glfwDestroyWindow(m_Window);
     --s_GLFWWindowCount;
@@ -174,15 +174,15 @@ void WindowsWindow::Shutdown()
 
 void WindowsWindow::OnUpdate()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     glfwPollEvents();
-    // m_Context->SwapBuffers();
+    m_Context->SwapBuffers();
 }
 
 void WindowsWindow::SetVSync(bool enabled)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     if (enabled)
         glfwSwapInterval(1);
