@@ -66,6 +66,7 @@ set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
 set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
 set(IMGUIZMO "${PROJECT_VENDOR_DIR}/imguizmo")
+set(MINIAUDIO "${PROJECT_VENDOR_DIR}/miniaudio")
 
 
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build GLFW examples" FORCE)
@@ -102,17 +103,16 @@ add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC 
         ${PROJECT_SOURCES_DIR}
         ${PROJECT_VENDOR_DIR}
+
         ${GLM}
         ${SPDLOG}/include
-        # ${FREETYPE}/include
-        ${MSDF-ATLAS-GEN}/msdf-atlas-gen
         )
 
 include_directories(SYSTEM src)
-include_directories(${IMGUIZMO})
 include_directories(${IMGUI})
+include_directories(${IMGUIZMO})
 include_directories(${STB})
-include_directories(${GLM})
+include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
 
 if (NOT EMSCRIPTEN)
 add_subdirectory(${GLFW})
@@ -129,7 +129,6 @@ add_subdirectory(${BOX2D})
 add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
 
-
 if (NOT EMSCRIPTEN AND NOT APPLE)
 target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
@@ -137,10 +136,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         spdlog
         glfw
         glm
-        gli
         yaml-cpp
-        freetype
         imguizmo
+        msdf-atlas-gen 
         )
 elseif (EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
@@ -154,8 +152,8 @@ elseif (EMSCRIPTEN)
         glfw3
         glm
         yaml-cpp
-        freetype
         imguizmo
+        msdf-atlas-gen 
         )
 elseif (APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE 

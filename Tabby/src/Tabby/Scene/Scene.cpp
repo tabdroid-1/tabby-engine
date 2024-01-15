@@ -139,21 +139,22 @@ void Scene::OnStop()
 void Scene::OnUpdate(Timestep ts)
 {
 
-    // Apply transform to children
-    {
-        auto view = m_Registry.view<TransformComponent>();
-
-        for (auto entity : view) {
-            auto& transform = m_Registry.get<TransformComponent>(entity);
-
-            for (entt::entity child : transform.Children) {
-                auto& childTransform = m_Registry.get<TransformComponent>(child);
-                childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
-            }
-        };
-    }
-
     if (!m_IsPaused || m_StepFrames-- > 0) {
+
+        // Apply transform to children
+        {
+            auto view = m_Registry.view<TransformComponent>();
+
+            for (auto entity : view) {
+                auto& transform = m_Registry.get<TransformComponent>(entity);
+
+                for (entt::entity child : transform.Children) {
+                    auto& childTransform = m_Registry.get<TransformComponent>(child);
+                    childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
+                }
+            };
+        }
+
         // Update scripts
         {
             m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
@@ -186,6 +187,23 @@ void Scene::OnUpdate(Timestep ts)
                 transform.Translation.x = position.x;
                 transform.Translation.y = position.y;
                 transform.Rotation.z = body->GetAngle();
+            }
+        }
+    }
+
+    // Sound
+    {
+        auto view = m_Registry.view<SoundComponent>();
+        for (auto e : view) {
+            Entity entity = { e, this };
+            auto& sc = entity.GetComponent<SoundComponent>();
+
+            sc.Sound->SetGain(sc.Gain);
+
+            if (sc.Sound && sc.Playing && !sc.Sound->isPlaying()) {
+                sc.Sound->Play();
+            } else if (sc.Sound && !sc.Playing && sc.Sound->isPlaying()) {
+                sc.Sound->Pause();
             }
         }
     }
@@ -403,7 +421,7 @@ void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& co
 }
 
 template <>
-void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
+void Scene::OnComponentAdded<SoundComponent>(Entity entity, SoundComponent& component)
 {
 }
 
