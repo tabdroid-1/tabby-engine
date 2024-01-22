@@ -1,5 +1,4 @@
-Version: 15-01-2024_1 Alpha
+Version: 22-01-2024_1 Alpha
 Changes:
- - Initial audio support.
- - Config.h which will contain macros that will be used by engine.
-
+ - "Fixed" opengl es 3.0 framebuffer.
+ - Edited tracy to use only opengl 3.3 since opengl es 3.0 is not supported

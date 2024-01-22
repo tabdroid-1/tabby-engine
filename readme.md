@@ -25,6 +25,7 @@ External Dependencies
   - yaml-cpp
   - msdf-atlas-gen
   - tracy profiler
+  - miniaudio
 
 - Manual installition might be required
   - Freetype
