@@ -23,21 +23,21 @@ static void GLFWErrorCallback(int error, const char* description)
 
 LinuxWindow::LinuxWindow(const WindowProps& props)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     Init(props);
 }
 
 LinuxWindow::~LinuxWindow()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     Shutdown();
 }
 
 void LinuxWindow::Init(const WindowProps& props)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
@@ -46,14 +46,16 @@ void LinuxWindow::Init(const WindowProps& props)
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
     if (s_GLFWWindowCount == 0) {
-        TB_PROFILE_SCOPE("glfwInit");
+        TB_PROFILE_SCOPE_NAME("glfwInit");
         int success = glfwInit();
         TB_CORE_ASSERT(success, "Could not initialize GLFW!");
         glfwSetErrorCallback(GLFWErrorCallback);
     }
 
     {
-        TB_PROFILE_SCOPE("glfwCreateWindow");
+        TB_PROFILE_SCOPE_NAME("glfwCreateWindow");
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+        glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
 
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -160,7 +162,7 @@ void LinuxWindow::Init(const WindowProps& props)
 
 void LinuxWindow::Shutdown()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     glfwDestroyWindow(m_Window);
     --s_GLFWWindowCount;
@@ -172,7 +174,7 @@ void LinuxWindow::Shutdown()
 
 void LinuxWindow::OnUpdate()
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     glfwPollEvents();
     m_Context->SwapBuffers();
@@ -180,7 +182,7 @@ void LinuxWindow::OnUpdate()
 
 void LinuxWindow::SetVSync(bool enabled)
 {
-    TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     if (enabled)
         glfwSwapInterval(1);
