@@ -6,11 +6,11 @@
 
 namespace Tabby {
 
-// #ifdef TB_PLATFORM_WEB
-// RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGLES3;
-// #else
+#ifdef TB_PLATFORM_WEB || TB_PLATFORM_ANDROID
+RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGLES3;
+#else
 RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL33;
-// #endif
+#endif
 
 Scope<RendererAPI> RendererAPI::Create()
 {

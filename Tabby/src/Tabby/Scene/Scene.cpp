@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Entity.h"
+#include "box2d/b2_settings.h"
 #include "glm/fwd.hpp"
 #include "tbpch.h"
 
@@ -9,6 +10,7 @@
 #include "Tabby/Renderer/Renderer2D.h"
 
 #include <algorithm>
+#include <cstdint>
 #include <glm/glm.hpp>
 
 #include "Entity.h"
@@ -28,7 +30,7 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    delete m_PhysicsWorld;
+    delete m_PhysicsWorldHandle2D;
 }
 
 template <typename... Component>
@@ -173,7 +175,8 @@ void Scene::OnUpdate(Timestep ts)
         {
             const int32_t velocityIterations = 6;
             const int32_t positionIterations = 2;
-            m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
+            m_PhysicsWorldHandle2D->Step(ts, velocityIterations, positionIterations);
+            // m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
 
             // Retrieve transform from Box2D
             auto view = m_Registry.view<Rigidbody2DComponent>();
@@ -335,10 +338,15 @@ Entity Scene::GetEntityByUUID(UUID uuid)
     return {};
 }
 
+PhysicsWorldHandle2D* Scene::GetPhysicsWorldHande2D()
+{
+    return m_PhysicsWorldHandle2D;
+}
+
 void Scene::OnPhysics2DStart()
 {
-    b2Vec2 gravity(0.0f, -20.8f);
-    m_PhysicsWorld = new b2World(gravity);
+    glm::vec2 gravity(0.0f, -20.8f);
+    m_PhysicsWorldHandle2D = new PhysicsWorldHandle2D(this, gravity);
 
     auto view = m_Registry.view<Rigidbody2DComponent>();
     for (auto e : view) {
@@ -346,12 +354,16 @@ void Scene::OnPhysics2DStart()
         auto& transform = entity.GetComponent<TransformComponent>();
         auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
+        b2BodyUserData bodyData;
+        bodyData.pointer = reinterpret_cast<uintptr_t>(&entity);
+
         b2BodyDef bodyDef;
         bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
         bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
         bodyDef.angle = transform.Rotation.z;
+        bodyDef.userData = bodyData;
 
-        b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+        b2Body* body = m_PhysicsWorldHandle2D->GetPhysicsWorld()->CreateBody(&bodyDef);
         body->SetFixedRotation(rb2d.FixedRotation);
 
         if (entity.HasComponent<BoxCollider2DComponent>()) {
@@ -393,8 +405,8 @@ void Scene::OnPhysics2DStart()
 
 void Scene::OnPhysics2DStop()
 {
-    delete m_PhysicsWorld;
-    m_PhysicsWorld = nullptr;
+    delete m_PhysicsWorldHandle2D;
+    m_PhysicsWorldHandle2D = nullptr;
 }
 
 template <typename T>
@@ -449,17 +461,21 @@ template <>
 void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component)
 {
 
-    if (m_PhysicsWorld && m_PhysicsInitialized) {
+    if (m_PhysicsWorldHandle2D && m_PhysicsWorldHandle2D->GetPhysicsWorld() && m_PhysicsInitialized) {
 
         auto& transform = entity.GetComponent<TransformComponent>();
         auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+
+        b2BodyUserData bodyData;
+        bodyData.pointer = static_cast<uintptr_t>(entity.GetEntityHandle());
 
         b2BodyDef bodyDef;
         bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
         bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
         bodyDef.angle = transform.Rotation.z;
+        bodyDef.userData = bodyData;
 
-        b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+        b2Body* body = m_PhysicsWorldHandle2D->GetPhysicsWorld()->CreateBody(&bodyDef);
         body->SetFixedRotation(rb2d.FixedRotation);
 
         if (entity.HasComponent<BoxCollider2DComponent>()) {

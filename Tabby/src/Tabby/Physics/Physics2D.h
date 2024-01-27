@@ -37,7 +37,6 @@ namespace Utils {
         TB_CORE_ASSERT(false, "Unknown body type");
         return Rigidbody2DComponent::BodyType::Static;
     }
-
 }
 
 }
