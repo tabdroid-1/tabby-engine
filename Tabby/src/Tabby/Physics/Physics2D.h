@@ -2,7 +2,10 @@
 
 #include "Tabby/Scene/Components.h"
 
-#include "box2d/b2_body.h"
+#include "box2d/b2_world.h"
+#include "box2d/box2d.h"
+#include "glm/fwd.hpp"
+#include <Tabby/Core/Assert.h>
 
 namespace Tabby {
 
@@ -38,5 +41,38 @@ namespace Utils {
         return Rigidbody2DComponent::BodyType::Static;
     }
 }
+
+class Scene;
+
+class Physics2DContactListener : public b2ContactListener {
+public:
+    Physics2DContactListener(Scene* scene, b2World* world);
+    void BeginContact(b2Contact* contact);
+    void EndContact(b2Contact* contact);
+    void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
+    void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+
+private:
+    Scene* m_Scene = nullptr;
+};
+
+class Physisc2D {
+public:
+    Physisc2D();
+    ~Physisc2D();
+
+    static void InitWorld(Scene* scene, glm::vec2& gravity);
+    static void UpdateWorld(float ts, int32_t velocityIterations, int32_t positionIterations);
+
+    static b2World* GetPhysicsWorld();
+
+private:
+    b2World* m_PhysicsWorld = nullptr;
+    Physics2DContactListener* m_PhysicsContactListener = nullptr;
+    Scene* m_Scene = nullptr;
+
+private:
+    static Physisc2D* s_Instance;
+};
 
 }
