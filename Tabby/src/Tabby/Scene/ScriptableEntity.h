@@ -20,7 +20,9 @@ public:
 protected:
     virtual void OnCreate() { }
     virtual void OnDestroy() { }
-    virtual void OnUpdate(Timestep ts) { }
+    virtual void Update(Timestep ts) { }
+    virtual void LateUpdate(Timestep ts) { }
+    // virtual void FixedUpdate(Timestep ts) { }
 
     // Physics Callback
     virtual void OnCollisionEnter() { }

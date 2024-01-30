@@ -5,7 +5,9 @@
 #include "Tabby/Renderer/Font.h"
 #include "Tabby/Renderer/Texture.h"
 
+#include "box2d/b2_body.h"
 #include "entt/entt.hpp"
+#include "glm/fwd.hpp"
 #include <Tabby/Sound/SoundBuffer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -55,6 +57,7 @@ struct TransformComponent {
 
     glm::mat4 GetTransform() const
     {
+        // TODO:i think matrix takes radians. convert Rotation to radians before passing
         glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
 
         return glm::translate(glm::mat4(1.0f), Translation)
@@ -218,6 +221,45 @@ struct Rigidbody2DComponent {
 
     Rigidbody2DComponent() = default;
     Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
+
+    void SetVelocity(glm::vec2 velocity)
+    {
+        static_cast<b2Body*>(RuntimeBody)->SetLinearVelocity({ velocity.x, velocity.y });
+    }
+
+    void SetAngularVelocity(float velocity)
+    {
+        static_cast<b2Body*>(RuntimeBody)->SetAngularVelocity(velocity);
+    }
+
+    glm::vec2 GetVelocity() const
+    {
+        // return { RuntimeBody->GetLinearVelocity().x, RuntimeBody->GetLinearVelocity().y };
+        return { static_cast<b2Body*>(RuntimeBody)->GetLinearVelocity().x, static_cast<b2Body*>(RuntimeBody)->GetLinearVelocity().y };
+    }
+
+    float GetAngularVelocity() const
+    {
+        return static_cast<b2Body*>(RuntimeBody)->GetAngularVelocity();
+    }
+
+    float GetAngle() const
+    {
+        float angleRadians = static_cast<b2Body*>(RuntimeBody)->GetAngle();
+
+        // Convert the angle from radians to degrees
+        float angleDegrees = angleRadians * (180.0f / b2_pi);
+
+        // Wrap the angle to the range [0, 360]
+        angleDegrees = std::fmod(angleDegrees, 360.0f);
+
+        // If the angle is negative, add 360 to make it positive
+        if (angleDegrees < 0.0f) {
+            angleDegrees += 360.0f;
+        }
+
+        return angleDegrees;
+    }
 };
 
 struct BoxCollider2DComponent {

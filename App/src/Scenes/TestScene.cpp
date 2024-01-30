@@ -1,3 +1,4 @@
+#include <Scripts/PlayerScript.h>
 #include <Tabby.h>
 
 #include "Tabby/Core/Base.h"
@@ -75,6 +76,7 @@ void TestScene::OnActivate()
         // texture = Tabby::Texture2D::Create("assets/textures/Alive.png");
         texture = Tabby::Texture2D::Create("assets/spritesheets/player/player_packed.png");
         spriteComponent.Texture = texture;
+        spriteComponent.renderOrder = 1;
         spriteComponent.hFrames = 10;
         spriteComponent.vFrames = 5;
         spriteComponent.xFrame = 2;
@@ -83,9 +85,16 @@ void TestScene::OnActivate()
         auto& soundComponent = SpriteEntity.AddComponent<Tabby::SoundComponent>();
         soundComponent.Sound = Tabby::CreateRef<Tabby::SoundBuffer>("assets/audio/sunflower-street.mp3");
         soundComponent.Playing = true;
-        //
-        // auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-        // boxColliderComponent.Size = { 0.19f, 0.24f };
+
+        auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+
+        auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        boxColliderComponent.Size = { 0.19f, 0.24f };
+
+        auto& playerMovement = SpriteEntity.AddComponent<Tabby::NativeScriptComponent>();
+        playerMovement.Bind<PlayerMove>();
+        auto playerMovementScript = static_cast<PlayerMove*>(playerMovement.Instance);
     }
 }
 
