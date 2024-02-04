@@ -1,11 +1,9 @@
 #include "Scene.h"
 #include "Entity.h"
-#include "box2d/b2_settings.h"
+#include "ScriptableEntity.h"
 #include "glm/fwd.hpp"
-#include "tbpch.h"
 
 #include "Components.h"
-#include "ScriptableEntity.h"
 #include "Tabby/Physics/Physics2D.h"
 #include "Tabby/Renderer/Renderer2D.h"
 
@@ -13,13 +11,12 @@
 #include <cstdint>
 #include <glm/glm.hpp>
 
-#include "Entity.h"
-
 // Box2D
 #include "box2d/b2_body.h"
 #include "box2d/b2_circle_shape.h"
 #include "box2d/b2_fixture.h"
 #include "box2d/b2_polygon_shape.h"
+#include "box2d/b2_settings.h"
 #include "box2d/b2_world.h"
 
 namespace Tabby {
@@ -30,7 +27,6 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    // delete m_PhysicsWorldHandle2D;
 }
 
 template <typename... Component>
@@ -180,7 +176,6 @@ void Scene::OnUpdate(Timestep ts)
             const int32_t velocityIterations = 6;
             const int32_t positionIterations = 2;
             Physisc2D::UpdateWorld(ts, velocityIterations, positionIterations);
-            // m_PhysicsWorldHandle2D->Step(ts, velocityIterations, positionIterations);
 
             // Retrieve transform from Box2D
             auto view = m_Registry.view<Rigidbody2DComponent>();
@@ -351,7 +346,9 @@ void Scene::OnPhysics2DStart()
         auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
         b2BodyUserData bodyData;
-        bodyData.pointer = reinterpret_cast<uintptr_t>(&entity);
+        bodyData.pointer = static_cast<std::uintptr_t>(e);
+        // bodyData.pointer = reinterpret_cast<uintptr_t>(&entity);
+        // std::memcpy(&bodyData.pointer, &entity, sizeof(Entity));
 
         b2BodyDef bodyDef;
         bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
@@ -395,14 +392,10 @@ void Scene::OnPhysics2DStart()
 
         rb2d.RuntimeBody = body;
     }
-
-    m_PhysicsInitialized = true;
 }
 
 void Scene::OnPhysics2DStop()
 {
-    // delete m_PhysicsWorldHandle2D;
-    // m_PhysicsWorldHandle2D = nullptr;
 }
 
 template <typename T>
@@ -457,13 +450,15 @@ template <>
 void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component)
 {
 
-    if (Physisc2D::GetPhysicsWorld() && m_PhysicsInitialized) {
-
+    if (Physisc2D::GetPhysicsWorld()) {
         auto& transform = entity.GetComponent<TransformComponent>();
         auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
         b2BodyUserData bodyData;
-        bodyData.pointer = static_cast<uintptr_t>(entity.GetEntityHandle());
+
+        entt::entity e = entity.GetEntityHandle();
+        // bodyData.pointer = reinterpret_cast<uintptr_t>(&entity);
+        bodyData.pointer = static_cast<std::uintptr_t>(e);
 
         b2BodyDef bodyDef;
         bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);

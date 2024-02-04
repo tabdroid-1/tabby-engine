@@ -3,6 +3,7 @@
 
 #include "Entity.h"
 #include <Tabby/Core/Log.h>
+#include <Tabby/Physics/Physics2D.h>
 #include <Tabby/Scene/Components.h>
 
 namespace Tabby {
@@ -25,10 +26,10 @@ protected:
     // virtual void FixedUpdate(Timestep ts) { }
 
     // Physics Callback
-    virtual void OnCollisionEnter() { }
-    virtual void OnCollisionExit() { }
-    virtual void OnPreSolve() { }
-    virtual void OnPostSolve() { }
+    virtual void OnCollisionEnter(ContactCallback contact) { }
+    virtual void OnCollisionExit(ContactCallback contact) { }
+    virtual void OnPreSolve(ContactCallback contact) { }
+    virtual void OnPostSolve(ContactCallback contact) { }
 
 private:
     Entity m_Entity;
