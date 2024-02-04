@@ -8,6 +8,7 @@
 #include "box2d/b2_body.h"
 #include "entt/entt.hpp"
 #include "glm/fwd.hpp"
+#include <Tabby/Math/Math.h>
 #include <Tabby/Sound/SoundBuffer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -57,8 +58,7 @@ struct TransformComponent {
 
     glm::mat4 GetTransform() const
     {
-        // TODO:i think matrix takes radians. convert Rotation to radians before passing
-        glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
+        glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians(Rotation)));
 
         return glm::translate(glm::mat4(1.0f), Translation)
             * rotation
@@ -67,7 +67,7 @@ struct TransformComponent {
 
     glm::mat4 GetLocalTransform() const
     {
-        glm::mat4 rotation = glm::toMat4(glm::quat(LocalRotation));
+        glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians(LocalRotation)));
 
         return glm::translate(glm::mat4(1.0f), LocalTranslation)
             * rotation
@@ -136,6 +136,10 @@ struct TransformComponent {
             Rotation.x = atan2(-Row[2][0], Row[1][1]);
             Rotation.z = 0;
         }
+
+        Rotation.x *= Math::RAD2DEG;
+        Rotation.y *= Math::RAD2DEG;
+        Rotation.z *= Math::RAD2DEG;
     }
 };
 

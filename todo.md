@@ -14,6 +14,7 @@ Todo
     - Asset manager
  
 - Low priority
+    - Place TracyProfiler in to Vendor
     - Way to Select preffered FPS for application.
     - C++ reflection maybe?
     - Basic networking
@@ -29,4 +30,3 @@ Bugs
 ----
 - CurrentYFrame picks seamingly random coordinates from texture.
 - GLES 3.0 text shader not working.
-- GetTransform() in TransformComponent should take radian instead of degree.
