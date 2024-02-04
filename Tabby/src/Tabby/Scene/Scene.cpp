@@ -7,6 +7,7 @@
 #include "Tabby/Physics/Physics2D.h"
 #include "Tabby/Renderer/Renderer2D.h"
 
+#include <Tabby/Math/Math.h>
 #include <algorithm>
 #include <cstdint>
 #include <glm/glm.hpp>
@@ -188,7 +189,7 @@ void Scene::OnUpdate(Timestep ts)
                 const auto& position = body->GetPosition();
                 transform.Translation.x = position.x;
                 transform.Translation.y = position.y;
-                transform.Rotation.z = body->GetAngle();
+                transform.Rotation.z = Math::RAD2DEG * body->GetAngle();
             }
         }
     }

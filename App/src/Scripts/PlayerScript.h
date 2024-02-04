@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Tabby/Core/Log.h"
+#include "Tabby/Math/Math.h"
 #include "Tabby/Physics/Physics2D.h"
 #include "Tabby/Scene/Components.h"
 #include "Tabby/Scene/SceneStateMachine.h"
@@ -96,7 +97,7 @@ public:
         auto& playerTransform = GetComponent<Tabby::TransformComponent>();
         if (playerTransform.Rotation.y == 0) {
 
-            playerTransform.Rotation.y = 1.0f;
+            playerTransform.Rotation.y = 180.0f;
         } else {
             playerTransform.Rotation.y = 0.0f;
         }

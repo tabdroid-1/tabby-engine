@@ -1,5 +1,4 @@
-Version: 04-02-2024_1 Alpha
+Version: 04-02-2024_2 Alpha
 Changes:
- - Physics2D rework
- - Collision Callback
- - Raycast2D
+ - Now Transform component rotation uses degrees cus why not.
+ - Added RAD2DEG, DEG2RAD and PI constants in Math class.
