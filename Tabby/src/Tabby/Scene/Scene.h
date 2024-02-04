@@ -1,6 +1,5 @@
 #pragma once
 
-// #include <Tabby/Physics/PhysicsWorld.h>
 #include <tbpch.h>
 
 #include "Tabby/Core/Timestep.h"
@@ -43,7 +42,6 @@ public:
     Entity GetEntityByUUID(UUID uuid);
 
     Entity GetPrimaryCameraEntity();
-    // PhysicsWorldHandle2D* GetPhysicsWorldHande2D();
 
     bool IsRunning() const { return m_IsRunning; }
     bool IsPaused() const { return m_IsPaused; }
@@ -71,9 +69,6 @@ private:
     bool m_IsRunning = false;
     bool m_IsPaused = false;
     int m_StepFrames = 0;
-
-    bool m_PhysicsInitialized = false;
-    // PhysicsWorldHandle2D* m_PhysicsWorldHandle2D = nullptr;
 
     std::unordered_map<UUID, entt::entity> m_EntityMap;
 
