@@ -27,6 +27,8 @@ if (EMSCRIPTEN)
 	append_linker_flags("-sFORCE_FILESYSTEM=1")
 	append_linker_flags("-sFETCH=1")
 	append_linker_flags("-sASYNCIFY=1")
+	append_linker_flags("-sUSE_FREETYPE=1")
+
 	# append_linker_flags("-sMINIMAL_RUNTIME=2")
 	append_linker_flags("-Oz")
 	append_linker_flags("-sENVIRONMENT=web")
@@ -94,18 +96,21 @@ include_directories(${IMGUI})
 include_directories(${IMGUIZMO})
 include_directories(${STB})
 include_directories(${SDL2_INCLUDE_DIRS})
-include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
 
 if (NOT EMSCRIPTEN)
-    add_subdirectory(${SDL2} EXCLUDE_FROM_ALL)
+include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
 endif()
+
+add_subdirectory(${SDL2} EXCLUDE_FROM_ALL)
 add_subdirectory(${GLM})
 
 set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 
+if (NOT EMSCRIPTEN)
 add_subdirectory(${MSDF-ATLAS-GEN} EXCLUDE_FROM_ALL)
+endif()
 add_subdirectory(${YAML-CPP})
 add_subdirectory(${SPDLOG} EXCLUDE_FROM_ALL)
 add_subdirectory(${BOX2D} EXCLUDE_FROM_ALL)
@@ -132,7 +137,6 @@ elseif (EMSCRIPTEN)
         glm
         yaml-cpp
         imguizmo
-        msdf-atlas-gen 
         )
 elseif (APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE 

@@ -1,5 +1,6 @@
 #pragma once
 
+#if !defined TB_PLATFORM_WEB
 #include <vector>
 
 #undef INFINITE
@@ -13,3 +14,4 @@ struct MSDFData {
 };
 
 }
+#endif

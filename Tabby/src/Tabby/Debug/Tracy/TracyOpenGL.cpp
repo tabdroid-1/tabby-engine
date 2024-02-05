@@ -2,6 +2,7 @@
 #include "Drivers/gl33/GL33.h"
 #include "glad/gl33.h"
 
+#if defined TRACY_ENABLE && !defined __APPLE__
 tracy::GpuCtx::GpuCtx()
     : m_context(GetGpuCtxCounter().fetch_add(1, std::memory_order_relaxed))
     , m_head(0)
@@ -202,3 +203,5 @@ tracy::GpuCtxScope::~GpuCtxScope()
     MemWrite(&item->gpuZoneEnd.context, GetGpuCtx().ptr->GetId());
     TracyLfqCommit;
 }
+
+#endif

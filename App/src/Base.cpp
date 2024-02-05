@@ -15,13 +15,17 @@
 #include <imgui/imgui.h>
 #include <imguizmo/ImGuizmo.h>
 
+#if !defined TB_PLATFORM_WEB
 static Tabby::Ref<Tabby::Font> s_Font;
+#endif
 float fps = 0;
 
 Base::Base()
     : Layer("Base")
 {
+#if !defined TB_PLATFORM_WEB
     s_Font = Tabby::Font::GetDefault();
+#endif
 }
 
 void Base::OnAttach()

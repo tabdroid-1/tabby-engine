@@ -38,7 +38,7 @@ in vec2 v_TexCoord;
 flat in int v_EntityID;
 
 out vec4 o_Color;
-out int o_EntityID;
+// out int o_EntityID;
 
 uniform sampler2D u_FontAtlas;
 
@@ -71,5 +71,5 @@ void main()
 	if (o_Color.a == 0.0)
 		discard;
 	
-	o_EntityID = v_EntityID;
+	// o_EntityID = v_EntityID;
 }

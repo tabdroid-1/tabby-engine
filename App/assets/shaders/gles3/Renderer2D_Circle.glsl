@@ -47,7 +47,7 @@ in float v_Fade;
 flat in int v_EntityID;
 
 out vec4 o_Color;
-out int o_EntityID;
+// out int o_EntityID;
 
 void main() {
     float distance = 1.0 - length(v_LocalPosition);
@@ -60,5 +60,5 @@ void main() {
     o_Color = v_Color;
     o_Color.a *= circle;
 
-    o_EntityID = v_EntityID;
+    // o_EntityID = v_EntityID;
 }

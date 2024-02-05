@@ -1,6 +1,8 @@
 #include "Drivers/gles3/OpenGLES3Texture.h"
 #include "Drivers/gles3/GLES3.h"
+#include "SDL2/include/SDL_surface.h"
 #include "tbpch.h"
+#include <Tabby/Debug/Instrumentor.h>
 #include <glad/gles3.h>
 
 #include <stb_image.h>
@@ -61,7 +63,6 @@ OpenGLES3Texture2D::OpenGLES3Texture2D(const TextureSpecification& specification
     GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // GLES3::GL()->GenerateMipmap(GL_TEXTURE_2D);
 }
-
 OpenGLES3Texture2D::OpenGLES3Texture2D(const std::string& path)
     : m_Path(path)
 {
@@ -71,7 +72,7 @@ OpenGLES3Texture2D::OpenGLES3Texture2D(const std::string& path)
     stbi_set_flip_vertically_on_load(1);
     stbi_uc* data = nullptr;
     {
-        // TB_PROFILE_SCOPE("stbi_load - OpenGLES3Texture2D::OpenGLES3Texture2D(const std::string&)");
+        TB_PROFILE_SCOPE_NAME("stbi_load - OpenGLES3Texture2D::OpenGLES3Texture2D(const std::string&)");
         data = stbi_load(path.c_str(), &width, &height, &channels, 0);
     }
 
