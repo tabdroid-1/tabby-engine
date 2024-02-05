@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 project(App)
 set(CMAKE_CXX_STANDARD 17)
 
-
-
-
 ###################################################################
 # Local variables
 ###################################################################
@@ -16,6 +13,9 @@ set(PROJECT_ASSETS_DIR "${CMAKE_CURRENT_LIST_DIR}/assets")
 set(TABBY_DIR "${CMAKE_SOURCE_DIR}/Tabby")
 set(TABBY_LIB_DIR "${CMAKE_BINARY_DIR}/Tabby")
 
+macro(append_linker_flags FLAGS)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAGS}")
+endmacro()
 ###################################################################
 # Target sources and create executable
 ###################################################################
@@ -42,37 +42,12 @@ include_directories("${TABBY_DIR}/src")
 # Include directories
 target_include_directories(${PROJECT_NAME} PUBLIC
         "${PROJECT_ASSETS_DIR}"
-        "minshell.html"
         "${PROJECT_SOURCE_DIR}"
 
         "${TABBY_DIR}/vendor/box2d/include"
         )
 
 if (EMSCRIPTEN)
-    add_compile_definitions("__EMSCRIPTEN__")
-    # target_link_options(${PROJECT_NAME} PRIVATE
-    #     "-sMIN_WEBGL_VERSION=2" 
-    #     "-sMAX_WEBGL_VERSION=2"
-    #     # "-sMODULARIZE=1"
-    #     # "-sEXPORT_NAME='App'"
-    #     "-sFORCE_FILESYSTEM=1"
-    #     "-sUSE_SDL=2"
-    #     "-FULL_ES3=1"
-    #     "-sALLOW_MEMORY_GROWTH=1" 
-    #     "-sASYNCIFY"
-    #     "-O2"
-    #     "-sINVOKE_RUN=0"
-    #     "-sDISABLE_DEPRECATED_FIND_EVENT_TARGET_BEHAVIOR=0"
-    #     "-sEXPORTED_FUNCTIONS=['_main']"
-    #     "-sEXPORTED_RUNTIME_METHODS=['callMain', 'ccall', 'cwrap']"
-    # )
-    # add_custom_command(
-    #     TARGET ${PROJECT_NAME} POST_BUILD
-    #     COMMAND ${CMAKE_COMMAND} -E copy
-    #             ${CMAKE_SOURCE_DIR}/src/index.html
-    #             ${CMAKE_BINARY_DIR}/index.html
-    #     )
-
 	append_linker_flags("-sOFFSCREEN_FRAMEBUFFER=1")
 	append_linker_flags("-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2")
     append_linker_flags("-sUSE_SDL=2")
@@ -87,9 +62,6 @@ if (EMSCRIPTEN)
     append_linker_flags("--preload-file assets/shaders/gles3/Renderer2D_Circle.glsl")
     append_linker_flags("--preload-file assets/shaders/gles3/Renderer2D_Text.glsl")
     append_linker_flags("--preload-file assets/spritesheets/player/player_packed.png")
-
-    # append_linker_flags("-preload-file ./assets/")
-	# append_linker_flags("-sMINIMAL_RUNTIME=0")
 
 	append_linker_flags("-Oz")
 	append_linker_flags("-sMIN_FIREFOX_VERSION=70")
@@ -116,9 +88,6 @@ if (WIN32)
     # -------------------------------------------------------------
 endif ()
 
-macro(append_linker_flags FLAGS)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAGS}")
-endmacro()
 
 if (DEFINED EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
@@ -131,6 +100,7 @@ if (DEFINED EMSCRIPTEN)
   # assets folder is in the same directory as the game executable
 
 endif (DEFINED EMSCRIPTEN)
+
 add_custom_target(copy_assets_sandbox
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${PROJECT_ASSETS_DIR} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets

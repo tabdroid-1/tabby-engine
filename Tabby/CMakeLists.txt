@@ -18,23 +18,6 @@ endmacro()
 option(WEB "Enable Web Build" OFF)
 if (EMSCRIPTEN)
     set(WEB ON CACHE BOOL "Enable Web")
-
-	set(CMAKE_EXECUTABLE_SUFFIX ".html")
-
-    append_linker_flags("-FULL_ES3=1")
-	append_linker_flags("-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2")
-	append_linker_flags("-lGL")
-	append_linker_flags("-sFORCE_FILESYSTEM=1")
-	append_linker_flags("-sFETCH=1")
-	append_linker_flags("-sASYNCIFY=1")
-	append_linker_flags("-sUSE_FREETYPE=1")
-
-	# append_linker_flags("-sMINIMAL_RUNTIME=2")
-	append_linker_flags("-Oz")
-	append_linker_flags("-sENVIRONMENT=web")
-
-	add_definitions(-DMAX_WEBGL_VERSION=2)
-
 endif (EMSCRIPTEN)
 
 
