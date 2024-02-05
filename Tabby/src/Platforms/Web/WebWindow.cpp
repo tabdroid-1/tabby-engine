@@ -15,6 +15,9 @@
 
 #include <SDL.h>
 
+#include <emscripten.h>
+#include <emscripten/html5.h>
+
 namespace Tabby {
 
 static uint8_t s_SDLWindowCount = 0;
@@ -78,6 +81,19 @@ void WebWindow::Init(const WindowProps& props)
             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
         ++s_SDLWindowCount;
     }
+
+    EmscriptenWebGLContextAttributes attrs;
+    attrs.antialias = true;
+    attrs.majorVersion = 3;
+    attrs.minorVersion = 2;
+    attrs.alpha = true;
+    attrs.powerPreference = EM_WEBGL_POWER_PREFERENCE_DEFAULT;
+
+    // The following lines must be done in exact order, or it will break!
+    emscripten_webgl_init_context_attributes(&attrs); // you MUST init the attributes before creating the context
+    attrs.majorVersion = 3; // you MUST set the version AFTER the above line
+    EMSCRIPTEN_WEBGL_CONTEXT_HANDLE webgl_context = emscripten_webgl_create_context("#canvas", &attrs);
+    emscripten_webgl_make_context_current(webgl_context);
 
     m_Context = GraphicsContext::Create(m_Window);
     m_Context->Init();

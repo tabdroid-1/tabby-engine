@@ -1,3 +1,6 @@
+
+#if !defined TB_PLATFORM_WEB
+
 #include "Font.h"
 #include "tbpch.h"
 
@@ -146,3 +149,4 @@ Ref<Font> Font::GetDefault()
 }
 
 }
+#endif

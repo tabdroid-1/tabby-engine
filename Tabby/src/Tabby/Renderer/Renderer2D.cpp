@@ -595,6 +595,7 @@ void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent&
         DrawQuad(transform, src.Color, entityID);
 }
 
+#if !defined TB_PLATFORM_WEB
 void Renderer2D::DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID)
 {
     const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
@@ -706,6 +707,7 @@ void Renderer2D::DrawString(const std::string& string, const glm::mat4& transfor
 {
     DrawString(string, component.FontAsset, transform, { component.Color, component.Kerning, component.LineSpacing }, entityID);
 }
+#endif
 
 float Renderer2D::GetLineWidth()
 {

@@ -82,9 +82,9 @@ void TestScene::OnActivate()
         spriteComponent.xFrame = 2;
         spriteComponent.yFrame = 4;
 
-        auto& soundComponent = SpriteEntity.AddComponent<Tabby::SoundComponent>();
-        soundComponent.Sound = Tabby::CreateRef<Tabby::SoundBuffer>("assets/audio/sunflower-street.mp3");
-        soundComponent.Playing = true;
+        // auto& soundComponent = SpriteEntity.AddComponent<Tabby::SoundComponent>();
+        // soundComponent.Sound = Tabby::CreateRef<Tabby::SoundBuffer>("assets/audio/sunflower-street.mp3");
+        // soundComponent.Playing = true;
 
         auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
         rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;

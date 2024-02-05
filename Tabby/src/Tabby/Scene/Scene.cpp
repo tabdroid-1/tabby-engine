@@ -119,6 +119,7 @@ void Scene::DestroyEntity(Entity entity)
 
 void Scene::OnStart()
 {
+
     m_IsRunning = true;
 
     glm::vec2 gravity(0.0f, -20.8f);
@@ -268,7 +269,9 @@ void Scene::OnUpdate(Timestep ts)
             for (auto entity : view) {
                 auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
 
+#if !defined TB_PLATFORM_WEB
                 Renderer2D::DrawString(text.TextString, transform.GetTransform(), text, (int)entity);
+#endif
             }
         }
 

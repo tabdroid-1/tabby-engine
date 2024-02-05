@@ -4,27 +4,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 
-if (EMSCRIPTEN)
-	append_linker_flags("-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2")
-    append_linker_flags("-FULL_ES3=1")
-	append_linker_flags("-lGL")
-	append_linker_flags("-sGL_ENABLE_GET_PROC_ADDRESS=1")
-	append_linker_flags("-sFORCE_FILESYSTEM")
-	append_linker_flags("-sFETCH=1")
-	append_linker_flags("-sasyncify=1")
-    append_linker_flags("--preload-file assets/shaders/gles3/Renderer2D_Quad.glsl")
-
-    # append_linker_flags("-preload-file ./assets/")
-	# append_linker_flags("-sMINIMAL_RUNTIME=0")
-
-	append_linker_flags("-Oz")
-	append_linker_flags("-sMIN_FIREFOX_VERSION=70")
-	append_linker_flags("-sMIN_SAFARI_VERSION=130000")
-	append_linker_flags("-sMIN_IE_VERSION=0x7FFFFFFF") # Do not support Internet Explorer at all (this is the Emscripten default, shown here for posterity)
-	# append_linker_flags("-sMIN_EDGE_VERSION=79") # Require Chromium-based Edge browser
-	append_linker_flags("-sMIN_CHROME_VERSION=80")
-
-endif (EMSCRIPTEN)
 
 ###################################################################
 # Local variables
@@ -68,6 +47,58 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
         "${TABBY_DIR}/vendor/box2d/include"
         )
+
+if (EMSCRIPTEN)
+    add_compile_definitions("__EMSCRIPTEN__")
+    # target_link_options(${PROJECT_NAME} PRIVATE
+    #     "-sMIN_WEBGL_VERSION=2" 
+    #     "-sMAX_WEBGL_VERSION=2"
+    #     # "-sMODULARIZE=1"
+    #     # "-sEXPORT_NAME='App'"
+    #     "-sFORCE_FILESYSTEM=1"
+    #     "-sUSE_SDL=2"
+    #     "-FULL_ES3=1"
+    #     "-sALLOW_MEMORY_GROWTH=1" 
+    #     "-sASYNCIFY"
+    #     "-O2"
+    #     "-sINVOKE_RUN=0"
+    #     "-sDISABLE_DEPRECATED_FIND_EVENT_TARGET_BEHAVIOR=0"
+    #     "-sEXPORTED_FUNCTIONS=['_main']"
+    #     "-sEXPORTED_RUNTIME_METHODS=['callMain', 'ccall', 'cwrap']"
+    # )
+    # add_custom_command(
+    #     TARGET ${PROJECT_NAME} POST_BUILD
+    #     COMMAND ${CMAKE_COMMAND} -E copy
+    #             ${CMAKE_SOURCE_DIR}/src/index.html
+    #             ${CMAKE_BINARY_DIR}/index.html
+    #     )
+
+	append_linker_flags("-sOFFSCREEN_FRAMEBUFFER=1")
+	append_linker_flags("-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2")
+    append_linker_flags("-sUSE_SDL=2")
+    append_linker_flags("-FULL_ES3=1")
+	append_linker_flags("-lGL")
+    append_linker_flags("-sFORCE_FILESYSTEM=1")
+	append_linker_flags("-sFETCH=1")
+	append_linker_flags("-sASYNCIFY")
+	append_linker_flags("-sASSERTIONS=1")
+    append_linker_flags("--preload-file assets/shaders/gles3/Renderer2D_Quad.glsl")
+    append_linker_flags("--preload-file assets/shaders/gles3/Renderer2D_Line.glsl")
+    append_linker_flags("--preload-file assets/shaders/gles3/Renderer2D_Circle.glsl")
+    append_linker_flags("--preload-file assets/shaders/gles3/Renderer2D_Text.glsl")
+    append_linker_flags("--preload-file assets/spritesheets/player/player_packed.png")
+
+    # append_linker_flags("-preload-file ./assets/")
+	# append_linker_flags("-sMINIMAL_RUNTIME=0")
+
+	append_linker_flags("-Oz")
+	append_linker_flags("-sMIN_FIREFOX_VERSION=70")
+	append_linker_flags("-sMIN_SAFARI_VERSION=130000")
+	append_linker_flags("-sMIN_IE_VERSION=0x7FFFFFFF") # Do not support Internet Explorer at all (this is the Emscripten default, shown here for posterity)
+	# append_linker_flags("-sMIN_EDGE_VERSION=79") # Require Chromium-based Edge browser
+	append_linker_flags("-sMIN_CHROME_VERSION=80")
+
+endif (EMSCRIPTEN)
 
 ###################################################################
 # Copy executable dependencies to CMake runtime output directory

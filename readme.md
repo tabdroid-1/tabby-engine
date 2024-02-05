@@ -43,7 +43,7 @@ Supported Graphics Apis
 - Linux
 - Windows (probably. not tested)
 - MacOS
-- Web (broken)
+- Web
 
 Compiling
 ---------

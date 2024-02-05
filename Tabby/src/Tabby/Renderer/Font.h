@@ -1,5 +1,6 @@
 #pragma once
 
+#if !defined TB_PLATFORM_WEB
 #include <filesystem>
 
 #include "Tabby/Core/Base.h"
@@ -25,3 +26,4 @@ private:
 };
 
 }
+#endif

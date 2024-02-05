@@ -32,9 +32,9 @@ in vec4 v_Color;
 flat in int v_EntityID;
 
 out vec4 o_Color;
-out int o_EntityID;
+// out int o_EntityID;
 
 void main() {
     o_Color = v_Color;
-    o_EntityID = v_EntityID;
+    // o_EntityID = v_EntityID;
 }
