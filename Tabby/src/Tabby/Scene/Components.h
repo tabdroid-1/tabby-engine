@@ -303,7 +303,7 @@ struct CircleCollider2DComponent {
 struct TextComponent {
     std::string TextString;
 
-#if !defined TB_PLATFORM_WEB
+#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
     Ref<Font> FontAsset = Font::GetDefault();
 #endif
     glm::vec4 Color { 1.0f };

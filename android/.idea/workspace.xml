@@ -9,7 +9,100 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="245572d3-333c-4dc9-96e9-e609f724994e" name="Changes" comment="" />
+    <list default="true" id="245572d3-333c-4dc9-96e9-e609f724994e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../App/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../App/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../App/src/Base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../App/src/Base.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../App/src/SandboxApp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../App/src/SandboxApp.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Context.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Context.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Platforms/Linux/LinuxWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Platforms/Linux/LinuxWindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Application.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Base.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Base.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/EntryPoint.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/EntryPoint.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/PlatformDetection.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/PlatformDetection.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Instrumentor.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Instrumentor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/Tracy.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/TracyC.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/TracyClient.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/TracyOpenGL.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/TracyOpenGL.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyAlloc.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyArmCpuTable.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyCallstack.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyCallstack.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyCallstack.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyCpuid.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyDebug.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyDxt1.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyDxt1.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyFastVector.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyLock.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyOverride.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyProfiler.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyProfiler.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyRingBuffer.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyScoped.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyStringHelpers.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysPower.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysPower.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysTime.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysTime.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysTrace.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysTrace.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyThread.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/tracy_SPSCQueue.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/tracy_concurrentqueue.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/tracy_rpmalloc.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/tracy_rpmalloc.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyAlign.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyAlloc.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyApi.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyColor.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyForceInline.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyMutex.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyProtocol.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyQueue.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracySocket.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracySocket.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyStackFrames.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyStackFrames.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracySystem.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracySystem.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyUwp.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyVersion.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyYield.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/tracy_lz4.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/tracy_lz4.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/tracy_lz4hc.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/tracy_lz4hc.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/alloc.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/backtrace.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/dwarf.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/elf.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/fileline.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/filenames.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/internal.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/macho.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/mmapio.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/posix.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/sort.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/state.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/ImGui/ImGuiBuild.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/ImGui/ImGuiBuild.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Font.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Font.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Font.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/MSDFData.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/MSDFData.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Renderer2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Renderer2D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Renderer2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Renderer2D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Scene/Components.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Scene/Components.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Scene/Scene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Scene/Scene.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/UI/Panels/SceneHierarchyPanel/SceneHierarchyPanel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/UI/Panels/SceneHierarchyPanel/SceneHierarchyPanel.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/vendor/imgui/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/vendor/imgui/CMakeLists.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

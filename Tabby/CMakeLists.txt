@@ -21,8 +21,14 @@ if (EMSCRIPTEN)
 endif (EMSCRIPTEN)
 
 
+
+# if (ANDROID)
+#     set(PROJECT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/../Tabby/src")
+#     set(PROJECT_VENDOR_DIR "${CMAKE_SOURCE_DIR}/../Tabby/vendor")
+# else()
 set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_VENDOR_DIR "vendor")
+# endif ()
 
 # ##############################################################################
 # Add dependencies 
@@ -39,6 +45,7 @@ set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
 set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
 set(IMGUIZMO "${PROJECT_VENDOR_DIR}/imguizmo")
+set(TRACY "${PROJECT_VENDOR_DIR}/Tracy")
 set(MINIAUDIO "${PROJECT_VENDOR_DIR}/miniaudio")
 
 
@@ -64,7 +71,14 @@ list(APPEND PROJECT_SOURCES
         "${SDL2}/include/SDL.h"
         )
 
-add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
+
+if (ANDROID)
+    add_library(${PROJECT_NAME} STATIC 
+        ${PROJECT_SOURCES}
+        )
+else()
+    add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
         ${PROJECT_SOURCES_DIR}
@@ -72,6 +86,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
         ${GLM}
         ${SPDLOG}/include
+        
         )
 
 include_directories(SYSTEM src)
@@ -80,8 +95,9 @@ include_directories(${IMGUIZMO})
 include_directories(${STB})
 include_directories(${SDL2_INCLUDE_DIRS})
 
-if (NOT EMSCRIPTEN)
-include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
+if (NOT EMSCRIPTEN AND NOT ANDROID)
+    include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
+    include_directories(${TRACY})
 endif()
 
 add_subdirectory(${SDL2} EXCLUDE_FROM_ALL)
@@ -91,8 +107,9 @@ set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 
-if (NOT EMSCRIPTEN)
-add_subdirectory(${MSDF-ATLAS-GEN} EXCLUDE_FROM_ALL)
+if (NOT EMSCRIPTEN AND NOT ANDROID)
+    add_subdirectory(${MSDF-ATLAS-GEN} EXCLUDE_FROM_ALL)
+    add_subdirectory(${TRACY})
 endif()
 add_subdirectory(${YAML-CPP})
 add_subdirectory(${SPDLOG} EXCLUDE_FROM_ALL)
@@ -100,7 +117,18 @@ add_subdirectory(${BOX2D} EXCLUDE_FROM_ALL)
 add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
 
-if (NOT EMSCRIPTEN AND NOT APPLE)
+if (ANDROID)
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+        imgui
+        box2d
+        spdlog
+        SDL2::SDL2
+        SDL2::SDL2main
+        glm
+        yaml-cpp
+        imguizmo
+        )
+elseif (NOT EMSCRIPTEN AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
@@ -110,6 +138,7 @@ if (NOT EMSCRIPTEN AND NOT APPLE)
         yaml-cpp
         imguizmo
         msdf-atlas-gen 
+        Tracy 
         )
 elseif (EMSCRIPTEN)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
@@ -120,6 +149,7 @@ elseif (EMSCRIPTEN)
         glm
         yaml-cpp
         imguizmo
+        Tracy 
         )
 elseif (APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
@@ -131,6 +161,7 @@ elseif (APPLE)
         yaml-cpp
         msdf-atlas-gen 
         imguizmo
+        Tracy 
         )
 endif()
 

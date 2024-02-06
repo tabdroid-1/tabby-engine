@@ -2,10 +2,7 @@ cmake_minimum_required(VERSION 3.19)
 
 project(imgui)
 
-
-find_package(OpenGL REQUIRED)
-
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -24,8 +21,10 @@ add_library(imgui STATIC
         imstb_truetype.h
         )
 
+if(ANDROID)
+target_link_libraries(imgui GLESv3)
+else()
 
-
-target_link_libraries(imgui
-        # OpenGL::GL
-        )
+find_package(OpenGL REQUIRED)
+target_link_libraries(imgui OpenGL::GL)
+endif()

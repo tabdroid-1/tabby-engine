@@ -1,0 +1,3262 @@
+The target system is: Android - 1 - i686
+The host system is: Darwin - 23.0.0 - arm64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang 
+Build flags: -g;-DANDROID;-fdata-sections;-ffunction-sections;-funwind-tables;-fstack-protector-strong;-no-canonical-prefixes;-mstackrealign;-D_FORTIFY_SOURCE=2;-Wformat;-Werror=format-security;
+Id flags: -c;--target=i686-none-linux-android23 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+
+The C compiler identification is Clang, found in "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/3.22.1-g37088a8/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ 
+Build flags: -g;-DANDROID;-fdata-sections;-ffunction-sections;-funwind-tables;-fstack-protector-strong;-no-canonical-prefixes;-mstackrealign;-D_FORTIFY_SOURCE=2;-Wformat;-Werror=format-security;;-std=c++17
+Id flags: -c;--target=i686-none-linux-android23 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+
+The CXX compiler identification is Clang, found in "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/3.22.1-g37088a8/CompilerIdCXX/CMakeCXXCompilerId.o"
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_b44bb && [1/2] Building C object CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o
+Android (8490178, based on r450784d) clang version 14.0.6 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+Target: i686-none-linux-android23
+Thread model: posix
+InstalledDir: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin
+ (in-process)
+ "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang" -cc1 -triple i686-none-linux-android23 -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -target-linker-version 14.0.6 -v -ffunction-sections -fdata-sections -fcoverage-compilation-dir=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp -resource-dir /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6 -dependency-file CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/include -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include -Wformat -fdebug-compilation-dir=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp -ferror-limit 19 -stack-protector 2 -mstackrealign -fgnuc-version=4.2.1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o -x c /Users/tabby/Library/Android/sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCCompilerABI.c
+clang -cc1 version 14.0.6 based upon LLVM 14.0.6git default target x86_64-apple-darwin23.0.0
+ignoring nonexistent directory "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include
+ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include
+ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android
+ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include
+End of search list.
+[2/2] Linking C executable cmTC_b44bb
+Android (8490178, based on r450784d) clang version 14.0.6 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+Target: i686-none-linux-android23
+Thread model: posix
+InstalledDir: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin
+ "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/ld" --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -pie --warn-shared-textrel -z now -z relro --hash-style=gnu --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_b44bb /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386 -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23 -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --fatal-warnings --gc-sections --no-undefined --gc-sections CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include]
+    add: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include]
+    add: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android]
+    add: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include]
+  end of search list found
+  collapse include dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include]
+  collapse include dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include]
+  collapse include dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android]
+  collapse include dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include]
+  implicit include dirs: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld\.lld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_b44bb && [1/2] Building C object CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o]
+  ignore line: [Android (8490178  based on r450784d) clang version 14.0.6 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)]
+  ignore line: [Target: i686-none-linux-android23]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin]
+  ignore line: [ (in-process)]
+  ignore line: [ "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang" -cc1 -triple i686-none-linux-android23 -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -target-linker-version 14.0.6 -v -ffunction-sections -fdata-sections -fcoverage-compilation-dir=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp -resource-dir /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6 -dependency-file CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/include -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include -Wformat -fdebug-compilation-dir=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp -ferror-limit 19 -stack-protector 2 -mstackrealign -fgnuc-version=4.2.1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o -x c /Users/tabby/Library/Android/sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCCompilerABI.c]
+  ignore line: [clang -cc1 version 14.0.6 based upon LLVM 14.0.6git default target x86_64-apple-darwin23.0.0]
+  ignore line: [ignoring nonexistent directory "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include]
+  ignore line: [ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include]
+  ignore line: [ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android]
+  ignore line: [ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include]
+  ignore line: [End of search list.]
+  ignore line: [[2/2] Linking C executable cmTC_b44bb]
+  ignore line: [Android (8490178  based on r450784d) clang version 14.0.6 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)]
+  ignore line: [Target: i686-none-linux-android23]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin]
+  link line: [ "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/ld" --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -pie --warn-shared-textrel -z now -z relro --hash-style=gnu --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_b44bb /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386 -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23 -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --fatal-warnings --gc-sections --no-undefined --gc-sections CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o]
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/ld] ==> ignore
+    arg [--sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot] ==> ignore
+    arg [-pie] ==> ignore
+    arg [--warn-shared-textrel] ==> ignore
+    arg [-znow] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [--enable-new-dtags] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_i386] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/system/bin/linker] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_b44bb] ==> ignore
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o] ==> obj [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o]
+    arg [-L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386] ==> dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386]
+    arg [-L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23] ==> dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23]
+    arg [-L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android] ==> dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android]
+    arg [-L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib] ==> dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib]
+    arg [--build-id=sha1] ==> ignore
+    arg [--no-rosegment] ==> ignore
+    arg [--fatal-warnings] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [--no-undefined] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [CMakeFiles/cmTC_b44bb.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a]
+    arg [-l:libunwind.a] ==> lib [-l:libunwind.a]
+    arg [-ldl] ==> lib [dl]
+    arg [-lc] ==> lib [c]
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a]
+    arg [-l:libunwind.a] ==> lib [-l:libunwind.a]
+    arg [-ldl] ==> lib [dl]
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o] ==> obj [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o]
+  remove lib [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a]
+  remove lib [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a]
+  collapse library dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386]
+  collapse library dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23]
+  collapse library dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android]
+  collapse library dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib]
+  implicit libs: [-l:libunwind.a;dl;c;-l:libunwind.a;dl]
+  implicit objs: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o]
+  implicit dirs: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib]
+  implicit fwks: []
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_09ca1 && [1/2] Building CXX object CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o
+Android (8490178, based on r450784d) clang version 14.0.6 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+Target: i686-none-linux-android23
+Thread model: posix
+InstalledDir: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin
+ (in-process)
+ "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++" -cc1 -triple i686-none-linux-android23 -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -target-linker-version 14.0.6 -v -ffunction-sections -fdata-sections -fcoverage-compilation-dir=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp -resource-dir /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6 -dependency-file CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o.d -MT CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/c++/v1 -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/include -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include -Wformat -std=c++17 -fdeprecated-macro -fdebug-compilation-dir=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp -ferror-limit 19 -stack-protector 2 -mstackrealign -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o -x c++ /Users/tabby/Library/Android/sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp
+clang -cc1 version 14.0.6 based upon LLVM 14.0.6git default target x86_64-apple-darwin23.0.0
+ignoring nonexistent directory "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/c++/v1
+ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include
+ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include
+ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android
+ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include
+End of search list.
+[2/2] Linking CXX executable cmTC_09ca1
+Android (8490178, based on r450784d) clang version 14.0.6 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)
+Target: i686-none-linux-android23
+Thread model: posix
+InstalledDir: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin
+ "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/ld" --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -pie --warn-shared-textrel -z now -z relro --hash-style=gnu --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_09ca1 /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386 -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23 -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --fatal-warnings --gc-sections --no-undefined --gc-sections CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/c++/v1]
+    add: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include]
+    add: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include]
+    add: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android]
+    add: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include]
+  end of search list found
+  collapse include dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/c++/v1] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/c++/v1]
+  collapse include dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include]
+  collapse include dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include]
+  collapse include dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android]
+  collapse include dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include]
+  implicit include dirs: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/c++/v1;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld\.lld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_09ca1 && [1/2] Building CXX object CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [Android (8490178  based on r450784d) clang version 14.0.6 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)]
+  ignore line: [Target: i686-none-linux-android23]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin]
+  ignore line: [ (in-process)]
+  ignore line: [ "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++" -cc1 -triple i686-none-linux-android23 -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -target-linker-version 14.0.6 -v -ffunction-sections -fdata-sections -fcoverage-compilation-dir=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp -resource-dir /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6 -dependency-file CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o.d -MT CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/c++/v1 -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include -internal-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/include -internal-externc-isystem /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include -Wformat -std=c++17 -fdeprecated-macro -fdebug-compilation-dir=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp -ferror-limit 19 -stack-protector 2 -mstackrealign -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o -x c++ /Users/tabby/Library/Android/sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [clang -cc1 version 14.0.6 based upon LLVM 14.0.6git default target x86_64-apple-darwin23.0.0]
+  ignore line: [ignoring nonexistent directory "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/c++/v1]
+  ignore line: [ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include]
+  ignore line: [ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/local/include]
+  ignore line: [ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/i686-linux-android]
+  ignore line: [ /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include]
+  ignore line: [End of search list.]
+  ignore line: [[2/2] Linking CXX executable cmTC_09ca1]
+  ignore line: [Android (8490178  based on r450784d) clang version 14.0.6 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6)]
+  ignore line: [Target: i686-none-linux-android23]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin]
+  link line: [ "/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/ld" --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -pie --warn-shared-textrel -z now -z relro --hash-style=gnu --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_09ca1 /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386 -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23 -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android -L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --fatal-warnings --gc-sections --no-undefined --gc-sections CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o]
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/ld] ==> ignore
+    arg [--sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot] ==> ignore
+    arg [-pie] ==> ignore
+    arg [--warn-shared-textrel] ==> ignore
+    arg [-znow] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [--enable-new-dtags] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_i386] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/system/bin/linker] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_09ca1] ==> ignore
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o] ==> obj [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o]
+    arg [-L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386] ==> dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386]
+    arg [-L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23] ==> dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23]
+    arg [-L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android] ==> dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android]
+    arg [-L/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib] ==> dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib]
+    arg [--build-id=sha1] ==> ignore
+    arg [--no-rosegment] ==> ignore
+    arg [--fatal-warnings] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [--no-undefined] ==> ignore
+    arg [--gc-sections] ==> ignore
+    arg [CMakeFiles/cmTC_09ca1.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-Bstatic] ==> search static
+    arg [-lc++] ==> lib [c++]
+    arg [-Bdynamic] ==> search dynamic
+    arg [-lm] ==> lib [m]
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a]
+    arg [-l:libunwind.a] ==> lib [-l:libunwind.a]
+    arg [-ldl] ==> lib [dl]
+    arg [-lc] ==> lib [c]
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a]
+    arg [-l:libunwind.a] ==> lib [-l:libunwind.a]
+    arg [-ldl] ==> lib [dl]
+    arg [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o] ==> obj [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o]
+  remove lib [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a]
+  remove lib [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/libclang_rt.builtins-i686-android.a]
+  collapse library dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386]
+  collapse library dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23]
+  collapse library dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android]
+  collapse library dir [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib] ==> [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib]
+  implicit libs: [c++;m;-l:libunwind.a;dl;c;-l:libunwind.a;dl]
+  implicit objs: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtbegin_dynamic.o;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23/crtend_android.o]
+  implicit dirs: [/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/lib/linux/i386;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/23;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android;/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib]
+  implicit fwks: []
+
+
+Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_X86 succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_6c0a4 && [1/2] Building C object CMakeFiles/cmTC_6c0a4.dir/src.c.o
+[2/2] Linking C executable cmTC_6c0a4
+
+
+Source file was:
+
+int main(int argc, char *argv[]) {
+#if defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) ||defined( __i386) || defined(_M_IX86)
+  return 0;
+#else
+  choke
+#endif
+}
+
+Performing C SOURCE FILE Test HAVE_GCC_WALL succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_ed020 && [1/2] Building C object CMakeFiles/cmTC_ed020.dir/src.c.o
+[2/2] Linking C executable cmTC_ed020
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_WUNDEF succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_c7950 && [1/2] Building C object CMakeFiles/cmTC_c7950.dir/src.c.o
+[2/2] Linking C executable cmTC_c7950
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_NO_STRICT_ALIASING succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_66e90 && [1/2] Building C object CMakeFiles/cmTC_66e90.dir/src.c.o
+[2/2] Linking C executable cmTC_66e90
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_WDOCUMENTATION succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_009db && [1/2] Building C object CMakeFiles/cmTC_009db.dir/src.c.o
+[2/2] Linking C executable cmTC_009db
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_WDOCUMENTATION_UNKNOWN_COMMAND succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_03b15 && [1/2] Building C object CMakeFiles/cmTC_03b15.dir/src.c.o
+[2/2] Linking C executable cmTC_03b15
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_COMMENT_BLOCK_COMMANDS succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_1fc4e && [1/2] Building C object CMakeFiles/cmTC_1fc4e.dir/src.c.o
+[2/2] Linking C executable cmTC_1fc4e
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_WDECLARATION_AFTER_STATEMENT succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_096f6 && [1/2] Building C object CMakeFiles/cmTC_096f6.dir/src.c.o
+[2/2] Linking C executable cmTC_096f6
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_ATOMICS succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_dbe39 && [1/2] Building C object CMakeFiles/cmTC_dbe39.dir/src.c.o
+[2/2] Linking C executable cmTC_dbe39
+
+
+Source file was:
+int main(int argc, char **argv) {
+        int a;
+        void *x, *y, *z;
+        __sync_lock_test_and_set(&a, 4);
+        __sync_lock_test_and_set(&x, y);
+        __sync_fetch_and_add(&a, 1);
+        __sync_bool_compare_and_swap(&a, 5, 10);
+        __sync_bool_compare_and_swap(&x, y, z);
+        return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_FVISIBILITY succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_aa1c9 && [1/2] Building C object CMakeFiles/cmTC_aa1c9.dir/src.c.o
+[2/2] Linking C executable cmTC_aa1c9
+
+
+Source file was:
+
+      #if !defined(__GNUC__) || __GNUC__ < 4
+      #error SDL only uses visibility attributes in GCC 4 or newer
+      #endif
+      int main(int argc, char **argv) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_WSHADOW succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_16236 && [1/2] Building C object CMakeFiles/cmTC_16236.dir/src.c.o
+[2/2] Linking C executable cmTC_16236
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_GCC_WUNUSED_LOCAL_TYPEDEFS succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_17be1 && [1/2] Building C object CMakeFiles/cmTC_17be1.dir/src.c.o
+[2/2] Linking C executable cmTC_17be1
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_NO_UNDEFINED succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_03100 && [1/2] Building C object CMakeFiles/cmTC_03100.dir/src.c.o
+clang: warning: -Wl,--no-undefined: 'linker' input unused [-Wunused-command-line-argument]
+[2/2] Linking C executable cmTC_03100
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test HAVE_MMX succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_9425a && [1/2] Building C object CMakeFiles/cmTC_9425a.dir/src.c.o
+[2/2] Linking C executable cmTC_9425a
+
+
+Source file was:
+
+          #ifdef __MINGW32__
+          #include <_mingw.h>
+          #ifdef __MINGW64_VERSION_MAJOR
+          #include <intrin.h>
+          #else
+          #include <mmintrin.h>
+          #endif
+          #else
+          #include <mmintrin.h>
+          #endif
+          #ifndef __MMX__
+          #error Assembler CPP flag not enabled
+          #endif
+          int main(int argc, char **argv) { return 0; }
+Performing C SOURCE FILE Test HAVE_3DNOW succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_b110e && [1/2] Building C object CMakeFiles/cmTC_b110e.dir/src.c.o
+[2/2] Linking C executable cmTC_b110e
+
+
+Source file was:
+
+          #include <mm3dnow.h>
+          #ifndef __3dNOW__
+          #error Assembler CPP flag not enabled
+          #endif
+          int main(int argc, char **argv) {
+            void *p = 0;
+            _m_prefetch(p);
+            return 0;
+          }
+Performing C SOURCE FILE Test HAVE_SSE succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a0086 && [1/2] Building C object CMakeFiles/cmTC_a0086.dir/src.c.o
+[2/2] Linking C executable cmTC_a0086
+
+
+Source file was:
+
+          #ifdef __MINGW32__
+          #include <_mingw.h>
+          #ifdef __MINGW64_VERSION_MAJOR
+          #include <intrin.h>
+          #else
+          #include <xmmintrin.h>
+          #endif
+          #else
+          #include <xmmintrin.h>
+          #endif
+          #ifndef __SSE__
+          #error Assembler CPP flag not enabled
+          #endif
+          int main(int argc, char **argv) { return 0; }
+Performing C SOURCE FILE Test CPU_SUPPORTS_SSE2 succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_b18f5 && [1/2] Building C object CMakeFiles/cmTC_b18f5.dir/src.c.o
+[2/2] Linking C executable cmTC_b18f5
+
+
+Source file was:
+
+          #ifdef __MINGW32__
+          #include <_mingw.h>
+          #ifdef __MINGW64_VERSION_MAJOR
+          #include <intrin.h>
+          #else
+          #include <emmintrin.h>
+          #endif
+          #else
+          #include <emmintrin.h>
+          #endif
+          #ifndef __SSE2__
+          #error Assembler CPP flag not enabled
+          #endif
+          int main(int argc, char **argv) { return 0; }
+Performing C SOURCE FILE Test CPU_SUPPORTS_SSE3 succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_152a9 && [1/2] Building C object CMakeFiles/cmTC_152a9.dir/src.c.o
+[2/2] Linking C executable cmTC_152a9
+
+
+Source file was:
+
+          #ifdef __MINGW32__
+          #include <_mingw.h>
+          #ifdef __MINGW64_VERSION_MAJOR
+          #include <intrin.h>
+          #else
+          #include <pmmintrin.h>
+          #endif
+          #else
+          #include <pmmintrin.h>
+          #endif
+          #ifndef __SSE3__
+          #error Assembler CPP flag not enabled
+          #endif
+          int main(int argc, char **argv) { return 0; }
+Determining if the include file immintrin.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_ce462 && [1/2] Building C object CMakeFiles/cmTC_ce462.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_ce462
+
+
+
+Determining if the include file ctype.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_78404 && [1/2] Building C object CMakeFiles/cmTC_78404.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_78404
+
+
+
+Determining if the include file float.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_eaca6 && [1/2] Building C object CMakeFiles/cmTC_eaca6.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_eaca6
+
+
+
+Determining if the include file iconv.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_cf48b && [1/2] Building C object CMakeFiles/cmTC_cf48b.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_cf48b
+
+
+
+Determining if the include file inttypes.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_fb482 && [1/2] Building C object CMakeFiles/cmTC_fb482.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_fb482
+
+
+
+Determining if the include file limits.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_8675b && [1/2] Building C object CMakeFiles/cmTC_8675b.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_8675b
+
+
+
+Determining if the include file malloc.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_5b8bc && [1/2] Building C object CMakeFiles/cmTC_5b8bc.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_5b8bc
+
+
+
+Determining if the include file math.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_8a6e0 && [1/2] Building C object CMakeFiles/cmTC_8a6e0.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_8a6e0
+
+
+
+Determining if the include file memory.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_0d519 && [1/2] Building C object CMakeFiles/cmTC_0d519.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_0d519
+
+
+
+Determining if the include file signal.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_980cd && [1/2] Building C object CMakeFiles/cmTC_980cd.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_980cd
+
+
+
+Determining if the include file stdarg.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_54148 && [1/2] Building C object CMakeFiles/cmTC_54148.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_54148
+
+
+
+Determining if the include file stddef.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_ab866 && [1/2] Building C object CMakeFiles/cmTC_ab866.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_ab866
+
+
+
+Determining if the include file stdint.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_e3b44 && [1/2] Building C object CMakeFiles/cmTC_e3b44.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_e3b44
+
+
+
+Determining if the include file stdio.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a6842 && [1/2] Building C object CMakeFiles/cmTC_a6842.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_a6842
+
+
+
+Determining if the include file stdlib.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_52885 && [1/2] Building C object CMakeFiles/cmTC_52885.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_52885
+
+
+
+Determining if the include file string.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_3dc99 && [1/2] Building C object CMakeFiles/cmTC_3dc99.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_3dc99
+
+
+
+Determining if the include file strings.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_020f7 && [1/2] Building C object CMakeFiles/cmTC_020f7.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_020f7
+
+
+
+Determining if the include file sys/types.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_05903 && [1/2] Building C object CMakeFiles/cmTC_05903.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_05903
+
+
+
+Determining if the include file wchar.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_8b6fd && [1/2] Building C object CMakeFiles/cmTC_8b6fd.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_8b6fd
+
+
+
+Determining if files stddef.h;stdarg.h;stdlib.h;string.h;stdio.h;wchar.h;float.h exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_090c8 && [1/2] Building C object CMakeFiles/cmTC_090c8.dir/STDC_HEADERS.c.o
+[2/2] Linking C executable cmTC_090c8
+
+
+
+Determining if the M_PI exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_9ae94 && [1/2] Building C object CMakeFiles/cmTC_9ae94.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_9ae94
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef M_PI
+  return ((int*)(&M_PI))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C SOURCE FILE Test HAVE_MPROTECT succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_76d30 && [1/2] Building C object CMakeFiles/cmTC_76d30.dir/src.c.o
+[2/2] Linking C executable cmTC_76d30
+
+
+Source file was:
+#include <sys/types.h>
+                             #include <sys/mman.h>
+                             int main(void) { return 0; }
+Determining if the strtod exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_ced33 && [1/2] Building C object CMakeFiles/cmTC_ced33.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_ced33
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strtod
+  return ((int*)(&strtod))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the malloc exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_062d7 && [1/2] Building C object CMakeFiles/cmTC_062d7.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_062d7
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef malloc
+  return ((int*)(&malloc))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the calloc exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_c85b4 && [1/2] Building C object CMakeFiles/cmTC_c85b4.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_c85b4
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef calloc
+  return ((int*)(&calloc))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the realloc exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_dcfdb && [1/2] Building C object CMakeFiles/cmTC_dcfdb.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_dcfdb
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef realloc
+  return ((int*)(&realloc))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the free exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_4ddb6 && [1/2] Building C object CMakeFiles/cmTC_4ddb6.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_4ddb6
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef free
+  return ((int*)(&free))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the getenv exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_9927f && [1/2] Building C object CMakeFiles/cmTC_9927f.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_9927f
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef getenv
+  return ((int*)(&getenv))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the setenv exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_46e77 && [1/2] Building C object CMakeFiles/cmTC_46e77.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_46e77
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef setenv
+  return ((int*)(&setenv))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the putenv exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_acbb8 && [1/2] Building C object CMakeFiles/cmTC_acbb8.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_acbb8
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef putenv
+  return ((int*)(&putenv))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the unsetenv exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_1b07c && [1/2] Building C object CMakeFiles/cmTC_1b07c.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_1b07c
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef unsetenv
+  return ((int*)(&unsetenv))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the bsearch exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_5e4c8 && [1/2] Building C object CMakeFiles/cmTC_5e4c8.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_5e4c8
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef bsearch
+  return ((int*)(&bsearch))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the qsort exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_c733b && [1/2] Building C object CMakeFiles/cmTC_c733b.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_c733b
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef qsort
+  return ((int*)(&qsort))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the abs exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_19fdb && [1/2] Building C object CMakeFiles/cmTC_19fdb.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_19fdb
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef abs
+  return ((int*)(&abs))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the bcopy exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_88610 && [1/2] Building C object CMakeFiles/cmTC_88610.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_88610
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef bcopy
+  return ((int*)(&bcopy))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the memset exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_b7ae8 && [1/2] Building C object CMakeFiles/cmTC_b7ae8.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_b7ae8
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef memset
+  return ((int*)(&memset))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the memcpy exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2aee3 && [1/2] Building C object CMakeFiles/cmTC_2aee3.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_2aee3
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef memcpy
+  return ((int*)(&memcpy))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the memmove exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_01cb6 && [1/2] Building C object CMakeFiles/cmTC_01cb6.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_01cb6
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef memmove
+  return ((int*)(&memmove))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the memcmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_d20cd && [1/2] Building C object CMakeFiles/cmTC_d20cd.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_d20cd
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef memcmp
+  return ((int*)(&memcmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strlen exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_7b1be && [1/2] Building C object CMakeFiles/cmTC_7b1be.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_7b1be
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strlen
+  return ((int*)(&strlen))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strlcpy exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_d687f && [1/2] Building C object CMakeFiles/cmTC_d687f.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_d687f
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strlcpy
+  return ((int*)(&strlcpy))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strlcat exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_9f25d && [1/2] Building C object CMakeFiles/cmTC_9f25d.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_9f25d
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strlcat
+  return ((int*)(&strlcat))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strchr exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_31c9c && [1/2] Building C object CMakeFiles/cmTC_31c9c.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_31c9c
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strchr
+  return ((int*)(&strchr))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strrchr exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_1e63e && [1/2] Building C object CMakeFiles/cmTC_1e63e.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_1e63e
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strrchr
+  return ((int*)(&strrchr))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strstr exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_cdab9 && [1/2] Building C object CMakeFiles/cmTC_cdab9.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_cdab9
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strstr
+  return ((int*)(&strstr))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strtok_r exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_7a972 && [1/2] Building C object CMakeFiles/cmTC_7a972.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_7a972
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strtok_r
+  return ((int*)(&strtok_r))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strtol exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_e19da && [1/2] Building C object CMakeFiles/cmTC_e19da.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_e19da
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strtol
+  return ((int*)(&strtol))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strtoul exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_8fd9d && [1/2] Building C object CMakeFiles/cmTC_8fd9d.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_8fd9d
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strtoul
+  return ((int*)(&strtoul))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strtoll exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_0e245 && [1/2] Building C object CMakeFiles/cmTC_0e245.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_0e245
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strtoll
+  return ((int*)(&strtoll))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strtoull exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_67e2b && [1/2] Building C object CMakeFiles/cmTC_67e2b.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_67e2b
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strtoull
+  return ((int*)(&strtoull))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the atoi exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_6d45d && [1/2] Building C object CMakeFiles/cmTC_6d45d.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_6d45d
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef atoi
+  return ((int*)(&atoi))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the atof exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_69052 && [1/2] Building C object CMakeFiles/cmTC_69052.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_69052
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef atof
+  return ((int*)(&atof))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strcmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_8c9a0 && [1/2] Building C object CMakeFiles/cmTC_8c9a0.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_8c9a0
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strcmp
+  return ((int*)(&strcmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strncmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_0b23b && [1/2] Building C object CMakeFiles/cmTC_0b23b.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_0b23b
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strncmp
+  return ((int*)(&strncmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strcasecmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_b349f && [1/2] Building C object CMakeFiles/cmTC_b349f.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_b349f
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strcasecmp
+  return ((int*)(&strcasecmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strncasecmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_452f1 && [1/2] Building C object CMakeFiles/cmTC_452f1.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_452f1
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strncasecmp
+  return ((int*)(&strncasecmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strcasestr exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_bde8c && [1/2] Building C object CMakeFiles/cmTC_bde8c.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_bde8c
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strcasestr
+  return ((int*)(&strcasestr))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcscmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_5521f && [1/2] Building C object CMakeFiles/cmTC_5521f.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_5521f
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcscmp
+  return ((int*)(&wcscmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcsdup exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_3c2c5 && [1/2] Building C object CMakeFiles/cmTC_3c2c5.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_3c2c5
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcsdup
+  return ((int*)(&wcsdup))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcslcat exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_5b0f1 && [1/2] Building C object CMakeFiles/cmTC_5b0f1.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_5b0f1
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcslcat
+  return ((int*)(&wcslcat))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcslcpy exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_5bfdc && [1/2] Building C object CMakeFiles/cmTC_5bfdc.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_5bfdc
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcslcpy
+  return ((int*)(&wcslcpy))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcslen exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_ed5f3 && [1/2] Building C object CMakeFiles/cmTC_ed5f3.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_ed5f3
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcslen
+  return ((int*)(&wcslen))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcsncmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_70e5b && [1/2] Building C object CMakeFiles/cmTC_70e5b.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_70e5b
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcsncmp
+  return ((int*)(&wcsncmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcsstr exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_dbf0f && [1/2] Building C object CMakeFiles/cmTC_dbf0f.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_dbf0f
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcsstr
+  return ((int*)(&wcsstr))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcscasecmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_1cf73 && [1/2] Building C object CMakeFiles/cmTC_1cf73.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_1cf73
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcscasecmp
+  return ((int*)(&wcscasecmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the wcsncasecmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2885b && [1/2] Building C object CMakeFiles/cmTC_2885b.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_2885b
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef wcsncasecmp
+  return ((int*)(&wcsncasecmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the sscanf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_ddc4b && [1/2] Building C object CMakeFiles/cmTC_ddc4b.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_ddc4b
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sscanf
+  return ((int*)(&sscanf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the vsscanf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_cb054 && [1/2] Building C object CMakeFiles/cmTC_cb054.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_cb054
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef vsscanf
+  return ((int*)(&vsscanf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the vsnprintf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_e4835 && [1/2] Building C object CMakeFiles/cmTC_e4835.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_e4835
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef vsnprintf
+  return ((int*)(&vsnprintf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the fseeko exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a1cba && [1/2] Building C object CMakeFiles/cmTC_a1cba.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_a1cba
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef fseeko
+  return ((int*)(&fseeko))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the _Exit exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_12ccb && [1/2] Building C object CMakeFiles/cmTC_12ccb.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_12ccb
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stddef.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <float.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef _Exit
+  return ((int*)(&_Exit))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the sigaction exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_8d620 && [1/2] Building C object CMakeFiles/cmTC_8d620.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_8d620
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <signal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sigaction
+  return ((int*)(&sigaction))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the setjmp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a082b && [1/2] Building C object CMakeFiles/cmTC_a082b.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_a082b
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <setjmp.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef setjmp
+  return ((int*)(&setjmp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the nanosleep exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_6a923 && [1/2] Building C object CMakeFiles/cmTC_6a923.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_6a923
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <time.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef nanosleep
+  return ((int*)(&nanosleep))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the sysconf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_9c65e && [1/2] Building C object CMakeFiles/cmTC_9c65e.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_9c65e
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sysconf
+  return ((int*)(&sysconf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the getauxval exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_cf841 && [1/2] Building C object CMakeFiles/cmTC_cf841.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_cf841
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/auxv.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef getauxval
+  return ((int*)(&getauxval))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the poll exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_325c8 && [1/2] Building C object CMakeFiles/cmTC_325c8.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_325c8
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <poll.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef poll
+  return ((int*)(&poll))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the function pow exists in the m passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_f7587 && [1/2] Building C object CMakeFiles/cmTC_f7587.dir/CheckFunctionExists.c.o
+/Users/tabby/Library/Android/sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'pow' [-Wincompatible-library-redeclaration]
+  CHECK_FUNCTION_EXISTS(void);
+  ^
+<command line>:3:31: note: expanded from here
+#define CHECK_FUNCTION_EXISTS pow
+                              ^
+/Users/tabby/Library/Android/sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'pow' is a builtin with type 'double (double, double)'
+<command line>:3:31: note: expanded from here
+#define CHECK_FUNCTION_EXISTS pow
+                              ^
+1 warning generated.
+[2/2] Linking C executable cmTC_f7587
+
+
+
+Determining if the atan exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_f86cc && [1/2] Building C object CMakeFiles/cmTC_f86cc.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_f86cc
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef atan
+  return ((int*)(&atan))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the atan2 exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_d9cc8 && [1/2] Building C object CMakeFiles/cmTC_d9cc8.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_d9cc8
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef atan2
+  return ((int*)(&atan2))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the atanf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_4b59b && [1/2] Building C object CMakeFiles/cmTC_4b59b.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_4b59b
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef atanf
+  return ((int*)(&atanf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the atan2f exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_08d49 && [1/2] Building C object CMakeFiles/cmTC_08d49.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_08d49
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef atan2f
+  return ((int*)(&atan2f))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the ceil exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2dfaa && [1/2] Building C object CMakeFiles/cmTC_2dfaa.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_2dfaa
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef ceil
+  return ((int*)(&ceil))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the ceilf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_9b974 && [1/2] Building C object CMakeFiles/cmTC_9b974.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_9b974
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef ceilf
+  return ((int*)(&ceilf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the copysign exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_db0de && [1/2] Building C object CMakeFiles/cmTC_db0de.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_db0de
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef copysign
+  return ((int*)(&copysign))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the copysignf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_28300 && [1/2] Building C object CMakeFiles/cmTC_28300.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_28300
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef copysignf
+  return ((int*)(&copysignf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the cos exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_86fa0 && [1/2] Building C object CMakeFiles/cmTC_86fa0.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_86fa0
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef cos
+  return ((int*)(&cos))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the cosf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_da461 && [1/2] Building C object CMakeFiles/cmTC_da461.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_da461
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef cosf
+  return ((int*)(&cosf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the exp exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_31d64 && [1/2] Building C object CMakeFiles/cmTC_31d64.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_31d64
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef exp
+  return ((int*)(&exp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the expf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_e73bf && [1/2] Building C object CMakeFiles/cmTC_e73bf.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_e73bf
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef expf
+  return ((int*)(&expf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the fabs exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_85743 && [1/2] Building C object CMakeFiles/cmTC_85743.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_85743
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef fabs
+  return ((int*)(&fabs))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the fabsf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_6fcc4 && [1/2] Building C object CMakeFiles/cmTC_6fcc4.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_6fcc4
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef fabsf
+  return ((int*)(&fabsf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the floor exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_43e82 && [1/2] Building C object CMakeFiles/cmTC_43e82.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_43e82
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef floor
+  return ((int*)(&floor))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the floorf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_6586a && [1/2] Building C object CMakeFiles/cmTC_6586a.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_6586a
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef floorf
+  return ((int*)(&floorf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the fmod exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_7dda1 && [1/2] Building C object CMakeFiles/cmTC_7dda1.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_7dda1
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef fmod
+  return ((int*)(&fmod))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the fmodf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_b28f4 && [1/2] Building C object CMakeFiles/cmTC_b28f4.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_b28f4
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef fmodf
+  return ((int*)(&fmodf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the log exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_9919c && [1/2] Building C object CMakeFiles/cmTC_9919c.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_9919c
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef log
+  return ((int*)(&log))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the logf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_79e0a && [1/2] Building C object CMakeFiles/cmTC_79e0a.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_79e0a
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef logf
+  return ((int*)(&logf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the log10 exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_39b80 && [1/2] Building C object CMakeFiles/cmTC_39b80.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_39b80
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef log10
+  return ((int*)(&log10))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the log10f exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_ab218 && [1/2] Building C object CMakeFiles/cmTC_ab218.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_ab218
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef log10f
+  return ((int*)(&log10f))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the lround exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_74e52 && [1/2] Building C object CMakeFiles/cmTC_74e52.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_74e52
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef lround
+  return ((int*)(&lround))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the lroundf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_61787 && [1/2] Building C object CMakeFiles/cmTC_61787.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_61787
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef lroundf
+  return ((int*)(&lroundf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the pow exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_22488 && [1/2] Building C object CMakeFiles/cmTC_22488.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_22488
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pow
+  return ((int*)(&pow))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the powf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2b212 && [1/2] Building C object CMakeFiles/cmTC_2b212.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_2b212
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef powf
+  return ((int*)(&powf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the round exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_8ba5a && [1/2] Building C object CMakeFiles/cmTC_8ba5a.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_8ba5a
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef round
+  return ((int*)(&round))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the roundf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2bb42 && [1/2] Building C object CMakeFiles/cmTC_2bb42.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_2bb42
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef roundf
+  return ((int*)(&roundf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the scalbn exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_178c6 && [1/2] Building C object CMakeFiles/cmTC_178c6.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_178c6
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef scalbn
+  return ((int*)(&scalbn))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the scalbnf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_39046 && [1/2] Building C object CMakeFiles/cmTC_39046.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_39046
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef scalbnf
+  return ((int*)(&scalbnf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the sin exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_83a83 && [1/2] Building C object CMakeFiles/cmTC_83a83.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_83a83
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sin
+  return ((int*)(&sin))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the sinf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_12472 && [1/2] Building C object CMakeFiles/cmTC_12472.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_12472
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sinf
+  return ((int*)(&sinf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the sqrt exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_5a913 && [1/2] Building C object CMakeFiles/cmTC_5a913.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_5a913
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sqrt
+  return ((int*)(&sqrt))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the sqrtf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_adb88 && [1/2] Building C object CMakeFiles/cmTC_adb88.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_adb88
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sqrtf
+  return ((int*)(&sqrtf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the tan exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_cf278 && [1/2] Building C object CMakeFiles/cmTC_cf278.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_cf278
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef tan
+  return ((int*)(&tan))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the tanf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_c96f6 && [1/2] Building C object CMakeFiles/cmTC_c96f6.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_c96f6
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef tanf
+  return ((int*)(&tanf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the acos exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_44615 && [1/2] Building C object CMakeFiles/cmTC_44615.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_44615
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef acos
+  return ((int*)(&acos))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the acosf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_78f7d && [1/2] Building C object CMakeFiles/cmTC_78f7d.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_78f7d
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef acosf
+  return ((int*)(&acosf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the asin exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_c0704 && [1/2] Building C object CMakeFiles/cmTC_c0704.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_c0704
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef asin
+  return ((int*)(&asin))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the asinf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_186a1 && [1/2] Building C object CMakeFiles/cmTC_186a1.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_186a1
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef asinf
+  return ((int*)(&asinf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the trunc exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_690ef && [1/2] Building C object CMakeFiles/cmTC_690ef.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_690ef
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef trunc
+  return ((int*)(&trunc))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the truncf exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_0de01 && [1/2] Building C object CMakeFiles/cmTC_0de01.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_0de01
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef truncf
+  return ((int*)(&truncf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the include file alloca.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_e327c && [1/2] Building C object CMakeFiles/cmTC_e327c.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_e327c
+
+
+
+Determining if the alloca exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_4650f && [1/2] Building C object CMakeFiles/cmTC_4650f.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_4650f
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <alloca.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef alloca
+  return ((int*)(&alloca))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the alloca exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_101f2 && [1/2] Building C object CMakeFiles/cmTC_101f2.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_101f2
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef alloca
+  return ((int*)(&alloca))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C SOURCE FILE Test HAVE_SA_SIGACTION succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_bec8e && [1/2] Building C object CMakeFiles/cmTC_bec8e.dir/src.c.o
+[2/2] Linking C executable cmTC_bec8e
+
+
+Source file was:
+
+#include <signal.h>
+
+int main()
+{
+  (void)sizeof(((struct sigaction *)0)->sa_sigaction);
+  return 0;
+}
+
+Determining if the dlopen exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_54676 && [1/2] Building C object CMakeFiles/cmTC_54676.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_54676
+
+
+File /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <dlfcn.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef dlopen
+  return ((int*)(&dlopen))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C SOURCE FILE Test HAVE_O_CLOEXEC succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_081fa && [1/2] Building C object CMakeFiles/cmTC_081fa.dir/src.c.o
+[2/2] Linking C executable cmTC_081fa
+
+
+Source file was:
+
+    #include <fcntl.h>
+    int flag = O_CLOEXEC;
+    int main(int argc, char **argv) { return 0; }
+Performing C SOURCE FILE Test VULKAN_PASSED_ANDROID_CHECKS succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_68a9a && [1/2] Building C object CMakeFiles/cmTC_68a9a.dir/src.c.o
+[2/2] Linking C executable cmTC_68a9a
+
+
+Source file was:
+
+      #if defined(__ARM_ARCH) && __ARM_ARCH < 7
+      #error Vulkan doesn't work on this configuration
+      #endif
+      int main(int argc, char **argv) { return 0; }
+      
+Performing C SOURCE FILE Test HAVE_PTHREADS succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_c1ab2 && [1/2] Building C object CMakeFiles/cmTC_c1ab2.dir/src.c.o
+[2/2] Linking C executable cmTC_c1ab2
+
+
+Source file was:
+
+      #include <pthread.h>
+      int main(int argc, char** argv) {
+        pthread_attr_t type;
+        pthread_attr_init(&type);
+        return 0;
+      }
+Performing C SOURCE FILE Test HAVE_RECURSIVE_MUTEXES succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_574ff && [1/2] Building C object CMakeFiles/cmTC_574ff.dir/src.c.o
+[2/2] Linking C executable cmTC_574ff
+
+
+Source file was:
+
+        #include <pthread.h>
+        int main(int argc, char **argv) {
+          pthread_mutexattr_t attr;
+          pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+          return 0;
+        }
+Performing C SOURCE FILE Test HAVE_PTHREADS_SEM succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a7257 && [1/2] Building C object CMakeFiles/cmTC_a7257.dir/src.c.o
+[2/2] Linking C executable cmTC_a7257
+
+
+Source file was:
+#include <pthread.h>
+                                 #include <semaphore.h>
+                                 int main(int argc, char **argv) { return 0; }
+Performing C SOURCE FILE Test HAVE_SEM_TIMEDWAIT succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_15543 && [1/2] Building C object CMakeFiles/cmTC_15543.dir/src.c.o
+[2/2] Linking C executable cmTC_15543
+
+
+Source file was:
+
+              #include <pthread.h>
+              #include <semaphore.h>
+              int main(int argc, char **argv) {
+                  sem_timedwait(NULL, NULL);
+                  return 0;
+              }
+Determining if files pthread.h exist passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_dce08 && [1/2] Building C object CMakeFiles/cmTC_dce08.dir/HAVE_PTHREAD_H.c.o
+[2/2] Linking C executable cmTC_dce08
+
+
+
+Performing C SOURCE FILE Test HAVE_PTHREAD_SETNAME_NP succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_99041 && [1/2] Building C object CMakeFiles/cmTC_99041.dir/src.c.o
+[2/2] Linking C executable cmTC_99041
+
+
+Source file was:
+
+            #include <pthread.h>
+            int main(int argc, char **argv) {
+              #ifdef __APPLE__
+              pthread_setname_np("");
+              #else
+              pthread_setname_np(pthread_self(),"");
+              #endif
+              return 0;
+            }
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_278cf && [1/2] Building C object CMakeFiles/cmTC_278cf.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_278cf
+
+
+

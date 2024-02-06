@@ -53,7 +53,7 @@ public:
         float LineSpacing = 0.0f;
     };
 
-#if !defined TB_PLATFORM_WEB
+#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
     static void DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID = -1);
     static void DrawString(const std::string& string, const glm::mat4& transform, const TextComponent& component, int entityID = -1);
 #endif

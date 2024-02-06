@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "Tabby/vendor/glm/glm",
+		"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/glm/glm"
+	}
+}

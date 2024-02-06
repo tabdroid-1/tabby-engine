@@ -12,6 +12,8 @@
 #elif defined(TB_PLATFORM_MACOS)
 #include <signal.h>
 #define TB_DEBUGBREAK() raise(SIGTRAP)
+#elif defined(TB_PLATFORM_ANDROID)
+#define TB_DEBUGBREAK() __builtin_trap()
 #elif defined(TB_PLATFORM_WEB)
 #define TB_DEBUGBREAK() EM_ASM({ debugger; });
 #else

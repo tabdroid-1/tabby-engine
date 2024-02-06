@@ -269,7 +269,7 @@ void Scene::OnUpdate(Timestep ts)
             for (auto entity : view) {
                 auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
 
-#if !defined TB_PLATFORM_WEB
+#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
                 Renderer2D::DrawString(text.TextString, transform.GetTransform(), text, (int)entity);
 #endif
             }
