@@ -24,12 +24,22 @@ void Log::Init()
     logSinks[0]->set_pattern("%^[%T] %n: %v%$");
     logSinks[1]->set_pattern("[%T] [%l] %n: %v");
 
+#if defined(TB_PLATFORM_ANDROID)
     s_CoreLogger = std::make_shared<spdlog::logger>("Tabby", begin(logSinks), end(logSinks));
+    s_CoreLogger->sinks().emplace_back(std::make_shared<spdlog::sinks::android_sink_mt>("Tabby"));
+#else
+    s_CoreLogger = std::make_shared<spdlog::logger>("Tabby", begin(logSinks), end(logSinks));
+#endif
     spdlog::register_logger(s_CoreLogger);
     s_CoreLogger->set_level(spdlog::level::trace);
     s_CoreLogger->flush_on(spdlog::level::trace);
 
+#if defined(TB_PLATFORM_ANDROID)
     s_ClientLogger = std::make_shared<spdlog::logger>("APP", begin(logSinks), end(logSinks));
+    s_ClientLogger->sinks().emplace_back(std::make_shared<spdlog::sinks::android_sink_mt>("Tabby"));
+#else
+    s_ClientLogger = std::make_shared<spdlog::logger>("APP", begin(logSinks), end(logSinks));
+#endif
     spdlog::register_logger(s_ClientLogger);
     s_ClientLogger->set_level(spdlog::level::trace);
     s_ClientLogger->flush_on(spdlog::level::trace);

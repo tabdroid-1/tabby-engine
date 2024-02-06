@@ -72,13 +72,7 @@ list(APPEND PROJECT_SOURCES
         )
 
 
-if (ANDROID)
-    add_library(${PROJECT_NAME} STATIC 
-        ${PROJECT_SOURCES}
-        )
-else()
-    add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
-endif()
+add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
         ${PROJECT_SOURCES_DIR}

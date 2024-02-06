@@ -62,10 +62,8 @@
     "tabby::@fafd1cf96e02ca7e6079": {
       "artifactName": "tabby",
       "abi": "x86",
-      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libtabby.so",
-      "runtimeFiles": [
-        "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libSDL2.so"
-      ]
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/Tabby/libtabby.a",
+      "runtimeFiles": []
     },
     "SDL2::@fada92b654251d1dad5e": {
       "artifactName": "SDL2",
@@ -233,7 +231,7 @@
       "abi": "x86",
       "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libApp.so",
       "runtimeFiles": [
-        "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libtabby.so"
+        "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libSDL2.so"
       ]
     },
     "NightlyMemoryCheck::@e444ab5322db199ada52": {
