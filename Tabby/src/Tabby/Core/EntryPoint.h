@@ -9,18 +9,7 @@ extern Tabby::Application* Tabby::CreateApplication(ApplicationCommandLineArgs a
 
 #define SDL_MAIN_HANDLED
 #include "../../../vendor/SDL2/include/SDL_main.h"
-// int main(int argc, char** argv)
-// {
-//     // Tabby::Log::Init();
-//
-//     auto app = Tabby::CreateApplication({ argc, argv });
-//
-//     app->Run();
-//
-//     delete app;
-// }
-
-int SDL_main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
     // Tabby::Log::Init();
 
@@ -29,8 +18,11 @@ int SDL_main(int argc, char* argv[])
     app->Run();
 
     delete app;
+}
 
-    return 0;
+int SDL_main(int argc, char* argv[])
+{
+    return main(argc, argv);
 }
 
 #elif defined(TB_PLATFORM_LINUX)

@@ -1,0 +1,748 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						34
+					]
+				},
+				{
+					"build" : "Tabby",
+					"childIndexes" : 
+					[
+						2,
+						3,
+						5,
+						7,
+						8,
+						10,
+						11
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-Tabby-Debug-90233f938384465696ee.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.22"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby",
+					"targetIndexes" : 
+					[
+						40
+					]
+				},
+				{
+					"build" : "Tabby/vendor/SDL2",
+					"jsonFile" : "directory-Tabby.vendor.SDL2-Debug-4c0036986773a4c4d338.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 2,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2",
+					"targetIndexes" : 
+					[
+						29,
+						30,
+						31,
+						32,
+						38,
+						41
+					]
+				},
+				{
+					"build" : "Tabby/vendor/glm",
+					"childIndexes" : 
+					[
+						4
+					],
+					"jsonFile" : "directory-Tabby.vendor.glm-Debug-2079a91bd47d637e917f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 3,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/glm"
+				},
+				{
+					"build" : "Tabby/vendor/glm/glm",
+					"jsonFile" : "directory-Tabby.vendor.glm.glm-Debug-fe890517e465a4c5a907.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 3,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/glm/glm",
+					"targetIndexes" : 
+					[
+						35
+					]
+				},
+				{
+					"build" : "Tabby/vendor/yaml-cpp",
+					"childIndexes" : 
+					[
+						6
+					],
+					"jsonFile" : "directory-Tabby.vendor.yaml-cpp-Debug-bb93d26e5c242bb80c33.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 4,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/yaml-cpp",
+					"targetIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						42
+					]
+				},
+				{
+					"build" : "Tabby/vendor/yaml-cpp/util",
+					"jsonFile" : "directory-Tabby.vendor.yaml-cpp.util-Debug-ceb35244dbe389591f3a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 5,
+					"projectIndex" : 4,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/yaml-cpp/util",
+					"targetIndexes" : 
+					[
+						43,
+						44,
+						45
+					]
+				},
+				{
+					"build" : "Tabby/vendor/spdlog",
+					"jsonFile" : "directory-Tabby.vendor.spdlog-Debug-d5bcab133d0894479ba0.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 5,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/spdlog",
+					"targetIndexes" : 
+					[
+						39
+					]
+				},
+				{
+					"build" : "Tabby/vendor/box2d",
+					"childIndexes" : 
+					[
+						9
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-Tabby.vendor.box2d-Debug-defeef87923943106c95.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 6,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/box2d"
+				},
+				{
+					"build" : "Tabby/vendor/box2d/src",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-Tabby.vendor.box2d.src-Debug-47f3b5296ede2806028e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 8,
+					"projectIndex" : 6,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/box2d/src",
+					"targetIndexes" : 
+					[
+						33
+					]
+				},
+				{
+					"build" : "Tabby/vendor/imgui",
+					"jsonFile" : "directory-Tabby.vendor.imgui-Debug-241f18b8c13783768771.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.19"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 7,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/imgui",
+					"targetIndexes" : 
+					[
+						36
+					]
+				},
+				{
+					"build" : "Tabby/vendor/imguizmo",
+					"jsonFile" : "directory-Tabby.vendor.imguizmo-Debug-b33e8931b3693c0515b2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.19"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 8,
+					"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/imguizmo",
+					"targetIndexes" : 
+					[
+						37
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "App",
+					"targetIndexes" : 
+					[
+						0,
+						34
+					]
+				},
+				{
+					"childIndexes" : 
+					[
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8
+					],
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "tabby",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						40
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "SDL2",
+					"parentIndex" : 1,
+					"targetIndexes" : 
+					[
+						29,
+						30,
+						31,
+						32,
+						38,
+						41
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						3,
+						4
+					],
+					"name" : "glm",
+					"parentIndex" : 1,
+					"targetIndexes" : 
+					[
+						35
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						5,
+						6
+					],
+					"name" : "YAML_CPP",
+					"parentIndex" : 1,
+					"targetIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						42,
+						43,
+						44,
+						45
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						7
+					],
+					"name" : "spdlog",
+					"parentIndex" : 1,
+					"targetIndexes" : 
+					[
+						39
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						8,
+						9
+					],
+					"name" : "box2d",
+					"parentIndex" : 1,
+					"targetIndexes" : 
+					[
+						33
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						10
+					],
+					"name" : "imgui",
+					"parentIndex" : 1,
+					"targetIndexes" : 
+					[
+						36
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						11
+					],
+					"name" : "imguizmo",
+					"parentIndex" : 1,
+					"targetIndexes" : 
+					[
+						37
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "App::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-App-Debug-b5d530c8ff81777128ac.json",
+					"name" : "App",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "Continuous::@e444ab5322db199ada52",
+					"jsonFile" : "target-Continuous-Debug-2d22ee81e0386eadb680.json",
+					"name" : "Continuous",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ContinuousBuild::@e444ab5322db199ada52",
+					"jsonFile" : "target-ContinuousBuild-Debug-024e74ae7a0c154f045f.json",
+					"name" : "ContinuousBuild",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ContinuousConfigure::@e444ab5322db199ada52",
+					"jsonFile" : "target-ContinuousConfigure-Debug-cfb44696728adb58d631.json",
+					"name" : "ContinuousConfigure",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ContinuousCoverage::@e444ab5322db199ada52",
+					"jsonFile" : "target-ContinuousCoverage-Debug-ebced8b78ef6b765ebeb.json",
+					"name" : "ContinuousCoverage",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ContinuousMemCheck::@e444ab5322db199ada52",
+					"jsonFile" : "target-ContinuousMemCheck-Debug-ab48048d33e9c903ade5.json",
+					"name" : "ContinuousMemCheck",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ContinuousStart::@e444ab5322db199ada52",
+					"jsonFile" : "target-ContinuousStart-Debug-829591fcf5a29ef6bd28.json",
+					"name" : "ContinuousStart",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ContinuousSubmit::@e444ab5322db199ada52",
+					"jsonFile" : "target-ContinuousSubmit-Debug-06c15223cb01a1ad0d0d.json",
+					"name" : "ContinuousSubmit",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ContinuousTest::@e444ab5322db199ada52",
+					"jsonFile" : "target-ContinuousTest-Debug-2650221d903df11fc24c.json",
+					"name" : "ContinuousTest",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ContinuousUpdate::@e444ab5322db199ada52",
+					"jsonFile" : "target-ContinuousUpdate-Debug-f8a7f6eddc94e6ea6771.json",
+					"name" : "ContinuousUpdate",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "Experimental::@e444ab5322db199ada52",
+					"jsonFile" : "target-Experimental-Debug-c7b78cb323ca5e1bb5c0.json",
+					"name" : "Experimental",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ExperimentalBuild::@e444ab5322db199ada52",
+					"jsonFile" : "target-ExperimentalBuild-Debug-b60416ce4fc2b91ec3aa.json",
+					"name" : "ExperimentalBuild",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ExperimentalConfigure::@e444ab5322db199ada52",
+					"jsonFile" : "target-ExperimentalConfigure-Debug-6fed876a089b4a5fffe9.json",
+					"name" : "ExperimentalConfigure",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ExperimentalCoverage::@e444ab5322db199ada52",
+					"jsonFile" : "target-ExperimentalCoverage-Debug-df59cba41f3b094af2cb.json",
+					"name" : "ExperimentalCoverage",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ExperimentalMemCheck::@e444ab5322db199ada52",
+					"jsonFile" : "target-ExperimentalMemCheck-Debug-888b1b954d927227c281.json",
+					"name" : "ExperimentalMemCheck",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ExperimentalStart::@e444ab5322db199ada52",
+					"jsonFile" : "target-ExperimentalStart-Debug-938ace32ddc4829933b5.json",
+					"name" : "ExperimentalStart",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ExperimentalSubmit::@e444ab5322db199ada52",
+					"jsonFile" : "target-ExperimentalSubmit-Debug-2188e1787067fae97bad.json",
+					"name" : "ExperimentalSubmit",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ExperimentalTest::@e444ab5322db199ada52",
+					"jsonFile" : "target-ExperimentalTest-Debug-4127f8e8da28fe786d79.json",
+					"name" : "ExperimentalTest",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "ExperimentalUpdate::@e444ab5322db199ada52",
+					"jsonFile" : "target-ExperimentalUpdate-Debug-f1f939d5a4d29333442e.json",
+					"name" : "ExperimentalUpdate",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "Nightly::@e444ab5322db199ada52",
+					"jsonFile" : "target-Nightly-Debug-7523d2980b3670a6de77.json",
+					"name" : "Nightly",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "NightlyBuild::@e444ab5322db199ada52",
+					"jsonFile" : "target-NightlyBuild-Debug-a74f045e8ab63f824153.json",
+					"name" : "NightlyBuild",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "NightlyConfigure::@e444ab5322db199ada52",
+					"jsonFile" : "target-NightlyConfigure-Debug-a35d1dc2f8bea60ac568.json",
+					"name" : "NightlyConfigure",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "NightlyCoverage::@e444ab5322db199ada52",
+					"jsonFile" : "target-NightlyCoverage-Debug-eb8b654d003a13d8322c.json",
+					"name" : "NightlyCoverage",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "NightlyMemCheck::@e444ab5322db199ada52",
+					"jsonFile" : "target-NightlyMemCheck-Debug-00e618d5c82a5ec54d23.json",
+					"name" : "NightlyMemCheck",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "NightlyMemoryCheck::@e444ab5322db199ada52",
+					"jsonFile" : "target-NightlyMemoryCheck-Debug-ff4df91735bdd4cb5955.json",
+					"name" : "NightlyMemoryCheck",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "NightlyStart::@e444ab5322db199ada52",
+					"jsonFile" : "target-NightlyStart-Debug-085db6822954b5215d03.json",
+					"name" : "NightlyStart",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "NightlySubmit::@e444ab5322db199ada52",
+					"jsonFile" : "target-NightlySubmit-Debug-774a04bf3e2f54eb8a31.json",
+					"name" : "NightlySubmit",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "NightlyTest::@e444ab5322db199ada52",
+					"jsonFile" : "target-NightlyTest-Debug-50c37a21539dab6442fc.json",
+					"name" : "NightlyTest",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "NightlyUpdate::@e444ab5322db199ada52",
+					"jsonFile" : "target-NightlyUpdate-Debug-9c98650e955704e572f3.json",
+					"name" : "NightlyUpdate",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "SDL2::@fada92b654251d1dad5e",
+					"jsonFile" : "target-SDL2-Debug-a856492be95cc073e9a8.json",
+					"name" : "SDL2",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "SDL2-static::@fada92b654251d1dad5e",
+					"jsonFile" : "target-SDL2-static-Debug-ef9839105c76f990c2e3.json",
+					"name" : "SDL2-static",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "SDL2_test::@fada92b654251d1dad5e",
+					"jsonFile" : "target-SDL2_test-Debug-6b035c3f1af9ecee97f0.json",
+					"name" : "SDL2_test",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "SDL2main::@fada92b654251d1dad5e",
+					"jsonFile" : "target-SDL2main-Debug-9a724bc534ec5ebcbdd7.json",
+					"name" : "SDL2main",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "box2d::@2234bdecc5bd050acdef",
+					"jsonFile" : "target-box2d-Debug-20346df89c869ff399d9.json",
+					"name" : "box2d",
+					"projectIndex" : 6
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "copy_assets_sandbox::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-copy_assets_sandbox-Debug-02eb4143082625383c87.json",
+					"name" : "copy_assets_sandbox",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "glm::@f0c6c4eadba7866c0de4",
+					"jsonFile" : "target-glm-Debug-f200241a31ea0bf3866d.json",
+					"name" : "glm",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "imgui::@797206b9334764e2dae6",
+					"jsonFile" : "target-imgui-Debug-c71cac5030331f53d5ee.json",
+					"name" : "imgui",
+					"projectIndex" : 7
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "imguizmo::@af5a7d18e61dfb365a98",
+					"jsonFile" : "target-imguizmo-Debug-9481815c6c0d502d008e.json",
+					"name" : "imguizmo",
+					"projectIndex" : 8
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "sdl_headers_copy::@fada92b654251d1dad5e",
+					"jsonFile" : "target-sdl_headers_copy-Debug-a6e4a15243f24731d1bd.json",
+					"name" : "sdl_headers_copy",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "spdlog::@219fb2c33b38169500c9",
+					"jsonFile" : "target-spdlog-Debug-11889a8df0d8b8310ef1.json",
+					"name" : "spdlog",
+					"projectIndex" : 5
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "tabby::@fafd1cf96e02ca7e6079",
+					"jsonFile" : "target-tabby-Debug-1452fb43eecadd98f238.json",
+					"name" : "tabby",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "uninstall::@fada92b654251d1dad5e",
+					"jsonFile" : "target-uninstall-Debug-9ba3bd35d726a261b696.json",
+					"name" : "uninstall",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "yaml-cpp::@e444ab5322db199ada52",
+					"jsonFile" : "target-yaml-cpp-Debug-2f6a1a0bbca09c2d752d.json",
+					"name" : "yaml-cpp",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "yaml-cpp-parse::@e704e877ef83c09ce365",
+					"jsonFile" : "target-yaml-cpp-parse-Debug-202070c7dff2413363f8.json",
+					"name" : "yaml-cpp-parse",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "yaml-cpp-read::@e704e877ef83c09ce365",
+					"jsonFile" : "target-yaml-cpp-read-Debug-42b2657284c16ddc30df.json",
+					"name" : "yaml-cpp-read",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "yaml-cpp-sandbox::@e704e877ef83c09ce365",
+					"jsonFile" : "target-yaml-cpp-sandbox-Debug-ac12a564e9255e94103f.json",
+					"name" : "yaml-cpp-sandbox",
+					"projectIndex" : 4
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a",
+		"source" : "/Users/tabby/Projects/C++/TabbyEngine/App"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

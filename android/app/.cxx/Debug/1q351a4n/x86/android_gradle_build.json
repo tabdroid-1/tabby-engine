@@ -34,7 +34,7 @@
       "artifactName": "App",
       "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libApp.so",
       "runtimeFiles": [
-        "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libtabby.so"
+        "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libSDL2.so"
       ]
     },
     "Continuous::@e444ab5322db199ada52": {
@@ -246,10 +246,7 @@
       "toolchain": "toolchain",
       "abi": "x86",
       "artifactName": "tabby",
-      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libtabby.so",
-      "runtimeFiles": [
-        "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/x86/libSDL2.so"
-      ]
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/Tabby/libtabby.a"
     },
     "uninstall::@fada92b654251d1dad5e": {
       "toolchain": "toolchain",

@@ -10,98 +10,69 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="245572d3-333c-4dc9-96e9-e609f724994e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../App/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../App/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../App/src/Base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../App/src/Base.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../App/src/SandboxApp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../App/src/SandboxApp.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Context.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Context.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Platforms/Linux/LinuxWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Platforms/Linux/LinuxWindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Application.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Base.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Base.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/EntryPoint.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/EntryPoint.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/PlatformDetection.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/PlatformDetection.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Instrumentor.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Instrumentor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/Tracy.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/TracyC.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/TracyClient.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/TracyOpenGL.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/TracyOpenGL.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyAlloc.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyArmCpuTable.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyCallstack.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyCallstack.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyCallstack.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyCpuid.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyDebug.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyDxt1.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyDxt1.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyFastVector.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyLock.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyOverride.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyProfiler.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyProfiler.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyRingBuffer.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyScoped.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyStringHelpers.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysPower.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysPower.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysTime.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysTime.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysTrace.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracySysTrace.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/TracyThread.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/tracy_SPSCQueue.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/tracy_concurrentqueue.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/tracy_rpmalloc.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/client/tracy_rpmalloc.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyAlign.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyAlloc.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyApi.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyColor.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyForceInline.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyMutex.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyProtocol.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyQueue.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracySocket.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracySocket.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyStackFrames.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyStackFrames.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracySystem.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracySystem.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyUwp.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyVersion.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/TracyYield.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/tracy_lz4.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/tracy_lz4.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/tracy_lz4hc.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/common/tracy_lz4hc.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/alloc.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/backtrace.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/config.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/dwarf.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/elf.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/fileline.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/filenames.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/internal.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/macho.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/mmapio.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/posix.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/sort.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Tracy/libbacktrace/state.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/ImGui/ImGuiBuild.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/ImGui/ImGuiBuild.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Font.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Font.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Font.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/MSDFData.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/MSDFData.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Renderer2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Renderer2D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Renderer2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/Renderer2D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Scene/Components.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Scene/Components.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Scene/Scene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Scene/Scene.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/UI/Panels/SceneHierarchyPanel/SceneHierarchyPanel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/UI/Panels/SceneHierarchyPanel/SceneHierarchyPanel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/vendor/imgui/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/vendor/imgui/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-300bf205f07d022aee3e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/index-2024-02-06T17-04-59-0923.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-SDL2-Debug-bf55fe6def49b7d25752.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-SDL2-static-Debug-a0804e744a7ae687cf1f.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-SDL2_test-Debug-6db445d4d63eb7865a87.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-SDL2main-Debug-c39b1acd2764183f478b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-box2d-Debug-dd3783f980b2d1b5f308.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-glm-Debug-45f24a7b6917d013f5c2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-imgui-Debug-45a2f023ea08a61d2d70.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-imguizmo-Debug-705b9f5b10c263b67211.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-spdlog-Debug-4f46c79996e1c5fbfaf6.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-tabby-Debug-2872b08643f60206fa45.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-yaml-cpp-Debug-c318b8eba85c022fb065.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-yaml-cpp-parse-Debug-3a542890e32c87ea2878.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-yaml-cpp-read-Debug-9e9b618e7669378e1b0a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-yaml-cpp-sandbox-Debug-6bad849dc89e4e4cb01a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/App.dir/src/SandboxApp.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/App.dir/src/SandboxApp.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Core/Log.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Core/Log.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/codemodel-v2-7394f81a5a80b1b830e2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/index-2024-02-06T17-00-56-0660.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-App-Debug-713178d0c83583871740.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-SDL2-Debug-c0fa2bc5366f6f4d5178.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-SDL2-static-Debug-cdce614ea30880c8c0cb.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-SDL2_test-Debug-6b4f973e42e9c6c50af1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-SDL2main-Debug-b3825635ece9f42022f9.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-box2d-Debug-598fb93bfecc59620d94.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-glm-Debug-401fc4a0f9a124e09f68.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-imgui-Debug-6f8a9ef66e5c6dee1435.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-imguizmo-Debug-3e18719c88ef8124b2e3.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-spdlog-Debug-8b01e9e73da43b7b5658.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-tabby-Debug-c0a20fb911ad7589d9f3.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-yaml-cpp-Debug-c40c1a17c79358499487.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-yaml-cpp-parse-Debug-c072b7cc1ebb328848e5.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-yaml-cpp-read-Debug-2686ab92839962569b02.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-yaml-cpp-sandbox-Debug-fd12803f3669a13ffc5e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/rules.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/android_gradle_build.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/android_gradle_build_mini.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/build.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/compile_commands.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/compile_commands.json.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/compile_commands.json.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/tools/debug/x86/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/tools/debug/x86/compile_commands.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +82,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[adb-e142e236-2j563U._adb-tls-connect._tcp.]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[e142e236]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -132,12 +103,14 @@
     "cf.advertisement.text.has.clang-format": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "customRenderer",
-    "last_opened_file_path": "/Users/tabby/Projects/C++/TabbyEngine/android"
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "git-widget-placeholder": "customRenderer-android",
+    "last_opened_file_path": "/Users/tabby/Projects/C++/TabbyEngine/android",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.new.ui"
   }
 }]]></component>
   <component name="RunManager">
-    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="tabbyEngineApp.app.main" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -150,8 +123,8 @@
       <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
       <option name="ACTIVITY_EXTRA_FLAGS" value="" />
       <option name="MODE" value="default_activity" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="CLEAR_LOGCAT" value="true" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
       <option name="INSPECTION_WITHOUT_ACTIVITY_RESTART" value="false" />
       <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
       <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
@@ -215,5 +188,29 @@
       <updated>1707172146374</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/../App/src/SandboxApp.cpp</url>
+          <line>28</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/../App/src/SandboxApp.cpp</url>
+          <line>18</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/../App/src/SandboxApp.cpp</url>
+          <line>12</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="java-exception" />
+      </default-breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
