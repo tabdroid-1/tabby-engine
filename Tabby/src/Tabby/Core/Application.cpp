@@ -1,5 +1,4 @@
 #include "Tabby/Core/Application.h"
-#include "SDL_timer.h"
 #include "Tabby/Renderer/Renderer.h"
 #include "tbpch.h"
 

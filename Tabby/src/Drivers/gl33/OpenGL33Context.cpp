@@ -7,7 +7,9 @@
 
 #include <SDL.h>
 
-#include <Tabby/Debug/Tracy/TracyOpenGL.hpp>
+#if !defined(TB_PLATFORM_ANDROID)
+#include <TracyOpenGL.hpp>
+#endif
 
 namespace Tabby {
 
@@ -31,7 +33,10 @@ void OpenGL33Context::Init()
     TB_CORE_ASSERT(status, "Failed to initialize Glad!");
 
     GL33::Init(context);
+
+#if !defined(TB_PLATFORM_ANDROID)
     TracyGpuContext;
+#endif
 
     TB_CORE_INFO("OpenGL Info:");
     TB_CORE_INFO("  Vendor: {0}", GL33::GL()->GetString(GL_VENDOR));
@@ -46,7 +51,10 @@ void OpenGL33Context::SwapBuffers()
     TB_PROFILE_SCOPE();
 
     SDL_GL_SwapWindow(m_WindowHandle);
+
+#if !defined(TB_PLATFORM_ANDROID)
     TracyGpuCollect;
+#endif
 }
 
 }

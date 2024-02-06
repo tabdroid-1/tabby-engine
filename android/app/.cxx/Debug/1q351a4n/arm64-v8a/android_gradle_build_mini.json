@@ -1,0 +1,279 @@
+{
+  "buildFiles": [
+    "/Users/tabby/Projects/C++/TabbyEngine/App/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/box2d/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/box2d/src/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/glm/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/glm/glm/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/imgui/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/imguizmo/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/spdlog/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/yaml-cpp/CMakeLists.txt",
+    "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/yaml-cpp/util/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "ContinuousSubmit::@e444ab5322db199ada52": {
+      "artifactName": "ContinuousSubmit",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalMemCheck::@e444ab5322db199ada52": {
+      "artifactName": "ExperimentalMemCheck",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyBuild::@e444ab5322db199ada52": {
+      "artifactName": "NightlyBuild",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousStart::@e444ab5322db199ada52": {
+      "artifactName": "ContinuousStart",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "copy_assets_sandbox::@6890427a1f51a3e7e1df": {
+      "artifactName": "copy_assets_sandbox",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "yaml-cpp::@e444ab5322db199ada52": {
+      "artifactName": "yaml-cpp",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/yaml-cpp/libyaml-cppd.a",
+      "runtimeFiles": []
+    },
+    "tabby::@fafd1cf96e02ca7e6079": {
+      "artifactName": "tabby",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a",
+      "runtimeFiles": []
+    },
+    "SDL2::@fada92b654251d1dad5e": {
+      "artifactName": "SDL2",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/arm64-v8a/libSDL2.so",
+      "runtimeFiles": []
+    },
+    "NightlySubmit::@e444ab5322db199ada52": {
+      "artifactName": "NightlySubmit",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "SDL2-static::@fada92b654251d1dad5e": {
+      "artifactName": "SDL2-static",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/SDL2/libSDL2.a",
+      "runtimeFiles": []
+    },
+    "NightlyCoverage::@e444ab5322db199ada52": {
+      "artifactName": "NightlyCoverage",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyStart::@e444ab5322db199ada52": {
+      "artifactName": "NightlyStart",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalSubmit::@e444ab5322db199ada52": {
+      "artifactName": "ExperimentalSubmit",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalCoverage::@e444ab5322db199ada52": {
+      "artifactName": "ExperimentalCoverage",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyUpdate::@e444ab5322db199ada52": {
+      "artifactName": "NightlyUpdate",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyConfigure::@e444ab5322db199ada52": {
+      "artifactName": "NightlyConfigure",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "Nightly::@e444ab5322db199ada52": {
+      "artifactName": "Nightly",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalConfigure::@e444ab5322db199ada52": {
+      "artifactName": "ExperimentalConfigure",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "SDL2_test::@fada92b654251d1dad5e": {
+      "artifactName": "SDL2_test",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/SDL2/libSDL2_test.a",
+      "runtimeFiles": []
+    },
+    "ContinuousCoverage::@e444ab5322db199ada52": {
+      "artifactName": "ContinuousCoverage",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "imgui::@797206b9334764e2dae6": {
+      "artifactName": "imgui",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/imgui/libimgui.a",
+      "runtimeFiles": []
+    },
+    "ContinuousConfigure::@e444ab5322db199ada52": {
+      "artifactName": "ContinuousConfigure",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "uninstall::@fada92b654251d1dad5e": {
+      "artifactName": "uninstall",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "yaml-cpp-read::@e704e877ef83c09ce365": {
+      "artifactName": "yaml-cpp-read",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/read",
+      "runtimeFiles": []
+    },
+    "SDL2main::@fada92b654251d1dad5e": {
+      "artifactName": "SDL2main",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/SDL2/libSDL2main.a",
+      "runtimeFiles": []
+    },
+    "Experimental::@e444ab5322db199ada52": {
+      "artifactName": "Experimental",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "sdl_headers_copy::@fada92b654251d1dad5e": {
+      "artifactName": "sdl_headers_copy",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalTest::@e444ab5322db199ada52": {
+      "artifactName": "ExperimentalTest",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "spdlog::@219fb2c33b38169500c9": {
+      "artifactName": "spdlog",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/spdlog/libspdlogd.a",
+      "runtimeFiles": []
+    },
+    "box2d::@2234bdecc5bd050acdef": {
+      "artifactName": "box2d",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/box2d/bin/libbox2d.a",
+      "runtimeFiles": []
+    },
+    "glm::@f0c6c4eadba7866c0de4": {
+      "artifactName": "glm",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/glm/glm/libglm.a",
+      "runtimeFiles": []
+    },
+    "imguizmo::@af5a7d18e61dfb365a98": {
+      "artifactName": "imguizmo",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/imguizmo/libimguizmo.a",
+      "runtimeFiles": []
+    },
+    "yaml-cpp-sandbox::@e704e877ef83c09ce365": {
+      "artifactName": "yaml-cpp-sandbox",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/sandbox",
+      "runtimeFiles": []
+    },
+    "NightlyTest::@e444ab5322db199ada52": {
+      "artifactName": "NightlyTest",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousBuild::@e444ab5322db199ada52": {
+      "artifactName": "ContinuousBuild",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousMemCheck::@e444ab5322db199ada52": {
+      "artifactName": "ContinuousMemCheck",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalStart::@e444ab5322db199ada52": {
+      "artifactName": "ExperimentalStart",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "App::@6890427a1f51a3e7e1df": {
+      "artifactName": "App",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/arm64-v8a/libApp.so",
+      "runtimeFiles": [
+        "/Users/tabby/Projects/C++/TabbyEngine/android/app/build/intermediates/cxx/Debug/1q351a4n/obj/arm64-v8a/libSDL2.so"
+      ]
+    },
+    "NightlyMemoryCheck::@e444ab5322db199ada52": {
+      "artifactName": "NightlyMemoryCheck",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousTest::@e444ab5322db199ada52": {
+      "artifactName": "ContinuousTest",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ContinuousUpdate::@e444ab5322db199ada52": {
+      "artifactName": "ContinuousUpdate",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalBuild::@e444ab5322db199ada52": {
+      "artifactName": "ExperimentalBuild",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "ExperimentalUpdate::@e444ab5322db199ada52": {
+      "artifactName": "ExperimentalUpdate",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "NightlyMemCheck::@e444ab5322db199ada52": {
+      "artifactName": "NightlyMemCheck",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    },
+    "yaml-cpp-parse::@e704e877ef83c09ce365": {
+      "artifactName": "yaml-cpp-parse",
+      "abi": "arm64-v8a",
+      "output": "/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/parse",
+      "runtimeFiles": []
+    },
+    "Continuous::@e444ab5322db199ada52": {
+      "artifactName": "Continuous",
+      "abi": "arm64-v8a",
+      "runtimeFiles": []
+    }
+  }
+}

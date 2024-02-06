@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "Tabby/vendor/SDL2",
+		"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2"
+	}
+}

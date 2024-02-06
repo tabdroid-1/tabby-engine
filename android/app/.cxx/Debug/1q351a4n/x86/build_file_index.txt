@@ -1,0 +1,12 @@
+/Users/tabby/Projects/C++/TabbyEngine/App/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/box2d/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/box2d/src/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/glm/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/glm/glm/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/imgui/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/imguizmo/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/spdlog/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/yaml-cpp/CMakeLists.txt
+/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/yaml-cpp/util/CMakeLists.txt

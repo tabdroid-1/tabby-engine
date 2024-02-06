@@ -11,7 +11,6 @@ public:
     {
         // PushLayer(new Sandbox2D());
         PushLayer(new Base());
-        // PushLayer(new GameOfLifeBase());
     }
 
     ~Sandbox()

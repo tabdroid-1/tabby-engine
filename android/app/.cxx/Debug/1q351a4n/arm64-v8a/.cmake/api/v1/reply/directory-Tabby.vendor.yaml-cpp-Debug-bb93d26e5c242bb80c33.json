@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "Tabby/vendor/yaml-cpp",
+		"source" : "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/yaml-cpp"
+	}
+}

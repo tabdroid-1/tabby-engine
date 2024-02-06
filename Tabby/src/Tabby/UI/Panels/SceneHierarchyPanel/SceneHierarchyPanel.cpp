@@ -75,7 +75,11 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 
     ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
     flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-    bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
+
+    // bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
+
+    bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, "%s", tag.c_str());
+
     if (ImGui::IsItemClicked()) {
         m_SelectionContext = entity;
     }
@@ -90,7 +94,8 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 
     if (opened) {
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-        bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
+        // bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
+        bool opened = ImGui::TreeNodeEx((void*)9817239, flags, "%s", tag.c_str());
         if (opened)
             ImGui::TreePop();
         ImGui::TreePop();
@@ -112,7 +117,8 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 
     ImGui::Columns(2);
     ImGui::SetColumnWidth(0, columnWidth);
-    ImGui::Text(label.c_str());
+    ImGui::Text("%s", label.c_str());
+    // ImGui::Text(label.c_str());
     ImGui::NextColumn();
 
     ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
@@ -180,7 +186,8 @@ static void DrawComponent(const std::string& name, Entity entity, UIFunction uiF
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2 { 4, 4 });
         float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
         ImGui::Separator();
-        bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
+        bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, "%s", name.c_str());
+        // bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
         ImGui::PopStyleVar();
         ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
         if (ImGui::Button("+", ImVec2 { lineHeight, lineHeight })) {

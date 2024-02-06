@@ -1,0 +1,3 @@
+/Users/tabby/AndroidStudioProjects/MyApplication/app/.cxx/Debug/68212j5b/x86/CMakeFiles/myapplication.dir
+/Users/tabby/AndroidStudioProjects/MyApplication/app/.cxx/Debug/68212j5b/x86/CMakeFiles/edit_cache.dir
+/Users/tabby/AndroidStudioProjects/MyApplication/app/.cxx/Debug/68212j5b/x86/CMakeFiles/rebuild_cache.dir

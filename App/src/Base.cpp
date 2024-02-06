@@ -4,18 +4,16 @@
 #include "Tabby/Core/KeyCodes.h"
 #include "Tabby/Core/Log.h"
 #include "Tabby/Core/Window.h"
-#include "Tabby/Debug/Tracy/common/TracyQueue.hpp"
 #include "Tabby/Math/Math.h"
 #include "Tabby/Scene/SceneStateMachine.h"
 #include <Scenes/TestScene.h>
 
-#include <Tabby/Debug/Tracy/Tracy.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
 #include <imguizmo/ImGuizmo.h>
 
-#if !defined TB_PLATFORM_WEB
+#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
 static Tabby::Ref<Tabby::Font> s_Font;
 #endif
 float fps = 0;
@@ -23,7 +21,7 @@ float fps = 0;
 Base::Base()
     : Layer("Base")
 {
-#if !defined TB_PLATFORM_WEB
+#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
     s_Font = Tabby::Font::GetDefault();
 #endif
 }

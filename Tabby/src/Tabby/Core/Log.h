@@ -12,7 +12,6 @@
 #pragma warning(pop)
 
 namespace Tabby {
-
 class Log {
 public:
     static void Init();
@@ -24,8 +23,30 @@ private:
     static Ref<spdlog::logger> s_CoreLogger;
     static Ref<spdlog::logger> s_ClientLogger;
 };
-
 }
+
+// namespace Tabby {
+//
+// template <typename T>
+// class Log {
+// public:
+//     static void Init();
+//
+//     static Ref<T>& GetCoreLogger()
+//     {
+//         return s_CoreLogger;
+//     }
+//     static Ref<T>& GetClientLogger()
+//     {
+//         return s_ClientLogger;
+//     }
+//
+// private:
+//     static Ref<T> s_CoreLogger;
+//     static Ref<T> s_ClientLogger;
+// };
+//
+// }
 
 template <typename OStream, glm::length_t L, typename T, glm::qualifier Q>
 inline OStream& operator<<(OStream& os, const glm::vec<L, T, Q>& vector)
@@ -45,6 +66,21 @@ inline OStream& operator<<(OStream& os, glm::qua<T, Q> quaternion)
     return os << glm::to_string(quaternion);
 }
 
+#if defined(TB_PLATFORM_ANDROID)
+// Core log macros
+#define TB_CORE_TRACE(...)
+#define TB_CORE_INFO(...)
+#define TB_CORE_WARN(...)
+#define TB_CORE_ERROR(...)
+#define TB_CORE_CRITICAL(...)
+
+// Client log macros
+#define TB_TRACE(...)
+#define TB_INFO(...)
+#define TB_WARN(...)
+#define TB_ERROR(...)
+#define TB_CRITICAL(...)
+#else
 // Core log macros
 #define TB_CORE_TRACE(...) ::Tabby::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define TB_CORE_INFO(...) ::Tabby::Log::GetCoreLogger()->info(__VA_ARGS__)
@@ -58,3 +94,4 @@ inline OStream& operator<<(OStream& os, glm::qua<T, Q> quaternion)
 #define TB_WARN(...) ::Tabby::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define TB_ERROR(...) ::Tabby::Log::GetClientLogger()->error(__VA_ARGS__)
 #define TB_CRITICAL(...) ::Tabby::Log::GetClientLogger()->critical(__VA_ARGS__)
+#endif

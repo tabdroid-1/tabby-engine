@@ -32,7 +32,6 @@
  * it has __linux__ defined */
 #elif defined(__ANDROID__)
 #define TB_PLATFORM_ANDROID
-#error "Android is not supported!"
 #elif defined(__linux__)
 #define TB_PLATFORM_LINUX
 #elif defined(__EMSCRIPTEN__)
