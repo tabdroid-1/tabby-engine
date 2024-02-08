@@ -121,6 +121,7 @@ if (ANDROID)
         glm
         yaml-cpp
         imguizmo
+        GLESv2
         GLESv3
         EGL
         )
