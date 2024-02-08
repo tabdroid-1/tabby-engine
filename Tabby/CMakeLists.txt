@@ -121,6 +121,8 @@ if (ANDROID)
         glm
         yaml-cpp
         imguizmo
+        GLESv3
+        EGL
         )
 elseif (NOT EMSCRIPTEN AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE 

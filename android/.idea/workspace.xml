@@ -11,68 +11,47 @@
   <component name="ChangeListManager">
     <list default="true" id="245572d3-333c-4dc9-96e9-e609f724994e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/EntryPoint.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/EntryPoint.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Log.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/GL33.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/GL33.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Buffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Buffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Context.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Context.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Framebuffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Framebuffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33RendererAPI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33RendererAPI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Shader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Texture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33Texture.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33UniformBuffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33UniformBuffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33VertexArray.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gl33/OpenGL33VertexArray.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gles3/OpenGLES3Context.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gles3/OpenGLES3Context.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Platforms/Android/AndroidWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Platforms/Android/AndroidWindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Window.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Window.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/RendererAPI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Renderer/RendererAPI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/vendor/SDL2/src/video/SDL_egl.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/vendor/SDL2/src/video/SDL_egl.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-300bf205f07d022aee3e.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/index-2024-02-06T17-04-59-0923.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-SDL2-Debug-bf55fe6def49b7d25752.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-SDL2-static-Debug-a0804e744a7ae687cf1f.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-SDL2_test-Debug-6db445d4d63eb7865a87.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-SDL2main-Debug-c39b1acd2764183f478b.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-box2d-Debug-dd3783f980b2d1b5f308.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-glm-Debug-45f24a7b6917d013f5c2.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-imgui-Debug-45a2f023ea08a61d2d70.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-imguizmo-Debug-705b9f5b10c263b67211.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-spdlog-Debug-4f46c79996e1c5fbfaf6.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-tabby-Debug-2872b08643f60206fa45.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-yaml-cpp-Debug-c318b8eba85c022fb065.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-yaml-cpp-parse-Debug-3a542890e32c87ea2878.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-yaml-cpp-read-Debug-9e9b618e7669378e1b0a.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-yaml-cpp-sandbox-Debug-6bad849dc89e4e4cb01a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-34250b0849a43c893157.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/index-2024-02-06T17-34-49-0919.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-App-Debug-b5d530c8ff81777128ac.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-tabby-Debug-1452fb43eecadd98f238.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/App.dir/src/SandboxApp.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/App.dir/src/SandboxApp.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Core/Log.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Core/Log.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/GL33.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/GL33.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Buffer.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Buffer.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Context.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Context.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Framebuffer.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Framebuffer.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33RendererAPI.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33RendererAPI.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Shader.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Shader.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Texture.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33Texture.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33UniformBuffer.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33UniformBuffer.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33VertexArray.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gl33/OpenGL33VertexArray.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gles3/OpenGLES3Context.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gles3/OpenGLES3Context.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Platforms/Android/AndroidWindow.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Core/Window.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Core/Window.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Renderer/RendererAPI.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Renderer/RendererAPI.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/SDL2/CMakeFiles/SDL2.dir/src/video/SDL_egl.c.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/SDL2/CMakeFiles/SDL2.dir/src/video/SDL_egl.c.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/build.ninja" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/codemodel-v2-7394f81a5a80b1b830e2.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/index-2024-02-06T17-00-56-0660.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-App-Debug-713178d0c83583871740.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-SDL2-Debug-c0fa2bc5366f6f4d5178.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-SDL2-static-Debug-cdce614ea30880c8c0cb.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-SDL2_test-Debug-6b4f973e42e9c6c50af1.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-SDL2main-Debug-b3825635ece9f42022f9.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-box2d-Debug-598fb93bfecc59620d94.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-glm-Debug-401fc4a0f9a124e09f68.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-imgui-Debug-6f8a9ef66e5c6dee1435.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-imguizmo-Debug-3e18719c88ef8124b2e3.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-spdlog-Debug-8b01e9e73da43b7b5658.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-tabby-Debug-c0a20fb911ad7589d9f3.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-yaml-cpp-Debug-c40c1a17c79358499487.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-yaml-cpp-parse-Debug-c072b7cc1ebb328848e5.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-yaml-cpp-read-Debug-2686ab92839962569b02.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.cmake/api/v1/reply/target-yaml-cpp-sandbox-Debug-fd12803f3669a13ffc5e.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/rules.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/android_gradle_build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/android_gradle_build_mini.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/build.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/compile_commands.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/compile_commands.json.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/compile_commands.json.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/tools/debug/x86/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/tools/debug/x86/compile_commands.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/tools/debug/arm64-v8a/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/tools/debug/arm64-v8a/compile_commands.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,6 +77,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.advertisement.text.has.clang-format": "true",
