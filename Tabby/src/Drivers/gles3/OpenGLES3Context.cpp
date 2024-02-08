@@ -36,7 +36,7 @@ void OpenGLES3Context::Init()
     GladGLES2Context* context = (GladGLES2Context*)calloc(1, sizeof(GladGLES2Context));
     TB_CORE_ASSERT(context, "Failed to initialize GLES3 context!");
 
-#if defined(TB_PLATFORM_WEB)
+#if defined(TB_PLATFORM_WEB) || defined(TB_PLATFORM_WEB)
     int status = gladLoadGLES2Context(context, (GLADloadfunc)SDL_GL_GetProcAddress);
 #elif defined(TB_PLATFORM_ANDROID)
     // SDL_SysWMinfo info;
@@ -101,12 +101,12 @@ void OpenGLES3Context::Init()
     // // if (!eglChooseConfig(eglDisplay, eglConfigAttribList, &eglConfig, 1, &eglNumConfigs)) {
     // //     // return EGL_FALSE;
     // // }
-    //
-    // eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, eglHWnd, eglSurfaceAttribList);
-    // TB_CORE_ASSERT(eglSurface != EGL_NO_SURFACE, "EGL has no surface");
-    // // if (eglSurface == EGL_NO_SURFACE) {
-    // //     // return EGL_FALSE;
-    // // }
+    // //
+    // // eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, eglHWnd, eglSurfaceAttribList);
+    // // TB_CORE_ASSERT(eglSurface != EGL_NO_SURFACE, "EGL has no surface");
+    // // // if (eglSurface == EGL_NO_SURFACE) {
+    // // //     // return EGL_FALSE;
+    // // // }
     //
     // eglContext = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, eglContextAttribs);
     // TB_CORE_ASSERT(eglSurface != EGL_NO_SURFACE, "EGL has no context");
@@ -119,7 +119,16 @@ void OpenGLES3Context::Init()
     // //     // return EGL_FALSE;
     // // }
     //
+    // // SDL_SysWMinfo info;
+    // // SDL_VERSION(&info.version);
+    // // SDL_bool get_win_info = SDL_GetWindowWMInfo(m_WindowHandle, &info);
+    // //
+    // // // EGLNativeWindowType eglHWnd = info.info.android.window;
+    // // EGLint displayFormat = 0;
+    // // eglGetConfigAttrib(platform.device, platform.config, EGL_NATIVE_VISUAL_ID, &displayFormat);
+
     int status = gladLoadGLES2Context(context, (GLADloadfunc)SDL_GL_GetProcAddress);
+    // int status = gladLoadGLES2Context(context, (GLADloadfunc)eglGetProcAddress);
 #endif
     TB_CORE_ASSERT(status, "Failed to initialize Glad!");
 
