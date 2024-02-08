@@ -170,22 +170,6 @@
 	"dependencies" : 
 	[
 		{
-			"backtrace" : 3,
-			"id" : "copy_assets_sandbox::@6890427a1f51a3e7e1df"
-		},
-		{
-			"backtrace" : 2,
-			"id" : "tabby::@fafd1cf96e02ca7e6079"
-		},
-		{
-			"backtrace" : 2,
-			"id" : "SDL2main::@fada92b654251d1dad5e"
-		},
-		{
-			"backtrace" : 2,
-			"id" : "SDL2::@fada92b654251d1dad5e"
-		},
-		{
 			"backtrace" : 2,
 			"id" : "glm::@f0c6c4eadba7866c0de4"
 		},
@@ -208,6 +192,22 @@
 		{
 			"backtrace" : 2,
 			"id" : "imguizmo::@af5a7d18e61dfb365a98"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "copy_assets_sandbox::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "tabby::@fafd1cf96e02ca7e6079"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "SDL2main::@fada92b654251d1dad5e"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "SDL2::@fada92b654251d1dad5e"
 		}
 	],
 	"id" : "App::@6890427a1f51a3e7e1df",
@@ -226,10 +226,6 @@
 			},
 			{
 				"fragment" : "Tabby/vendor/imgui/libimgui.a",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "-lGLESv3",
 				"role" : "libraries"
 			},
 			{
@@ -266,6 +262,14 @@
 			},
 			{
 				"fragment" : "Tabby/vendor/imguizmo/libimguizmo.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lGLESv3",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lEGL",
 				"role" : "libraries"
 			},
 			{

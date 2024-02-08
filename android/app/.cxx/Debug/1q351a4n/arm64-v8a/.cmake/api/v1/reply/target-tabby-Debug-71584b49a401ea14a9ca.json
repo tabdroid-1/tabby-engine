@@ -93,7 +93,7 @@
 			{
 				"command" : 4,
 				"file" : 0,
-				"line" : 175,
+				"line" : 177,
 				"parent" : 0
 			}
 		]
@@ -405,14 +405,6 @@
 	[
 		{
 			"backtrace" : 2,
-			"id" : "SDL2main::@fada92b654251d1dad5e"
-		},
-		{
-			"backtrace" : 2,
-			"id" : "SDL2::@fada92b654251d1dad5e"
-		},
-		{
-			"backtrace" : 2,
 			"id" : "glm::@f0c6c4eadba7866c0de4"
 		},
 		{
@@ -434,6 +426,14 @@
 		{
 			"backtrace" : 2,
 			"id" : "imguizmo::@af5a7d18e61dfb365a98"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "SDL2main::@fada92b654251d1dad5e"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "SDL2::@fada92b654251d1dad5e"
 		}
 	],
 	"id" : "tabby::@fafd1cf96e02ca7e6079",

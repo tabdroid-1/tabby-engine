@@ -2,6 +2,7 @@
 #include "Drivers/gl33/GL33.h"
 #include "tbpch.h"
 
+#if !defined(TB_PLATFORM_WEB) || !defined(TB_PLATFORM_ANDROID)
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl33.h>
 
@@ -58,3 +59,4 @@ void OpenGL33Context::SwapBuffers()
 }
 
 }
+#endif

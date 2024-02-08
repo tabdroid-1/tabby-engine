@@ -4,6 +4,7 @@
 #include <Tabby/Core/Log.h>
 #include <stb_image.h>
 
+#if !defined(TB_PLATFORM_WEB) || !defined(TB_PLATFORM_ANDROID)
 namespace Tabby {
 
 namespace Utils {
@@ -147,3 +148,4 @@ void OpenGL33Texture2D::Bind(uint32_t slot) const
     GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
 }
 }
+#endif
