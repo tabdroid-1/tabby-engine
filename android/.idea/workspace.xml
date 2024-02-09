@@ -10,21 +10,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="245572d3-333c-4dc9-96e9-e609f724994e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gles3/OpenGLES3Context.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gles3/OpenGLES3Context.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Platforms/Android/AndroidWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Platforms/Android/AndroidWindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-3997db628cd1e6a64330.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/index-2024-02-08T10-45-39-0544.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-App-Debug-aa64a61deb6378e0bd07.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.cmake/api/v1/reply/target-tabby-Debug-71584b49a401ea14a9ca.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gles3/OpenGLES3Context.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gles3/OpenGLES3Context.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Platforms/Android/AndroidWindow.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Platforms/Android/AndroidWindow.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/build.ninja" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +33,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/tabby/.android/avd/Pixel_3a_API_34_extension_level_7_arm64-v8a.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[e142e236]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
