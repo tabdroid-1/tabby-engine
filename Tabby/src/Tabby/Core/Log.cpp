@@ -25,24 +25,35 @@ void Log::Init()
     logSinks[1]->set_pattern("[%T] [%l] %n: %v");
 
 #if defined(TB_PLATFORM_ANDROID)
-    s_CoreLogger = std::make_shared<spdlog::logger>("Tabby", begin(logSinks), end(logSinks));
-    s_CoreLogger->sinks().emplace_back(std::make_shared<spdlog::sinks::android_sink_mt>("Tabby"));
-#else
-    s_CoreLogger = std::make_shared<spdlog::logger>("Tabby", begin(logSinks), end(logSinks));
-#endif
+    s_CoreLogger = spdlog::android_logger_mt("Tabby", "Spdlog-Android");
+    // s_CoreLogger->sinks().emplace_back(std::make_shared<spdlog::sinks::android_sink_mt>("Tabby"));
+
     spdlog::register_logger(s_CoreLogger);
     s_CoreLogger->set_level(spdlog::level::trace);
     s_CoreLogger->flush_on(spdlog::level::trace);
+    s_CoreLogger->critical("Use \"adb shell logcat\" to view this message.");
+#else
+    s_CoreLogger = std::make_shared<spdlog::logger>("Tabby", begin(logSinks), end(logSinks));
+
+    spdlog::register_logger(s_CoreLogger);
+    s_CoreLogger->set_level(spdlog::level::trace);
+    s_CoreLogger->flush_on(spdlog::level::trace);
+#endif
 
 #if defined(TB_PLATFORM_ANDROID)
-    s_ClientLogger = std::make_shared<spdlog::logger>("APP", begin(logSinks), end(logSinks));
-    s_ClientLogger->sinks().emplace_back(std::make_shared<spdlog::sinks::android_sink_mt>("Tabby"));
-#else
-    s_ClientLogger = std::make_shared<spdlog::logger>("APP", begin(logSinks), end(logSinks));
-#endif
+    s_ClientLogger = spdlog::android_logger_mt("Client", "Spdlog-Android");
+    // s_ClientLogger->sinks().emplace_back(std::make_shared<spdlog::sinks::android_sink_mt>("Tabby"));
+
     spdlog::register_logger(s_ClientLogger);
     s_ClientLogger->set_level(spdlog::level::trace);
     s_ClientLogger->flush_on(spdlog::level::trace);
+#else
+    s_ClientLogger = std::make_shared<spdlog::logger>("Client", begin(logSinks), end(logSinks));
+
+    spdlog::register_logger(s_ClientLogger);
+    s_ClientLogger->set_level(spdlog::level::trace);
+    s_ClientLogger->flush_on(spdlog::level::trace);
+#endif
 }
 
 }
