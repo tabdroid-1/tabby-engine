@@ -1,4 +1,5 @@
 build/
+android/app/.cxx
 .cache/
 Editor/
 .vscode/
