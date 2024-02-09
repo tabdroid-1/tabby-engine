@@ -73,12 +73,19 @@ void AndroidWindow::Init(const WindowProps& props)
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 #endif
         }
+        // m_Window = SDL_CreateWindow(
+        //     m_Data.Title.c_str(),
+        //     SDL_WINDOWPOS_CENTERED,
+        //     SDL_WINDOWPOS_CENTERED,
+        //     props.Width, props.Height,
+        //     SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
         m_Window = SDL_CreateWindow(
             m_Data.Title.c_str(),
             SDL_WINDOWPOS_CENTERED,
             SDL_WINDOWPOS_CENTERED,
             props.Width, props.Height,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+            SDL_VIDEO_OPENGL_EGL | SDL_WINDOW_SHOWN);
+
         ++s_SDLWindowCount;
     }
 

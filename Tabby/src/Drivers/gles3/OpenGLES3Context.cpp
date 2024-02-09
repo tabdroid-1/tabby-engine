@@ -127,8 +127,8 @@ void OpenGLES3Context::Init()
     // // EGLint displayFormat = 0;
     // // eglGetConfigAttrib(platform.device, platform.config, EGL_NATIVE_VISUAL_ID, &displayFormat);
 
-    int status = gladLoadGLES2Context(context, (GLADloadfunc)SDL_GL_GetProcAddress);
-    // int status = gladLoadGLES2Context(context, (GLADloadfunc)eglGetProcAddress);
+    // int status = gladLoadGLES2Context(context, (GLADloadfunc)SDL_GL_GetProcAddress);
+    int status = gladLoadGLES2Context(context, (GLADloadfunc)eglGetProcAddress);
 #endif
     TB_CORE_ASSERT(status, "Failed to initialize Glad!");
 
