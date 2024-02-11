@@ -348,6 +348,84 @@ CTEST_SUBMIT_RETRY_DELAY:STRING=5
 //Maximum time allowed before CTest will kill the test.
 DART_TESTING_TIMEOUT:STRING=1500
 
+//Directory under which to collect all populated content
+FETCHCONTENT_BASE_DIR:PATH=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/_deps
+
+//Disables all attempts to download or update content and assumes
+// source dirs already exist
+FETCHCONTENT_FULLY_DISCONNECTED:BOOL=OFF
+
+//Enables QUIET option for all content population
+FETCHCONTENT_QUIET:BOOL=ON
+
+//When not empty, overrides where to find pre-populated content
+// for fmt
+FETCHCONTENT_SOURCE_DIR_FMT:PATH=
+
+//Enables UPDATE_DISCONNECTED behavior for all content population
+FETCHCONTENT_UPDATES_DISCONNECTED:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of fmt
+FETCHCONTENT_UPDATES_DISCONNECTED_FMT:BOOL=OFF
+
+//Value Computed by CMake
+FMT_BINARY_DIR:STATIC=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/_deps/fmt-build
+
+//Installation directory for cmake files, a relative path that
+// will be joined with /usr/local or an absolute path.
+FMT_CMAKE_DIR:STRING=lib/cmake/fmt
+
+//Generate the cuda-test target.
+FMT_CUDA_TEST:BOOL=OFF
+
+//Debug library postfix.
+FMT_DEBUG_POSTFIX:STRING=d
+
+//Generate the doc target.
+FMT_DOC:BOOL=OFF
+
+//Generate the fuzz target.
+FMT_FUZZ:BOOL=OFF
+
+//Installation directory for include files, a relative path that
+// will be joined with /usr/local or an absolute path.
+FMT_INC_DIR:STRING=include
+
+//Generate the install target.
+FMT_INSTALL:BOOL=ON
+
+//Value Computed by CMake
+FMT_IS_TOP_LEVEL:STATIC=OFF
+
+//Installation directory for libraries, a relative path that will
+// be joined to /usr/local or an absolute path.
+FMT_LIB_DIR:STRING=lib
+
+//Build a module instead of a traditional library.
+FMT_MODULE:BOOL=OFF
+
+//Include core requiring OS (Windows/Posix) 
+FMT_OS:BOOL=OFF
+
+//Enable extra warnings and expensive tests.
+FMT_PEDANTIC:BOOL=OFF
+
+//Installation directory for pkgconfig (.pc) files, a relative
+// path that will be joined with /usr/local or an absolute path.
+FMT_PKGCONFIG_DIR:STRING=lib/pkgconfig
+
+//Value Computed by CMake
+FMT_SOURCE_DIR:STATIC=/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/_deps/fmt-src
+
+//Expose headers with marking them as system.
+FMT_SYSTEM_HEADERS:BOOL=OFF
+
+//Generate the test target.
+FMT_TEST:BOOL=OFF
+
+//Halt the compilation with an error on compiler warnings.
+FMT_WERROR:BOOL=OFF
+
 //Git command line client
 GIT_EXECUTABLE:FILEPATH=/usr/bin/git
 
@@ -721,8 +799,14 @@ SPDLOG_PREVENT_CHILD_FD:BOOL=OFF
 //Enable address sanitizer in tests
 SPDLOG_SANITIZE_ADDRESS:BOOL=OFF
 
+//Include as system headers (skip for clang-tidy).
+SPDLOG_SYSTEM_INCLUDES:BOOL=OFF
+
 //run clang-tidy
 SPDLOG_TIDY:BOOL=OFF
+
+//Use std::format instead of fmt library.
+SPDLOG_USE_STD_FORMAT:BOOL=OFF
 
 //non supported option
 SPDLOG_WCHAR_FILENAMES:BOOL=OFF
@@ -1041,6 +1125,8 @@ FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[/usr/bin/git][v2.39.3 (Apple Git-145)
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: GIT_EXECUTABLE
 GIT_EXECUTABLE-ADVANCED:INTERNAL=1
+//Test HAS_NULLPTR_WARNING
+HAS_NULLPTR_WARNING:INTERNAL=1
 //Test HAVE_3DNOW
 HAVE_3DNOW:INTERNAL=1
 //Have symbol abs

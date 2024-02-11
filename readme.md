@@ -44,6 +44,7 @@ Supported Graphics Apis
 - Windows (probably. not tested)
 - MacOS
 - Web
+- Android
 
 Compiling
 ---------

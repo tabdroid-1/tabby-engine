@@ -1,4 +1,7 @@
 # ninja log v5
-1	7	0	/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/cmake.verify_globs	3374bf5ad78275c6
-7	300	1707494201717473765	build.ninja	759805cf55fe0e4c
-0	11	0	clean	b142f40c6ff740f7
+0	10	0	clean	b142f40c6ff740f7
+6	455	1707614301229336979	build.ninja	759805cf55fe0e4c
+0	7	0	/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/cmake.verify_globs	3374bf5ad78275c6
+7	215	1707614301229336979	build.ninja	759805cf55fe0e4c
+0	6	0	/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/cmake.verify_globs	3374bf5ad78275c6
+0	12	0	clean	b142f40c6ff740f7

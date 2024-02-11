@@ -1,9 +1,9 @@
 Determining if the __GLIBC__ exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2f019 && [1/2] Building C object CMakeFiles/cmTC_2f019.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_2f019.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_2f019.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_2f019.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_2f019.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_d75bb && [1/2] Building C object CMakeFiles/cmTC_d75bb.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_d75bb.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_d75bb.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_d75bb.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_d75bb.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: use of undeclared identifier '__GLIBC__'
   return ((int*)(&__GLIBC__))[argc];
                   ^
@@ -28,9 +28,9 @@ int main(int argc, char** argv)
 Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_X86 failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_c918c && [1/2] Building C object CMakeFiles/cmTC_c918c.dir/src.c.o
-FAILED: CMakeFiles/cmTC_c918c.dir/src.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCHECK_CPU_ARCHITECTURE_X86  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_c918c.dir/src.c.o -MF CMakeFiles/cmTC_c918c.dir/src.c.o.d -o CMakeFiles/cmTC_c918c.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_eaf7c && [1/2] Building C object CMakeFiles/cmTC_eaf7c.dir/src.c.o
+FAILED: CMakeFiles/cmTC_eaf7c.dir/src.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCHECK_CPU_ARCHITECTURE_X86  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_eaf7c.dir/src.c.o -MF CMakeFiles/cmTC_eaf7c.dir/src.c.o.d -o CMakeFiles/cmTC_eaf7c.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c:6:3: error: use of undeclared identifier 'choke'
   choke
   ^
@@ -51,9 +51,9 @@ int main(int argc, char *argv[]) {
 Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_X64 failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_98aa3 && [1/2] Building C object CMakeFiles/cmTC_98aa3.dir/src.c.o
-FAILED: CMakeFiles/cmTC_98aa3.dir/src.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCHECK_CPU_ARCHITECTURE_X64  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_98aa3.dir/src.c.o -MF CMakeFiles/cmTC_98aa3.dir/src.c.o.d -o CMakeFiles/cmTC_98aa3.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_3c1d4 && [1/2] Building C object CMakeFiles/cmTC_3c1d4.dir/src.c.o
+FAILED: CMakeFiles/cmTC_3c1d4.dir/src.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCHECK_CPU_ARCHITECTURE_X64  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_3c1d4.dir/src.c.o -MF CMakeFiles/cmTC_3c1d4.dir/src.c.o.d -o CMakeFiles/cmTC_3c1d4.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c:6:3: error: use of undeclared identifier 'choke'
   choke
   ^
@@ -74,9 +74,9 @@ int main(int argc, char *argv[]) {
 Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_ARM32 failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_427c1 && [1/2] Building C object CMakeFiles/cmTC_427c1.dir/src.c.o
-FAILED: CMakeFiles/cmTC_427c1.dir/src.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCHECK_CPU_ARCHITECTURE_ARM32  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_427c1.dir/src.c.o -MF CMakeFiles/cmTC_427c1.dir/src.c.o.d -o CMakeFiles/cmTC_427c1.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_4701f && [1/2] Building C object CMakeFiles/cmTC_4701f.dir/src.c.o
+FAILED: CMakeFiles/cmTC_4701f.dir/src.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCHECK_CPU_ARCHITECTURE_ARM32  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_4701f.dir/src.c.o -MF CMakeFiles/cmTC_4701f.dir/src.c.o.d -o CMakeFiles/cmTC_4701f.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c:6:3: error: use of undeclared identifier 'choke'
   choke
   ^
@@ -97,9 +97,9 @@ int main(int argc, char *argv[]) {
 Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_LOONGARCH64 failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_f9d03 && [1/2] Building C object CMakeFiles/cmTC_f9d03.dir/src.c.o
-FAILED: CMakeFiles/cmTC_f9d03.dir/src.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCHECK_CPU_ARCHITECTURE_LOONGARCH64  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_f9d03.dir/src.c.o -MF CMakeFiles/cmTC_f9d03.dir/src.c.o.d -o CMakeFiles/cmTC_f9d03.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_68c40 && [1/2] Building C object CMakeFiles/cmTC_68c40.dir/src.c.o
+FAILED: CMakeFiles/cmTC_68c40.dir/src.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCHECK_CPU_ARCHITECTURE_LOONGARCH64  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_68c40.dir/src.c.o -MF CMakeFiles/cmTC_68c40.dir/src.c.o.d -o CMakeFiles/cmTC_68c40.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c:6:3: error: use of undeclared identifier 'choke'
   choke
   ^
@@ -120,9 +120,9 @@ int main(int argc, char *argv[]) {
 Determining if the include file immintrin.h exists failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_48f8a && [1/2] Building C object CMakeFiles/cmTC_48f8a.dir/CheckIncludeFile.c.o
-FAILED: CMakeFiles/cmTC_48f8a.dir/CheckIncludeFile.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_48f8a.dir/CheckIncludeFile.c.o -MF CMakeFiles/cmTC_48f8a.dir/CheckIncludeFile.c.o.d -o CMakeFiles/cmTC_48f8a.dir/CheckIncludeFile.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_e9633 && [1/2] Building C object CMakeFiles/cmTC_e9633.dir/CheckIncludeFile.c.o
+FAILED: CMakeFiles/cmTC_e9633.dir/CheckIncludeFile.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_e9633.dir/CheckIncludeFile.c.o -MF CMakeFiles/cmTC_e9633.dir/CheckIncludeFile.c.o.d -o CMakeFiles/cmTC_e9633.dir/CheckIncludeFile.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckIncludeFile.c
 In file included from /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:
 /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include/immintrin.h:14:2: error: "This header is only meant to be used on x86 and x64 architecture"
 #error "This header is only meant to be used on x86 and x64 architecture"
@@ -195,9 +195,9 @@ ninja: build stopped: subcommand failed.
 Performing C SOURCE FILE Test HAVE_ALTIVEC_H_HDR failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_fbdc8 && [1/2] Building C object CMakeFiles/cmTC_fbdc8.dir/src.c.o
-FAILED: CMakeFiles/cmTC_fbdc8.dir/src.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DHAVE_ALTIVEC_H_HDR  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos" -maltivec -fPIE -MD -MT CMakeFiles/cmTC_fbdc8.dir/src.c.o -MF CMakeFiles/cmTC_fbdc8.dir/src.c.o.d -o CMakeFiles/cmTC_fbdc8.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_29119 && [1/2] Building C object CMakeFiles/cmTC_29119.dir/src.c.o
+FAILED: CMakeFiles/cmTC_29119.dir/src.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DHAVE_ALTIVEC_H_HDR  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos" -maltivec -fPIE -MD -MT CMakeFiles/cmTC_29119.dir/src.c.o -MF CMakeFiles/cmTC_29119.dir/src.c.o.d -o CMakeFiles/cmTC_29119.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
 clang: warning: argument unused during compilation: '-maltivec' [-Wunused-command-line-argument]
 In file included from /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c:2:
 /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/lib64/clang/14.0.6/include/altivec.h:13:2: error: "AltiVec support not enabled"
@@ -275,9 +275,9 @@ Source file was:
 Performing C SOURCE FILE Test CPU_SUPPORTS_ALTIVEC failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_421f7 && [1/2] Building C object CMakeFiles/cmTC_421f7.dir/src.c.o
-FAILED: CMakeFiles/cmTC_421f7.dir/src.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCPU_SUPPORTS_ALTIVEC  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos" -maltivec -fPIE -MD -MT CMakeFiles/cmTC_421f7.dir/src.c.o -MF CMakeFiles/cmTC_421f7.dir/src.c.o.d -o CMakeFiles/cmTC_421f7.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_ab150 && [1/2] Building C object CMakeFiles/cmTC_ab150.dir/src.c.o
+FAILED: CMakeFiles/cmTC_ab150.dir/src.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCPU_SUPPORTS_ALTIVEC  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos" -maltivec -fPIE -MD -MT CMakeFiles/cmTC_ab150.dir/src.c.o -MF CMakeFiles/cmTC_ab150.dir/src.c.o.d -o CMakeFiles/cmTC_ab150.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
 clang: warning: argument unused during compilation: '-maltivec' [-Wunused-command-line-argument]
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c:2:11: error: unknown type name 'vector'
           vector unsigned int vzero() {
@@ -298,9 +298,9 @@ Source file was:
 Determining if the _strrev exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_afb58 && [1/2] Building C object CMakeFiles/cmTC_afb58.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_afb58.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_afb58.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_afb58.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_afb58.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_45c7a && [1/2] Building C object CMakeFiles/cmTC_45c7a.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_45c7a.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_45c7a.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_45c7a.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_45c7a.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_strrev'; did you mean 'strsep'?
   return ((int*)(&_strrev))[argc];
                   ^~~~~~~
@@ -335,9 +335,9 @@ int main(int argc, char** argv)
 Determining if the _strupr exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_66848 && [1/2] Building C object CMakeFiles/cmTC_66848.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_66848.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_66848.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_66848.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_66848.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_d5f5e && [1/2] Building C object CMakeFiles/cmTC_d5f5e.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_d5f5e.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_d5f5e.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_d5f5e.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_d5f5e.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_strupr'
   return ((int*)(&_strupr))[argc];
                   ^
@@ -368,9 +368,9 @@ int main(int argc, char** argv)
 Determining if the _strlwr exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a8d54 && [1/2] Building C object CMakeFiles/cmTC_a8d54.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_a8d54.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_a8d54.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_a8d54.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_a8d54.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a66f8 && [1/2] Building C object CMakeFiles/cmTC_a66f8.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_a66f8.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_a66f8.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_a66f8.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_a66f8.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_strlwr'; did you mean 'strstr'?
   return ((int*)(&_strlwr))[argc];
                   ^~~~~~~
@@ -405,20 +405,20 @@ int main(int argc, char** argv)
 Determining if the index exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2a644 && [1/2] Building C object CMakeFiles/cmTC_2a644.dir/CheckSymbolExists.c.o
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_e278a && [1/2] Building C object CMakeFiles/cmTC_e278a.dir/CheckSymbolExists.c.o
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: warning: implicitly declaring library function 'index' with type 'char *(const char *, int)' [-Wimplicit-function-declaration]
   return ((int*)(&index))[argc];
                   ^
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: note: include the header <strings.h> or explicitly provide a declaration for 'index'
 1 warning generated.
-[2/2] Linking C executable cmTC_2a644
-FAILED: cmTC_2a644 
-: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_2a644.dir/CheckSymbolExists.c.o -o cmTC_2a644  -latomic -lm && :
+[2/2] Linking C executable cmTC_e278a
+FAILED: cmTC_e278a 
+: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_e278a.dir/CheckSymbolExists.c.o -o cmTC_e278a  -latomic -lm && :
 ld: error: undefined symbol: index
 >>> referenced by CheckSymbolExists.c:0
->>>               CMakeFiles/cmTC_2a644.dir/CheckSymbolExists.c.o:(main)
+>>>               CMakeFiles/cmTC_e278a.dir/CheckSymbolExists.c.o:(main)
 >>> referenced by CheckSymbolExists.c:0
->>>               CMakeFiles/cmTC_2a644.dir/CheckSymbolExists.c.o:(main)
+>>>               CMakeFiles/cmTC_e278a.dir/CheckSymbolExists.c.o:(main)
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ninja: build stopped: subcommand failed.
 
@@ -446,20 +446,20 @@ int main(int argc, char** argv)
 Determining if the rindex exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_4defe && [1/2] Building C object CMakeFiles/cmTC_4defe.dir/CheckSymbolExists.c.o
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_06665 && [1/2] Building C object CMakeFiles/cmTC_06665.dir/CheckSymbolExists.c.o
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: warning: implicitly declaring library function 'rindex' with type 'char *(const char *, int)' [-Wimplicit-function-declaration]
   return ((int*)(&rindex))[argc];
                   ^
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: note: include the header <strings.h> or explicitly provide a declaration for 'rindex'
 1 warning generated.
-[2/2] Linking C executable cmTC_4defe
-FAILED: cmTC_4defe 
-: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_4defe.dir/CheckSymbolExists.c.o -o cmTC_4defe  -latomic -lm && :
+[2/2] Linking C executable cmTC_06665
+FAILED: cmTC_06665 
+: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_06665.dir/CheckSymbolExists.c.o -o cmTC_06665  -latomic -lm && :
 ld: error: undefined symbol: rindex
 >>> referenced by CheckSymbolExists.c:0
->>>               CMakeFiles/cmTC_4defe.dir/CheckSymbolExists.c.o:(main)
+>>>               CMakeFiles/cmTC_06665.dir/CheckSymbolExists.c.o:(main)
 >>> referenced by CheckSymbolExists.c:0
->>>               CMakeFiles/cmTC_4defe.dir/CheckSymbolExists.c.o:(main)
+>>>               CMakeFiles/cmTC_06665.dir/CheckSymbolExists.c.o:(main)
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ninja: build stopped: subcommand failed.
 
@@ -487,9 +487,9 @@ int main(int argc, char** argv)
 Determining if the itoa exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_7c2e2 && [1/2] Building C object CMakeFiles/cmTC_7c2e2.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_7c2e2.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_7c2e2.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_7c2e2.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_7c2e2.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_c2dd5 && [1/2] Building C object CMakeFiles/cmTC_c2dd5.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_c2dd5.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_c2dd5.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_c2dd5.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_c2dd5.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier 'itoa'
   return ((int*)(&itoa))[argc];
                   ^
@@ -520,9 +520,9 @@ int main(int argc, char** argv)
 Determining if the _ltoa exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_1a395 && [1/2] Building C object CMakeFiles/cmTC_1a395.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_1a395.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_1a395.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_1a395.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_1a395.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_d6140 && [1/2] Building C object CMakeFiles/cmTC_d6140.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_d6140.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_d6140.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_d6140.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_d6140.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_ltoa'
   return ((int*)(&_ltoa))[argc];
                   ^
@@ -553,9 +553,9 @@ int main(int argc, char** argv)
 Determining if the _uitoa exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_9b9b9 && [1/2] Building C object CMakeFiles/cmTC_9b9b9.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_9b9b9.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_9b9b9.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_9b9b9.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_9b9b9.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_0395f && [1/2] Building C object CMakeFiles/cmTC_0395f.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_0395f.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_0395f.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_0395f.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_0395f.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_uitoa'
   return ((int*)(&_uitoa))[argc];
                   ^
@@ -586,9 +586,9 @@ int main(int argc, char** argv)
 Determining if the _ultoa exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_801fe && [1/2] Building C object CMakeFiles/cmTC_801fe.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_801fe.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_801fe.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_801fe.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_801fe.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_64b57 && [1/2] Building C object CMakeFiles/cmTC_64b57.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_64b57.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_64b57.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_64b57.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_64b57.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_ultoa'
   return ((int*)(&_ultoa))[argc];
                   ^
@@ -619,9 +619,9 @@ int main(int argc, char** argv)
 Determining if the _i64toa exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_634b3 && [1/2] Building C object CMakeFiles/cmTC_634b3.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_634b3.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_634b3.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_634b3.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_634b3.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_1fdc3 && [1/2] Building C object CMakeFiles/cmTC_1fdc3.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_1fdc3.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_1fdc3.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_1fdc3.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_1fdc3.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_i64toa'
   return ((int*)(&_i64toa))[argc];
                   ^
@@ -652,9 +652,9 @@ int main(int argc, char** argv)
 Determining if the _ui64toa exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2c81b && [1/2] Building C object CMakeFiles/cmTC_2c81b.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_2c81b.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_2c81b.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_2c81b.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_2c81b.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a5c00 && [1/2] Building C object CMakeFiles/cmTC_a5c00.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_a5c00.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_a5c00.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_a5c00.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_a5c00.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_ui64toa'
   return ((int*)(&_ui64toa))[argc];
                   ^
@@ -685,9 +685,9 @@ int main(int argc, char** argv)
 Determining if the _stricmp exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_427fd && [1/2] Building C object CMakeFiles/cmTC_427fd.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_427fd.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_427fd.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_427fd.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_427fd.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a2ee9 && [1/2] Building C object CMakeFiles/cmTC_a2ee9.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_a2ee9.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_a2ee9.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_a2ee9.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_a2ee9.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_stricmp'
   return ((int*)(&_stricmp))[argc];
                   ^
@@ -718,9 +718,9 @@ int main(int argc, char** argv)
 Determining if the _strnicmp exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_3c91f && [1/2] Building C object CMakeFiles/cmTC_3c91f.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_3c91f.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_3c91f.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_3c91f.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_3c91f.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_a1ea5 && [1/2] Building C object CMakeFiles/cmTC_a1ea5.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_a1ea5.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_a1ea5.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_a1ea5.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_a1ea5.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_strnicmp'; did you mean 'strncmp'?
   return ((int*)(&_strnicmp))[argc];
                   ^~~~~~~~~
@@ -755,9 +755,9 @@ int main(int argc, char** argv)
 Determining if the _wcsdup exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_3fe3a && [1/2] Building C object CMakeFiles/cmTC_3fe3a.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_3fe3a.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_3fe3a.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_3fe3a.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_3fe3a.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_c7744 && [1/2] Building C object CMakeFiles/cmTC_c7744.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_c7744.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_c7744.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_c7744.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_c7744.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_wcsdup'; did you mean 'wcsdup'?
   return ((int*)(&_wcsdup))[argc];
                   ^~~~~~~
@@ -792,9 +792,9 @@ int main(int argc, char** argv)
 Determining if the _wcsicmp exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_e9d18 && [1/2] Building C object CMakeFiles/cmTC_e9d18.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_e9d18.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_e9d18.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_e9d18.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_e9d18.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_8151b && [1/2] Building C object CMakeFiles/cmTC_8151b.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_8151b.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_8151b.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_8151b.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_8151b.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_wcsicmp'
   return ((int*)(&_wcsicmp))[argc];
                   ^
@@ -825,9 +825,9 @@ int main(int argc, char** argv)
 Determining if the _wcsnicmp exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_04b88 && [1/2] Building C object CMakeFiles/cmTC_04b88.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_04b88.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_04b88.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_04b88.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_04b88.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_25368 && [1/2] Building C object CMakeFiles/cmTC_25368.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_25368.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_25368.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_25368.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_25368.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier '_wcsnicmp'; did you mean 'wcsncmp'?
   return ((int*)(&_wcsnicmp))[argc];
                   ^~~~~~~~~
@@ -862,9 +862,9 @@ int main(int argc, char** argv)
 Determining if the fopen64 exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_0fa23 && [1/2] Building C object CMakeFiles/cmTC_0fa23.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_0fa23.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_0fa23.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_0fa23.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_0fa23.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_158f3 && [1/2] Building C object CMakeFiles/cmTC_158f3.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_158f3.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_158f3.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_158f3.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_158f3.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier 'fopen64'; did you mean 'fopen'?
   return ((int*)(&fopen64))[argc];
                   ^~~~~~~
@@ -899,9 +899,9 @@ int main(int argc, char** argv)
 Determining if the fseeko64 exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_85b88 && [1/2] Building C object CMakeFiles/cmTC_85b88.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_85b88.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_85b88.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_85b88.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_85b88.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_fc2ff && [1/2] Building C object CMakeFiles/cmTC_fc2ff.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_fc2ff.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_fc2ff.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_fc2ff.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_fc2ff.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:14:19: error: use of undeclared identifier 'fseeko64'; did you mean 'fseeko'?
   return ((int*)(&fseeko64))[argc];
                   ^~~~~~~~
@@ -936,9 +936,9 @@ int main(int argc, char** argv)
 Determining if the sysctlbyname exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_81a09 && [1/2] Building C object CMakeFiles/cmTC_81a09.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_81a09.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_81a09.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_81a09.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_81a09.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_42057 && [1/2] Building C object CMakeFiles/cmTC_42057.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_42057.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_42057.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_42057.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_42057.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:3:10: fatal error: 'sys/sysctl.h' file not found
 #include <sys/sysctl.h>
          ^~~~~~~~~~~~~~
@@ -964,9 +964,9 @@ int main(int argc, char** argv)
 Determining if the elf_aux_info exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_82cea && [1/2] Building C object CMakeFiles/cmTC_82cea.dir/CheckSymbolExists.c.o
-FAILED: CMakeFiles/cmTC_82cea.dir/CheckSymbolExists.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_82cea.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_82cea.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_82cea.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2dc9f && [1/2] Building C object CMakeFiles/cmTC_2dc9f.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_2dc9f.dir/CheckSymbolExists.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_2dc9f.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_2dc9f.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_2dc9f.dir/CheckSymbolExists.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: use of undeclared identifier 'elf_aux_info'
   return ((int*)(&elf_aux_info))[argc];
                   ^
@@ -991,17 +991,17 @@ int main(int argc, char** argv)
 Performing C SOURCE FILE Test ICONV_IN_LIBC failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_e746b && [1/2] Building C object CMakeFiles/cmTC_e746b.dir/src.c.o
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_80afd && [1/2] Building C object CMakeFiles/cmTC_80afd.dir/src.c.o
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c:6:21: warning: implicit declaration of function 'iconv_open' is invalid in C99 [-Wimplicit-function-declaration]
             return !iconv_open(NULL,NULL);
                     ^
 1 warning generated.
-[2/2] Linking C executable cmTC_e746b
-FAILED: cmTC_e746b 
-: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_e746b.dir/src.c.o -o cmTC_e746b  -latomic -lm && :
+[2/2] Linking C executable cmTC_80afd
+FAILED: cmTC_80afd 
+: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_80afd.dir/src.c.o -o cmTC_80afd  -latomic -lm && :
 ld: error: undefined symbol: iconv_open
 >>> referenced by src.c:6
->>>               CMakeFiles/cmTC_e746b.dir/src.c.o:(main)
+>>>               CMakeFiles/cmTC_80afd.dir/src.c.o:(main)
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ninja: build stopped: subcommand failed.
 
@@ -1017,14 +1017,14 @@ Source file was:
 Performing C SOURCE FILE Test ICONV_IN_LIBICONV failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_94285 && [1/2] Building C object CMakeFiles/cmTC_94285.dir/src.c.o
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_9f911 && [1/2] Building C object CMakeFiles/cmTC_9f911.dir/src.c.o
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c:5:21: warning: implicit declaration of function 'iconv_open' is invalid in C99 [-Wimplicit-function-declaration]
             return !iconv_open(NULL,NULL);
                     ^
 1 warning generated.
-[2/2] Linking C executable cmTC_94285
-FAILED: cmTC_94285 
-: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_94285.dir/src.c.o -o cmTC_94285  -liconv  -latomic -lm && :
+[2/2] Linking C executable cmTC_9f911
+FAILED: cmTC_9f911 
+: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_9f911.dir/src.c.o -o cmTC_9f911  -liconv  -latomic -lm && :
 ld: error: unable to find library -liconv
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ninja: build stopped: subcommand failed.
@@ -1040,20 +1040,20 @@ Source file was:
 Determining if the alloca exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_2de9d && [1/2] Building C object CMakeFiles/cmTC_2de9d.dir/CheckSymbolExists.c.o
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_97595 && [1/2] Building C object CMakeFiles/cmTC_97595.dir/CheckSymbolExists.c.o
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: warning: implicitly declaring library function 'alloca' with type 'void *(unsigned long)' [-Wimplicit-function-declaration]
   return ((int*)(&alloca))[argc];
                   ^
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: note: include the header <stdlib.h> or explicitly provide a declaration for 'alloca'
 1 warning generated.
-[2/2] Linking C executable cmTC_2de9d
-FAILED: cmTC_2de9d 
-: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_2de9d.dir/CheckSymbolExists.c.o -o cmTC_2de9d  -latomic -lm && :
+[2/2] Linking C executable cmTC_97595
+FAILED: cmTC_97595 
+: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_97595.dir/CheckSymbolExists.c.o -o cmTC_97595  -latomic -lm && :
 ld: error: undefined symbol: alloca
 >>> referenced by CheckSymbolExists.c:0
->>>               CMakeFiles/cmTC_2de9d.dir/CheckSymbolExists.c.o:(main)
+>>>               CMakeFiles/cmTC_97595.dir/CheckSymbolExists.c.o:(main)
 >>> referenced by CheckSymbolExists.c:0
->>>               CMakeFiles/cmTC_2de9d.dir/CheckSymbolExists.c.o:(main)
+>>>               CMakeFiles/cmTC_97595.dir/CheckSymbolExists.c.o:(main)
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ninja: build stopped: subcommand failed.
 
@@ -1075,9 +1075,9 @@ int main(int argc, char** argv)
 Performing C SOURCE FILE Test HAVE_ARM_MODE failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_22182 && [1/2] Building C object CMakeFiles/cmTC_22182.dir/src.c.o
-FAILED: CMakeFiles/cmTC_22182.dir/src.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DHAVE_ARM_MODE  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos" -Werror=unused-command-line-argument -fPIE   -marm -MD -MT CMakeFiles/cmTC_22182.dir/src.c.o -MF CMakeFiles/cmTC_22182.dir/src.c.o.d -o CMakeFiles/cmTC_22182.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_bb1a8 && [1/2] Building C object CMakeFiles/cmTC_bb1a8.dir/src.c.o
+FAILED: CMakeFiles/cmTC_bb1a8.dir/src.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DHAVE_ARM_MODE  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos" -Werror=unused-command-line-argument -fPIE   -marm -MD -MT CMakeFiles/cmTC_bb1a8.dir/src.c.o -MF CMakeFiles/cmTC_bb1a8.dir/src.c.o.d -o CMakeFiles/cmTC_bb1a8.dir/src.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c
 clang: error: argument unused during compilation: '-marm' [-Werror,-Wunused-command-line-argument]
 ninja: build stopped: subcommand failed.
 
@@ -1087,9 +1087,9 @@ int main(void) { return 0; }
 Determining if files pthread_np.h exist failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_7980d && [1/2] Building C object CMakeFiles/cmTC_7980d.dir/HAVE_PTHREAD_NP_H.c.o
-FAILED: CMakeFiles/cmTC_7980d.dir/HAVE_PTHREAD_NP_H.c.o 
-/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_7980d.dir/HAVE_PTHREAD_NP_H.c.o -MF CMakeFiles/cmTC_7980d.dir/HAVE_PTHREAD_NP_H.c.o.d -o CMakeFiles/cmTC_7980d.dir/HAVE_PTHREAD_NP_H.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CheckIncludeFiles/HAVE_PTHREAD_NP_H.c
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_22709 && [1/2] Building C object CMakeFiles/cmTC_22709.dir/HAVE_PTHREAD_NP_H.c.o
+FAILED: CMakeFiles/cmTC_22709.dir/HAVE_PTHREAD_NP_H.c.o 
+/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -idirafter "/Users/tabby/Projects/C++/TabbyEngine/Tabby/vendor/SDL2/src/video/khronos"  -D_GNU_SOURCE=1 -fPIE -MD -MT CMakeFiles/cmTC_22709.dir/HAVE_PTHREAD_NP_H.c.o -MF CMakeFiles/cmTC_22709.dir/HAVE_PTHREAD_NP_H.c.o.d -o CMakeFiles/cmTC_22709.dir/HAVE_PTHREAD_NP_H.c.o -c /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CheckIncludeFiles/HAVE_PTHREAD_NP_H.c
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CheckIncludeFiles/HAVE_PTHREAD_NP_H.c:2:10: fatal error: 'pthread_np.h' file not found
 #include <pthread_np.h>
          ^~~~~~~~~~~~~~
@@ -1107,17 +1107,17 @@ int main(void){return 0;}
 Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_18032 && [1/2] Building C object CMakeFiles/cmTC_18032.dir/src.c.o
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_75613 && [1/2] Building C object CMakeFiles/cmTC_75613.dir/src.c.o
 /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp/src.c:13:3: warning: implicit declaration of function 'pthread_cancel' is invalid in C99 [-Wimplicit-function-declaration]
   pthread_cancel(thread);
   ^
 1 warning generated.
-[2/2] Linking C executable cmTC_18032
-FAILED: cmTC_18032 
-: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_18032.dir/src.c.o -o cmTC_18032  -latomic -lm && :
+[2/2] Linking C executable cmTC_75613
+FAILED: cmTC_75613 
+: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_75613.dir/src.c.o -o cmTC_75613  -latomic -lm && :
 ld: error: undefined symbol: pthread_cancel
 >>> referenced by src.c:13
->>>               CMakeFiles/cmTC_18032.dir/src.c.o:(main)
+>>>               CMakeFiles/cmTC_75613.dir/src.c.o:(main)
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ninja: build stopped: subcommand failed.
 
@@ -1146,10 +1146,10 @@ int main(void)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_0c78c && [1/2] Building C object CMakeFiles/cmTC_0c78c.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_0c78c
-FAILED: cmTC_0c78c 
-: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -DCHECK_FUNCTION_EXISTS=pthread_create -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_0c78c.dir/CheckFunctionExists.c.o -o cmTC_0c78c  -lpthreads  -latomic -lm && :
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_01d07 && [1/2] Building C object CMakeFiles/cmTC_01d07.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_01d07
+FAILED: cmTC_01d07 
+: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -DCHECK_FUNCTION_EXISTS=pthread_create -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_01d07.dir/CheckFunctionExists.c.o -o cmTC_01d07  -lpthreads  -latomic -lm && :
 ld: error: unable to find library -lpthreads
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ninja: build stopped: subcommand failed.
@@ -1159,10 +1159,10 @@ ninja: build stopped: subcommand failed.
 Determining if the function pthread_create exists in the pthread failed with the following output:
 Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_400f7 && [1/2] Building C object CMakeFiles/cmTC_400f7.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_400f7
-FAILED: cmTC_400f7 
-: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -DCHECK_FUNCTION_EXISTS=pthread_create -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_400f7.dir/CheckFunctionExists.c.o -o cmTC_400f7  -lpthread  -latomic -lm && :
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_49393 && [1/2] Building C object CMakeFiles/cmTC_49393.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_49393
+FAILED: cmTC_49393 
+: && /Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android23 --sysroot=/Users/tabby/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -DCHECK_FUNCTION_EXISTS=pthread_create -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -Wl,--gc-sections CMakeFiles/cmTC_49393.dir/CheckFunctionExists.c.o -o cmTC_49393  -lpthread  -latomic -lm && :
 ld: error: unable to find library -lpthread
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ninja: build stopped: subcommand failed.

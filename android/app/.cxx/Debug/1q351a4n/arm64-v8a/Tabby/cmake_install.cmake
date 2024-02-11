@@ -54,6 +54,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/spdlog/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("/Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/imgui/cmake_install.cmake")
 endif()
 
