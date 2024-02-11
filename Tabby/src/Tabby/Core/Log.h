@@ -5,6 +5,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
+#include <filesystem>
 // This ignores all warnings raised inside External headers
 #pragma warning(push, 0)
 #include <spdlog/fmt/ostr.h>
@@ -49,22 +50,9 @@ inline OStream& operator<<(OStream& os, glm::qua<T, Q> quaternion)
     return os << glm::to_string(quaternion);
 }
 
-// #if defined(TB_PLATFORM_ANDROID)
-// // Core log macros
-// #define TB_CORE_TRACE(...)
-// #define TB_CORE_INFO(...)
-// #define TB_CORE_WARN(...)
-// #define TB_CORE_ERROR(...)
-// #define TB_CORE_CRITICAL(...)
-//
-// // Client log macros
-// #define TB_TRACE(...)
-// #define TB_INFO(...)
-// #define TB_WARN(...)
-// #define TB_ERROR(...)
-// #define TB_CRITICAL(...)
-// #else
-// // Core log macros
+#include <iostream>
+
+// Core log macros
 #define TB_CORE_TRACE(...) ::Tabby::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define TB_CORE_INFO(...) ::Tabby::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define TB_CORE_WARN(...) ::Tabby::Log::GetCoreLogger()->warn(__VA_ARGS__)
@@ -77,4 +65,3 @@ inline OStream& operator<<(OStream& os, glm::qua<T, Q> quaternion)
 #define TB_WARN(...) ::Tabby::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define TB_ERROR(...) ::Tabby::Log::GetClientLogger()->error(__VA_ARGS__)
 #define TB_CRITICAL(...) ::Tabby::Log::GetClientLogger()->critical(__VA_ARGS__)
-// #endif

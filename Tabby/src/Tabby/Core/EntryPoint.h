@@ -11,7 +11,7 @@ extern Tabby::Application* Tabby::CreateApplication(ApplicationCommandLineArgs a
 #include "../../../vendor/SDL2/include/SDL_main.h"
 int main(int argc, char** argv)
 {
-    // Tabby::Log::Init();
+    Tabby::Log::Init();
 
     auto app = Tabby::CreateApplication({ argc, argv });
 

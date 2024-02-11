@@ -20,12 +20,6 @@ if (EMSCRIPTEN)
     set(WEB ON CACHE BOOL "Enable Web")
 endif (EMSCRIPTEN)
 
-
-
-# if (ANDROID)
-#     set(PROJECT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/../Tabby/src")
-#     set(PROJECT_VENDOR_DIR "${CMAKE_SOURCE_DIR}/../Tabby/vendor")
-# else()
 set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_VENDOR_DIR "vendor")
 # endif ()
@@ -80,7 +74,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
         ${GLM}
         ${SPDLOG}/include
-        
         )
 
 include_directories(SYSTEM src)
@@ -106,7 +99,7 @@ if (NOT EMSCRIPTEN AND NOT ANDROID)
     add_subdirectory(${TRACY})
 endif()
 add_subdirectory(${YAML-CPP})
-add_subdirectory(${SPDLOG} EXCLUDE_FROM_ALL)
+add_subdirectory(${SPDLOG})
 add_subdirectory(${BOX2D} EXCLUDE_FROM_ALL)
 add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
@@ -124,6 +117,8 @@ if (ANDROID)
         GLESv2
         GLESv3
         EGL
+        log
+        android
         )
 elseif (NOT EMSCRIPTEN AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE 

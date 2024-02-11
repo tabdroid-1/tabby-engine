@@ -3260,3 +3260,12 @@ Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmT
 
 
 
+Performing C++ SOURCE FILE Test HAS_NULLPTR_WARNING succeeded with the following output:
+Change Dir: /Users/tabby/Projects/C++/TabbyEngine/android/app/.cxx/Debug/1q351a4n/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Users/tabby/Library/Android/sdk/cmake/3.22.1/bin/ninja cmTC_ddd89 && [1/2] Building CXX object CMakeFiles/cmTC_ddd89.dir/src.cxx.o
+[2/2] Linking CXX executable cmTC_ddd89
+
+
+Source file was:
+int main() { return 0; }
