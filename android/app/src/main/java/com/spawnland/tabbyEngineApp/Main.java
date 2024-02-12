@@ -13,6 +13,7 @@ public class Main extends SDLActivity
      *
      * @return names of shared libraries to be loaded (e.g. "SDL2", "main").
      */
+
     @Override
     protected String[] getLibraries() {
         return new String[]{
