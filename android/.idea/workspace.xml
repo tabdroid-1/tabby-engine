@@ -10,31 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="245572d3-333c-4dc9-96e9-e609f724994e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gles3/OpenGLES3Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gles3/OpenGLES3Shader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Drivers/gles3/OpenGLES3Texture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Drivers/gles3/OpenGLES3Texture.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/tabbyEngineApp.app.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/tabbyEngineApp.app.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gles3/OpenGLES3Shader.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gles3/OpenGLES3Shader.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gles3/OpenGLES3Texture.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Drivers/gles3/OpenGLES3Texture.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/x86/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/spawnland/tabbyEngineApp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/spawnland/tabbyEngineApp/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
