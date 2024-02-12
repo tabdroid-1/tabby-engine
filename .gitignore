@@ -1,5 +1,6 @@
 build/
 android/app/.cxx
+android/app/build
 .idea/
 .cache/
 Editor/
