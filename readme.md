@@ -1,6 +1,8 @@
 Tabby Engine
 =============================
 
+![Tabby](/Resources/Logo/Tabby_Engine_1024x1024.png?raw=true "Tabby")
+
 Simple game engine written in C++.
 This engines main focus is compatibility for most New and old platforms.
 Engine is mainly for 2D games but has 3d elements. Further 3D support planned.
@@ -68,7 +70,7 @@ For building web install emscriptem from their git repo. Installing from package
         Todo
         ```
 
-- For web 
+- For Web 
 
   1. ```shell
      git clone -b customRenderer https://github.com/tabdroid-1/TabbyEngine.git && mkdir TabbyEngine/build && cd TabbyEngine/build
@@ -81,6 +83,14 @@ For building web install emscriptem from their git repo. Installing from package
   3. ```shell
      python3 -m http.server 8080
      ```
+     
+- For Android 
+
+  1. ```shell
+     # It should build out of the box when built from Android Studio
+     ```
+
+
 
 Note From the author
  --------------------

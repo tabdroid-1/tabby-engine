@@ -37,6 +37,18 @@ int main(int argc, char** argv)
     delete app;
 }
 
+#elif defined(TB_PLATFORM_WINDOWS)
+int main(int argc, char** argv)
+{
+    Tabby::Log::Init();
+
+    auto app = Tabby::CreateApplication({ argc, argv });
+
+    app->Run();
+
+    delete app;
+}
+
 #elif defined(TB_PLATFORM_MACOS)
 int main(int argc, char** argv)
 {
