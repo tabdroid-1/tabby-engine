@@ -1,3 +1,3 @@
-Version: 05-02-2024_1 Alpha
+Version: 13-02-2024_1 Alpha
 Changes:
-- Web build now works.
+- Now runs on android (FINALLY).

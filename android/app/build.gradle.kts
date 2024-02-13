@@ -10,8 +10,8 @@ android {
         applicationId = "com.spawnland.tabbyEngineApp"
         minSdk = 23
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 13_02_2024_1
+        versionName = "13.02.2024_1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
