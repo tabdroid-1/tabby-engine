@@ -11,9 +11,8 @@
 #include "Tabby/Events/KeyEvent.h"
 #include "Tabby/Events/MouseEvent.h"
 
-// #include "Tabby/Renderer/Renderer.h"
-//
 #include "Drivers/gl33/OpenGL33Context.h"
+#include "backends/imgui_impl_sdl2.h"
 
 #include <SDL.h>
 
@@ -79,7 +78,7 @@ void MacOSWindow::Init(const WindowProps& props)
             SDL_WINDOWPOS_CENTERED,
             SDL_WINDOWPOS_CENTERED,
             props.Width, props.Height,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         ++s_SDLWindowCount;
     }
 

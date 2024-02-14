@@ -30,6 +30,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.  */
 
+#ifndef __APPLE__
 #include "config.h"
 
 #include <algorithm>
@@ -57,7 +58,7 @@ POSSIBILITY OF SUCH DAMAGE.  */
 #ifndef S_IFMT
 #define S_IFMT 0170000
 #endif
-#define S_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)
+#define S_ISLNK(m) (((m)&S_IFMT) == S_IFLNK)
 #endif
 
 #ifndef __GNUC__
@@ -3372,7 +3373,7 @@ elf_zstd_build_fse(const int16_t* norm, int idx, uint16_t* next,
     ((uint32_t)(baseline) | ((uint32_t)(basebits) << 24))
 
 #define ZSTD_DECODE_BASELINE(baseline_basebits) \
-    ((uint32_t)(baseline_basebits) & 0xffffff)
+    ((uint32_t)(baseline_basebits)&0xffffff)
 
 #define ZSTD_DECODE_BASEBITS(baseline_basebits) \
     ((uint32_t)(baseline_basebits) >> 24)
@@ -5623,7 +5624,7 @@ int backtrace_uncompress_zstd(struct backtrace_state* state,
    specific probability.  */
 
 #define LZMA_IS_MATCH(state, pos) \
-    (LZMA_PROB_IS_MATCH_OFFSET + (state) * LZMA_POS_STATES + (pos))
+    (LZMA_PROB_IS_MATCH_OFFSET + (state)*LZMA_POS_STATES + (pos))
 #define LZMA_IS_REP(state) \
     (LZMA_PROB_IS_REP_OFFSET + (state))
 #define LZMA_IS_REP0(state) \
@@ -5633,9 +5634,9 @@ int backtrace_uncompress_zstd(struct backtrace_state* state,
 #define LZMA_IS_REP2(state) \
     (LZMA_PROB_IS_REP2_OFFSET + (state))
 #define LZMA_IS_REP0_LONG(state, pos) \
-    (LZMA_PROB_IS_REP0_LONG_OFFSET + (state) * LZMA_POS_STATES + (pos))
+    (LZMA_PROB_IS_REP0_LONG_OFFSET + (state)*LZMA_POS_STATES + (pos))
 #define LZMA_DIST_SLOT(dist, slot) \
-    (LZMA_PROB_DIST_SLOT_OFFSET + (dist) * LZMA_DIST_SLOTS + (slot))
+    (LZMA_PROB_DIST_SLOT_OFFSET + (dist)*LZMA_DIST_SLOTS + (slot))
 #define LZMA_DIST_SPECIAL(dist) \
     (LZMA_PROB_DIST_SPECIAL_OFFSET + (dist))
 #define LZMA_DIST_ALIGN(dist) \
@@ -5645,9 +5646,9 @@ int backtrace_uncompress_zstd(struct backtrace_state* state,
 #define LZMA_MATCH_LEN_CHOICE2 \
     LZMA_PROB_MATCH_LEN_CHOICE2_OFFSET
 #define LZMA_MATCH_LEN_LOW(pos, sym) \
-    (LZMA_PROB_MATCH_LEN_LOW_OFFSET + (pos) * LZMA_LEN_LOW_SYMBOLS + (sym))
+    (LZMA_PROB_MATCH_LEN_LOW_OFFSET + (pos)*LZMA_LEN_LOW_SYMBOLS + (sym))
 #define LZMA_MATCH_LEN_MID(pos, sym) \
-    (LZMA_PROB_MATCH_LEN_MID_OFFSET + (pos) * LZMA_LEN_MID_SYMBOLS + (sym))
+    (LZMA_PROB_MATCH_LEN_MID_OFFSET + (pos)*LZMA_LEN_MID_SYMBOLS + (sym))
 #define LZMA_MATCH_LEN_HIGH(sym) \
     (LZMA_PROB_MATCH_LEN_HIGH_OFFSET + (sym))
 #define LZMA_REP_LEN_CHOICE \
@@ -5655,13 +5656,13 @@ int backtrace_uncompress_zstd(struct backtrace_state* state,
 #define LZMA_REP_LEN_CHOICE2 \
     LZMA_PROB_REP_LEN_CHOICE2_OFFSET
 #define LZMA_REP_LEN_LOW(pos, sym) \
-    (LZMA_PROB_REP_LEN_LOW_OFFSET + (pos) * LZMA_LEN_LOW_SYMBOLS + (sym))
+    (LZMA_PROB_REP_LEN_LOW_OFFSET + (pos)*LZMA_LEN_LOW_SYMBOLS + (sym))
 #define LZMA_REP_LEN_MID(pos, sym) \
-    (LZMA_PROB_REP_LEN_MID_OFFSET + (pos) * LZMA_LEN_MID_SYMBOLS + (sym))
+    (LZMA_PROB_REP_LEN_MID_OFFSET + (pos)*LZMA_LEN_MID_SYMBOLS + (sym))
 #define LZMA_REP_LEN_HIGH(sym) \
     (LZMA_PROB_REP_LEN_HIGH_OFFSET + (sym))
 #define LZMA_LITERAL(code, size) \
-    (LZMA_PROB_LITERAL_OFFSET + (code) * LZMA_LITERAL_CODER_SIZE + (size))
+    (LZMA_PROB_LITERAL_OFFSET + (code)*LZMA_LITERAL_CODER_SIZE + (size))
 
 /* Read an LZMA varint from BUF, reading and updating *POFFSET,
    setting *VAL.  Returns 0 on error, 1 on success.  */
@@ -7672,3 +7673,4 @@ int backtrace_initialize(struct backtrace_state* state, const char* filename,
 }
 
 }
+#endif

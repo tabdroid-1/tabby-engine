@@ -11,18 +11,8 @@ if(APPLE)
     set(CMAKE_OBJCXX_EXTENSIONS OFF)
 endif()
 
-macro(append_linker_flags FLAGS)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAGS}")
-endmacro()
-
-option(WEB "Enable Web Build" OFF)
-if (EMSCRIPTEN)
-    set(WEB ON CACHE BOOL "Enable Web")
-endif (EMSCRIPTEN)
-
 set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_VENDOR_DIR "vendor")
-# endif ()
 
 # ##############################################################################
 # Add dependencies 
@@ -104,7 +94,54 @@ add_subdirectory(${BOX2D} EXCLUDE_FROM_ALL)
 add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
 
-if (ANDROID)
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+        imgui
+        box2d
+        spdlog
+        SDL2::SDL2-static
+        glm
+        yaml-cpp
+        imguizmo
+        msdf-atlas-gen 
+        tracy 
+        )
+elseif (UNIX AND NOT APPLE AND NOT ANDROID)
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+        imgui
+        box2d
+        spdlog
+        SDL2::SDL2-static
+        glm
+        yaml-cpp
+        imguizmo
+        msdf-atlas-gen 
+        tracy 
+        )
+elseif (APPLE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+        tracy 
+        imgui
+        box2d
+        spdlog
+        SDL2::SDL2-static
+        glm
+        yaml-cpp
+        msdf-atlas-gen 
+        imguizmo
+        )
+elseif (EMSCRIPTEN)
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+        imgui
+        box2d
+        spdlog
+        SDL2::SDL2-static
+        glm
+        yaml-cpp
+        imguizmo
+        tracy 
+        )
+elseif (ANDROID)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
@@ -120,45 +157,11 @@ if (ANDROID)
         log
         android
         )
-elseif (NOT EMSCRIPTEN AND NOT APPLE)
-    target_link_libraries(${PROJECT_NAME} PRIVATE 
-        imgui
-        box2d
-        spdlog
-        SDL2::SDL2-static
-        glm
-        yaml-cpp
-        imguizmo
-        msdf-atlas-gen 
-        Tracy 
-        )
-elseif (EMSCRIPTEN)
-    target_link_libraries(${PROJECT_NAME} PRIVATE 
-        imgui
-        box2d
-        spdlog
-        SDL2::SDL2-static
-        glm
-        yaml-cpp
-        imguizmo
-        Tracy 
-        )
-elseif (APPLE)
-    target_link_libraries(${PROJECT_NAME} PRIVATE 
-        imgui
-        box2d
-        spdlog
-        SDL2::SDL2-static
-        glm
-        yaml-cpp
-        msdf-atlas-gen 
-        imguizmo
-        Tracy 
-        )
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE=1")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC TRACY_ENABLE=1 )
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")

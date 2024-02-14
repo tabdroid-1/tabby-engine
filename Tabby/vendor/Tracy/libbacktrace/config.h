@@ -1,12 +1,12 @@
 #include <limits.h>
 #if defined(__linux__) && !defined(__GLIBC__) && !defined(__WORDSIZE)
 // include __WORDSIZE headers for musl
-#  include <bits/reg.h>
+#include <bits/reg.h>
 #endif
 #if __WORDSIZE == 64
-#  define BACKTRACE_ELF_SIZE 64
+#define BACKTRACE_ELF_SIZE 64
 #else
-#  define BACKTRACE_ELF_SIZE 32
+#define BACKTRACE_ELF_SIZE 32
 #endif
 
 #define HAVE_DLFCN_H 1
@@ -19,8 +19,8 @@
 #define HAVE_DECL_STRNLEN 1
 
 #ifdef __APPLE__
-#  define HAVE_MACH_O_DYLD_H 1
+#define HAVE_MACH_O_DYLD_H 1
 #elif defined BSD
-#  define HAVE_KERN_PROC 1
-#  define HAVE_KERN_PROC_ARGS 1
+#define HAVE_KERN_PROC 1
+#define HAVE_KERN_PROC_ARGS 1
 #endif
