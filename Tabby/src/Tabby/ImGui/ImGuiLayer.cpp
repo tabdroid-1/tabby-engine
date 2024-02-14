@@ -109,10 +109,11 @@ void ImGuiLayer::End()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-        SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+        // SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
-        SDL_GL_MakeCurrent(static_cast<SDL_Window*>(app.GetWindow().GetNativeWindow()), backup_current_context);
+        // SDL_GL_MakeCurrent(static_cast<SDL_Window*>(app.GetWindow().GetNativeWindow()), backup_current_context);
     }
 }
 

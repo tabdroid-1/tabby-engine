@@ -15,7 +15,7 @@
 #define TB_PROFILE_GPU(x)
 
 #elif TB_PROFILE && !defined(TB_PLATFORM_ANDROID)
-
+#define TRACY_ENABLE 1
 #include "Tracy/Tracy.hpp"
 #include "Tracy/TracyC.h"
 #include "Tracy/TracyOpenGL.hpp"
