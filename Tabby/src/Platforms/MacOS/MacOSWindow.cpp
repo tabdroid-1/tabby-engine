@@ -12,9 +12,9 @@
 #include "Tabby/Events/MouseEvent.h"
 
 #include "Drivers/gl33/OpenGL33Context.h"
-#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_sdl3.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 namespace Tabby {
 
@@ -75,17 +75,16 @@ void MacOSWindow::Init(const WindowProps& props)
         }
         m_Window = SDL_CreateWindow(
             m_Data.Title.c_str(),
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
             props.Width, props.Height,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+            SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+
         ++s_SDLWindowCount;
     }
 
     m_Context = GraphicsContext::Create(m_Window);
     m_Context->Init();
 
-    SDL_SetWindowData(m_Window, "WindowData", &m_Data);
+    // SDL_SetWindowData(m_Window, "WindowData", &m_Data);
     SetVSync(false);
 }
 
@@ -108,25 +107,23 @@ void MacOSWindow::OnUpdate()
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
 
-        ImGui_ImplSDL2_ProcessEvent(&event);
+        ImGui_ImplSDL3_ProcessEvent(&event);
         switch (event.type) {
-        case SDL_WINDOWEVENT: {
-            if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                m_Data.Width = event.window.data1;
-                m_Data.Height = event.window.data2;
-                WindowResizeEvent resizeEvent(m_Data.Width, m_Data.Height);
-                m_Data.EventCallback(resizeEvent);
-            }
+        case SDL_EVENT_WINDOW_RESIZED: {
+            m_Data.Width = event.window.data1;
+            m_Data.Height = event.window.data2;
+            WindowResizeEvent resizeEvent(m_Data.Width, m_Data.Height);
+            m_Data.EventCallback(resizeEvent);
             break;
         }
 
-        case SDL_QUIT: {
+        case SDL_EVENT_QUIT: {
             WindowCloseEvent closeEvent;
             m_Data.EventCallback(closeEvent);
             break;
         }
 
-        case SDL_KEYDOWN: {
+        case SDL_EVENT_KEY_DOWN: {
             if (event.key.repeat == 0) {
                 KeyPressedEvent keyPressedEvent(event.key.keysym.scancode, false);
                 m_Data.EventCallback(keyPressedEvent);
@@ -134,19 +131,19 @@ void MacOSWindow::OnUpdate()
             break;
         }
 
-        case SDL_KEYUP: {
+        case SDL_EVENT_KEY_UP: {
             KeyReleasedEvent keyReleasedEvent(event.key.keysym.scancode);
             m_Data.EventCallback(keyReleasedEvent);
             break;
         }
 
-        case SDL_TEXTINPUT: {
+        case SDL_EVENT_TEXT_INPUT: {
             KeyTypedEvent keyTypedEvent(event.text.text[0]);
             m_Data.EventCallback(keyTypedEvent);
             break;
         }
 
-        case SDL_MOUSEBUTTONDOWN: {
+        case SDL_EVENT_MOUSE_BUTTON_DOWN: {
             if (event.button.state == SDL_PRESSED) {
                 MouseButtonPressedEvent mouseButtonPressedEvent(event.button.button);
                 m_Data.EventCallback(mouseButtonPressedEvent);
@@ -154,7 +151,7 @@ void MacOSWindow::OnUpdate()
             break;
         }
 
-        case SDL_MOUSEBUTTONUP: {
+        case SDL_EVENT_MOUSE_BUTTON_UP: {
             if (event.button.state == SDL_RELEASED) {
                 MouseButtonReleasedEvent mouseButtonReleasedEvent(event.button.button);
                 m_Data.EventCallback(mouseButtonReleasedEvent);
@@ -162,13 +159,13 @@ void MacOSWindow::OnUpdate()
             break;
         }
 
-        case SDL_MOUSEMOTION: {
+        case SDL_EVENT_MOUSE_MOTION: {
             MouseMovedEvent mouseMovedEvent(static_cast<float>(event.motion.x), static_cast<float>(event.motion.y));
             m_Data.EventCallback(mouseMovedEvent);
             break;
         }
 
-        case SDL_MOUSEWHEEL: {
+        case SDL_EVENT_MOUSE_WHEEL: {
             MouseScrolledEvent mouseScrolledEvent(static_cast<float>(event.wheel.x), static_cast<float>(event.wheel.y));
             m_Data.EventCallback(mouseScrolledEvent);
             break;

@@ -1,7 +1,7 @@
-#include "SDL_video.h"
 #ifdef TB_PLATFORM_ANDROID
 
 #include "Platforms/Android/AndroidWindow.h"
+#include "SDL_video.h"
 #include "tbpch.h"
 
 #include "Tabby/Core/Input.h"

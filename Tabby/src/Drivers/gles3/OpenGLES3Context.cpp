@@ -16,7 +16,7 @@
 #define GLAD_GLES2_IMPLEMENTATION
 #include <glad/gles3.h>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 namespace Tabby {
 

@@ -6,7 +6,7 @@
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl33.h>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #if !defined(TB_PLATFORM_ANDROID)
 #include <TracyOpenGL.hpp>

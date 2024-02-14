@@ -7,11 +7,11 @@
 #include <imgui_internal.h>
 
 #include <backends/imgui_impl_opengl3.h>
-#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_sdl3.h>
 
 #include "Tabby/Core/Application.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <glad/gl33.h>
 
@@ -61,7 +61,7 @@ void ImGuiLayer::OnAttach()
     SDL_Window* window = static_cast<SDL_Window*>(app.GetWindow().GetNativeWindow());
 
     // Setup Platform/Renderer bindings
-    ImGui_ImplSDL2_InitForOpenGL(window, SDL_GL_GetCurrentContext());
+    ImGui_ImplSDL3_InitForOpenGL(window, SDL_GL_GetCurrentContext());
     if (RendererAPI::GetAPI() == RendererAPI::API::OpenGL33)
         ImGui_ImplOpenGL3_Init("#version 330 core");
     else if (RendererAPI::GetAPI() == RendererAPI::API::OpenGLES3)
@@ -73,7 +73,7 @@ void ImGuiLayer::OnDetach()
     TB_PROFILE_SCOPE();
 
     ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
+    ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
 }
 
@@ -91,7 +91,7 @@ void ImGuiLayer::Begin()
     TB_PROFILE_SCOPE();
 
     ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
     ImGuizmo::BeginFrame();
 }

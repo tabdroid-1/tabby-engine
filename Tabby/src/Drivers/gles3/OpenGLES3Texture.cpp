@@ -1,6 +1,5 @@
 #include "Drivers/gles3/OpenGLES3Texture.h"
 #include "Drivers/gles3/GLES3.h"
-#include "SDL2/include/SDL_surface.h"
 #include "tbpch.h"
 #include <Tabby/Debug/Instrumentor.h>
 #include <glad/gles3.h>

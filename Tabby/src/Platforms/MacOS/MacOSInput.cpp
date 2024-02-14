@@ -4,7 +4,8 @@
 #include "tbpch.h"
 
 #include "Tabby/Core/Application.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_mouse.h>
 
 namespace Tabby {
 
@@ -23,9 +24,9 @@ bool Input::IsMouseButtonPressed(const MouseCode button)
 
 glm::vec2 Input::GetMousePosition()
 {
-    int x, y;
+    float x, y;
     SDL_GetMouseState(&x, &y);
-    return { static_cast<float>(x), static_cast<float>(y) };
+    return { x, y };
 }
 
 float Input::GetMouseX()

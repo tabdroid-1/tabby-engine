@@ -18,7 +18,7 @@ set(PROJECT_VENDOR_DIR "vendor")
 # Add dependencies 
 # ##############################################################################
 
-set(SDL2 "${PROJECT_VENDOR_DIR}/SDL2")
+set(SDL3 "${PROJECT_VENDOR_DIR}/SDL3")
 set(GLAD "${PROJECT_VENDOR_DIR}/glad")
 set(GLM "${PROJECT_VENDOR_DIR}/glm")
 set(STB "${PROJECT_VENDOR_DIR}/stb")
@@ -52,7 +52,7 @@ list(APPEND PROJECT_SOURCES
         "${SPDLOG}/include/spdlog/spdlog.h"
         "${STB}/stb_image.h"
         "${STB}/stb_image.cpp"
-        "${SDL2}/include/SDL.h"
+        # "${SDL3}/include/SDL.h"
         )
 
 
@@ -70,14 +70,16 @@ include_directories(SYSTEM src)
 include_directories(${IMGUI})
 include_directories(${IMGUIZMO})
 include_directories(${STB})
-include_directories(${SDL2_INCLUDE_DIRS})
+include_directories(${SDL3}/include/SDL3)
 
 if (NOT EMSCRIPTEN AND NOT ANDROID)
     include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
     include_directories(${TRACY})
 endif()
 
-add_subdirectory(${SDL2} EXCLUDE_FROM_ALL)
+set(SDL_STATIC ON CACHE BOOL "Enable SDL static build" FORCE)
+set(SDL_SHARED OFF CACHE BOOL "Enable SDL shared build" FORCE)
+add_subdirectory(${SDL3} EXCLUDE_FROM_ALL)
 add_subdirectory(${GLM})
 
 set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
@@ -99,7 +101,7 @@ if (WIN32)
         imgui
         box2d
         spdlog
-        SDL2::SDL2-static
+        SDL3::SDL3
         glm
         yaml-cpp
         imguizmo
@@ -111,7 +113,7 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID)
         imgui
         box2d
         spdlog
-        SDL2::SDL2-static
+        SDL3::SDL3
         glm
         yaml-cpp
         imguizmo
@@ -124,7 +126,7 @@ elseif (APPLE)
         imgui
         box2d
         spdlog
-        SDL2::SDL2-static
+        SDL3::SDL3
         glm
         yaml-cpp
         msdf-atlas-gen 
@@ -135,7 +137,7 @@ elseif (EMSCRIPTEN)
         imgui
         box2d
         spdlog
-        SDL2::SDL2-static
+        SDL3::SDL3
         glm
         yaml-cpp
         imguizmo
@@ -146,8 +148,8 @@ elseif (ANDROID)
         imgui
         box2d
         spdlog
-        SDL2::SDL2
-        SDL2::SDL2main
+        SDL3::SDL3
+        SDL3::SDL3main
         glm
         yaml-cpp
         imguizmo
