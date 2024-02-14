@@ -1,6 +1,6 @@
 #pragma once
 
-#if !defined TB_PLATFORM_WEB
+#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
 #include <filesystem>
 
 #include "Tabby/Core/Base.h"

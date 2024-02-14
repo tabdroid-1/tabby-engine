@@ -5,6 +5,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
+#include <filesystem>
 // This ignores all warnings raised inside External headers
 #pragma warning(push, 0)
 #include <spdlog/fmt/ostr.h>
@@ -12,19 +13,23 @@
 #pragma warning(pop)
 
 namespace Tabby {
-
 class Log {
 public:
     static void Init();
 
-    static Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-    static Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+    static Ref<spdlog::logger>& GetCoreLogger()
+    {
+        return s_CoreLogger;
+    }
+    static Ref<spdlog::logger>& GetClientLogger()
+    {
+        return s_ClientLogger;
+    }
 
 private:
     static Ref<spdlog::logger> s_CoreLogger;
     static Ref<spdlog::logger> s_ClientLogger;
 };
-
 }
 
 template <typename OStream, glm::length_t L, typename T, glm::qualifier Q>
@@ -44,6 +49,8 @@ inline OStream& operator<<(OStream& os, glm::qua<T, Q> quaternion)
 {
     return os << glm::to_string(quaternion);
 }
+
+#include <iostream>
 
 // Core log macros
 #define TB_CORE_TRACE(...) ::Tabby::Log::GetCoreLogger()->trace(__VA_ARGS__)

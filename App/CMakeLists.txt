@@ -10,8 +10,14 @@ set(PROJECT_SRC_DIR "src")
 set(PROJECT_ASSETS_DIR "${CMAKE_CURRENT_LIST_DIR}/assets")
 
 # Libraries
-set(TABBY_DIR "${CMAKE_SOURCE_DIR}/Tabby")
-set(TABBY_LIB_DIR "${CMAKE_BINARY_DIR}/Tabby")
+
+if (ANDROID)
+    set(TABBY_DIR "${CMAKE_SOURCE_DIR}/../Tabby")
+    set(TABBY_LIB_DIR "${CMAKE_BINARY_DIR}/Tabby")
+else()
+    set(TABBY_DIR "${CMAKE_SOURCE_DIR}/Tabby")
+    set(TABBY_LIB_DIR "${CMAKE_BINARY_DIR}/Tabby")
+endif()
 
 macro(append_linker_flags FLAGS)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAGS}")
@@ -29,8 +35,22 @@ list(APPEND PROJECT_SOURCES
         )
 
 # Create executable
-add_executable(${PROJECT_NAME} "${PROJECT_SOURCES}")
+if (ANDROID)
+    add_library(${PROJECT_NAME} SHARED 
+        ${PROJECT_SOURCES}
+        # ${TABBY_DIR}/vendor/SDL2/src/main/android/SDL_android_main.c
+        )
+    include_directories("${TABBY_DIR}/vendor/glm")
+    include_directories("${TABBY_DIR}/vendor/spdlog/include")
+    include_directories("${TABBY_DIR}/vendor")
 
+    add_subdirectory(
+        "../Tabby"
+        "./Tabby"
+        )
+else()
+    add_executable(${PROJECT_NAME} "${PROJECT_SOURCES}")
+endif()
 # Link libraries
 target_link_libraries(${PROJECT_NAME}
         "tabby"

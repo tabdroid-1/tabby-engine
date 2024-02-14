@@ -595,7 +595,7 @@ void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent&
         DrawQuad(transform, src.Color, entityID);
 }
 
-#if !defined TB_PLATFORM_WEB
+#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
 void Renderer2D::DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID)
 {
     const auto& fontGeometry = font->GetMSDFData()->FontGeometry;

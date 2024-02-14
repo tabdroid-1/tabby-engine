@@ -1,11 +1,24 @@
 #pragma once
 
+#define TB_PROFILE 1
+
+#if !TB_PROFILE || defined(TB_PLATFORM_ANDROID)
+
+#define TB_PROFILE_SCOPE()
+#define TB_PROFILE_SCOPE_NAME(x)
+#define TB_PROFILE_FRAME(x)
+#define TB_PROFILE_TAG(y, x)
+#define TB_PROFILE_LOG(text, size)
+#define TB_PROFILE_VALUE(text, value)
+#define TB_PROFILE_ALLOC(p, size)
+#define TB_PROFILE_FREE(p)
+#define TB_PROFILE_GPU(x)
+
+#elif TB_PROFILE && !defined(TB_PLATFORM_ANDROID)
+#define TRACY_ENABLE 1
 #include "Tracy/Tracy.hpp"
 #include "Tracy/TracyC.h"
 #include "Tracy/TracyOpenGL.hpp"
-
-#define TB_PROFILE 1
-#if TB_PROFILE
 
 #define TB_PROFILE_SCOPE() ZoneScoped
 #define TB_PROFILE_SCOPE_NAME(x) ZoneScopedN(x)

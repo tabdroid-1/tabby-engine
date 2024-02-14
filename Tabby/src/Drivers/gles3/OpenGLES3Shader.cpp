@@ -13,7 +13,10 @@
 #ifdef TB_PLATFORM_WEB
 #include <emscripten.h>
 #include <emscripten/fetch.h>
-#endif // TB_PLATFORM_WEB
+#elif defined(TB_PLATFORM_ANDROID)
+#include "SDL.h"
+#include "SDL_rwops.h"
+#endif
 namespace Tabby {
 
 static GLenum ShaderTypeFromString(const std::string& type)
@@ -28,14 +31,14 @@ static GLenum ShaderTypeFromString(const std::string& type)
 
 OpenGLES3Shader::OpenGLES3Shader(const std::string& filepath)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     auto source = ReadFile(filepath);
     auto shaderSources = PreProcess(source);
 
     Compile(shaderSources, "Path: " + filepath);
 
-    // Assets/Shaders/TextureCombined.glsl
+    // Assets / Shaders / TextureCombined.glsl
     auto lastSlash = filepath.find_last_of("/\\");
     lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
     auto lastDot = filepath.rfind('.');
@@ -48,7 +51,7 @@ OpenGLES3Shader::OpenGLES3Shader(const std::string& filepath)
 OpenGLES3Shader::OpenGLES3Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
     : m_Name(name)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     std::unordered_map<GLenum, std::string> sources;
     sources[GL_VERTEX_SHADER] = vertexSource;
@@ -58,7 +61,7 @@ OpenGLES3Shader::OpenGLES3Shader(const std::string& name, const std::string& ver
 
 OpenGLES3Shader::~OpenGLES3Shader()
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     GLES3::GL()->DeleteProgram(m_RendererID);
 }
@@ -88,34 +91,28 @@ std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
 {
     std::string result;
 
-    // #ifdef TB_PLATFORM_WEB
-    //     // Initialize the fetch attributes
-    //     emscripten_fetch_attr_t attr;
-    //     emscripten_fetch_attr_init(&attr);
-    //     strcpy(attr.requestMethod, "GET");
-    //     attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
-    //
-    //     // Create a structure to hold the fetch and content data
-    //     FileReadData fileData = { nullptr, "", false };
-    //
-    //     // Set the fetch user data to the address of the fileData structure
-    //     attr.userData = &fileData;
-    //
-    //     // Perform the file fetch asynchronously
-    //     fileData.fetch = emscripten_fetch(&attr, filepath.c_str());
-    //
-    //     // Wait for the fetch to complete with a timeout of 10 seconds
-    //     while (!fileData.fetchComplete) {
-    //         emscripten_sleep(10); // Sleep for a short time (adjust as needed)
-    //     }
-    //
-    //     // Clean up the fetch
-    //     emscripten_fetch_close(fileData.fetch);
-    //     // Return the file content
-    //     result = fileData.content;
-    //     TB_CORE_INFO("File Content: {0}", result);
-    // #else
+#if defined(TB_PLATFORM_ANDROID)
+    SDL_RWops* rw = SDL_RWFromFile(filepath.c_str(), "rb");
+    if (rw != nullptr) {
+        Sint64 size = SDL_RWsize(rw);
 
+        if (size > 0) {
+            result.resize(size);
+            Sint64 bytesRead = SDL_RWread(rw, &result[0], 1, size);
+            if (bytesRead != size) {
+                // Handle read error
+                TB_CORE_ERROR("Error reading file {0}", filepath);
+                result.clear(); // Clear the result to indicate an error
+            }
+        }
+
+        SDL_RWclose(rw);
+    } else {
+        // Handle file open error
+        TB_CORE_ERROR("Could not open file {0}", filepath);
+        TB_CORE_INFO("Current working dir: {0}", std::filesystem::current_path());
+    }
+#else
     std::ifstream in(filepath, std::ios::in | std::ios::binary);
 
     if (in) {
@@ -128,6 +125,7 @@ std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
         TB_CORE_ERROR("Could not open file {0}", filepath);
         TB_CORE_INFO("Current working dir: {0}", std::filesystem::current_path());
     }
+#endif
 
     return result;
 }
@@ -135,7 +133,7 @@ std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
 // NOTE: ShaderInfo holds name or path of shader. this is to show path or name for the shader with error
 void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSource, const std::string& shaderInfo)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     GLuint program = GLES3::GL()->CreateProgram();
     TB_CORE_ASSERT(shaderSource.size() <= 2, "Only 3 shaders are supported");
@@ -204,21 +202,21 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
 
 void OpenGLES3Shader::Bind() const
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     GLES3::GL()->UseProgram(m_RendererID);
 }
 
 void OpenGLES3Shader::Unbind() const
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     GLES3::GL()->UseProgram(0);
 }
 
 void OpenGLES3Shader::SetInt(const std::string& name, int value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     UploadUniformInt(name, value);
 }
@@ -230,35 +228,35 @@ void OpenGLES3Shader::SetIntArray(const std::string& name, int* values, uint32_t
 
 void OpenGLES3Shader::SetFloat(const std::string& name, float value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     UploadUniformFloat(name, value);
 }
 
 void OpenGLES3Shader::SetFloat2(const std::string& name, const glm::vec2& value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     UploadUniformFloat2(name, value);
 }
 
 void OpenGLES3Shader::SetFloat3(const std::string& name, const glm::vec3& value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     UploadUniformFloat3(name, value);
 }
 
 void OpenGLES3Shader::SetFloat4(const std::string& name, const glm::vec4& value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     UploadUniformFloat4(name, value);
 }
 
 void OpenGLES3Shader::SetMat4(const std::string& name, const glm::mat4& value)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE();
 
     UploadUniformMat4(name, value);
 }
