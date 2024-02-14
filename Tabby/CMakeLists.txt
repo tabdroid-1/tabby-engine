@@ -11,16 +11,6 @@ if(APPLE)
     set(CMAKE_OBJCXX_EXTENSIONS OFF)
 endif()
 
-macro(append_linker_flags FLAGS)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAGS}")
-endmacro()
-
-option(WEB "Enable Web Build" OFF)
-if (EMSCRIPTEN)
-    set(WEB ON CACHE BOOL "Enable Web")
-endif (EMSCRIPTEN)
-
-
 set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_VENDOR_DIR "vendor")
 
@@ -39,6 +29,7 @@ set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
 set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
 set(IMGUIZMO "${PROJECT_VENDOR_DIR}/imguizmo")
+set(TRACY "${PROJECT_VENDOR_DIR}/Tracy")
 set(MINIAUDIO "${PROJECT_VENDOR_DIR}/miniaudio")
 
 
@@ -64,6 +55,7 @@ list(APPEND PROJECT_SOURCES
         "${SDL2}/include/SDL.h"
         )
 
+
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
@@ -80,8 +72,9 @@ include_directories(${IMGUIZMO})
 include_directories(${STB})
 include_directories(${SDL2_INCLUDE_DIRS})
 
-if (NOT EMSCRIPTEN)
-include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
+if (NOT EMSCRIPTEN AND NOT ANDROID)
+    include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
+    include_directories(${TRACY})
 endif()
 
 add_subdirectory(${SDL2} EXCLUDE_FROM_ALL)
@@ -91,16 +84,17 @@ set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 
-if (NOT EMSCRIPTEN)
-add_subdirectory(${MSDF-ATLAS-GEN} EXCLUDE_FROM_ALL)
+if (NOT EMSCRIPTEN AND NOT ANDROID)
+    add_subdirectory(${MSDF-ATLAS-GEN} EXCLUDE_FROM_ALL)
+    add_subdirectory(${TRACY})
 endif()
 add_subdirectory(${YAML-CPP})
-add_subdirectory(${SPDLOG} EXCLUDE_FROM_ALL)
+add_subdirectory(${SPDLOG})
 add_subdirectory(${BOX2D} EXCLUDE_FROM_ALL)
 add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
 
-if (NOT EMSCRIPTEN AND NOT APPLE)
+if (WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
@@ -110,6 +104,31 @@ if (NOT EMSCRIPTEN AND NOT APPLE)
         yaml-cpp
         imguizmo
         msdf-atlas-gen 
+        tracy 
+        )
+elseif (UNIX AND NOT APPLE AND NOT ANDROID)
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+        imgui
+        box2d
+        spdlog
+        SDL2::SDL2-static
+        glm
+        yaml-cpp
+        imguizmo
+        msdf-atlas-gen 
+        tracy 
+        )
+elseif (APPLE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+        tracy 
+        imgui
+        box2d
+        spdlog
+        SDL2::SDL2-static
+        glm
+        yaml-cpp
+        msdf-atlas-gen 
+        imguizmo
         )
 elseif (EMSCRIPTEN)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
@@ -120,22 +139,29 @@ elseif (EMSCRIPTEN)
         glm
         yaml-cpp
         imguizmo
+        tracy 
         )
-elseif (APPLE)
+elseif (ANDROID)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
         spdlog
-        SDL2::SDL2-static
+        SDL2::SDL2
+        SDL2::SDL2main
         glm
         yaml-cpp
-        msdf-atlas-gen 
         imguizmo
+        GLESv2
+        GLESv3
+        EGL
+        log
+        android
         )
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE=1")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC TRACY_ENABLE=1 )
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")

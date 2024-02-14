@@ -72,8 +72,36 @@ OpenGLES3Texture2D::OpenGLES3Texture2D(const std::string& path)
     stbi_set_flip_vertically_on_load(1);
     stbi_uc* data = nullptr;
     {
+#if defined(TB_PLATFORM_ANDROID)
+        std::vector<unsigned char> imageData;
+
+        SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
+        if (rw != nullptr) {
+            Sint64 size = SDL_RWsize(rw);
+
+            if (size > 0) {
+                imageData.resize(size);
+                Sint64 bytesRead = SDL_RWread(rw, imageData.data(), 1, size);
+                if (bytesRead != size) {
+                    // Handle read error
+                    TB_CORE_ERROR("Error reading file {0}", path);
+                    imageData.clear(); // Clear the imageData to indicate an error
+                }
+            }
+
+            SDL_RWclose(rw);
+        } else {
+            // Handle file open error
+            TB_CORE_ERROR("Could not open file {0}", path);
+            TB_CORE_INFO("Current working dir: {0}", std::filesystem::current_path());
+        }
+
+        data = stbi_load_from_memory(imageData.data(), static_cast<int>(imageData.size()), &width, &height, &channels, 0);
+
+#else
         TB_PROFILE_SCOPE_NAME("stbi_load - OpenGLES3Texture2D::OpenGLES3Texture2D(const std::string&)");
         data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+#endif
     }
 
     if (data) {

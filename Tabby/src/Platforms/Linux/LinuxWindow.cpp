@@ -1,4 +1,3 @@
-#include "SDL_video.h"
 #ifdef TB_PLATFORM_LINUX
 
 #include "Platforms/Linux/LinuxWindow.h"

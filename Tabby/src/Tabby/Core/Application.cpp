@@ -1,5 +1,4 @@
 #include "Tabby/Core/Application.h"
-#include "SDL_timer.h"
 #include "Tabby/Renderer/Renderer.h"
 #include "tbpch.h"
 
@@ -89,35 +88,31 @@ void Application::Run()
 
         double time = Time::GetTime();
         Timestep timestep = time - m_LastFrameTime;
+        m_LastFrameTime = time;
 
         // TB_INFO("Time: {0} \n\t\tLast Frame Time: {1}\n\t\tDeltaTime: {2}", time, m_LastFrameTime, timestep);
 
-        if (time != m_LastFrameTime) {
+        ExecuteMainThreadQueue();
 
-            ExecuteMainThreadQueue();
+        if (!m_Minimized) {
+            {
+                TB_PROFILE_SCOPE_NAME("LayerStack OnUpdate");
 
-            if (!m_Minimized) {
-                {
-                    TB_PROFILE_SCOPE_NAME("LayerStack OnUpdate");
-
-                    for (Layer* layer : m_LayerStack)
-                        layer->OnUpdate(timestep);
-                }
-
-                m_ImGuiLayer->Begin();
-                {
-                    TB_PROFILE_SCOPE_NAME("LayerStack OnImGuiRender");
-
-                    for (Layer* layer : m_LayerStack)
-                        layer->OnImGuiRender();
-                }
-                m_ImGuiLayer->End();
+                for (Layer* layer : m_LayerStack)
+                    layer->OnUpdate(timestep);
             }
 
-            m_Window->OnUpdate();
+            m_ImGuiLayer->Begin();
+            {
+                TB_PROFILE_SCOPE_NAME("LayerStack OnImGuiRender");
+
+                for (Layer* layer : m_LayerStack)
+                    layer->OnImGuiRender();
+            }
+            m_ImGuiLayer->End();
         }
 
-        m_LastFrameTime = time;
+        m_Window->OnUpdate();
     }
 }
 

@@ -6,7 +6,7 @@
 
 namespace Tabby {
 
-#ifdef TB_PLATFORM_WEB || TB_PLATFORM_ANDROID
+#if defined(TB_PLATFORM_WEB) || defined(TB_PLATFORM_ANDROID)
 RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGLES3;
 #else
 RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL33;
@@ -19,7 +19,12 @@ Scope<RendererAPI> RendererAPI::Create()
         TB_CORE_ASSERT(false, "No renderer API selected.");
         return nullptr;
     case RendererAPI::API::OpenGL33:
+#if defined(TB_PLATFORM_WEB) || defined(TB_PLATFORM_ANDROID)
+        TB_CORE_ASSERT(false, "Android/Web does not support OpenGL 3.3");
+        return nullptr;
+#else
         return CreateScope<OpenGL33RendererAPI>();
+#endif
     case RendererAPI::API::OpenGLES3:
         return CreateScope<OpenGLES3RendererAPI>();
     }

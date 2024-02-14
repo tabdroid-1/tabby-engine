@@ -1,5 +1,5 @@
 
-#if !defined TB_PLATFORM_WEB
+#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
 
 #include "Font.h"
 #include "tbpch.h"

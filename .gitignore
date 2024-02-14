@@ -1,4 +1,7 @@
+.idea/
 build/
+android/app/.cxx
+android/app/build
 .cache/
 Editor/
 .vscode/
