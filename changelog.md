@@ -1,3 +1,3 @@
-Version: 13-02-2024_1 Alpha
+Version: 15-02-2024_1 Alpha
 Changes:
-- Now runs on android (FINALLY).
+- Fixed GetTime.
