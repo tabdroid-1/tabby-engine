@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
+    <string name="app_name">My Application</string>
+=======
     <string name="app_name">Tabby Engine Android Demo</string>
+>>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
 </resources>

@@ -13,8 +13,8 @@ Todo
     - Use OpenAL instead of miniaudio.
     - Asset manager
     - Animation
-    - Use freetype instead of msdf-atlas-gen
     - Basic networking
+    - Use freetype instead of msdf-atlas-gen
  
 - Low priority
     - Way to Select preffered FPS for application.
@@ -29,7 +29,6 @@ Todo
 
 Bugs
 ----
-- Wierd SDL2 timer related issues(profiles says fps was over 100000 :| ). And max fps stuck at 1000 fps . 
 - CurrentYFrame picks seamingly random coordinates from texture.
 - GLES 3.0 text shader not working.
 - Textures, Sounds and Texts are not visible/working on web builds.

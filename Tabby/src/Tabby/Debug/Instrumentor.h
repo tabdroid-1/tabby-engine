@@ -1,7 +1,5 @@
 #pragma once
 
-#define TB_PROFILE 1
-
 #if !TB_PROFILE || defined(TB_PLATFORM_ANDROID)
 
 #define TB_PROFILE_SCOPE()

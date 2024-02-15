@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.19)
-
 project(tracy)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -11,7 +10,6 @@ file(GLOB_RECURSE PROJECT_SOURCES
         "*.hpp"
         "*.cpp"
         )
-
 
 add_library(${PROJECT_NAME} STATIC
         ${PROJECT_SOURCES}

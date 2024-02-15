@@ -50,8 +50,6 @@ inline OStream& operator<<(OStream& os, glm::qua<T, Q> quaternion)
     return os << glm::to_string(quaternion);
 }
 
-#include <iostream>
-
 // Core log macros
 #define TB_CORE_TRACE(...) ::Tabby::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define TB_CORE_INFO(...) ::Tabby::Log::GetCoreLogger()->info(__VA_ARGS__)
