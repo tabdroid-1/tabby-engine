@@ -10,35 +10,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="245572d3-333c-4dc9-96e9-e609f724994e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../App/src/Base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../App/src/Base.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Platforms/MacOS/MacOSPlatformUtils.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Platforms/MacOS/MacOSPlatformUtils.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Platforms/MacOS/MacOSWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Platforms/MacOS/MacOSWindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/Application.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Instrumentor.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Debug/Instrumentor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/ImGui/ImGuiLayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/ImGui/ImGuiLayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/vendor/SDL2/src/video/SDL_egl.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/vendor/SDL2/src/video/SDL_egl.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/vendor/Tracy/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/vendor/Tracy/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/vendor/Tracy/TracyClient.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/vendor/Tracy/TracyClient.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/vendor/Tracy/libbacktrace/config.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/vendor/Tracy/libbacktrace/config.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tabby/vendor/Tracy/libbacktrace/elf.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/vendor/Tracy/libbacktrace/elf.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Platforms/Android/AndroidPlatformUtils.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Platforms/Android/AndroidPlatformUtils.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Platforms/Android/AndroidWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Platforms/Android/AndroidWindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/EntryPoint.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Tabby/src/Tabby/Core/EntryPoint.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/App.dir/src/Base.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/CMakeFiles/App.dir/src/Base.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/cmake_pch.hxx.pch" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/cmake_pch.hxx.pch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Core/Application.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/Core/Application.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/ImGui/ImGuiLayer.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/CMakeFiles/tabby.dir/src/Tabby/ImGui/ImGuiLayer.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/libtabby.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/SDL2/CMakeFiles/SDL2.dir/src/video/SDL_egl.c.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/Tabby/vendor/SDL2/CMakeFiles/SDL2.dir/src/video/SDL_egl.c.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/build.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/compile_commands.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/compile_commands.json.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/compile_commands.json.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/1q351a4n/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/tools/debug/arm64-v8a/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/tools/debug/arm64-v8a/compile_commands.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/../todo.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/spawnland/tabbyEngineApp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/spawnland/tabbyEngineApp/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,11 +50,49 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[e142e236]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/tabby/.android/avd/Pixel_3a_API_34_extension_level_7_arm64-v8a.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/app">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="tabbyEngineApp" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="tabbyEngineApp" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="tabbyEngineApp" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="tabbyEngineApp" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -66,20 +106,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;customRenderer-android&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/tabby/Projects/C++/TabbyEngine/android&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cf.advertisement.text.has.clang-format": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "git-widget-placeholder": "customRenderer",
+    "last_opened_file_path": "/Users/tabby/Projects/C++/TabbyEngine/android",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.new.ui"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="tabbyEngineApp.app.main" />
