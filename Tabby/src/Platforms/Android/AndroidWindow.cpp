@@ -64,42 +64,21 @@ void AndroidWindow::Init(const WindowProps& props)
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 #endif
         } else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3) {
-<<<<<<< HEAD
-
-=======
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-<<<<<<< HEAD
-=======
-            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
 #if defined(TB_DEBUG)
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 #endif
         }
-<<<<<<< HEAD
-=======
-        // m_Window = SDL_CreateWindow(
-        //     m_Data.Title.c_str(),
-        //     SDL_WINDOWPOS_CENTERED,
-        //     SDL_WINDOWPOS_CENTERED,
-        //     props.Width, props.Height,
-        //     SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
         m_Window = SDL_CreateWindow(
             m_Data.Title.c_str(),
             SDL_WINDOWPOS_CENTERED,
             SDL_WINDOWPOS_CENTERED,
             props.Width, props.Height,
-<<<<<<< HEAD
-            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-=======
             SDL_VIDEO_OPENGL_EGL | SDL_WINDOW_SHOWN);
 
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
         ++s_SDLWindowCount;
     }
 

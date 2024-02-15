@@ -10,13 +10,8 @@ android {
         applicationId = "com.spawnland.tabbyEngineApp"
         minSdk = 23
         targetSdk = 34
-<<<<<<< HEAD
-        versionCode = 1
-        versionName = "1.0"
-=======
         versionCode = 13_02_2024_1
         versionName = "13.02.2024_1"
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -28,20 +23,10 @@ android {
 
     buildTypes {
         release {
-<<<<<<< HEAD
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-        create("customDebugType") {
-            isDebuggable = true
-
-        }
-=======
             isDebuggable = true
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -53,10 +38,7 @@ android {
             version = "3.22.1"
         }
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
     buildFeatures {
         viewBinding = true
     }

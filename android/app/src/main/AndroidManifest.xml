@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-<<<<<<< HEAD
-=======
     <supports-screens
         android:smallScreens="true"
         android:normalScreens="true"
@@ -15,29 +13,19 @@
     <uses-permission android:name="android.permission.READ_MEDIA_*"/>
     <uses-permission android:name="android.permission.WRITE_MEDIA_*"/>
 
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-<<<<<<< HEAD
-=======
         android:appCategory="game"
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
             android:name=".Main"
-<<<<<<< HEAD
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-=======
             android:exported="true"
             android:screenOrientation="landscape"
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode"
@@ -47,7 +35,6 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
->>>>>>> 0be7a4d412b3627228f337d78beff91934d6db7f
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
