@@ -46,7 +46,7 @@ void MacOSWindow::Init(const WindowProps& props)
 
     if (s_SDLWindowCount == 0) {
         TB_PROFILE_SCOPE_NAME("SDL Init");
-        int success = SDL_Init(SDL_INIT_VIDEO);
+        int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
         TB_CORE_ASSERT(success, "Could not initialize GLFW!");
     }
 
@@ -177,6 +177,7 @@ void MacOSWindow::OnUpdate()
     }
 
     m_Context->SwapBuffers();
+    Input::Init();
 }
 
 void MacOSWindow::SetVSync(bool enabled)

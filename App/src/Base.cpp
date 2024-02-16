@@ -89,7 +89,7 @@ void Base::OnUpdate(Tabby::Timestep ts)
         m_GizmoType = ImGuizmo::OPERATION::ROTATE;
 
     fps = 1.0f / ts;
-    TB_INFO("FPS: {0} \n\t\tDeltaTime: {1}", fps, ts);
+    // TB_INFO("FPS: {0} \n\t\tDeltaTime: {1}", fps, ts);
 }
 
 void Base::OnImGuiRender()
