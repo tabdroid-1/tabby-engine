@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Tabby/Core/GamepadCodes.h"
 #include "Tabby/Core/Log.h"
 #include "Tabby/Core/MouseCodes.h"
 #include "Tabby/Math/Math.h"
@@ -76,6 +77,27 @@ public:
             // TB_INFO("Fraction: {0}", hit.fraction);
             // TB_INFO("Tag: {0}", hit.entity.GetComponent<Tabby::TagComponent>().Tag);
         }
+
+        float leftTriggerAxis = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::GAMEPAD_AXIS_LEFT_TRIGGER);
+        float rightTriggerAxis = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::GAMEPAD_AXIS_RIGHT_TRIGGER);
+
+        bool GamepadButtonLeftLeft = Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::GAMEPAD_BUTTON_LEFT_FACE_LEFT);
+        bool GamepadButtonLeftRight = Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::GAMEPAD_BUTTON_LEFT_FACE_RIGHT);
+        bool GamepadButtonLeftUp = Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::GAMEPAD_BUTTON_LEFT_FACE_UP);
+        bool GamepadButtonLeftDown = Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::GAMEPAD_BUTTON_LEFT_FACE_DOWN);
+
+        bool GamepadButtonRightLeft = Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::GAMEPAD_BUTTON_RIGHT_FACE_LEFT);
+        bool GamepadButtonRightRight = Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::GAMEPAD_BUTTON_RIGHT_FACE_RIGHT);
+        bool GamepadButtonRightUp = Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::GAMEPAD_BUTTON_RIGHT_FACE_UP);
+        bool GamepadButtonRightDown = Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
+
+        TB_INFO("Left Left: {0}\n\tLeft Right: {1}\n\tLeft Up: {2}\n\tLeft Down: {3}\n\tRight Left: {4}\n\tRight Right: {5}\n\tRight Up: {6}\n\tRight Down: {7}" //
+            ,
+            GamepadButtonLeftLeft, GamepadButtonLeftRight, GamepadButtonLeftUp, GamepadButtonLeftDown //
+            ,
+            GamepadButtonRightLeft, GamepadButtonRightRight, GamepadButtonRightUp, GamepadButtonRightDown); //
+
+        TB_INFO("Left Trigger Axis: {0}\n\tRight Trigger Axis: {1}", leftTriggerAxis, rightTriggerAxis);
     }
 
     void LateUpdate(Tabby::Timestep ts) override

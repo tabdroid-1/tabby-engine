@@ -15,9 +15,10 @@ Todo
     - Animation
     - Basic networking
     - Use freetype instead of msdf-atlas-gen
- 
-- Low priority
     - Way to Select preffered FPS for application.
+
+- Low priority
+    - Vulkan.
     - C++ reflection maybe?
     - Maybe instead of putting render order to spriterenderer put it in component all entities have.
     - tbpf (TabbyPrefabFormat) format and Prefab editor. (kinda like level editor that generates tbpf format) 

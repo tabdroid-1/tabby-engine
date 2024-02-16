@@ -108,7 +108,7 @@ SoundDevice::~SoundDevice()
 
 SoundDevice* SoundDevice::Get()
 {
-    Init();
+    // Init();
     return s_Instance;
 }
 

@@ -46,7 +46,7 @@ void AndroidWindow::Init(const WindowProps& props)
     SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
     if (s_SDLWindowCount == 0) {
         TB_PROFILE_SCOPE_NAME("SDL Init");
-        int success = SDL_Init(SDL_INIT_VIDEO);
+        int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
         TB_CORE_ASSERT(success, "Could not initialize GLFW!");
     }
 
