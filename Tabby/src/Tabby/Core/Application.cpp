@@ -90,11 +90,11 @@ void Application::Run()
         Timestep timestep = time - m_LastFrameTime;
         m_LastFrameTime = time;
 
-        // TB_INFO("Time: {0} \n\t\tLast Frame Time: {1}\n\t\tDeltaTime: {2}", time, m_LastFrameTime, timestep);
-
         ExecuteMainThreadQueue();
 
-        if (!m_Minimized) {
+        if (!m_Minimized && timestep < 200.0f) { // ts < 200  because ts is really high number in first frame
+                                                 // and that breaks the phyiscs and some other stuff.
+                                                 // this happens because m_LastFrameTime is 0 in first frame.
             {
                 TB_PROFILE_SCOPE_NAME("LayerStack OnUpdate");
 
@@ -113,6 +113,17 @@ void Application::Run()
         }
 
         m_Window->OnUpdate();
+
+        // Framerate limiter. this will do nothing if maxFPS is 0.
+        if (m_Specification.maxFPS > 0.0) {
+            double frameTime = Time::GetTime() - time;
+
+            double frameTimeLimit = 1.0 / m_Specification.maxFPS;
+            if (frameTime < frameTimeLimit) {
+                double sleepTime = frameTimeLimit - frameTime;
+                std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
+            }
+        }
     }
 }
 

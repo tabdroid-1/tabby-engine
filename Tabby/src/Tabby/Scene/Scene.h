@@ -70,6 +70,8 @@ private:
     bool m_IsPaused = false;
     int m_StepFrames = 0;
 
+    float m_FixedUpdateAccumulator = 0;
+
     std::unordered_map<UUID, entt::entity> m_EntityMap;
 
     friend class Entity;

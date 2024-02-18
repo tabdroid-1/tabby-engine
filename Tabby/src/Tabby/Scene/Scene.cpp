@@ -7,6 +7,7 @@
 #include "Tabby/Physics/Physics2D.h"
 #include "Tabby/Renderer/Renderer2D.h"
 
+#include <Tabby/Core/Log.h>
 #include <Tabby/Math/Math.h>
 #include <algorithm>
 #include <cstdint>
@@ -170,6 +171,16 @@ void Scene::OnUpdate(Timestep ts)
 
                 nsc.Instance->Update(ts);
                 nsc.Instance->LateUpdate(ts);
+
+                const double fixedTimeStep = 1.0 / FIXED_UPDATE_RATE;
+
+                // if (ts < 30) // ts < 30 because ts is really high number in first frame
+                m_FixedUpdateAccumulator += ts;
+
+                while (m_FixedUpdateAccumulator >= fixedTimeStep) {
+                    nsc.Instance->FixedUpdate(fixedTimeStep);
+                    m_FixedUpdateAccumulator -= fixedTimeStep;
+                }
             });
         }
 
