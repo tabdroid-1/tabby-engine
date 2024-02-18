@@ -38,7 +38,6 @@ list(APPEND PROJECT_SOURCES
 if (ANDROID)
     add_library(${PROJECT_NAME} SHARED 
         ${PROJECT_SOURCES}
-        # ${TABBY_DIR}/vendor/SDL2/src/main/android/SDL_android_main.c
         )
     include_directories("${TABBY_DIR}/vendor/glm")
     include_directories("${TABBY_DIR}/vendor/spdlog/include")

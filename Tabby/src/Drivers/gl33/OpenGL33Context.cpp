@@ -2,13 +2,13 @@
 #include "Drivers/gl33/GL33.h"
 #include "tbpch.h"
 
-#if !defined(TB_PLATFORM_WEB) || !defined(TB_PLATFORM_ANDROID)
+// #if !defined(TB_PLATFORM_WEB) && !defined(TB_PLATFORM_ANDROID)
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl33.h>
 
 #include <SDL.h>
 
-#if !defined(TB_PLATFORM_ANDROID)
+#if !defined(TB_PLATFORM_ANDROID) && !defined(TB_PLATFORM_WEB)
 #include <TracyOpenGL.hpp>
 #endif
 
@@ -35,7 +35,7 @@ void OpenGL33Context::Init()
 
     GL33::Init(context);
 
-#if !defined(TB_PLATFORM_ANDROID)
+#if !defined(TB_PLATFORM_ANDROID) && !defined(TB_PLATFORM_WEB)
     TracyGpuContext;
 #endif
 
@@ -53,10 +53,10 @@ void OpenGL33Context::SwapBuffers()
 
     SDL_GL_SwapWindow(m_WindowHandle);
 
-#if !defined(TB_PLATFORM_ANDROID)
+#if !defined(TB_PLATFORM_ANDROID) && !defined(TB_PLATFORM_WEB)
     TracyGpuCollect;
 #endif
 }
 
 }
-#endif
+// #endif

@@ -40,7 +40,7 @@ float Input::GetMouseY()
 }
 
 // Controller
-int Input::GetNumOfControllers()
+int Input::GetNumOfGamepads()
 {
     return SDL_NumJoysticks();
 }
@@ -49,16 +49,13 @@ float Input::GetGamepadAxis(int index, GamepadAxis axis)
 {
     float result = 0.0f;
 
-    if (!s_Instance->gamepad)
+    if (!Input::Get()->gamepads[index].SDL_Gamepad)
         return result;
 
-    if (!s_Instance->gamepad[index]->SDL_Gamepad)
-        return result;
-
-    if (s_Instance->gamepad[index]->isGamepad) {
-        result = SDL_GameControllerGetAxis((SDL_GameController*)s_Instance->gamepad[index]->SDL_Gamepad, static_cast<SDL_GameControllerAxis>(axis));
+    if (Input::Get()->gamepads[index].isGamepad) {
+        result = SDL_GameControllerGetAxis((SDL_GameController*)Input::Get()->gamepads[index].SDL_Gamepad, static_cast<SDL_GameControllerAxis>(axis));
     } else {
-        result = SDL_JoystickGetAxis((SDL_Joystick*)s_Instance->gamepad[index]->SDL_Gamepad, axis);
+        result = SDL_JoystickGetAxis((SDL_Joystick*)Input::Get()->gamepads[index].SDL_Gamepad, axis);
     }
 
     return result / 32767.0f;
@@ -66,17 +63,13 @@ float Input::GetGamepadAxis(int index, GamepadAxis axis)
 
 bool Input::IsGamepadButtonPressed(int index, GamepadButtons button)
 {
-    if (!s_Instance->gamepad) {
-        return false;
-    }
-
-    if (!s_Instance->gamepad[index]->SDL_Gamepad)
+    if (!Input::Get()->gamepads[index].SDL_Gamepad)
         return false;
 
-    if (s_Instance->gamepad[index]->isGamepad) {
-        return SDL_GameControllerGetButton((SDL_GameController*)s_Instance->gamepad[index]->SDL_Gamepad, static_cast<SDL_GameControllerButton>(button));
-    } else
-        return SDL_JoystickGetButton((SDL_Joystick*)s_Instance->gamepad[index]->SDL_Gamepad, button);
+    if (Input::Get()->gamepads[index].isGamepad)
+        return SDL_GameControllerGetButton((SDL_GameController*)Input::Get()->gamepads[index].SDL_Gamepad, static_cast<SDL_GameControllerButton>(button));
+    else
+        return SDL_JoystickGetButton((SDL_Joystick*)Input::Get()->gamepads[index].SDL_Gamepad, button);
 }
 }
 

@@ -73,4 +73,12 @@ bool DecomposeTransform(const glm::mat4& transform, glm::vec3& translation, glm:
     return true;
 }
 
+float Abs(float f)
+{
+    if (f > 0)
+        return f;
+    else
+        return f * -1;
+}
+
 }

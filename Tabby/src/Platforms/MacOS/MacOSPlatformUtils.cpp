@@ -2,8 +2,6 @@
 
 #include "Tabby/Utils/PlatformUtils.h"
 
-#include <SDL.h>
-
 namespace Tabby {
 
 double Time::GetTime()

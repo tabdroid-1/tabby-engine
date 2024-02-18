@@ -2,7 +2,6 @@
 #include "Drivers/gl33/GL33.h"
 #include "tbpch.h"
 
-#if !defined(TB_PLATFORM_WEB) || !defined(TB_PLATFORM_ANDROID)
 #include <glad/gl33.h>
 
 namespace Tabby {
@@ -228,4 +227,3 @@ void OpenGL33Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 }
 
 }
-#endif

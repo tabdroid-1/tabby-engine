@@ -34,7 +34,7 @@ void ImGuiLayer::OnAttach()
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
     // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
@@ -109,11 +109,11 @@ void ImGuiLayer::End()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-        // SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+        SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
 
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
-        // SDL_GL_MakeCurrent(static_cast<SDL_Window*>(app.GetWindow().GetNativeWindow()), backup_current_context);
+        SDL_GL_MakeCurrent(static_cast<SDL_Window*>(app.GetWindow().GetNativeWindow()), backup_current_context);
     }
 }
 
