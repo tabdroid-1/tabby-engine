@@ -12,19 +12,21 @@ typedef struct _SDL_Joystick SDL_Joystick;
 
 namespace Tabby {
 
-struct Controller {
+struct GamepadInfo {
     std::string name = "";
     void* SDL_Gamepad = nullptr;
     bool isGamepad = false;
     bool ready = false;
-    int axisCount;
-    int buttonCount;
+    float deadZone = 0.035f;
+    // int axisCount;
+    // int buttonCount;
 };
 
 class Input {
 public:
     static void Init();
-    static void RefreshGamepads();
+
+    static Input* Get() { return s_Instance; }
 
     static bool IsKeyPressed(KeyCode key);
     static bool IsMouseButtonPressed(MouseCode button);
@@ -33,14 +35,16 @@ public:
     static float GetMouseY();
 
     // Controller Stuff
-    static int GetNumOfControllers();
+    static const GamepadInfo& GetGamepadInfo(int index);
+    static void RefreshGamepads();
+    static int GetNumOfGamepads();
     static float GetGamepadAxis(int index, GamepadAxis axis);
     static bool IsGamepadButtonPressed(int index, GamepadButtons button);
 
 private:
     Input();
 
-    Controller* gamepad[MAX_GAMEPADS];
+    GamepadInfo gamepads[MAX_GAMEPADS];
 
 private:
     static Input* s_Instance;

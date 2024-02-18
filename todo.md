@@ -8,14 +8,14 @@ Todo
         - Maybe combine colliders in to one component instead of multiple components.
     - <s>Maybe use SDL2 for window creationg instead of glfw cus it has some problems.</s> Done
     - <s>Fix android.</s> Done
-    - Controller input support.
+    - <s>Controller support. </s> Done
     - Fixed Update for Scripts
+    - Way to Select preffered FPS for application.
     - Use OpenAL instead of miniaudio.
     - Asset manager
     - Animation
     - Basic networking
     - Use freetype instead of msdf-atlas-gen
-    - Way to Select preffered FPS for application.
 
 - Low priority
     - Vulkan.
@@ -32,4 +32,4 @@ Bugs
 ----
 - CurrentYFrame picks seamingly random coordinates from texture.
 - GLES 3.0 text shader not working.
-- Textures, Sounds and Texts are not visible/working on web builds.
+- Textures, Controllers, Sounds and Texts are not visible/working on web builds.

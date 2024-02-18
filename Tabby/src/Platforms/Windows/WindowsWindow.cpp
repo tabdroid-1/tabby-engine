@@ -83,6 +83,8 @@ void WindowsWindow::Init(const WindowProps& props)
 
     SDL_SetWindowData(m_Window, "WindowData", &m_Data);
     SetVSync(false);
+
+    Input::Init();
 }
 
 void WindowsWindow::Shutdown()

@@ -95,6 +95,7 @@ add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
 
 if (WIN32)
+    message(STATUS "Generating scripts for Windows")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
@@ -106,7 +107,8 @@ if (WIN32)
         msdf-atlas-gen 
         tracy 
         )
-elseif (UNIX AND NOT APPLE AND NOT ANDROID)
+elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
+    message(STATUS "Generating scripts for Linux")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
@@ -119,6 +121,7 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID)
         tracy 
         )
 elseif (APPLE)
+    message(STATUS "Generating scripts for Mac")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         tracy 
         imgui
@@ -131,6 +134,7 @@ elseif (APPLE)
         imguizmo
         )
 elseif (EMSCRIPTEN)
+    message(STATUS "Generating scripts for EMSCRIPTEN")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
@@ -139,9 +143,9 @@ elseif (EMSCRIPTEN)
         glm
         yaml-cpp
         imguizmo
-        tracy 
         )
 elseif (ANDROID)
+    message(STATUS "Generating scripts for Android")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
         box2d
@@ -160,7 +164,11 @@ elseif (ANDROID)
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE=1 -DTB_PROFILE=1")
+    if(EMSCRIPTEN)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_PROFILE=1")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE=1 -DTB_PROFILE=1")
+    endif()
     target_compile_definitions(${PROJECT_NAME} PUBLIC TRACY_ENABLE=1 )
 endif()
 

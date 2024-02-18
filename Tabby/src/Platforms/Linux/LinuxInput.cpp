@@ -1,9 +1,12 @@
+#include <Tabby/Core/GamepadCodes.h>
+#include <strings.h>
 #ifdef TB_PLATFORM_LINUX
 
 #include "Tabby/Core/Input.h"
 #include "tbpch.h"
 
 #include "Tabby/Core/Application.h"
+#include "Tabby/Math/Math.h"
 #include <SDL.h>
 
 namespace Tabby {
@@ -36,6 +39,50 @@ float Input::GetMouseX()
 float Input::GetMouseY()
 {
     return GetMousePosition().y;
+}
+
+// Controller
+int Input::GetNumOfGamepads()
+{
+    return SDL_NumJoysticks();
+}
+
+float Input::GetGamepadAxis(int index, GamepadAxis axis)
+{
+    float result = 0.0f;
+
+    if (!Input::Get()->gamepads[index].SDL_Gamepad)
+        return result;
+
+    if (Input::Get()->gamepads[index].isGamepad) {
+        result = SDL_GameControllerGetAxis((SDL_GameController*)Input::Get()->gamepads[index].SDL_Gamepad, static_cast<SDL_GameControllerAxis>(axis));
+    } else {
+        result = SDL_JoystickGetAxis((SDL_Joystick*)Input::Get()->gamepads[index].SDL_Gamepad, axis);
+    }
+
+    // Dividing to clamp it to be between -1 and 1
+    result /= 32767.0f;
+
+    if (Math::Abs(result) >= Input::Get()->gamepads[index].deadZone)
+        return result;
+    else
+        return 0;
+}
+
+bool Input::IsGamepadButtonPressed(int index, GamepadButtons button)
+{
+    if (!Input::Get()->gamepads[index].SDL_Gamepad)
+        return false;
+
+    if (button == Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_TRIGGER)
+        return GetGamepadAxis(index, Gamepad::Axis::GAMEPAD_AXIS_LEFT_TRIGGER) > 0 ? true : false;
+    else if (button == Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_TRIGGER)
+        return GetGamepadAxis(index, Gamepad::Axis::GAMEPAD_AXIS_RIGHT_TRIGGER) > 0 ? true : false;
+
+    if (Input::Get()->gamepads[index].isGamepad)
+        return SDL_GameControllerGetButton((SDL_GameController*)Input::Get()->gamepads[index].SDL_Gamepad, static_cast<SDL_GameControllerButton>(button));
+    else
+        return SDL_JoystickGetButton((SDL_Joystick*)Input::Get()->gamepads[index].SDL_Gamepad, button);
 }
 
 }

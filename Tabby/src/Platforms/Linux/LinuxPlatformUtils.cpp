@@ -1,17 +1,21 @@
-#include <Tabby/Core/Log.h>
 #ifdef TB_PLATFORM_LINUX
 
 #include "Tabby/Core/Application.h"
 #include "Tabby/Utils/PlatformUtils.h"
 #include "tbpch.h"
-
-#include <SDL.h>
+#include <Tabby/Core/Log.h>
 
 namespace Tabby {
 
-float Time::GetTime()
+double Time::GetTime()
 {
-    return static_cast<float>(SDL_GetTicks() / 1000.0f);
+    using namespace std::chrono;
+    system_clock::time_point currentTimePoint = system_clock::now();
+    duration<double> timeSinceEpoch = currentTimePoint.time_since_epoch();
+
+    double result = timeSinceEpoch.count();
+
+    return result;
 }
 
 std::string FileDialogs::OpenFile(const char* filter)

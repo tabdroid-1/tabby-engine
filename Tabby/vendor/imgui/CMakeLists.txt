@@ -23,8 +23,9 @@ add_library(imgui STATIC
 
 if(ANDROID)
 target_link_libraries(imgui GLESv3)
-else()
+elseif(EMSCRIPTEN)
 
+else()
 find_package(OpenGL REQUIRED)
 target_link_libraries(imgui OpenGL::GL)
 endif()
