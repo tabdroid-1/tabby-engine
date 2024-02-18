@@ -174,7 +174,6 @@ void Scene::OnUpdate(Timestep ts)
 
                 const double fixedTimeStep = 1.0 / FIXED_UPDATE_RATE;
 
-                // if (ts < 30) // ts < 30 because ts is really high number in first frame
                 m_FixedUpdateAccumulator += ts;
 
                 while (m_FixedUpdateAccumulator >= fixedTimeStep) {

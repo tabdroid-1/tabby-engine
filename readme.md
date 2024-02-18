@@ -1,7 +1,6 @@
 
 ![TabbyEngine](/Resources/Logo/Tabby_Engine_Logo_And_Name_1024X256.png?raw=true "TabbyEngine")
 
-==============================================================================================
 
 Simple game engine written in C++.
 This engines main focus is compatibility for most New and old platforms.
