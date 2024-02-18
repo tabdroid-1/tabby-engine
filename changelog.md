@@ -1,3 +1,4 @@
-Version: 17-02-2024_1 Alpha
+Version: 18-02-2024_1 Alpha
 Changes:
-- Added Controller support.
+- Added FPS limiter.
+- Added FixedUpdate for scripts.

@@ -100,9 +100,19 @@ public:
         // TB_INFO("Left Trigger Axis: {0}\n\tRight Trigger Axis: {1}", leftTriggerAxis, rightTriggerAxis);
     }
 
+    int lateUpdateCallTime = 0;
+    int fixedUpdateCallTime = 0;
     void LateUpdate(Tabby::Timestep ts) override
     {
         Move(ts);
+
+        TB_INFO("LateUpdate: {0} \n\t\tFixedUpdate: {1}", ++lateUpdateCallTime, fixedUpdateCallTime);
+    }
+
+    void FixedUpdate(Tabby::Timestep ts) override
+    {
+        ++fixedUpdateCallTime;
+        // TB_INFO("FixedUpdate: {0}", ++fixedUpdateCallTime);
     }
 
     void CheckIfShouldFlip()
@@ -155,7 +165,7 @@ public:
         input.x = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::Axis::GAMEPAD_AXIS_LEFT_X);
         input.y = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::Axis::GAMEPAD_AXIS_LEFT_Y);
 
-        TB_INFO("Input: ({0}, {1})", input.x, input.y);
+        // TB_INFO("Input: ({0}, {1})", input.x, input.y);
 
         velocity = { input.x * playerSpeed, input.y * playerSpeed };
 
@@ -178,86 +188,86 @@ public:
             }
         }
 
-        glm::vec2 trigger = { 0.0f, 0.0f };
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_TRIGGER)) {
-            trigger.y = 1;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_TRIGGER)) {
-            trigger.x = 1;
-        }
-        TB_INFO("Gamepad Trigger: {0}, {1}", trigger.x, trigger.y);
-
-        glm::vec2 shoulder = { 0.0f, 0.0f };
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_SHOULDER)) {
-            shoulder.y = 1;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_SHOULDER)) {
-            shoulder.x = 1;
-        }
-        TB_INFO("Gamepad Shoulder: {0}, {1}", shoulder.x, shoulder.y);
-
-        glm::vec2 leftFace = { 0.0f, 0.0f };
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
-            leftFace.x = 1;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_FACE_LEFT)) {
-            leftFace.x = -1;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_FACE_UP)) {
-            leftFace.y = 1;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_FACE_DOWN)) {
-            leftFace.y = -1;
-        }
-        TB_INFO("Gamepad Left Face: {0}, {1}", leftFace.x, leftFace.y);
-
-        glm::vec2 rightFace = { 0.0f, 0.0f };
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) {
-            rightFace.x = 1;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_FACE_LEFT)) {
-            rightFace.x = -1;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_FACE_UP)) {
-            rightFace.y = 1;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) {
-            rightFace.y = -1;
-        }
-        TB_INFO("Gamepad Right Face: {0}, {1}", rightFace.x, rightFace.y);
-
-        glm::vec2 sticks = { 0.0f, 0.0f };
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_THUMB)) {
-            sticks.x = 1;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_THUMB)) {
-            sticks.y = 1;
-        }
-        TB_INFO("Gamepad Sticks: {0}, {1}", sticks.x, sticks.y);
-
-        glm::vec2 miscButton = { 0.0f, 0.0f };
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_MIDDLE_LEFT)) {
-            miscButton.x = 1;
-        }
-
-        bool middelMiddle = false;
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_MIDDLE)) {
-            middelMiddle = true;
-        }
-
-        if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_MIDDLE_RIGHT)) {
-            miscButton.y = 1;
-        }
-        TB_INFO("Gamepad middle: {0}, {1}, {2}", miscButton.x, middelMiddle, miscButton.y);
+        // glm::vec2 trigger = { 0.0f, 0.0f };
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_TRIGGER)) {
+        //     trigger.y = 1;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_TRIGGER)) {
+        //     trigger.x = 1;
+        // }
+        // TB_INFO("Gamepad Trigger: {0}, {1}", trigger.x, trigger.y);
+        //
+        // glm::vec2 shoulder = { 0.0f, 0.0f };
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_SHOULDER)) {
+        //     shoulder.y = 1;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_SHOULDER)) {
+        //     shoulder.x = 1;
+        // }
+        // TB_INFO("Gamepad Shoulder: {0}, {1}", shoulder.x, shoulder.y);
+        //
+        // glm::vec2 leftFace = { 0.0f, 0.0f };
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
+        //     leftFace.x = 1;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_FACE_LEFT)) {
+        //     leftFace.x = -1;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_FACE_UP)) {
+        //     leftFace.y = 1;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_FACE_DOWN)) {
+        //     leftFace.y = -1;
+        // }
+        // TB_INFO("Gamepad Left Face: {0}, {1}", leftFace.x, leftFace.y);
+        //
+        // glm::vec2 rightFace = { 0.0f, 0.0f };
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) {
+        //     rightFace.x = 1;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_FACE_LEFT)) {
+        //     rightFace.x = -1;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_FACE_UP)) {
+        //     rightFace.y = 1;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) {
+        //     rightFace.y = -1;
+        // }
+        // TB_INFO("Gamepad Right Face: {0}, {1}", rightFace.x, rightFace.y);
+        //
+        // glm::vec2 sticks = { 0.0f, 0.0f };
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_LEFT_THUMB)) {
+        //     sticks.x = 1;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_RIGHT_THUMB)) {
+        //     sticks.y = 1;
+        // }
+        // TB_INFO("Gamepad Sticks: {0}, {1}", sticks.x, sticks.y);
+        //
+        // glm::vec2 miscButton = { 0.0f, 0.0f };
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_MIDDLE_LEFT)) {
+        //     miscButton.x = 1;
+        // }
+        //
+        // bool middelMiddle = false;
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_MIDDLE)) {
+        //     middelMiddle = true;
+        // }
+        //
+        // if (Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::Buttons::GAMEPAD_BUTTON_MIDDLE_RIGHT)) {
+        //     miscButton.y = 1;
+        // }
+        // TB_INFO("Gamepad middle: {0}, {1}, {2}", miscButton.x, middelMiddle, miscButton.y);
 
         if (Tabby::Input::IsKeyPressed(Tabby::Key::Escape)) {
             Tabby::Application::Get().Close();

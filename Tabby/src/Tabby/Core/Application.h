@@ -30,6 +30,7 @@ struct ApplicationSpecification {
     std::string Name = "Tabby Application";
     std::string WorkingDirectory;
     ApplicationCommandLineArgs CommandLineArgs;
+    float maxFPS = 0.0f;
 };
 
 class Application {

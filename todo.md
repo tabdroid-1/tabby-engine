@@ -9,13 +9,15 @@ Todo
     - <s>Maybe use SDL2 for window creationg instead of glfw cus it has some problems.</s> Done
     - <s>Fix android.</s> Done
     - <s>Controller support. </s> Done
-    - Fixed Update for Scripts
-    - Way to Select preffered FPS for application.
+    - <s>Way to Select preffered FPS for application.</s> Done
+    - <s>Fixed Update for Scripts </s> Done
+    - Move entities to scene that is being switched to that has "do not delete on load" enabled.
     - Use OpenAL instead of miniaudio.
     - Asset manager
     - Animation
     - Basic networking
     - Use freetype instead of msdf-atlas-gen
+    - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
 
 - Low priority
     - Vulkan.
@@ -27,6 +29,7 @@ Todo
             - levels (basically compilation of prefabs)
         - individual prefabs and/or level can be spawned. preferably each app should hold 1 tbpf file which will hold everything.
         - encryption
+        - this is probably should be in a different repo
 
 Bugs
 ----

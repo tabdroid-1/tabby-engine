@@ -24,6 +24,7 @@ Tabby::Application* Tabby::CreateApplication(Tabby::ApplicationCommandLineArgs a
     spec.Name = "A winfow";
     spec.WorkingDirectory = "";
     spec.CommandLineArgs = args;
+    spec.maxFPS = 0.0f;
 
     return new Sandbox(spec);
 }
