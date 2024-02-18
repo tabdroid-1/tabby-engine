@@ -39,7 +39,7 @@ Supported Graphics Apis
 - OpenGL 3.3
 - OpenGL 3.0 es
 
-(Kinda)Supported Platforms
+Supported Platforms
 -------------------
 - Linux
 - Windows (probably. not tested)
