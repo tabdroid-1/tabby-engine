@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Tabby/Scene/Components.h"
+#include <tbpch.h>
 
 #include "box2d/b2_world.h"
-#include "box2d/box2d.h"
 #include "glm/fwd.hpp"
 #include <Tabby/Core/Assert.h>
 #include <Tabby/Scene/Entity.h>
@@ -41,45 +41,20 @@ namespace Utils {
         TB_CORE_ASSERT(false, "Unknown body type");
         return Rigidbody2DComponent::BodyType::Static;
     }
+
 }
 
 class Scene;
 class Entity;
+class Physics2DContactListener;
+class Physics2DRaycastCallback;
 
-/*
- *
- *
- * Contact listener 2D
- *
- *
- */
-
+// Callback Data Structs
 struct ContactCallback {
     Entity entity;
     Tabby::TransformComponent* transform;
     Tabby::Rigidbody2DComponent* rigidbody;
 };
-
-class Physics2DContactListener : public b2ContactListener {
-public:
-    Physics2DContactListener(Scene* scene, b2World* world);
-
-    void BeginContact(b2Contact* contact);
-    void EndContact(b2Contact* contact);
-    void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
-    void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
-
-private:
-    Scene* m_Scene = nullptr;
-};
-
-/*
- *
- *
- * RayCast callback 2D
- *
- *
- */
 
 struct RaycastHit2D {
     Entity entity;
@@ -90,34 +65,14 @@ struct RaycastHit2D {
     float distance;
     float fraction;
 };
-
-class Physics2DRaycastCallback : public b2RayCastCallback {
-public:
-    Physics2DRaycastCallback(Scene* scene);
-
-    float ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override;
-    void RefreshCallbackInfo(const glm::vec2& rayOrigin, RaycastHit2D* raycastHit);
-
-private:
-    glm::vec2 m_RayOrigin;
-    RaycastHit2D* m_Raycasthit;
-    Scene* m_Scene = nullptr;
-};
-
-/*
- *
- *
- * Physisc 2D
- *
- *
- */
+//----------------------
 
 class Physisc2D {
 public:
     Physisc2D();
     ~Physisc2D();
 
-    static void InitWorld(Scene* scene, glm::vec2& gravity);
+    static void InitWorld(glm::vec2& gravity);
     static void UpdateWorld(float ts, int32_t velocityIterations, int32_t positionIterations);
 
     static RaycastHit2D Raycast(const glm::vec2& origin, const glm::vec2& direction, float distance, int minDepth, int maxDepth);
@@ -127,13 +82,24 @@ public:
     static b2World* GetPhysicsWorld();
 
 private:
+    static void EnqueueBody(Entity entity, b2BodyDef* bodyDef);
+    static void EnqueueFixture(Entity entity, b2FixtureDef* fixtureDef);
+    static void ProcessBodyQueue();
+    static void ProcessFixtureQueue();
+    static bool IsQueueEmpty() { return s_Instance->queueEmpty; }
+
+private:
     b2World* m_PhysicsWorld = nullptr;
     Physics2DContactListener* m_PhysicsContactListener = nullptr;
     Physics2DRaycastCallback* m_PhysicsRaycastCallback = nullptr;
-    Scene* m_Scene = nullptr;
+    std::queue<std::pair<Entity, b2BodyDef*>> bodyQueue;
+    std::queue<std::pair<Entity, b2FixtureDef*>> fixtureQueue;
+
+    bool queueEmpty = true;
 
 private:
     static Physisc2D* s_Instance;
+    friend class Scene;
 };
 
 }

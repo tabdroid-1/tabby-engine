@@ -21,6 +21,7 @@ namespace Tabby {
 
 struct IDComponent {
     UUID ID;
+    bool IsPersistent = false;
 
     IDComponent() = default;
     IDComponent(const IDComponent&) = default;
@@ -46,8 +47,8 @@ struct TransformComponent {
     glm::vec3 LocalRotation = { 0.0f, 0.0f, 0.0f };
     glm::vec3 LocalScale = { 1.0f, 1.0f, 1.0f };
 
-    entt::entity Parent { entt::null };
-    std::vector<entt::entity> Children;
+    std::pair<UUID, entt::entity> Parent;
+    std::vector<std::pair<UUID, entt::entity>> Children;
 
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
@@ -222,34 +223,74 @@ struct Rigidbody2DComponent {
 
     // Storage for runtime
     void* RuntimeBody = nullptr;
+    bool initialized;
 
     Rigidbody2DComponent() = default;
     Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
 
+    // void SetType(BodyType bodyType)
+    // {
+    //
+    //     b2BodyType type;
+    //     switch (bodyType) {
+    //     case BodyType::Static:
+    //         type = b2_staticBody;
+    //         break;
+    //     case BodyType::Dynamic:
+    //         type = b2_dynamicBody;
+    //         break;
+    //     case BodyType::Kinematic:
+    //         type = b2_kinematicBody;
+    //         break;
+    //     default:
+    //         type = b2_dynamicBody;
+    //         break;
+    //     }
+    //
+    //     static_cast<b2Body*>(RuntimeBody)->SetType(type);
+    //     Type = bodyType;
+    // }
+
+    // void SetFixedRotation(bool enable)
+    // {
+    //     static_cast<b2Body*>(RuntimeBody)->SetFixedRotation(enable);
+    //     FixedRotation = enable;
+    // }
+
     void SetVelocity(glm::vec2 velocity)
     {
-        static_cast<b2Body*>(RuntimeBody)->SetLinearVelocity({ velocity.x, velocity.y });
+        if (RuntimeBody)
+            static_cast<b2Body*>(RuntimeBody)->SetLinearVelocity({ velocity.x, velocity.y });
     }
 
     void SetAngularVelocity(float velocity)
     {
-        static_cast<b2Body*>(RuntimeBody)->SetAngularVelocity(velocity);
+        if (RuntimeBody)
+            static_cast<b2Body*>(RuntimeBody)->SetAngularVelocity(velocity);
     }
 
     glm::vec2 GetVelocity() const
     {
-        // return { RuntimeBody->GetLinearVelocity().x, RuntimeBody->GetLinearVelocity().y };
-        return { static_cast<b2Body*>(RuntimeBody)->GetLinearVelocity().x, static_cast<b2Body*>(RuntimeBody)->GetLinearVelocity().y };
+        if (RuntimeBody)
+            return { static_cast<b2Body*>(RuntimeBody)->GetLinearVelocity().x, static_cast<b2Body*>(RuntimeBody)->GetLinearVelocity().y };
+        else
+            return { 0.0f, 0.0f };
     }
 
     float GetAngularVelocity() const
     {
-        return static_cast<b2Body*>(RuntimeBody)->GetAngularVelocity();
+        if (RuntimeBody)
+            return static_cast<b2Body*>(RuntimeBody)->GetAngularVelocity();
+        else
+            return 0.0f;
     }
 
     float GetAngle() const
     {
-        float angleRadians = static_cast<b2Body*>(RuntimeBody)->GetAngle();
+        float angleRadians;
+
+        if (RuntimeBody)
+            angleRadians = static_cast<b2Body*>(RuntimeBody)->GetAngle();
 
         // Convert the angle from radians to degrees
         float angleDegrees = angleRadians * (180.0f / b2_pi);

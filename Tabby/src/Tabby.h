@@ -23,7 +23,7 @@
 #include "Tabby/Scene/Components.h"
 #include "Tabby/Scene/Entity.h"
 #include "Tabby/Scene/Scene.h"
-#include "Tabby/Scene/SceneStateMachine.h"
+#include "Tabby/Scene/SceneManager.h"
 #include "Tabby/Scene/ScriptableEntity.h"
 
 // ---Renderer------------------------

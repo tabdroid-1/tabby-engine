@@ -3,9 +3,8 @@
 
 namespace Tabby {
 
-Entity::Entity(entt::entity handle, Scene* scene)
+Entity::Entity(entt::entity handle)
     : m_EntityHandle(handle)
-    , m_Scene(scene)
 {
 }
 

@@ -6,12 +6,16 @@ Todo
         - <s>2D Raycast</s> Done
         - <s>Return Entity, Collision etc info on body enter callback.</s> Done
         - Maybe combine colliders in to one component instead of multiple components.
+        - Add collision filtering(layer/mask).
     - <s>Maybe use SDL2 for window creationg instead of glfw cus it has some problems.</s> Done
     - <s>Fix android.</s> Done
     - <s>Controller support. </s> Done
     - <s>Way to Select preffered FPS for application.</s> Done
     - <s>Fixed Update for Scripts </s> Done
     - Move entities to scene that is being switched to that has "do not delete on load" enabled.
+        - Update entity handle of childs and parents when switching scene.
+        - <s>maybe engine should have only one entity registy and use that instead of creating new one for each scene </s> Done
+        - Create queue for rigidbody initialization. Else application crashes
     - Use OpenAL instead of miniaudio.
     - Asset manager
     - Animation

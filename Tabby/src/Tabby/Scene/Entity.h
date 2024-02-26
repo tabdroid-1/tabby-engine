@@ -5,29 +5,31 @@
 #include "Tabby/Core/UUID.h"
 
 #include "entt/entt.hpp"
+#include <utility>
 
 namespace Tabby {
 
 class Entity {
 public:
     Entity() = default;
-    Entity(entt::entity handle, Scene* scene);
+    Entity(entt::entity handle);
     Entity(const Entity& other) = default;
 
     template <typename T, typename... Args>
     T& AddComponent(Args&&... args)
     {
         TB_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
-        T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
-        m_Scene->OnComponentAdded<T>(*this, component);
+        T& component = SceneManager::GetRegistry().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        SceneManager::GetCurrentScene()->OnComponentAdded<T>(*this, component);
+
         return component;
     }
 
     template <typename T, typename... Args>
     T& AddOrReplaceComponent(Args&&... args)
     {
-        T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
-        m_Scene->OnComponentAdded<T>(*this, component);
+        T& component = SceneManager::GetRegistry().emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        SceneManager::GetCurrentScene()->OnComponentAdded<T>(*this, component);
         return component;
     }
 
@@ -35,26 +37,30 @@ public:
     T& GetComponent()
     {
         TB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
-        return m_Scene->m_Registry.get<T>(m_EntityHandle);
+        return SceneManager::GetRegistry().get<T>(m_EntityHandle);
     }
 
     template <typename T>
     bool HasComponent()
     {
-        return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
+        return SceneManager::GetRegistry().any_of<T>(m_EntityHandle);
     }
 
     template <typename T>
     void RemoveComponent()
     {
         TB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
-        m_Scene->m_Registry.remove<T>(m_EntityHandle);
+        SceneManager::GetRegistry().remove<T>(m_EntityHandle);
     }
 
     void AddChild(Entity& child)
     {
-        child.GetComponent<TransformComponent>().Parent = this->m_EntityHandle;
-        this->GetComponent<TransformComponent>().Children.emplace_back(child.m_EntityHandle);
+        auto& transformComponent = GetComponent<TransformComponent>();
+        child.GetComponent<TransformComponent>().Parent = std::make_pair(GetUUID(), this->m_EntityHandle);
+        transformComponent.Children.emplace_back(std::make_pair(child.GetUUID(), child.m_EntityHandle));
+
+        if (GetComponent<IDComponent>().IsPersistent)
+            UpdateIsPersistent(true);
     }
 
     operator bool() const { return m_EntityHandle != entt::null; }
@@ -66,7 +72,7 @@ public:
 
     bool operator==(const Entity& other) const
     {
-        return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
+        return m_EntityHandle == other.m_EntityHandle;
     }
 
     bool operator!=(const Entity& other) const
@@ -75,10 +81,20 @@ public:
     }
 
 private:
-    entt::entity GetEntityHandle() { return m_EntityHandle; }
+    void UpdateIsPersistent(bool enable)
+    {
+        auto& transformComponent = GetComponent<TransformComponent>();
+        GetComponent<IDComponent>().IsPersistent = enable;
 
+        for (auto& child : transformComponent.Children) {
+            Entity childEntity = { child.second };
+            childEntity.UpdateIsPersistent(enable);
+        }
+    }
+
+private:
+    entt::entity GetEntityHandle() { return m_EntityHandle; }
     entt::entity m_EntityHandle { entt::null };
-    Scene* m_Scene = nullptr;
 
     friend class Scene;
 };

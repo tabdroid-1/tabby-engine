@@ -5,7 +5,9 @@
 #include "Tabby/Core/Log.h"
 #include "Tabby/Core/Window.h"
 #include "Tabby/Math/Math.h"
-#include "Tabby/Scene/SceneStateMachine.h"
+#include "Tabby/Scene/SceneManager.h"
+#include <Scenes/Test2Scene.h>
+#include <Scenes/Test3Scene.h>
 #include <Scenes/TestScene.h>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -33,11 +35,13 @@ void Base::OnAttach()
     Tabby::Application::Get().GetWindow().SetVSync(false);
 
     Tabby::Ref<TestScene> testScene = Tabby::CreateRef<TestScene>();
+    Tabby::Ref<Test2Scene> test2Scene = Tabby::CreateRef<Test2Scene>();
+    Tabby::Ref<Test3Scene> test3Scene = Tabby::CreateRef<Test3Scene>();
 
-    Tabby::SceneStateMachine::Add("Test", testScene);
-    Tabby::SceneStateMachine::SwitchTo("Test");
-
-    m_SceneHierarchyPanel.SetContext(Tabby::SceneStateMachine::GetCurrentScene());
+    Tabby::SceneManager::Add("Test", testScene);
+    Tabby::SceneManager::Add("Test2", test2Scene);
+    Tabby::SceneManager::Add("Test3", test3Scene);
+    Tabby::SceneManager::SwitchTo("Test");
 
     Tabby::FramebufferSpecification fbSpec;
     fbSpec.Attachments = { Tabby::FramebufferTextureFormat::RGBA8, Tabby::FramebufferTextureFormat::RED_INTEGER, Tabby::FramebufferTextureFormat::RGBA8 };
@@ -54,7 +58,9 @@ void Base::OnDetach()
 void Base::OnUpdate(Tabby::Timestep ts)
 {
 
-    Tabby::SceneStateMachine::GetCurrentScene()->OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
+    m_SceneHierarchyPanel.SetContext(Tabby::SceneManager::GetCurrentScene());
+
+    Tabby::SceneManager::GetCurrentScene()->OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
 
     if (Tabby::FramebufferSpecification spec = m_Framebuffer->GetSpecification();
         m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
@@ -73,7 +79,7 @@ void Base::OnUpdate(Tabby::Timestep ts)
 
     m_Framebuffer->ClearAttachment(1, -1);
 
-    Tabby::SceneStateMachine::Update(ts);
+    Tabby::SceneManager::Update(ts);
     OnOverlayRender();
 
     m_Framebuffer->Unbind();
@@ -96,7 +102,7 @@ void Base::OnImGuiRender()
 {
     TB_PROFILE_SCOPE();
 
-    Tabby::SceneStateMachine::DrawImGui();
+    Tabby::SceneManager::DrawImGui();
 
     // Note: Switch this to true to enable dockspace
     static bool dockspaceOpen = true;
@@ -207,7 +213,7 @@ void Base::OnImGuiRender()
         // Camera
 
         // Runtime camera from entity
-        auto cameraEntity = Tabby::SceneStateMachine::GetCurrentScene()->GetPrimaryCameraEntity();
+        auto cameraEntity = Tabby::SceneManager::GetCurrentScene()->GetPrimaryCameraEntity();
         const auto& camera = cameraEntity.GetComponent<Tabby::CameraComponent>().Camera;
         const glm::mat4& cameraProjection = camera.GetProjection();
         glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<Tabby::TransformComponent>().GetTransform());
@@ -247,7 +253,7 @@ void Base::OnImGuiRender()
 }
 void Base::OnOverlayRender()
 {
-    Tabby::Entity camera = Tabby::SceneStateMachine::GetCurrentScene()->GetPrimaryCameraEntity();
+    Tabby::Entity camera = Tabby::SceneManager::GetCurrentScene()->GetPrimaryCameraEntity();
     if (!camera)
         return;
 
@@ -256,7 +262,7 @@ void Base::OnOverlayRender()
     if (m_ShowPhysicsColliders) {
         // Box Colliders
         {
-            auto view = Tabby::SceneStateMachine::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::BoxCollider2DComponent>();
+            auto view = Tabby::SceneManager::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::BoxCollider2DComponent>();
             for (auto entity : view) {
                 auto [tc, bc2d] = view.get<Tabby::TransformComponent, Tabby::BoxCollider2DComponent>(entity);
 
@@ -274,7 +280,7 @@ void Base::OnOverlayRender()
 
         // Circle Colliders
         {
-            auto view = Tabby::SceneStateMachine::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::CircleCollider2DComponent>();
+            auto view = Tabby::SceneManager::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::CircleCollider2DComponent>();
             for (auto entity : view) {
                 auto [tc, cc2d] = view.get<Tabby::TransformComponent, Tabby::CircleCollider2DComponent>(entity);
 
