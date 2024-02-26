@@ -3,7 +3,7 @@
 
 #include "Entity.h"
 #include <Tabby/Core/Log.h>
-#include <Tabby/Physics/Physics2D.h>
+#include <Tabby/Physics/2D/Physics2D.h>
 #include <Tabby/Scene/Components.h>
 
 namespace Tabby {

@@ -7,8 +7,6 @@
 #include "TestScene.h"
 #include "imgui/imgui.h"
 
-Tabby::Ref<Tabby::Texture2D> texture = nullptr;
-
 TestScene::TestScene()
 {
 }
@@ -23,23 +21,31 @@ void TestScene::OnActivate()
     Tabby::Entity RigidbodyEntity = CreateEntity("RigidbodyEntity2");
     {
 
+        auto& idC = RigidbodyEntity.GetComponent<Tabby::IDComponent>();
+        idC.IsPersistent = true;
+
         RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.x = 0.25f;
         RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 5.25f;
-        auto& rigidbodyComponent = RigidbodyEntity.AddComponent<Tabby::Rigidbody2DComponent>();
-        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
 
         auto& boxColliderComponent = RigidbodyEntity.AddComponent<Tabby::BoxCollider2DComponent>();
         boxColliderComponent.Size = { 0.19f, 0.24f };
+
+        auto& rigidbodyComponent = RigidbodyEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
     }
 
     Tabby::Entity GroundEntity = CreateEntity("RigidbodyEntity");
     {
+        auto& idC = GroundEntity.GetComponent<Tabby::IDComponent>();
+        idC.IsPersistent = true;
+
         GroundEntity.GetComponent<Tabby::TransformComponent>().Translation.y = -2;
-        auto& rigidbodyComponent = GroundEntity.AddComponent<Tabby::Rigidbody2DComponent>();
-        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Static;
 
         auto& boxColliderComponent = GroundEntity.AddComponent<Tabby::BoxCollider2DComponent>();
         boxColliderComponent.Size = { 4.0f, 0.5f };
+
+        auto& rigidbodyComponent = GroundEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Static;
     }
 
     Tabby::Entity CameraEntity = CreateEntity("CameraEntity");
@@ -69,13 +75,14 @@ void TestScene::OnActivate()
 
     Tabby::Entity SpriteEntity = CreateEntity("SpriteEntity");
     {
+        auto& idC = SpriteEntity.GetComponent<Tabby::IDComponent>();
+        idC.IsPersistent = true;
+
         SpriteEntity.AddChild(ChildEntity);
 
-        SpriteEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 5.9f;
+        SpriteEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3.9f;
         auto& spriteComponent = SpriteEntity.AddComponent<Tabby::SpriteRendererComponent>();
-        // texture = Tabby::Texture2D::Create("assets/textures/Alive.png");
-        texture = Tabby::Texture2D::Create("assets/spritesheets/player/player_packed.png");
-        spriteComponent.Texture = texture;
+        spriteComponent.Texture = Tabby::Texture2D::Create("assets/spritesheets/player/player_packed.png");
         spriteComponent.renderOrder = 1;
         spriteComponent.hFrames = 10;
         spriteComponent.vFrames = 5;
@@ -86,11 +93,11 @@ void TestScene::OnActivate()
         // soundComponent.Sound = Tabby::CreateRef<Tabby::SoundBuffer>("assets/audio/sunflower-street.mp3");
         // soundComponent.Playing = true;
 
-        auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
-        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
-
         auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
         boxColliderComponent.Size = { 0.19f, 0.24f };
+
+        auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
 
         auto& playerMovement = SpriteEntity.AddComponent<Tabby::NativeScriptComponent>();
         playerMovement.Bind<PlayerMove>();

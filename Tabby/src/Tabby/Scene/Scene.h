@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Tabby/Scene/SceneManager.h>
 #include <tbpch.h>
 
 #include "Tabby/Core/Timestep.h"
@@ -24,6 +25,7 @@ public:
     virtual void DrawImGui() {}; // Draws mostly debugging related ui using Dear ImGui.
 
     static Ref<Scene> Copy(Ref<Scene> other);
+    // static Ref<Scene> Copy(Ref<Scene> other, bool onlyEntitiesShouldNotBeDestroyedOnLoad = false);
 
     Entity CreateEntity(const std::string& name = std::string());
     Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
@@ -53,18 +55,17 @@ public:
     template <typename... Components>
     auto GetAllEntitiesWith()
     {
-        return m_Registry.view<Components...>();
+        return SceneManager::GetRegistry().view<Components...>();
     }
 
 private:
     template <typename T>
     void OnComponentAdded(Entity entity, T& component);
 
-    void OnPhysics2DStart();
-    void OnPhysics2DStop();
+    void GetPersistentEntities(Ref<Scene> other);
 
 private:
-    entt::registry m_Registry;
+    // entt::registry m_Registry;
     uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
     bool m_IsRunning = false;
     bool m_IsPaused = false;
@@ -77,6 +78,7 @@ private:
     friend class Entity;
     friend class SceneSerializer;
     friend class SceneHierarchyPanel;
+    friend class SceneManager;
 };
 
 }

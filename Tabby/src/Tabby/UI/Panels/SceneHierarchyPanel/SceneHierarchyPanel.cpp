@@ -38,8 +38,8 @@ void SceneHierarchyPanel::OnImGuiRender()
     ImGui::Begin("Scene Hierarchy");
 
     if (m_Context) {
-        m_Context->m_Registry.each([&](auto entityID) {
-            Entity entity { entityID, m_Context.get() };
+        SceneManager::GetRegistry().each([&](auto entityID) {
+            Entity entity { entityID };
             DrawEntityNode(entity);
         });
 

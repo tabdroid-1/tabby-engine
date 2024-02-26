@@ -4,9 +4,9 @@
 #include "Tabby/Core/Log.h"
 #include "Tabby/Core/MouseCodes.h"
 #include "Tabby/Math/Math.h"
-#include "Tabby/Physics/Physics2D.h"
+#include "Tabby/Physics/2D/Physics2D.h"
 #include "Tabby/Scene/Components.h"
-#include "Tabby/Scene/SceneStateMachine.h"
+#include "Tabby/Scene/SceneManager.h"
 #include "glm/fwd.hpp"
 #include <Tabby/Scene/ScriptableEntity.h>
 
@@ -32,7 +32,7 @@ public:
     {
         playerTransform = &GetComponent<Tabby::TransformComponent>();
 
-        Tabby::Entity RigidbodyEntity = Tabby::SceneStateMachine::GetCurrentScene()->CreateEntity("RigidbodyEntity2");
+        Tabby::Entity RigidbodyEntity = Tabby::SceneManager::GetCurrentScene()->CreateEntity("RigidbodyEntity2");
         {
 
             RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.y = -1.1f;
@@ -54,7 +54,7 @@ public:
 
         if (Tabby::Input::IsKeyPressed(Tabby::Key::X)) {
 
-            // Tabby::Entity RigidbodyEntity = Tabby::SceneStateMachine::GetCurrentScene()->CreateEntity("RigidbodyEntity2");
+            // Tabby::Entity RigidbodyEntity = Tabby::SceneManager::GetCurrentScene()->CreateEntity("RigidbodyEntity2");
             // {
             //
             //     RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.x = 0.25f;
@@ -100,18 +100,18 @@ public:
         // TB_INFO("Left Trigger Axis: {0}\n\tRight Trigger Axis: {1}", leftTriggerAxis, rightTriggerAxis);
     }
 
-    int lateUpdateCallTime = 0;
-    int fixedUpdateCallTime = 0;
+    // int lateUpdateCallTime = 0;
+    // int fixedUpdateCallTime = 0;
     void LateUpdate(Tabby::Timestep ts) override
     {
         Move(ts);
 
-        TB_INFO("LateUpdate: {0} \n\t\tFixedUpdate: {1}", ++lateUpdateCallTime, fixedUpdateCallTime);
+        // TB_INFO("LateUpdate: {0} \n\t\tFixedUpdate: {1}", ++lateUpdateCallTime, fixedUpdateCallTime);
     }
 
     void FixedUpdate(Tabby::Timestep ts) override
     {
-        ++fixedUpdateCallTime;
+        // ++fixedUpdateCallTime;
         // TB_INFO("FixedUpdate: {0}", ++fixedUpdateCallTime);
     }
 
@@ -147,19 +147,27 @@ public:
             playerTransform.Rotation.y += 10 * dt;
         }
 
-        // if (Tabby::Input::IsKeyPressed(Tabby::Key::D)
-        //     || Tabby::Input::IsGamepadButtonPressed(0, Tabby::Gamepad::GAMEPAD_BUTTON_LEFT_FACE_LEFT)) {
-        //     input.x = 1;
-        // }
-        // if (Tabby::Input::IsKeyPressed(Tabby::Key::A)) {
-        //     input.x = -1;
-        // }
+        if (Tabby::Input::IsKeyPressed(Tabby::Key::D)) {
+            input.x = 1;
+        }
+        if (Tabby::Input::IsKeyPressed(Tabby::Key::A)) {
+            input.x = -1;
+        }
 
         if (Tabby::Input::IsKeyPressed(Tabby::Key::W)) {
             input.y = 1;
+            if (Tabby::SceneManager::GetCurrentSceneName() != "Test")
+                Tabby::SceneManager::SwitchTo("Test");
         }
         if (Tabby::Input::IsKeyPressed(Tabby::Key::S)) {
             input.y = -1;
+            if (Tabby::SceneManager::GetCurrentSceneName() != "Test2")
+                Tabby::SceneManager::SwitchTo("Test2");
+        }
+        if (Tabby::Input::IsKeyPressed(Tabby::Key::Q)) {
+            input.y = -1;
+            if (Tabby::SceneManager::GetCurrentSceneName() != "Test3")
+                Tabby::SceneManager::SwitchTo("Test3");
         }
 
         input.x = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::Axis::GAMEPAD_AXIS_LEFT_X);
