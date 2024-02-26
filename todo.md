@@ -12,16 +12,18 @@ Todo
     - <s>Controller support. </s> Done
     - <s>Way to Select preffered FPS for application.</s> Done
     - <s>Fixed Update for Scripts </s> Done
-    - Move entities to scene that is being switched to that has "do not delete on load" enabled.
-        - Update entity handle of childs and parents when switching scene.
+    - <s>Move entities to scene that is being switched to that has "do not delete on load" enabled</s>.
+        - <s>Update entity handle of childs and parents when switching scene.</s> No longer needed
         - <s>maybe engine should have only one entity registy and use that instead of creating new one for each scene </s> Done
-        - Create queue for rigidbody initialization. Else application crashes
+        - <s>Create queue for rigidbody initialization. Else application crashes </s>
     - Use OpenAL instead of miniaudio.
     - Asset manager
     - Animation
     - Basic networking
     - Use freetype instead of msdf-atlas-gen
+    - Clean up the code, add comments etc.
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
+
 
 - Low priority
     - Vulkan.
