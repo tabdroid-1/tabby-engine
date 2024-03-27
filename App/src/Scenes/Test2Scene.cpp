@@ -3,7 +3,6 @@
 
 #include "Tabby/Core/Base.h"
 #include "Tabby/Scene/Components.h"
-#include "Tabby/Sound/SoundBuffer.h"
 #include "Test2Scene.h"
 #include "imgui/imgui.h"
 

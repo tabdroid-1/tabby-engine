@@ -48,7 +48,7 @@ void Physisc2D::InitWorld(glm::vec2& gravity)
 
 void Physisc2D::UpdateWorld(float ts, int32_t velocityIterations, int32_t positionIterations)
 {
-    TB_CORE_ASSERT(!s_Instance, "Physisc2D have to be initialized first!");
+    TB_CORE_ASSERT(s_Instance, "Physisc2D have to be initialized first!");
     s_Instance->m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
 }
 

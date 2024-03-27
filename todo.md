@@ -1,5 +1,7 @@
 Todo
----- 
+----
+
+
 - High priority
     - Physics stuff. (raycast triggers etc) 
         - <s>every 2d physics related stuff to Physics2D</s> Done
@@ -12,23 +14,26 @@ Todo
     - <s>Controller support. </s> Done
     - <s>Way to Select preffered FPS for application.</s> Done
     - <s>Fixed Update for Scripts </s> Done
-    - <s>Move entities to scene that is being switched to that has "do not delete on load" enabled</s>.
+    - <s>Move entities to scene that is being switched to that has "do not delete on load" enabled</s>. Done
         - <s>Update entity handle of childs and parents when switching scene.</s> No longer needed
         - <s>maybe engine should have only one entity registy and use that instead of creating new one for each scene </s> Done
-        - <s>Create queue for rigidbody initialization. Else application crashes </s>
-    - Use OpenAL instead of miniaudio.
+        - <s>Create queue for rigidbody initialization. Else application crashes </s> Done
+    - <s>Use OpenAL instead of miniaudio. </s> Done
+        - <s>Play SFX and delete when not needed. </s> Done 
+        - <s>Audio streaming for long audios. </s> Done after not noticing stupid mistake for 3 weeks.
     - Asset manager
     - Animation
     - Basic networking
     - Use freetype instead of msdf-atlas-gen
     - Clean up the code, add comments etc.
+    - Multithreading
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
 
 
 - Low priority
-    - Vulkan.
-    - C++ reflection maybe?
-    - Maybe instead of putting render order to spriterenderer put it in component all entities have.
+    - Create a function that prints current output device name and a function to pick wich audio device you want to use.
+    - Create pop-up showing error on release builds. 
+    - Splashscreen
     - tbpf (TabbyPrefabFormat) format and Prefab editor. (kinda like level editor that generates tbpf format) 
         - tbpf file will contain
             - entity prefabs(player, npc, level elemets etc.)
@@ -36,6 +41,13 @@ Todo
         - individual prefabs and/or level can be spawned. preferably each app should hold 1 tbpf file which will hold everything.
         - encryption
         - this is probably should be in a different repo
+    - Maybe instead of putting render order to spriterenderer put it in component all entities have.
+    - Vulkan.
+    - C++ reflection
+
+- Non-engine related
+    - Documentation
+    - Build scripts
 
 Bugs
 ----

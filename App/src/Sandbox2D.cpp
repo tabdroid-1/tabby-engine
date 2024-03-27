@@ -19,8 +19,8 @@ void Sandbox2D::OnAttach()
 
     Tabby::Renderer2D::SetLineWidth(10.0f);
 
-    m_CheckerboardTexture = Tabby::Texture2D::Create("assets/textures/Checkerboard.png");
-    m_NoTexture = Tabby::Texture2D::Create("assets/textures/Tabby.png");
+    m_CheckerboardTexture = Tabby::Texture2D::Create("textures/Checkerboard.png");
+    m_NoTexture = Tabby::Texture2D::Create("textures/Tabby.png");
 }
 
 void Sandbox2D::OnDetach()

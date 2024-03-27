@@ -143,7 +143,7 @@ Ref<Font> Font::GetDefault()
 {
     static Ref<Font> DefaultFont;
     if (!DefaultFont)
-        DefaultFont = CreateRef<Font>("assets/fonts/opensans/OpenSans-Regular.ttf");
+        DefaultFont = CreateRef<Font>("fonts/opensans/OpenSans-Regular.ttf");
 
     return DefaultFont;
 }

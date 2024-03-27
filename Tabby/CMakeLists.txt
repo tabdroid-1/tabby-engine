@@ -30,7 +30,8 @@ set(ENTT "${PROJECT_VENDOR_DIR}/entt")
 set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
 set(IMGUIZMO "${PROJECT_VENDOR_DIR}/imguizmo")
 set(TRACY "${PROJECT_VENDOR_DIR}/Tracy")
-set(MINIAUDIO "${PROJECT_VENDOR_DIR}/miniaudio")
+set(OPENLAL "${PROJECT_VENDOR_DIR}/openal-soft")
+set(LIBSNDFILE "${PROJECT_VENDOR_DIR}/libsndfile")
 
 
 # Box2d
@@ -64,6 +65,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
         ${GLM}
         ${SPDLOG}/include
+        ${OPENLAL}/include
+        ${LIBSNDFILE}/include
         )
 
 include_directories(SYSTEM src)
@@ -94,6 +97,11 @@ add_subdirectory(${BOX2D} EXCLUDE_FROM_ALL)
 add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
 
+# set(LIBTYPE "STATIC" CACHE STRING "Set LibType to static for openal" FORCE)
+# set(ALSOFT_EXAMPLES OFF CACHE BOOL "Disable example builds" FORCE)
+# add_subdirectory(${OPENLAL})
+add_subdirectory(${LIBSNDFILE})
+
 if (WIN32)
     message(STATUS "Generating scripts for Windows")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
@@ -108,6 +116,9 @@ if (WIN32)
         tracy 
         )
 elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
+
+    find_package(OpenAL)
+
     message(STATUS "Generating scripts for Linux")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
@@ -119,6 +130,8 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
         imguizmo
         msdf-atlas-gen 
         tracy 
+        OpenAL::OpenAL
+        sndfile
         )
 elseif (APPLE)
     message(STATUS "Generating scripts for Mac")
@@ -167,7 +180,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
     if(EMSCRIPTEN)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_PROFILE=1")
     else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE=1 -DTB_PROFILE=1")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE=1 -DTB_DEBUG=1 -DTB_PROFILE=1")
     endif()
     target_compile_definitions(${PROJECT_NAME} PUBLIC TRACY_ENABLE=1 )
 endif()

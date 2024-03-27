@@ -6,6 +6,9 @@
 #include "Components.h"
 #include "Tabby/Physics/2D/Physics2D.h"
 #include "Tabby/Renderer/Renderer2D.h"
+// #include <Tabby/Audio/AudioManager.h>
+// #include <Tabby/Audio/AudioSource.h>
+#include <Tabby/Audio/AudioEngine.h>
 
 #include <Tabby/Core/Log.h>
 #include <Tabby/Math/Math.h>
@@ -232,20 +235,6 @@ void Scene::OnUpdate(Timestep ts)
 
     if (!m_IsPaused || m_StepFrames-- > 0) {
 
-        // Apply transform to children
-        {
-            auto view = SceneManager::GetRegistry().view<TransformComponent>();
-
-            for (auto entity : view) {
-                auto& transform = SceneManager::GetRegistry().get<TransformComponent>(entity);
-
-                for (auto& child : transform.Children) {
-                    auto& childTransform = SceneManager::GetRegistry().get<TransformComponent>(child.second);
-                    childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
-                }
-            };
-        }
-
         // Update scripts
         {
             SceneManager::GetRegistry().view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
@@ -292,22 +281,34 @@ void Scene::OnUpdate(Timestep ts)
                 transform.Rotation.z = Math::RAD2DEG * body->GetAngle();
             }
         }
+
+        // Apply transform to children
+        {
+            auto view = SceneManager::GetRegistry().view<TransformComponent>();
+
+            for (auto entity : view) {
+                auto& transform = SceneManager::GetRegistry().get<TransformComponent>(entity);
+
+                for (auto& child : transform.Children) {
+                    auto& childTransform = SceneManager::GetRegistry().get<TransformComponent>(child.second);
+                    childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
+                }
+            };
+        }
     }
 
     // Sound
     {
+        // Audio::Engine::polling_thread();
         auto view = SceneManager::GetRegistry().view<SoundComponent>();
         for (auto e : view) {
             Entity entity = { e };
             auto& sc = entity.GetComponent<SoundComponent>();
 
-            sc.Sound->SetGain(sc.Gain);
+            // sc.Sound->SetGain(sc.Gain);
 
-            if (sc.Sound && sc.Playing && !sc.Sound->isPlaying()) {
-                sc.Sound->Play();
-            } else if (sc.Sound && !sc.Playing && sc.Sound->isPlaying()) {
-                sc.Sound->Pause();
-            }
+            // if (sc.Playing)
+            //     sc.Sound->Play();
         }
     }
 

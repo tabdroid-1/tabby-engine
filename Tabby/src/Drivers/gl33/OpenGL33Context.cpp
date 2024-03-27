@@ -44,7 +44,13 @@ void OpenGL33Context::Init()
     TB_CORE_INFO("  Renderer: {0}", GL33::GL()->GetString(GL_RENDERER));
     TB_CORE_INFO("  Version: {0}", GL33::GL()->GetString(GL_VERSION));
 
-    TB_CORE_ASSERT(GLVersion.major > 3 || (GLVersion.major == 3 && GLVersion.minor >= 3), "Tabby requires at least OpenGL version 3.3!");
+    std::string version = reinterpret_cast<const char*>(GL33::GL()->GetString(GL_VERSION));
+    size_t dotPosition = version.find('.');
+
+    int major = std::stoi(version.substr(0, dotPosition));
+    int minor = std::stoi(version.substr(dotPosition + 1));
+
+    TB_CORE_ASSERT(major > 3 || (major == 3 && minor >= 3), "Tabby requires at least OpenGL version 3.3!");
 }
 
 void OpenGL33Context::SwapBuffers()
