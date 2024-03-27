@@ -9,7 +9,6 @@
 #include "entt/entt.hpp"
 #include "glm/fwd.hpp"
 #include <Tabby/Math/Math.h>
-#include <Tabby/Sound/SoundBuffer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -183,10 +182,10 @@ struct CameraComponent {
     CameraComponent(const CameraComponent&) = default;
 };
 
-class SoundBuffer;
+// class AudioSource;
 
 struct SoundComponent {
-    Ref<SoundBuffer> Sound;
+    // Ref<AudioSource> Sound;
     float Gain = 1.0f;
     bool Playing = false;
     bool Loop = false;

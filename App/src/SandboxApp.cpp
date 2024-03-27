@@ -22,7 +22,7 @@ Tabby::Application* Tabby::CreateApplication(Tabby::ApplicationCommandLineArgs a
 {
     ApplicationSpecification spec;
     spec.Name = "A winfow";
-    spec.WorkingDirectory = "";
+    spec.WorkingDirectory = "assets";
     spec.CommandLineArgs = args;
     spec.maxFPS = 0.0f;
 

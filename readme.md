@@ -26,7 +26,7 @@ External Dependencies
   - yaml-cpp
   - msdf-atlas-gen
   - tracy profiler
-  - miniaudio
+  - OpenAL-Soft 
 
 - Manual installition might be required
   - Freetype
@@ -100,3 +100,4 @@ Special Thanks
 - Jonny Hotbody
 - Peppino Spaghetti
 - Soilder from TF2
+- 2008 Toyota Corolla

@@ -36,7 +36,7 @@ void OpenGLES3Context::Init()
     GladGLES2Context* context = (GladGLES2Context*)calloc(1, sizeof(GladGLES2Context));
     TB_CORE_ASSERT(context, "Failed to initialize GLES3 context!");
 
-#if defined(TB_PLATFORM_WEB) || defined(TB_PLATFORM_WEB)
+#if !defined(TB_PLATFORM_ANDROID)
     int status = gladLoadGLES2Context(context, (GLADloadfunc)SDL_GL_GetProcAddress);
 #elif defined(TB_PLATFORM_ANDROID)
     // SDL_SysWMinfo info;
@@ -139,7 +139,13 @@ void OpenGLES3Context::Init()
     TB_CORE_INFO("  Renderer: {0}", GLES3::GL()->GetString(GL_RENDERER));
     TB_CORE_INFO("  Version: {0}", GLES3::GL()->GetString(GL_VERSION));
 
-    TB_CORE_ASSERT(GLVersion.major > 3 || (GLVersion.major == 3 && GLVersion.minor >= 0), "Tabby requires at least OpenGL ES version 3.0!");
+    std::string version = reinterpret_cast<const char*>(GLES3::GL()->GetString(GL_VERSION));
+    size_t dotPosition = version.find('.');
+
+    int major = std::stoi(version.substr(0, dotPosition));
+    int minor = std::stoi(version.substr(dotPosition + 1));
+
+    TB_CORE_ASSERT(major > 3 || (major == 3 && minor >= 0), "Tabby requires at least OpenGL ES version 3.0!");
 }
 
 void OpenGLES3Context::SwapBuffers()

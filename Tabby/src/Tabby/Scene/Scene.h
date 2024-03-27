@@ -25,7 +25,6 @@ public:
     virtual void DrawImGui() {}; // Draws mostly debugging related ui using Dear ImGui.
 
     static Ref<Scene> Copy(Ref<Scene> other);
-    // static Ref<Scene> Copy(Ref<Scene> other, bool onlyEntitiesShouldNotBeDestroyedOnLoad = false);
 
     Entity CreateEntity(const std::string& name = std::string());
     Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
@@ -65,7 +64,6 @@ private:
     void GetPersistentEntities(Ref<Scene> other);
 
 private:
-    // entt::registry m_Registry;
     uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
     bool m_IsRunning = false;
     bool m_IsPaused = false;
