@@ -92,8 +92,8 @@ void TestScene::OnActivate()
         auto& soundComponent = SpriteEntity.AddComponent<Tabby::SoundComponent>();
 
         // Stream Audio
-        // Tabby::Audio::Engine::SetPlayerMusic("audio/sunflower-street.wav");
-        // Tabby::Audio::Engine::PlayMusicPlayer();
+        Tabby::Audio::Engine::SetPlayerMusic("audio/sunflower-street.wav");
+        Tabby::Audio::Engine::PlayMusicPlayer();
 
         // Load whole audio in to a buffer
         Tabby::Audio::Engine::PlaySfx("music/sunflower-street.wav");
