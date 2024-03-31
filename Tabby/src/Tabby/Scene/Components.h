@@ -37,6 +37,13 @@ struct TagComponent {
     }
 };
 
+struct HierarchyNodeComponent {
+    std::pair<UUID, entt::entity> Parent;
+    std::vector<std::pair<UUID, entt::entity>> Children;
+
+    HierarchyNodeComponent() = default;
+};
+
 struct TransformComponent {
     glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
     glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
@@ -46,8 +53,8 @@ struct TransformComponent {
     glm::vec3 LocalRotation = { 0.0f, 0.0f, 0.0f };
     glm::vec3 LocalScale = { 1.0f, 1.0f, 1.0f };
 
-    std::pair<UUID, entt::entity> Parent;
-    std::vector<std::pair<UUID, entt::entity>> Children;
+    // std::pair<UUID, entt::entity> Parent;
+    // std::vector<std::pair<UUID, entt::entity>> Children;
 
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
@@ -358,7 +365,7 @@ struct ComponentGroup {
 };
 
 using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
-    CircleRendererComponent, CameraComponent, SoundComponent,
+    CircleRendererComponent, CameraComponent, SoundComponent, HierarchyNodeComponent,
     NativeScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent,
     CircleCollider2DComponent, TextComponent>;
 

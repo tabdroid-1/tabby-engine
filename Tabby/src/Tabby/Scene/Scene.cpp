@@ -172,6 +172,7 @@ Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
     Entity entity = { SceneManager::GetRegistry().create() };
     entity.AddComponent<IDComponent>(uuid);
     entity.AddComponent<TransformComponent>();
+    entity.AddComponent<HierarchyNodeComponent>();
     auto& tag = entity.AddComponent<TagComponent>();
     tag.Tag = name.empty() ? "Entity" : name;
 
@@ -185,8 +186,10 @@ void Scene::DestroyEntity(Entity entity)
     if (entity.HasComponent<Rigidbody2DComponent>()) {
         auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
-        if (rb2d.RuntimeBody)
+        if (rb2d.RuntimeBody) {
             Physisc2D::GetPhysicsWorld()->DestroyBody((b2Body*)rb2d.RuntimeBody);
+            rb2d.RuntimeBody = nullptr;
+        }
     }
 
     if (entity.HasComponent<NativeScriptComponent>()) {
@@ -195,8 +198,57 @@ void Scene::DestroyEntity(Entity entity)
 
         nsc.DestroyScript(&nsc);
     }
+
+    auto& hc = entity.GetComponent<HierarchyNodeComponent>();
+    auto& tc = entity.GetComponent<TransformComponent>();
+    auto& id_component = entity.GetComponent<IDComponent>();
+
+    for (auto& child : hc.Children) {
+        HierarchyNodeComponent& child_node_component = Entity(child.second).GetComponent<HierarchyNodeComponent>();
+        child_node_component.Parent = hc.Parent.first == 0 ? std::make_pair(UUID(0), entt::null) : hc.Parent;
+    }
+    if (hc.Parent.first.Valid()) {
+        Entity parent = Entity(hc.Parent.second);
+        HierarchyNodeComponent& parent_node_component = parent.GetComponent<HierarchyNodeComponent>();
+
+        for (auto& child : hc.Children)
+            parent_node_component.Children.push_back(child);
+
+        for (auto i = parent_node_component.Children.begin(); i != parent_node_component.Children.end(); i++) {
+            if (i->first == id_component.ID) {
+                parent_node_component.Children.erase(i);
+                break;
+            }
+        }
+    }
     m_EntityMap.erase(entity.GetUUID());
     SceneManager::GetRegistry().destroy(entity);
+}
+
+void Scene::DestroyEntityWithChildren(Entity entity)
+{
+    if (entity.HasComponent<Rigidbody2DComponent>()) {
+        auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+
+        if (rb2d.RuntimeBody) {
+            Physisc2D::GetPhysicsWorld()->DestroyBody((b2Body*)rb2d.RuntimeBody);
+            rb2d.RuntimeBody = nullptr;
+        }
+    }
+
+    if (entity.HasComponent<NativeScriptComponent>()) {
+
+        auto& nsc = entity.GetComponent<NativeScriptComponent>();
+
+        nsc.DestroyScript(&nsc);
+    }
+
+    IDComponent uuid_component = entity.GetComponent<IDComponent>();
+    HierarchyNodeComponent& hierarchy_node_component = entity.GetComponent<HierarchyNodeComponent>();
+    for (auto& child : hierarchy_node_component.Children) {
+        DestroyEntityWithChildren(Entity(child.second));
+    }
+    DestroyEntity(entity);
 }
 
 void Scene::OnStart()
@@ -287,9 +339,10 @@ void Scene::OnUpdate(Timestep ts)
             auto view = SceneManager::GetRegistry().view<TransformComponent>();
 
             for (auto entity : view) {
+                auto& hierarchy_node_component = SceneManager::GetRegistry().get<HierarchyNodeComponent>(entity);
                 auto& transform = SceneManager::GetRegistry().get<TransformComponent>(entity);
 
-                for (auto& child : transform.Children) {
+                for (auto& child : hierarchy_node_component.Children) {
                     auto& childTransform = SceneManager::GetRegistry().get<TransformComponent>(child.second);
                     childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
                 }
@@ -471,6 +524,11 @@ void Scene::OnComponentAdded<SoundComponent>(Entity entity, SoundComponent& comp
 
 template <>
 void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+{
+}
+
+template <>
+void Scene::OnComponentAdded<HierarchyNodeComponent>(Entity entity, HierarchyNodeComponent& component)
 {
 }
 

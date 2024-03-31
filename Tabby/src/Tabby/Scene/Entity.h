@@ -55,9 +55,9 @@ public:
 
     void AddChild(Entity& child)
     {
-        auto& transformComponent = GetComponent<TransformComponent>();
-        child.GetComponent<TransformComponent>().Parent = std::make_pair(GetUUID(), this->m_EntityHandle);
-        transformComponent.Children.emplace_back(std::make_pair(child.GetUUID(), child.m_EntityHandle));
+        auto& hierarchy_node_component = GetComponent<HierarchyNodeComponent>();
+        child.GetComponent<HierarchyNodeComponent>().Parent = std::make_pair(GetUUID(), this->m_EntityHandle);
+        hierarchy_node_component.Children.emplace_back(std::make_pair(child.GetUUID(), child.m_EntityHandle));
 
         if (GetComponent<IDComponent>().IsPersistent)
             UpdateIsPersistent(true);
@@ -83,10 +83,10 @@ public:
 private:
     void UpdateIsPersistent(bool enable)
     {
-        auto& transformComponent = GetComponent<TransformComponent>();
+        auto& hierarchy_node_component = GetComponent<HierarchyNodeComponent>();
         GetComponent<IDComponent>().IsPersistent = enable;
 
-        for (auto& child : transformComponent.Children) {
+        for (auto& child : hierarchy_node_component.Children) {
             Entity childEntity = { child.second };
             childEntity.UpdateIsPersistent(enable);
         }

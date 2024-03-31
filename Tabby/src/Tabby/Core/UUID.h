@@ -23,8 +23,7 @@
 //     }
 // };
 
-#include <cstdint> // Include <cstdint>
-#include <functional> // Include <functional>
+#include <tbpch.h>
 
 namespace Tabby {
 
@@ -33,6 +32,9 @@ public:
     UUID();
     UUID(uint64_t uuid);
     UUID(const UUID&) = default;
+
+    uint64_t Get() const { return m_UUID; }
+    bool Valid() const { return m_UUID != 0; }
 
     operator uint64_t() const { return m_UUID; }
 
