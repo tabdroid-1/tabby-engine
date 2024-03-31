@@ -68,9 +68,18 @@ void TestScene::OnActivate()
         textComponent.TextString = "Opensans";
     }
 
+    Tabby::Entity ChildChildEntity = CreateEntity("ChildEntity");
+    {
+        auto& spriteComponent = ChildChildEntity.AddComponent<Tabby::SpriteRendererComponent>();
+
+        ChildChildEntity.GetComponent<Tabby::TransformComponent>().LocalTranslation.x = 0.55f;
+    }
+
     Tabby::Entity ChildEntity = CreateEntity("ChildEntity");
     {
         auto& spriteComponent = ChildEntity.AddComponent<Tabby::SpriteRendererComponent>();
+
+        ChildEntity.AddChild(ChildChildEntity);
     }
 
     Tabby::Entity SpriteEntity = CreateEntity("SpriteEntity");
@@ -95,8 +104,8 @@ void TestScene::OnActivate()
         Tabby::Audio::Engine::SetPlayerMusic("audio/sunflower-street.wav");
         Tabby::Audio::Engine::PlayMusicPlayer();
 
-        // Load whole audio in to a buffer
-        Tabby::Audio::Engine::PlaySfx("music/sunflower-street.wav");
+        // // Load whole audio in to a buffer
+        // Tabby::Audio::Engine::PlaySfx("music/sunflower-street.wav");
 
         soundComponent.Playing = true;
 
@@ -110,6 +119,8 @@ void TestScene::OnActivate()
         playerMovement.Bind<PlayerMove>();
         auto playerMovementScript = static_cast<PlayerMove*>(playerMovement.Instance);
     }
+
+    Tabby::SceneManager::GetCurrentScene()->DestroyEntityWithChildren(ChildEntity);
 }
 
 void TestScene::DrawImGui()
