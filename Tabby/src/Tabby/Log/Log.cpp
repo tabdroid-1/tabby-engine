@@ -1,4 +1,4 @@
-#include "Tabby/Core/Log.h"
+#include "Tabby/Log/Log.h"
 #include "tbpch.h"
 
 #include <spdlog/sinks/basic_file_sink.h>
@@ -10,8 +10,8 @@
 
 namespace Tabby {
 
-Ref<spdlog::logger> Log::s_CoreLogger;
-Ref<spdlog::logger> Log::s_ClientLogger;
+Shared<spdlog::logger> Log::s_CoreLogger;
+Shared<spdlog::logger> Log::s_ClientLogger;
 
 void Log::Init()
 {

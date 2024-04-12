@@ -1,15 +1,10 @@
 #include "Drivers/gles3/OpenGLES3Shader.h"
 #include "Drivers/gles3/GLES3.h"
-#include "Tabby/Core/Timer.h"
 #include "tbpch.h"
 
-#include <Tabby/Core/Log.h>
-#include <fstream>
 #include <glad/gles3.h>
 
-#include <dirent.h>
 #include <glm/gtc/type_ptr.hpp>
-#include <string>
 #ifdef TB_PLATFORM_WEB
 #include <emscripten.h>
 #include <emscripten/fetch.h>

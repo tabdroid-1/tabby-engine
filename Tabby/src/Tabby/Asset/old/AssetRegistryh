@@ -1,0 +1,30 @@
+#pragma once
+
+#include <Tabby.h>
+#include <Tabby/Asset/Asset.h>
+
+namespace Tabby {
+
+class AssetRegistry {
+public:
+    AssetRegistry();
+    ~AssetRegistry();
+
+    static void Init();
+    static void Shutdown();
+
+    static void MarkRequiredAssetsForLoad(const std::vector<std::string>& requiredAssetsPaths);
+
+    static void RefreshAssets();
+
+private:
+    void ReadDirectoryRecursively(const std::string& path);
+
+private:
+    std::unordered_map<std::string, Ref<Asset>> m_Assets;
+
+private:
+    static AssetRegistry* s_Instance;
+};
+
+}

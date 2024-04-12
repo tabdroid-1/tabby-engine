@@ -142,7 +142,7 @@ void OpenGLES3Context::Init()
     std::string version = reinterpret_cast<const char*>(GLES3::GL()->GetString(GL_VERSION));
     size_t dotPosition = version.find('.');
 
-    int major = std::stoi(version.substr(0, dotPosition));
+    int major = std::stoi(version.substr(dotPosition - 1));
     int minor = std::stoi(version.substr(dotPosition + 1));
 
     TB_CORE_ASSERT(major > 3 || (major == 3 && minor >= 0), "Tabby requires at least OpenGL ES version 3.0!");

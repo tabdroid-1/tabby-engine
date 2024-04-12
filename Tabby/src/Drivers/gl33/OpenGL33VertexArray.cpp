@@ -65,7 +65,7 @@ void OpenGL33VertexArray::Unbind() const
     GL33::GL()->BindVertexArray(0);
 }
 
-void OpenGL33VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
+void OpenGL33VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuffer)
 {
     TB_PROFILE_SCOPE();
 
@@ -129,7 +129,7 @@ void OpenGL33VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
     m_VertexBuffers.push_back(vertexBuffer);
 }
 
-void OpenGL33VertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
+void OpenGL33VertexArray::SetIndexBuffer(const Shared<IndexBuffer>& indexBuffer)
 {
     TB_PROFILE_SCOPE();
 

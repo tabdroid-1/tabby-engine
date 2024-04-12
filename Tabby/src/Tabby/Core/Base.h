@@ -46,9 +46,9 @@ constexpr Scope<T> CreateScope(Args&&... args)
 }
 
 template <typename T>
-using Ref = std::shared_ptr<T>;
+using Shared = std::shared_ptr<T>;
 template <typename T, typename... Args>
-constexpr Ref<T> CreateRef(Args&&... args)
+constexpr Shared<T> CreateShared(Args&&... args)
 {
     return std::make_shared<T>(std::forward<Args>(args)...);
 }
@@ -56,4 +56,4 @@ constexpr Ref<T> CreateRef(Args&&... args)
 }
 
 #include "Tabby/Core/Assert.h"
-#include "Tabby/Core/Log.h"
+#include "Tabby/Log/Log.h"

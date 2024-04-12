@@ -1,5 +1,7 @@
 #include "SceneHierarchyPanel.h"
 #include "Tabby/Scene/Components.h"
+#include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Asset/Importers/TextureImporter.h>
 
 #include "Tabby/UI/UI.h"
 #include "box2d/b2_body.h"
@@ -22,12 +24,12 @@
 
 namespace Tabby {
 
-SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
+SceneHierarchyPanel::SceneHierarchyPanel(const Shared<Scene>& context)
 {
     SetContext(context);
 }
 
-void SceneHierarchyPanel::SetContext(const Ref<Scene>& context)
+void SceneHierarchyPanel::SetContext(const Shared<Scene>& context)
 {
     m_Context = context;
     m_SelectionContext = {};
@@ -320,11 +322,11 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
                 const wchar_t* path = (const wchar_t*)payload->Data;
                 std::filesystem::path texturePath(path);
-                Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
-                if (texture->IsLoaded())
-                    component.Texture = texture;
-                else
-                    TB_WARN("Could not load texture {0}", texturePath.filename().string());
+                AssetHandle texture = AssetManager::Get()->LoadAssetSource(texturePath.string());
+                // if (texture->IsLoaded())
+                component.Texture = texture;
+                // else
+                //     TB_WARN("Could not load texture {0}", texturePath.filename().string());
             }
             ImGui::EndDragDropTarget();
         }

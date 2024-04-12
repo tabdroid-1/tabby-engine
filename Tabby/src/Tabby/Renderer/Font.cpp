@@ -14,7 +14,7 @@
 namespace Tabby {
 
 template <typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
-static Ref<Texture2D> CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
+static Shared<Texture> CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
     const msdf_atlas::FontGeometry& fontGeometry, uint32_t width, uint32_t height)
 {
     msdf_atlas::GeneratorAttributes attributes;
@@ -34,8 +34,8 @@ static Ref<Texture2D> CreateAndCacheAtlas(const std::string& fontName, float fon
     spec.Format = ImageFormat::RGB8;
     spec.GenerateMips = false;
 
-    Ref<Texture2D> texture = Texture2D::Create(spec);
-    texture->SetData((void*)bitmap.pixels, bitmap.width * bitmap.height * 3);
+    Shared<Texture> texture = Texture::Create(spec, 0);
+    texture->SetData(Buffer((void*)bitmap.pixels, bitmap.width * bitmap.height * 3));
     return texture;
 }
 
@@ -139,11 +139,11 @@ Font::~Font()
     delete m_Data;
 }
 
-Ref<Font> Font::GetDefault()
+Shared<Font> Font::GetDefault()
 {
-    static Ref<Font> DefaultFont;
+    static Shared<Font> DefaultFont;
     if (!DefaultFont)
-        DefaultFont = CreateRef<Font>("fonts/opensans/OpenSans-Regular.ttf");
+        DefaultFont = CreateShared<Font>("fonts/opensans/OpenSans-Regular.ttf");
 
     return DefaultFont;
 }

@@ -1,8 +1,8 @@
 #include "Tabby/Renderer/OrthographicCameraController.h"
 #include "tbpch.h"
 
-#include "Tabby/Core/Input.h"
-#include "Tabby/Core/KeyCodes.h"
+#include "Tabby/Input/Input.h"
+#include "Tabby/Input/KeyCodes.h"
 
 namespace Tabby {
 

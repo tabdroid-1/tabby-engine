@@ -6,7 +6,7 @@
 #include "Tabby/Renderer/UniformBuffer.h"
 #include "Tabby/Renderer/VertexArray.h"
 
-#include <Tabby/Core/Log.h>
+#include <Tabby/Asset/AssetManager.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -61,22 +61,22 @@ struct Renderer2DData {
     static const uint32_t MaxIndices = MaxQuads * 6;
     static const uint32_t MaxTextureSlots = 16; // TODO: RenderCaps
 
-    Ref<VertexArray> QuadVertexArray;
-    Ref<VertexBuffer> QuadVertexBuffer;
-    Ref<Shader> QuadShader;
-    Ref<Texture2D> WhiteTexture;
+    Shared<VertexArray> QuadVertexArray;
+    Shared<VertexBuffer> QuadVertexBuffer;
+    Shared<Shader> QuadShader;
+    Shared<Texture> WhiteTexture;
 
-    Ref<VertexArray> CircleVertexArray;
-    Ref<VertexBuffer> CircleVertexBuffer;
-    Ref<Shader> CircleShader;
+    Shared<VertexArray> CircleVertexArray;
+    Shared<VertexBuffer> CircleVertexBuffer;
+    Shared<Shader> CircleShader;
 
-    Ref<VertexArray> LineVertexArray;
-    Ref<VertexBuffer> LineVertexBuffer;
-    Ref<Shader> LineShader;
+    Shared<VertexArray> LineVertexArray;
+    Shared<VertexBuffer> LineVertexBuffer;
+    Shared<Shader> LineShader;
 
-    Ref<VertexArray> TextVertexArray;
-    Ref<VertexBuffer> TextVertexBuffer;
-    Ref<Shader> TextShader;
+    Shared<VertexArray> TextVertexArray;
+    Shared<VertexBuffer> TextVertexBuffer;
+    Shared<Shader> TextShader;
 
     uint32_t QuadIndexCount = 0;
     QuadVertex* QuadVertexBufferBase = nullptr;
@@ -96,12 +96,12 @@ struct Renderer2DData {
 
     float LineWidth = 2.0f;
 
-    std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
+    std::array<Shared<Texture>, MaxTextureSlots> TextureSlots;
     uint32_t TextureSlotIndex = 1; // 0 = white texture
 
     glm::vec4 QuadVertexPositions[4];
 
-    Ref<Texture2D> FontAtlasTexture;
+    Shared<Texture> FontAtlasTexture;
 
     Renderer2D::Statistics Stats;
 
@@ -109,7 +109,7 @@ struct Renderer2DData {
         glm::mat4 ViewProjection;
     };
     CameraData CameraBuffer;
-    Ref<UniformBuffer> CameraUniformBuffer;
+    Shared<UniformBuffer> CameraUniformBuffer;
 };
 
 static Renderer2DData s_Data;
@@ -146,7 +146,7 @@ void Renderer2D::Init()
         offset += 4;
     }
 
-    Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
+    Shared<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
     s_Data.QuadVertexArray->SetIndexBuffer(quadIB);
     delete[] quadIndices;
 
@@ -186,9 +186,9 @@ void Renderer2D::Init()
     s_Data.TextVertexArray->SetIndexBuffer(quadIB);
     s_Data.TextVertexBufferBase = new TextVertex[s_Data.MaxVertices];
 
-    s_Data.WhiteTexture = Texture2D::Create(TextureSpecification());
+    s_Data.WhiteTexture = Texture::Create(TextureSpecification(), 0);
     uint32_t whiteTextureData = 0xffffffff;
-    s_Data.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+    s_Data.WhiteTexture->SetData(Buffer(&whiteTextureData, sizeof(uint32_t)));
 
     int32_t samplers[s_Data.MaxTextureSlots];
     for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
@@ -350,12 +350,12 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
     DrawQuad(transform, color);
 }
 
-void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor)
 {
     DrawQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColor);
 }
 
-void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor)
 {
     TB_PROFILE_SCOPE();
 
@@ -392,7 +392,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, in
     s_Data.Stats.QuadCount++;
 }
 
-void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
+void Renderer2D::DrawQuad(const glm::mat4& transform, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
 {
     TB_PROFILE_SCOPE();
 
@@ -434,7 +434,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& text
     s_Data.Stats.QuadCount++;
 }
 
-void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int horizontalFrames, int verticalFrames, int currentXFrame, int currentYFrame, int entityID)
+void Renderer2D::DrawQuad(const glm::mat4& transform, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor, int horizontalFrames, int verticalFrames, int currentXFrame, int currentYFrame, int entityID)
 
 {
     TB_PROFILE_SCOPE();
@@ -499,12 +499,12 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
     DrawQuad(transform, color);
 }
 
-void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor)
 {
     DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColor);
 }
 
-void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor)
 {
     TB_PROFILE_SCOPE();
 
@@ -589,19 +589,20 @@ void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, in
 
 void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
 {
-    if (src.Texture)
+    if (AssetManager::Get()->HasAsset(src.Texture)) {
         // DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
-        DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, src.hFrames, src.vFrames, src.xFrame, src.yFrame, entityID);
-    else
+        Shared<Texture> texture = AssetManager::Get()->GetAsset<Texture>(src.Texture);
+        DrawQuad(transform, texture, src.TilingFactor, src.Color, src.hFrames, src.vFrames, src.xFrame, src.yFrame, entityID);
+    } else
         DrawQuad(transform, src.Color, entityID);
 }
 
 #if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
-void Renderer2D::DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID)
+void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID)
 {
     const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
     const auto& metrics = fontGeometry.getMetrics();
-    Ref<Texture2D> fontAtlas = font->GetAtlasTexture();
+    Shared<Texture> fontAtlas = font->GetAtlasTexture();
 
     s_Data.FontAtlasTexture = fontAtlas;
 
@@ -729,5 +730,4 @@ Renderer2D::Statistics Renderer2D::GetStats()
 {
     return s_Data.Stats;
 }
-
 }

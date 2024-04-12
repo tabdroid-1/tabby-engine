@@ -3,8 +3,8 @@
 #include <Tabby/Scene/SceneManager.h>
 #include <tbpch.h>
 
-#include "Tabby/Core/Timestep.h"
-#include "Tabby/Core/UUID.h"
+#include <Tabby/Core/Time/Timestep.h>
+#include <Tabby/Core/UUID.h>
 
 #include "entt/entt.hpp"
 
@@ -24,7 +24,7 @@ public:
     virtual void OnDeactivate() {}; // Called when switched to other scene.
     virtual void DrawImGui() {}; // Draws mostly debugging related ui using Dear ImGui.
 
-    static Ref<Scene> Copy(Ref<Scene> other);
+    static Shared<Scene> Copy(Shared<Scene> other);
 
     Entity CreateEntity(const std::string& name = std::string());
     Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
@@ -62,7 +62,7 @@ private:
     template <typename T>
     void OnComponentAdded(Entity entity, T& component);
 
-    void GetPersistentEntities(Ref<Scene> other);
+    void GetPersistentEntities(Shared<Scene> other);
 
 private:
     uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;

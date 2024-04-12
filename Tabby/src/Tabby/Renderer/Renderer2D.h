@@ -25,17 +25,17 @@ public:
     // Primitives
     static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
     static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
-    static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-    static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+    static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Shared<Texture>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+    static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Shared<Texture>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
     static void DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
-    static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), int entityID = -1);
-    static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int horizontalFrames, int verticalFrames, int currentXFrame, int currentYFrame, int entityID);
+    static void DrawQuad(const glm::mat4& transform, const Shared<Texture>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), int entityID = -1);
+    static void DrawQuad(const glm::mat4& transform, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor, int horizontalFrames, int verticalFrames, int currentXFrame, int currentYFrame, int entityID);
 
     static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color);
     static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color);
-    static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-    static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+    static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Shared<Texture>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+    static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Shared<Texture>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
     static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness = 1.0f, float fade = 0.005f, int entityID = -1);
     static void DrawCircle(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color, float thickness, float fade);
@@ -54,7 +54,7 @@ public:
     };
 
 #if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
-    static void DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID = -1);
+    static void DrawString(const std::string& string, Shared<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID = -1);
     static void DrawString(const std::string& string, const glm::mat4& transform, const TextComponent& component, int entityID = -1);
 #endif
 

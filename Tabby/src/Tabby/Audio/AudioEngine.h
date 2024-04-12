@@ -11,6 +11,7 @@ namespace Audio {
     class Engine {
     public:
         static void Init();
+        static void Shutdown();
 
         static float GetVolume();
         static void SetVolume(float newVolume);
@@ -32,6 +33,7 @@ namespace Audio {
 
     private:
         Engine();
+        ~Engine();
 
         void EnginePollingThread();
 
@@ -61,6 +63,8 @@ namespace Audio {
             std::string musicFileName;
             std::ifstream musicFile;
             std::size_t cursor;
+
+            bool playing;
 
         private:
             const int NumBuffers = 4;

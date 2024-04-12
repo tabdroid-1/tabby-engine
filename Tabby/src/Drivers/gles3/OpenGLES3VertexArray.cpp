@@ -65,7 +65,7 @@ void OpenGLES3VertexArray::Unbind() const
     GLES3::GL()->BindVertexArray(0);
 }
 
-void OpenGLES3VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
+void OpenGLES3VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuffer)
 {
     // TB_PROFILE_FUNCTION();
 
@@ -129,7 +129,7 @@ void OpenGLES3VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer
     m_VertexBuffers.push_back(vertexBuffer);
 }
 
-void OpenGLES3VertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
+void OpenGLES3VertexArray::SetIndexBuffer(const Shared<IndexBuffer>& indexBuffer)
 {
     // TB_PROFILE_FUNCTION();
 

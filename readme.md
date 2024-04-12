@@ -7,7 +7,7 @@ This engines main focus is compatibility for most New and old platforms.
 Engine is mainly for 2D games but has 3d elements. Further 3D support planned.
 
 In this engine you mostly do everything using code.
-There is Prefab/Level editor planned since its hard to make levels using just code.
+There is Level editor planned since its hard to make levels using just code.
 
 Engine architecture is based on Hazel engine.
 

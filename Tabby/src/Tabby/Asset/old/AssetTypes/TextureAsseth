@@ -1,0 +1,22 @@
+#pragma once
+
+#include <Tabby/Asset/Asset.h>
+#include <Tabby/Renderer/Texture.h>
+
+namespace Tabby {
+
+class TextureAsset : public Asset {
+public:
+    TextureAsset(const std::string& path)
+        : Asset(path)
+    {
+    }
+
+private:
+    void Load() override;
+    void Unload() override;
+
+    bool IsDataLoaded() override;
+};
+
+}

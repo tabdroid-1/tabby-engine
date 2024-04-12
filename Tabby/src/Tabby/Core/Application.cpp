@@ -3,6 +3,7 @@
 #include "tbpch.h"
 
 #include "Tabby/Utils/PlatformUtils.h"
+#include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Audio/AudioEngine.h>
 
 namespace Tabby {
@@ -23,6 +24,7 @@ Application::Application(const ApplicationSpecification& specification)
     m_Window = Window::Create(WindowProps(m_Specification.Name));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
+    AssetManager::Init();
     Audio::Engine::Init();
     Renderer::Init();
 
@@ -33,8 +35,11 @@ Application::Application(const ApplicationSpecification& specification)
 Application::~Application()
 {
     TB_PROFILE_SCOPE();
-    // AudioManager::Shutdown();
+    Audio::Engine::Shutdown();
     Renderer::Shutdown();
+
+    AssetManager::Get()->FullUnload();
+    AssetManager::Shutdown();
 }
 
 void Application::PushLayer(Layer* layer)

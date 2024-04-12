@@ -1,13 +1,14 @@
 #include "SceneManager.h"
 
 #include "Tabby/Scene/Scene.h"
+#include <Tabby/Asset/AssetManager.h>
 
 namespace Tabby {
 
 SceneManager* SceneManager::s_Instance = nullptr;
-std::pair<std::string, Ref<Scene>> SceneManager::curScene;
+std::pair<std::string, Shared<Scene>> SceneManager::curScene;
 std::string SceneManager::nextSceneName = "";
-entt::registry SceneManager::m_Registry;
+entt::registry SceneManager::m_EntityRegistry;
 
 SceneManager::SceneManager()
     : scenes(0)
@@ -34,7 +35,7 @@ void SceneManager::DrawImGui()
     }
 }
 
-void SceneManager::Add(const std::string& sceneName, Ref<Tabby::Scene> scene)
+void SceneManager::Add(const std::string& sceneName, Shared<Tabby::Scene> scene)
 {
 
     if (!s_Instance) {
@@ -110,7 +111,7 @@ void SceneManager::private_SwitchTo(std::string SceneName)
     }
 }
 
-Ref<Tabby::Scene> SceneManager::GetCurrentScene()
+Shared<Tabby::Scene> SceneManager::GetCurrentScene()
 {
     return curScene.second;
 }
@@ -122,7 +123,7 @@ const std::string& SceneManager::GetCurrentSceneName()
 
 entt::registry& SceneManager::GetRegistry()
 {
-    return m_Registry;
+    return m_EntityRegistry;
 }
 
 }

@@ -1,4 +1,3 @@
-#include <Tabby/Core/Log.h>
 #ifdef TB_PLATFORM_ANDROID
 
 #include "Tabby/Core/Application.h"

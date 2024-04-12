@@ -1,9 +1,8 @@
 #include "Base.h"
 #include "Tabby/Core/Application.h"
-#include "Tabby/Core/Input.h"
-#include "Tabby/Core/KeyCodes.h"
-#include "Tabby/Core/Log.h"
 #include "Tabby/Core/Window.h"
+#include "Tabby/Input/Input.h"
+#include "Tabby/Input/KeyCodes.h"
 #include "Tabby/Math/Math.h"
 #include "Tabby/Scene/SceneManager.h"
 #include <Scenes/Test2Scene.h>
@@ -16,7 +15,7 @@
 #include <imguizmo/ImGuizmo.h>
 
 #if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
-static Tabby::Ref<Tabby::Font> s_Font;
+static Tabby::Shared<Tabby::Font> s_Font;
 #endif
 float fps = 0;
 
@@ -34,9 +33,9 @@ void Base::OnAttach()
 
     Tabby::Application::Get().GetWindow().SetVSync(false);
 
-    Tabby::Ref<TestScene> testScene = Tabby::CreateRef<TestScene>();
-    Tabby::Ref<Test2Scene> test2Scene = Tabby::CreateRef<Test2Scene>();
-    Tabby::Ref<Test3Scene> test3Scene = Tabby::CreateRef<Test3Scene>();
+    Tabby::Shared<TestScene> testScene = Tabby::CreateShared<TestScene>();
+    Tabby::Shared<Test2Scene> test2Scene = Tabby::CreateShared<Test2Scene>();
+    Tabby::Shared<Test3Scene> test3Scene = Tabby::CreateShared<Test3Scene>();
 
     Tabby::SceneManager::Add("Test", testScene);
     Tabby::SceneManager::Add("Test2", test2Scene);
@@ -48,6 +47,8 @@ void Base::OnAttach()
     fbSpec.Width = 2560;
     fbSpec.Height = 1600;
     m_Framebuffer = Tabby::Framebuffer::Create(fbSpec);
+
+    m_SceneHierarchyPanel.SetContext(Tabby::SceneManager::GetCurrentScene());
 }
 
 void Base::OnDetach()
@@ -57,8 +58,6 @@ void Base::OnDetach()
 
 void Base::OnUpdate(Tabby::Timestep ts)
 {
-
-    m_SceneHierarchyPanel.SetContext(Tabby::SceneManager::GetCurrentScene());
 
     Tabby::SceneManager::GetCurrentScene()->OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
 

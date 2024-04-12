@@ -6,11 +6,10 @@
 
 namespace Tabby {
 
-class OpenGL33Texture2D : public Texture2D {
+class OpenGL33Texture : public Texture {
 public:
-    OpenGL33Texture2D(const TextureSpecification& specification);
-    OpenGL33Texture2D(const std::string& path);
-    virtual ~OpenGL33Texture2D();
+    OpenGL33Texture(const TextureSpecification& specification, AssetHandle handle, Buffer Data = Buffer());
+    virtual ~OpenGL33Texture();
 
     virtual const TextureSpecification& GetSpecification() const override { return m_Specification; }
 
@@ -20,10 +19,12 @@ public:
 
     virtual const std::string& GetPath() const override { return m_Path; }
 
-    virtual void SetData(void* data, uint32_t size) override;
+    virtual void SetData(Buffer data) override;
     virtual void SetSubData(void* data, uint32_t width, uint32_t height) override;
 
     virtual void Bind(uint32_t slot = 0) const override;
+
+    virtual void Destroy() override;
 
     virtual bool IsLoaded() const override { return m_IsLoaded; }
 

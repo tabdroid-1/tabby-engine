@@ -59,14 +59,14 @@ void OpenGLES3RendererAPI::Clear()
     GLES3::GL()->Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenGLES3RendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
+void OpenGLES3RendererAPI::DrawIndexed(const Shared<VertexArray>& vertexArray, uint32_t indexCount)
 {
     vertexArray->Bind();
     uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
     GLES3::GL()->DrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 }
 
-void OpenGLES3RendererAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+void OpenGLES3RendererAPI::DrawLines(const Shared<VertexArray>& vertexArray, uint32_t vertexCount)
 {
     vertexArray->Bind();
     GLES3::GL()->DrawArrays(GL_LINES, 0, vertexCount);

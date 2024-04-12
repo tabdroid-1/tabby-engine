@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Tabby/Core/GamepadCodes.h"
-#include "Tabby/Core/Log.h"
-#include "Tabby/Core/MouseCodes.h"
+#include "Tabby/Input/GamepadCodes.h"
+#include "Tabby/Input/MouseCodes.h"
 #include "Tabby/Math/Math.h"
 #include "Tabby/Physics/2D/Physics2D.h"
 #include "Tabby/Scene/Components.h"
@@ -11,9 +10,9 @@
 #include <Tabby/Scene/ScriptableEntity.h>
 
 #include "Tabby/Core/Application.h"
-#include "Tabby/Core/Input.h"
-#include "Tabby/Core/KeyCodes.h"
-#include "Tabby/Core/Timestep.h"
+#include "Tabby/Core/Time/Timestep.h"
+#include "Tabby/Input/Input.h"
+#include "Tabby/Input/KeyCodes.h"
 #include "Tabby/Scene/Components.h"
 
 class PlayerMove : public Tabby::ScriptableEntity {

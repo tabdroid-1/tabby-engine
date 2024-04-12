@@ -26,6 +26,7 @@
 #include <random>
 #include <sstream>
 #include <string>
+#include <thread>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
@@ -34,9 +35,9 @@
 
 #include "Tabby/Core/Assert.h"
 #include "Tabby/Core/Base.h"
-#include "Tabby/Core/Buffer.h"
-#include "Tabby/Core/Log.h"
+#include "Tabby/Core/UUID.h"
 #include "Tabby/Debug/Instrumentor.h"
+#include "Tabby/Log/Log.h"
 
 #include "Config.h"
 

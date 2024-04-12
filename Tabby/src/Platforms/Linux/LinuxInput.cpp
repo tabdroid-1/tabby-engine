@@ -1,8 +1,6 @@
-#include <Tabby/Core/GamepadCodes.h>
-#include <strings.h>
 #ifdef TB_PLATFORM_LINUX
 
-#include "Tabby/Core/Input.h"
+#include "Tabby/Input/Input.h"
 #include "tbpch.h"
 
 #include "Tabby/Core/Application.h"

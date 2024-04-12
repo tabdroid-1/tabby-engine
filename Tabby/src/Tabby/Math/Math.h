@@ -12,4 +12,14 @@ const float EPSILON = 0.000001f;
 bool DecomposeTransform(const glm::mat4& transform, glm::vec3& translation, glm::vec3& rotation, glm::vec3& scale);
 float Abs(float f);
 
+template <typename T>
+inline bool IsPowerOf2(T value)
+{
+    if (!std::is_integral_v<T>)
+        return false;
+
+    bool result = value && ((value & (value - 1)) == 0);
+    return result;
+}
+
 }

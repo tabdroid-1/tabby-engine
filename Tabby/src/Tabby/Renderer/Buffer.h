@@ -145,8 +145,8 @@ public:
     virtual const BufferLayout& GetLayout() const = 0;
     virtual void SetLayout(const BufferLayout& layout) = 0;
 
-    static Ref<VertexBuffer> Create(uint32_t size);
-    static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
+    static Shared<VertexBuffer> Create(uint32_t size);
+    static Shared<VertexBuffer> Create(float* vertices, uint32_t size);
 };
 
 // Currently Tabby only supports 32-bit index buffers
@@ -159,7 +159,7 @@ public:
 
     virtual uint32_t GetCount() const = 0;
 
-    static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
+    static Shared<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 };
 
 }

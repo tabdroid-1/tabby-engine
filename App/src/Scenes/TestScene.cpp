@@ -84,6 +84,7 @@ void TestScene::OnActivate()
 
     Tabby::Entity SpriteEntity = CreateEntity("SpriteEntity");
     {
+
         auto& idC = SpriteEntity.GetComponent<Tabby::IDComponent>();
         idC.IsPersistent = true;
 
@@ -91,7 +92,7 @@ void TestScene::OnActivate()
 
         SpriteEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3.9f;
         auto& spriteComponent = SpriteEntity.AddComponent<Tabby::SpriteRendererComponent>();
-        spriteComponent.Texture = Tabby::Texture2D::Create("spritesheets/player/player_packed.png");
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("spritesheets/player/player_packed.png", spriteComponent.Texture);
         spriteComponent.renderOrder = 1;
         spriteComponent.hFrames = 10;
         spriteComponent.vFrames = 5;
@@ -120,7 +121,7 @@ void TestScene::OnActivate()
         auto playerMovementScript = static_cast<PlayerMove*>(playerMovement.Instance);
     }
 
-    Tabby::SceneManager::GetCurrentScene()->DestroyEntityWithChildren(ChildEntity);
+    // Tabby::SceneManager::GetCurrentScene()->DestroyEntityWithChildren(ChildEntity);
 }
 
 void TestScene::DrawImGui()
