@@ -21,31 +21,30 @@ Todo
     - <s>Use OpenAL instead of miniaudio. </s> Done
         - <s>Play SFX and delete when not needed. </s> Done 
         - <s>Audio streaming for long audios. </s> Done after not noticing stupid mistake for 3 weeks.
-    - Asset manager
+    - <s>Asset manager. </s> *It works*
     - Animation
     - Basic networking
     - Use freetype instead of msdf-atlas-gen
     - Clean up the code, add comments etc.
     - Multithreading
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
+    - Renderer is shit
 
 
 - Low priority
-    - Create a function that prints current output device name and a function to pick wich audio device you want to use.
     - Create pop-up showing error on release builds. 
-    - Splashscreen
-    - tbpf (TabbyPrefabFormat) format and Prefab editor. (kinda like level editor that generates tbpf format) 
-        - tbpf file will contain
-            - entity prefabs(player, npc, level elemets etc.)
-            - levels (basically compilation of prefabs)
-        - individual prefabs and/or level can be spawned. preferably each app should hold 1 tbpf file which will hold everything.
-        - encryption
-        - this is probably should be in a different repo
-    - Maybe instead of putting render order to spriterenderer put it in component all entities have.
+    <!-- - tbpf (TabbyPrefabFormat) format and Prefab editor. (kinda like level editor that generates tbpf format)  -->
+    <!--     - tbpf file will contain -->
+    <!--         - entity prefabs(player, npc, level elemets etc.) -->
+    <!--         - levels (basically compilation of prefabs) -->
+    <!--     - individual prefabs and/or level can be spawned. preferably each app should hold 1 tbpf file which will hold everything. -->
+    <!--     - encryption -->
+    <!--     - this is probably should be in a different repo -->
     - Vulkan.
     - C++ reflection
+    - Create a function that prints current output device name and a function to pick wich audio device you want to use.
 
-- Non-engine related
+- Misc.
     - Documentation
     - Build scripts
 

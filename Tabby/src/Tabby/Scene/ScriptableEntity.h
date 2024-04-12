@@ -2,7 +2,7 @@
 #pragma once
 
 #include "Entity.h"
-#include <Tabby/Core/Log.h>
+#include <Tabby/Log/Log.h>
 #include <Tabby/Physics/2D/Physics2D.h>
 #include <Tabby/Scene/Components.h>
 

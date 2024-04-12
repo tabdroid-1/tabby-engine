@@ -3,7 +3,6 @@
 #include "Tabby/Core/Application.h"
 #include "Tabby/Utils/PlatformUtils.h"
 #include "tbpch.h"
-#include <Tabby/Core/Log.h>
 
 namespace Tabby {
 

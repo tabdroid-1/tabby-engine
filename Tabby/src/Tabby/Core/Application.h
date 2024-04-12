@@ -2,14 +2,14 @@
 
 #include "Tabby/Core/Base.h"
 
-#include "Tabby/Core/LayerStack.h"
+#include "Tabby/Core/Events/ApplicationEvent.h"
+#include "Tabby/Core/Events/Event.h"
+#include "Tabby/Core/Layer/LayerStack.h"
 #include "Tabby/Core/Window.h"
-#include "Tabby/Events/ApplicationEvent.h"
-#include "Tabby/Events/Event.h"
 
-#include "Tabby/Core/Timestep.h"
+#include "Tabby/Core/Time/Timestep.h"
 
-#include "Tabby/ImGui/ImGuiLayer.h"
+#include "Tabby/UI/ImGui/ImGuiLayer.h"
 
 int main(int argc, char** argv);
 

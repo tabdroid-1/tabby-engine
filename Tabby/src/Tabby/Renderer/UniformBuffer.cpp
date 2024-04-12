@@ -7,16 +7,16 @@
 
 namespace Tabby {
 
-Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)
+Shared<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)
 {
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
         TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::OpenGL33:
-        return CreateRef<OpenGL33UniformBuffer>(size, binding);
+        return CreateShared<OpenGL33UniformBuffer>(size, binding);
     case RendererAPI::API::OpenGLES3:
-        return CreateRef<OpenGLES3UniformBuffer>(size, binding);
+        return CreateShared<OpenGLES3UniformBuffer>(size, binding);
     }
 
     TB_CORE_ASSERT(false, "Unknown RendererAPI!");

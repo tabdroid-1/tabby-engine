@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Tabby/Core/Timestep.h"
+#include "Tabby/Core/Time/Timestep.h"
 #include "Tabby/Renderer/OrthographicCamera.h"
 
-#include "Tabby/Events/ApplicationEvent.h"
-#include "Tabby/Events/MouseEvent.h"
+#include "Tabby/Core/Events/ApplicationEvent.h"
+#include "Tabby/Core/Events/MouseEvent.h"
 
 namespace Tabby {
 

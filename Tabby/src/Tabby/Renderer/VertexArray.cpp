@@ -7,16 +7,16 @@
 
 namespace Tabby {
 
-Ref<VertexArray> VertexArray::Create()
+Shared<VertexArray> VertexArray::Create()
 {
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
         TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::OpenGL33:
-        return CreateRef<OpenGL33VertexArray>();
+        return CreateShared<OpenGL33VertexArray>();
     case RendererAPI::API::OpenGLES3:
-        return CreateRef<OpenGLES3VertexArray>();
+        return CreateShared<OpenGLES3VertexArray>();
     }
 
     TB_CORE_ASSERT(false, "Unknown RendererAPI!");

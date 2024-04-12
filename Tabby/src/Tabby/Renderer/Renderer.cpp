@@ -33,7 +33,7 @@ void Renderer::EndScene()
 {
 }
 
-void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
+void Renderer::Submit(const Shared<Shader>& shader, const Shared<VertexArray>& vertexArray, const glm::mat4& transform)
 {
     shader->Bind();
     shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);

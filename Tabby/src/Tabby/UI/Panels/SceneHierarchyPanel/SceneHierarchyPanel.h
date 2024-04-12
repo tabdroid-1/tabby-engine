@@ -9,9 +9,9 @@ namespace Tabby {
 class SceneHierarchyPanel {
 public:
     SceneHierarchyPanel() = default;
-    SceneHierarchyPanel(const Ref<Scene>& scene);
+    SceneHierarchyPanel(const Shared<Scene>& scene);
 
-    void SetContext(const Ref<Scene>& scene);
+    void SetContext(const Shared<Scene>& scene);
 
     void OnImGuiRender();
 
@@ -26,7 +26,7 @@ private:
     void DrawComponents(Entity entity);
 
 private:
-    Ref<Scene> m_Context;
+    Shared<Scene> m_Context;
     Entity m_SelectionContext;
 };
 

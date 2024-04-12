@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Tabby/Core/GamepadCodes.h"
-#include "Tabby/Core/KeyCodes.h"
-#include "Tabby/Core/MouseCodes.h"
+#include "Tabby/Input/GamepadCodes.h"
+#include "Tabby/Input/KeyCodes.h"
+#include "Tabby/Input/MouseCodes.h"
 #include <tbpch.h>
 
 #include <glm/glm.hpp>
@@ -50,33 +50,3 @@ private:
     static Input* s_Instance;
 };
 }
-
-// bool IsGamepadAvailable(int gamepad)
-// {
-//     bool result = false;
-//
-//     if ((gamepad < MAX_GAMEPADS) && CORE.Input.Gamepad.ready[gamepad]) result = true;
-//
-//     return result;
-// }
-//
-// // Get axis movement vector for a gamepad
-// float GetGamepadAxisMovement(int gamepad, int axis)
-// {
-//     float value = 0;
-//
-//     if ((gamepad < MAX_GAMEPADS) && CORE.Input.Gamepad.ready[gamepad] && (axis < MAX_GAMEPAD_AXIS) &&
-//         (fabsf(CORE.Input.Gamepad.axisState[gamepad][axis]) > 0.1f)) value = CORE.Input.Gamepad.axisState[gamepad][axis];      // 0.1f = GAMEPAD_AXIS_MINIMUM_DRIFT/DELTA
-//
-//     return value;
-// }
-// // Get the last gamepad button pressed
-// int GetGamepadButtonPressed(void)
-// {
-//     return CORE.Input.Gamepad.lastButtonPressed;
-// }
-//// Get gamepad axis count
-// int GetGamepadAxisCount(int gamepad)
-// {
-//     return CORE.Input.Gamepad.axisCount[gamepad];
-// }

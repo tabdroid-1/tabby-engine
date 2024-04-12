@@ -10,7 +10,6 @@
 // #include <Tabby/Audio/AudioSource.h>
 #include <Tabby/Audio/AudioEngine.h>
 
-#include <Tabby/Core/Log.h>
 #include <Tabby/Math/Math.h>
 #include <algorithm>
 #include <cstdint>
@@ -106,9 +105,9 @@ static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Enti
     CopyComponentIfExists<Component...>(dst, src);
 }
 
-Ref<Scene> Scene::Copy(Ref<Scene> other)
+Shared<Scene> Scene::Copy(Shared<Scene> other)
 {
-    // Ref<Scene> newScene = CreateRef<Scene>();
+    // Shared<Scene> newScene = CreateShared<Scene>();
     //
     // newScene->m_ViewportWidth = other->m_ViewportWidth;
     // newScene->m_ViewportHeight = other->m_ViewportHeight;
@@ -132,7 +131,7 @@ Ref<Scene> Scene::Copy(Ref<Scene> other)
     // return newScene;
 }
 
-void Scene::GetPersistentEntities(Ref<Scene> other)
+void Scene::GetPersistentEntities(Shared<Scene> other)
 {
 
     // auto& srcSceneRegistry = other->m_Registry;

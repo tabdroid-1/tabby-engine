@@ -1,0 +1,92 @@
+#include <Tabby.h>
+#include <Tabby/Asset/AssetRegistry.h>
+
+#include <Tabby/Asset/AssetTypes/TextureAsset.h>
+#include <filesystem>
+
+namespace Tabby {
+
+AssetRegistry* AssetRegistry::s_Instance = nullptr;
+
+AssetRegistry::AssetRegistry()
+{
+
+    TB_CORE_ASSERT(!s_Instance, "Asset Registry already exists!");
+    s_Instance = this;
+
+    std::string current_path = std::filesystem::current_path();
+    // TB_CORE_INFO("Current Path: {0}", current_path);
+
+    ReadDirectoryRecursively(current_path);
+}
+
+AssetRegistry::~AssetRegistry()
+{
+    for (auto& asset : m_Assets) {
+        if (asset.second->IsDataLoaded())
+            asset.second->Unload();
+    }
+}
+
+void AssetRegistry::Init()
+{
+    if (!s_Instance)
+        s_Instance = new AssetRegistry();
+}
+
+void AssetRegistry::Shutdown()
+{
+    if (s_Instance) {
+        delete s_Instance;
+        s_Instance = nullptr;
+    }
+}
+
+void AssetRegistry::RefreshAssets()
+{
+    for (auto& asset : s_Instance->m_Assets) {
+        if (asset.second->IsMarkedForLoad() && !asset.second->IsDataLoaded()) {
+            asset.second->Load();
+            TB_CORE_INFO("Asset {0} loaded", asset.second->m_Path);
+        } else if (!asset.second->IsMarkedForLoad() && asset.second->IsDataLoaded()) {
+            asset.second->Unload();
+            TB_CORE_INFO("Asset {0} unloaded", asset.second->m_Path);
+        }
+    }
+}
+
+void AssetRegistry::ReadDirectoryRecursively(const std::string& path)
+{
+    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        if (entry.is_regular_file()) {
+            std::string filename = entry.path().filename().string();
+            size_t dot_index = filename.find_last_of('.');
+            if (dot_index != std::string::npos) {
+                std::string extension = filename.substr(dot_index + 1);
+
+                std::filesystem::path path = std::filesystem::relative(entry.path(), std::filesystem::current_path());
+                // TB_CORE_INFO("File: {0}, Extension: {1}", path.string(), extension);
+                // "File: " << filename << ", Extension: " << extension << std::endl;
+
+                if (extension == "png" || extension == "jpg" || extension == "tga" || extension == "bmp" || extension == "psd") {
+                    Ref<TextureAsset> textureAsset = CreateRef<TextureAsset>(path.string());
+
+                    s_Instance->m_Assets.insert(std::make_pair(path.string(), textureAsset));
+                    TB_CORE_INFO("File: {0}, Extension: {1}", path.string(), extension);
+                }
+            }
+        } else if (entry.is_directory()) {
+            ReadDirectoryRecursively(entry.path());
+        }
+    }
+}
+
+void AssetRegistry::MarkRequiredAssetsForLoad(const std::vector<std::string>& requiredAssetsPaths)
+{
+    for (const auto& assetPath : requiredAssetsPaths) {
+        auto asset = s_Instance->m_Assets.find(assetPath);
+        asset->second->MarkForLoad();
+    }
+}
+
+}

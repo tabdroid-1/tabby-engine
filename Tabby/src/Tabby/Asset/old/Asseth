@@ -1,0 +1,45 @@
+#pragma once
+
+#include <Tabby/Core/UUID.h>
+namespace Tabby {
+
+class AssetRegistry;
+
+class Asset {
+public:
+    Asset(const std::string& path)
+        : m_Path(path)
+    {
+        m_UUID = UUID();
+    }
+
+    virtual ~Asset()
+    {
+        Unload();
+    }
+
+    void* GetData()
+    {
+        if (!IsDataLoaded())
+            Load();
+
+        return m_Data;
+    }
+
+    virtual bool IsDataLoaded() { }
+
+    void MarkForLoad() { m_MarkedForLoad = true; }
+    bool IsMarkedForLoad() { return m_MarkedForLoad; }
+
+protected:
+    virtual void Load() { }
+    virtual void Unload() { }
+
+    UUID m_UUID;
+    std::string m_Path;
+    void* m_Data;
+    bool m_MarkedForLoad = false;
+
+    friend AssetRegistry;
+};
+}

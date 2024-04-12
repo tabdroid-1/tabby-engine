@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Tabby/Core/Timestep.h>
+#include <Tabby/Core/Time/Timestep.h>
 #include <tbpch.h>
 
 #include "entt/entt.hpp"
@@ -18,11 +18,11 @@ public:
     static void DrawHud();
     static void DrawImGui();
 
-    static void Add(const std::string& SceneName, Ref<Tabby::Scene> Scene);
+    static void Add(const std::string& SceneName, Shared<Tabby::Scene> Scene);
     static void SwitchTo(const std::string& SceneName);
     static void Remove(const std::string& SceneName);
 
-    static Ref<Scene> GetCurrentScene();
+    static Shared<Scene> GetCurrentScene();
     static const std::string& GetCurrentSceneName();
     static entt::registry& GetRegistry();
 
@@ -31,11 +31,11 @@ private:
     static void private_SwitchTo(std::string SceneName);
 
 private:
-    std::unordered_map<std::string, Ref<Tabby::Scene>> scenes;
-    static std::pair<std::string, Ref<Scene>> curScene;
+    std::unordered_map<std::string, Shared<Tabby::Scene>> scenes;
+    static std::pair<std::string, Shared<Scene>> curScene;
     static std::string nextSceneName;
 
-    static entt::registry m_Registry;
+    static entt::registry m_EntityRegistry;
 
 private:
     static SceneManager* s_Instance;

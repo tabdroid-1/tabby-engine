@@ -1,6 +1,6 @@
 #ifdef TB_PLATFORM_WINDOWS
 
-#include "Tabby/Core/Input.h"
+#include "Tabby/Input/Input.h"
 #include "tbpch.h"
 
 #include "Tabby/Core/Application.h"

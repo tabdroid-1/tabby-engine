@@ -152,7 +152,7 @@ struct TransformComponent {
 
 struct SpriteRendererComponent {
     glm::vec4 Color { 1.0f, 1.0f, 1.0f, 1.0f };
-    Ref<Texture2D> Texture;
+    AssetHandle Texture;
     int renderOrder = 0;
 
     int hFrames = 1;
@@ -192,7 +192,7 @@ struct CameraComponent {
 // class AudioSource;
 
 struct SoundComponent {
-    // Ref<AudioSource> Sound;
+    // Shared<AudioSource> Sound;
     float Gain = 1.0f;
     bool Playing = false;
     bool Loop = false;
@@ -351,7 +351,7 @@ struct TextComponent {
     std::string TextString;
 
 #if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
-    Ref<Font> FontAsset = Font::GetDefault();
+    Shared<Font> FontAsset = Font::GetDefault();
 #endif
     glm::vec4 Color { 1.0f };
     float Kerning = 0.0f;

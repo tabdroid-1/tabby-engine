@@ -1,4 +1,5 @@
 #include "Sandbox2D.h"
+#include "Tabby/Asset/AssetManager.h"
 #include "Tabby/Renderer/Renderer2D.h"
 #include "glm/fwd.hpp"
 #include <imgui/imgui.h>
@@ -18,9 +19,10 @@ void Sandbox2D::OnAttach()
     TB_PROFILE_SCOPE();
 
     Tabby::Renderer2D::SetLineWidth(10.0f);
-
-    m_CheckerboardTexture = Tabby::Texture2D::Create("textures/Checkerboard.png");
-    m_NoTexture = Tabby::Texture2D::Create("textures/Tabby.png");
+    m_CheckerboardTextureHandle = Tabby::AssetManager::Get()->LoadAssetSource("textures/Checkerboard.png", m_CheckerboardTextureHandle);
+    m_NoTextureHandle = Tabby::AssetManager::Get()->LoadAssetSource("textures/Checkerboard.png", m_CheckerboardTextureHandle);
+    m_CheckerboardTexture = Tabby::AssetManager::Get()->GetAsset<Tabby::Texture>(m_CheckerboardTextureHandle);
+    m_NoTexture = Tabby::AssetManager::Get()->GetAsset<Tabby::Texture>(m_NoTextureHandle);
 }
 
 void Sandbox2D::OnDetach()

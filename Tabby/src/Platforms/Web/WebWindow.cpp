@@ -3,12 +3,12 @@
 #include "Platforms/Web/WebWindow.h"
 #include "tbpch.h"
 
-#include "Tabby/Core/Input.h"
+#include "Tabby/Input/Input.h"
 #include "backends/imgui_impl_sdl2.h"
 
-#include "Tabby/Events/ApplicationEvent.h"
-#include "Tabby/Events/KeyEvent.h"
-#include "Tabby/Events/MouseEvent.h"
+#include "Tabby/Core/Events/ApplicationEvent.h"
+#include "Tabby/Core/Events/KeyEvent.h"
+#include "Tabby/Core/Events/MouseEvent.h"
 
 #include "Drivers/gl33/OpenGL33Context.h"
 #include "Tabby/Renderer/Renderer.h"

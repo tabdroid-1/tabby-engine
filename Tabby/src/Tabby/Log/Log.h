@@ -17,18 +17,18 @@ class Log {
 public:
     static void Init();
 
-    static Ref<spdlog::logger>& GetCoreLogger()
+    static Shared<spdlog::logger>& GetCoreLogger()
     {
         return s_CoreLogger;
     }
-    static Ref<spdlog::logger>& GetClientLogger()
+    static Shared<spdlog::logger>& GetClientLogger()
     {
         return s_ClientLogger;
     }
 
 private:
-    static Ref<spdlog::logger> s_CoreLogger;
-    static Ref<spdlog::logger> s_ClientLogger;
+    static Shared<spdlog::logger> s_CoreLogger;
+    static Shared<spdlog::logger> s_ClientLogger;
 };
 }
 

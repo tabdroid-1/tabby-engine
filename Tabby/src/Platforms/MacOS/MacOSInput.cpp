@@ -1,7 +1,6 @@
-#include <Tabby/Core/Log.h>
 #ifdef TB_PLATFORM_MACOS
 
-#include "Tabby/Core/Input.h"
+#include "Tabby/Input/Input.h"
 #include "tbpch.h"
 
 #include "Tabby/Core/Application.h"

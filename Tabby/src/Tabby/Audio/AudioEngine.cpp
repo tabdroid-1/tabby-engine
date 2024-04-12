@@ -151,10 +151,26 @@ namespace Audio {
         m_PollingThread = std::thread(&Engine::EnginePollingThread, this);
     }
 
+    Engine::~Engine()
+    {
+        m_PollingThread.detach();
+
+        m_MusicMixerLock.lock();
+        for (auto& music : m_MusicMap) {
+            delete music.second;
+        }
+        m_MusicMixerLock.unlock();
+    }
+
     void Engine::Init()
     {
         if (!s_Instance)
             s_Instance = new Engine();
+    }
+
+    void Engine::Shutdown()
+    {
+        delete s_Instance;
     }
 
     void Engine::PlaySfx(const std::string& sfxFileName)
@@ -232,6 +248,7 @@ namespace Audio {
         if (s_Instance->m_MusicMixer.at(index).musicFileName.empty())
             throw std::logic_error("audio::engine::play_music_player: music player has no music set (use audio::engine::set_player_music)");
 
+        s_Instance->m_MusicMixer.at(index).playing = true;
         alSourcePlay(s_Instance->m_MusicMixer.at(index).sourceID);
         CHECK_AL_ERRORS();
         s_Instance->m_MusicMixerLock.unlock();
@@ -243,6 +260,7 @@ namespace Audio {
         if (s_Instance->m_MusicMixer.at(index).musicFileName.empty())
             throw std::logic_error("audio::engine::play_music_player: music player has no music set (use audio::engine::set_player_music)");
 
+        s_Instance->m_MusicMixer.at(index).playing = false;
         alSourcePause(s_Instance->m_MusicMixer.at(index).sourceID);
         CHECK_AL_ERRORS();
         s_Instance->m_MusicMixerLock.unlock();
@@ -359,6 +377,7 @@ namespace Audio {
 
     Engine::MusicPlayer::MusicPlayer()
         : music(nullptr)
+        , playing(false)
     {
     }
 
@@ -431,74 +450,76 @@ namespace Audio {
 
     int Engine::MusicPlayer::UpdatePlayer()
     {
+        if (playing) {
 
-        ALint processed, state;
+            ALint processed, state;
 
-        /* Get relevant source info */
-        alGetSourcei(sourceID, AL_SOURCE_STATE, &state);
-        alGetSourcei(sourceID, AL_BUFFERS_PROCESSED, &processed);
-        if (alGetError() != AL_NO_ERROR) {
-
-            CHECK_AL_ERRORS();
-            fprintf(stderr, "Error checking source state\n");
-            return 0;
-        }
-
-        /* Unqueue and handle each processed buffer */
-        while (processed > 0) {
-            ALuint bufid;
-            sf_count_t slen;
-
-            alSourceUnqueueBuffers(sourceID, 1, &bufid);
-            processed--;
-
-            /* Read the next chunk of data, refill the buffer, and queue it
-             * back on the source */
-            if (music->sampleType == Int16) {
-                slen = sf_readf_short(music->sndFile, static_cast<short*>(music->membuf),
-                    (sf_count_t)music->blockCount * music->sampleblockalign);
-                if (slen > 0)
-                    slen *= music->byteblockalign;
-            } else if (music->sampleType == Float) {
-                slen = sf_readf_float(music->sndFile, static_cast<float*>(music->membuf),
-                    (sf_count_t)music->blockCount * music->sampleblockalign);
-                if (slen > 0)
-                    slen *= music->byteblockalign;
-            } else {
-                slen = sf_read_raw(music->sndFile, music->membuf,
-                    (sf_count_t)music->blockCount * music->byteblockalign);
-                if (slen > 0)
-                    slen -= slen % music->byteblockalign;
-            }
-
-            if (slen > 0) {
-                alBufferData(bufid, music->format, music->membuf, (ALsizei)slen,
-                    music->sfinfo.samplerate);
-                alSourceQueueBuffers(sourceID, 1, &bufid);
-            }
+            /* Get relevant source info */
+            alGetSourcei(sourceID, AL_SOURCE_STATE, &state);
+            alGetSourcei(sourceID, AL_BUFFERS_PROCESSED, &processed);
             if (alGetError() != AL_NO_ERROR) {
 
                 CHECK_AL_ERRORS();
-                fprintf(stderr, "Error buffering data\n");
+                fprintf(stderr, "Error checking source state\n");
                 return 0;
             }
-        }
 
-        /* Make sure the source hasn't underrun */
-        if (state != AL_PLAYING && state != AL_PAUSED) {
-            ALint queued;
+            /* Unqueue and handle each processed buffer */
+            while (processed > 0) {
+                ALuint bufid;
+                sf_count_t slen;
 
-            /* If no buffers are queued, playback is finished */
-            alGetSourcei(sourceID, AL_BUFFERS_QUEUED, &queued);
-            if (queued == 0)
-                return 0;
+                alSourceUnqueueBuffers(sourceID, 1, &bufid);
+                processed--;
 
-            alSourcePlay(sourceID);
-            if (alGetError() != AL_NO_ERROR) {
+                /* Read the next chunk of data, refill the buffer, and queue it
+                 * back on the source */
+                if (music->sampleType == Int16) {
+                    slen = sf_readf_short(music->sndFile, static_cast<short*>(music->membuf),
+                        (sf_count_t)music->blockCount * music->sampleblockalign);
+                    if (slen > 0)
+                        slen *= music->byteblockalign;
+                } else if (music->sampleType == Float) {
+                    slen = sf_readf_float(music->sndFile, static_cast<float*>(music->membuf),
+                        (sf_count_t)music->blockCount * music->sampleblockalign);
+                    if (slen > 0)
+                        slen *= music->byteblockalign;
+                } else {
+                    slen = sf_read_raw(music->sndFile, music->membuf,
+                        (sf_count_t)music->blockCount * music->byteblockalign);
+                    if (slen > 0)
+                        slen -= slen % music->byteblockalign;
+                }
 
-                CHECK_AL_ERRORS();
-                fprintf(stderr, "Error restarting playback\n");
-                return 0;
+                if (slen > 0) {
+                    alBufferData(bufid, music->format, music->membuf, (ALsizei)slen,
+                        music->sfinfo.samplerate);
+                    alSourceQueueBuffers(sourceID, 1, &bufid);
+                }
+                if (alGetError() != AL_NO_ERROR) {
+
+                    CHECK_AL_ERRORS();
+                    fprintf(stderr, "Error buffering data\n");
+                    return 0;
+                }
+            }
+
+            /* Make sure the source hasn't underrun */
+            if (state != AL_PLAYING && state != AL_PAUSED) {
+                ALint queued;
+
+                /* If no buffers are queued, playback is finished */
+                alGetSourcei(sourceID, AL_BUFFERS_QUEUED, &queued);
+                if (queued == 0)
+                    return 0;
+
+                alSourcePlay(sourceID);
+                if (alGetError() != AL_NO_ERROR) {
+
+                    CHECK_AL_ERRORS();
+                    fprintf(stderr, "Error restarting playback\n");
+                    return 0;
+                }
             }
         }
         return 1;

@@ -1,6 +1,5 @@
 #include "Drivers/gl33/OpenGL33Shader.h"
 #include "Drivers/gl33/GL33.h"
-#include "Tabby/Core/Timer.h"
 #include "tbpch.h"
 
 #include <fstream>
