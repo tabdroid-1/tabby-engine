@@ -1,7 +1,6 @@
 Todo
 ----
 
-
 - High priority
     - Physics stuff. (raycast triggers etc) 
         - <s>every 2d physics related stuff to Physics2D</s> Done
@@ -21,10 +20,8 @@ Todo
     - <s>Use OpenAL instead of miniaudio. </s> Done
         - <s>Play SFX and delete when not needed. </s> Done 
         - <s>Audio streaming for long audios. </s> Done after not noticing stupid mistake for 3 weeks.
-    - <s>Asset manager. </s> *It works*
-    - Animation
-    - Basic networking
-    - Use freetype instead of msdf-atlas-gen
+    - <s>Asset manager. </s> Done
+    - Use freetype instead of msdf-atlas-gen. Currently working on this
     - Clean up the code, add comments etc.
     - Multithreading
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
@@ -32,7 +29,9 @@ Todo
 
 
 - Low priority
-    - Create pop-up showing error on release builds. 
+    - Animation
+    - Basic networking
+    - Create pop-up showing error on release builds instead of just crashing without any info. 
     <!-- - tbpf (TabbyPrefabFormat) format and Prefab editor. (kinda like level editor that generates tbpf format)  -->
     <!--     - tbpf file will contain -->
     <!--         - entity prefabs(player, npc, level elemets etc.) -->
@@ -45,8 +44,8 @@ Todo
     - Create a function that prints current output device name and a function to pick wich audio device you want to use.
 
 - Misc.
-    - Documentation
-    - Build scripts
+    - Create Documentation
+    - Create Build scripts
 
 Bugs
 ----
