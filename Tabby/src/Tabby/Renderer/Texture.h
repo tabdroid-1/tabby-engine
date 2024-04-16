@@ -72,7 +72,6 @@ struct TextureSpecification {
 class Texture : public AssetBase {
 public:
     static Shared<Texture> Create(const TextureSpecification& specification, AssetHandle handle, Buffer data = Buffer());
-    // static Shared<Texture> Create(const std::string& path);
 
     virtual ~Texture() = default;
 

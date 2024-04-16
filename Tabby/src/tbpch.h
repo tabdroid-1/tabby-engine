@@ -24,6 +24,7 @@
 #include <optional>
 #include <queue>
 #include <random>
+#include <shared_mutex>
 #include <sstream>
 #include <string>
 #include <thread>

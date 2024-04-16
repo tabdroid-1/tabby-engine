@@ -1,7 +1,7 @@
 #pragma once
 
+#include "freetype/freetype.h"
 #include <Tabby/Asset/AssetBase.h>
-#include <shared_mutex>
 
 namespace Tabby {
 
@@ -32,12 +32,15 @@ private:
     AssetHandle ImportImage(std::filesystem::path path, AssetHandle handle);
     AssetHandle ImportMeshSource(std::filesystem::path path, AssetHandle handle);
     AssetHandle ImportImageSource(std::filesystem::path path, AssetHandle handle);
+    AssetHandle ImportFontSource(std::filesystem::path path, AssetHandle handle);
 
 private:
     inline static AssetManager* s_Instance;
     std::unordered_map<AssetHandle, Shared<AssetBase>> m_AssetRegistry;
     std::unordered_map<std::filesystem::path, UUID> m_UUIDs;
     std::shared_mutex m_Mutex;
+
+    FT_Library m_FTLibrary;
 };
 
 }

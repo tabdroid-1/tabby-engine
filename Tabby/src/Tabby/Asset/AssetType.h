@@ -7,6 +7,8 @@ enum class AssetType : uint8_t {
     MATERIAL,
     AUDIO_SRC,
     IMAGE_SRC,
+    FONT_SRC,
+    TABBY_FONT,
     TABBY_IMAGE,
     TABBY_MESH,
     TABBY_MODEL,
@@ -14,6 +16,8 @@ enum class AssetType : uint8_t {
 };
 
 inline static const std::unordered_map<std::string, AssetType> g_AssetTypesExtensionMap = {
+    { ".ttf", AssetType::FONT_SRC },
+
     { ".png", AssetType::IMAGE_SRC },
     { ".jpg", AssetType::IMAGE_SRC },
     { ".jpeg", AssetType::IMAGE_SRC },
