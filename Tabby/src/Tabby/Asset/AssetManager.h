@@ -1,6 +1,5 @@
 #pragma once
 
-#include "freetype/freetype.h"
 #include <Tabby/Asset/AssetBase.h>
 
 namespace Tabby {
@@ -39,8 +38,6 @@ private:
     std::unordered_map<AssetHandle, Shared<AssetBase>> m_AssetRegistry;
     std::unordered_map<std::filesystem::path, UUID> m_UUIDs;
     std::shared_mutex m_Mutex;
-
-    FT_Library m_FTLibrary;
 };
 
 }

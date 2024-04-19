@@ -1,3 +1,4 @@
-Version: 16-04-2024_1 Alpha
+Version: 19-04-2024_1 Alpha
 Changes:
-- Initial transition to freetype
+- Multiple font support(up to 16 for now)
+- Fixed Openal-Soft seen as a submodule

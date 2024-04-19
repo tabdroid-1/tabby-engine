@@ -21,7 +21,6 @@ Todo
         - <s>Play SFX and delete when not needed. </s> Done 
         - <s>Audio streaming for long audios. </s> Done after not noticing stupid mistake for 3 weeks.
     - <s>Asset manager. </s> Done
-    - Use freetype instead of msdf-atlas-gen. Currently working on this
     - Clean up the code, add comments etc.
     - Multithreading
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
