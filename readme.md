@@ -28,12 +28,6 @@ External Dependencies
   - tracy profiler
   - OpenAL-Soft 
 
-- Manual installition might be required
-  - Freetype
-  - tinyxml2
-  - PNG
-  - Threads
-
 Supported Graphics Apis
 -----------------------
 - OpenGL 3.3
