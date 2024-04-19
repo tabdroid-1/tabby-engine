@@ -9,7 +9,6 @@ namespace Tabby {
 class OpenGLES3Texture : public Texture {
 public:
     OpenGLES3Texture(const TextureSpecification& specification, AssetHandle handle, Buffer data = Buffer());
-    // OpenGLES3Texture(const std::string& path);
     virtual ~OpenGLES3Texture();
 
     virtual const TextureSpecification& GetSpecification() const override { return m_Specification; }

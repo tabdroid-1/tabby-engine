@@ -1,7 +1,6 @@
 #include "SceneHierarchyPanel.h"
 #include "Tabby/Scene/Components.h"
 #include <Tabby/Asset/AssetManager.h>
-#include <Tabby/Asset/Importers/TextureImporter.h>
 
 #include "Tabby/UI/UI.h"
 #include "box2d/b2_body.h"

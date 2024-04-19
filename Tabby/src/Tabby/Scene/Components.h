@@ -350,9 +350,8 @@ struct CircleCollider2DComponent {
 struct TextComponent {
     std::string TextString;
 
-#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
-    Shared<Font> FontAsset = Font::GetDefault();
-#endif
+    Shared<Font> Font = Font::GetDefault();
+    // AssetHandle Font;
     glm::vec4 Color { 1.0f };
     float Kerning = 0.0f;
     float LineSpacing = 0.0f;

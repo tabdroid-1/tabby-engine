@@ -23,8 +23,7 @@ set(GLAD "${PROJECT_VENDOR_DIR}/glad")
 set(GLM "${PROJECT_VENDOR_DIR}/glm")
 set(STB "${PROJECT_VENDOR_DIR}/stb")
 set(SPDLOG "${PROJECT_VENDOR_DIR}/spdlog")
-set(FREETYPE "${PROJECT_VENDOR_DIR}/freetype")
-# set(MSDF-ATLAS-GEN "${PROJECT_VENDOR_DIR}/msdf-atlas-gen")
+set(MSDF-ATLAS-GEN "${PROJECT_VENDOR_DIR}/msdf-atlas-gen")
 set(YAML-CPP "${PROJECT_VENDOR_DIR}/yaml-cpp")
 set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
@@ -71,9 +70,8 @@ include_directories(${IMGUIZMO})
 include_directories(${STB})
 include_directories(${SDL2_INCLUDE_DIRS})
 
-include_directories(${FREETYPE})
 if (NOT EMSCRIPTEN AND NOT ANDROID)
-    # include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
+    include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
     include_directories(${TRACY})
 endif()
 
@@ -84,13 +82,12 @@ endif()
 add_subdirectory(${SDL2} EXCLUDE_FROM_ALL)
 add_subdirectory(${GLM})
 
-# set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
-# set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
-# set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
+set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
+set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
+set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 
-add_subdirectory(${FREETYPE} EXCLUDE_FROM_ALL)
 if (NOT EMSCRIPTEN AND NOT ANDROID)
-    # add_subdirectory(${MSDF-ATLAS-GEN} EXCLUDE_FROM_ALL)
+    add_subdirectory(${MSDF-ATLAS-GEN} EXCLUDE_FROM_ALL)
     add_subdirectory(${TRACY})
 endif()
 add_subdirectory(${YAML-CPP})
@@ -119,8 +116,7 @@ if (WIN32)
         glm
         yaml-cpp
         imguizmo
-        # msdf-atlas-gen 
-        freetype
+        msdf-atlas-gen 
         tracy 
         )
 elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
@@ -136,8 +132,7 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
         glm
         yaml-cpp
         imguizmo
-        # msdf-atlas-gen 
-        freetype
+        msdf-atlas-gen 
         tracy 
         OpenAL::OpenAL
         sndfile
@@ -152,8 +147,7 @@ elseif (APPLE)
         SDL2::SDL2-static
         glm
         yaml-cpp
-        # msdf-atlas-gen 
-        freetype
+        msdf-atlas-gen 
         imguizmo
         )
 elseif (EMSCRIPTEN)
@@ -166,7 +160,6 @@ elseif (EMSCRIPTEN)
         glm
         yaml-cpp
         imguizmo
-        freetype
         )
 elseif (ANDROID)
     message(STATUS "Generating scripts for Android")
@@ -179,7 +172,6 @@ elseif (ANDROID)
         glm
         yaml-cpp
         imguizmo
-        freetype
         GLESv2
         GLESv3
         EGL

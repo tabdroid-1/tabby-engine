@@ -47,17 +47,28 @@ OpenGL33Texture::OpenGL33Texture(const TextureSpecification& specification, Asse
     m_InternalFormat = Utils::TabbyImageFormatToGLInternalFormat(m_Specification.Format);
     m_DataFormat = Utils::TabbyImageFormatToGLDataFormat(m_Specification.Format);
 
+    GL33::GL()->PixelStorei(GL_UNPACK_ALIGNMENT, m_Specification.UnpackAlignment);
+
     GL33::GL()->GenTextures(1, &m_RendererID);
     GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
 
     GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
-    GL33::GL()->GenerateMipmap(GL_TEXTURE_2D);
+    if (m_Specification.GenerateMips) {
 
-    GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        GL33::GL()->GenerateMipmap(GL_TEXTURE_2D);
+
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    } else {
+
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    }
 
     if (data)
         SetData(data);

@@ -54,16 +54,17 @@ void TestScene::OnActivate()
         cameraComponent.Primary = true;
     }
 
-    // Tabby::Entity TextEntity2 = CreateEntity("Text2Entity");
-    // {
-    //     TextEntity2.GetComponent<Tabby::TransformComponent>().Translation.y = -2;
-    //     auto& textComponent = TextEntity2.AddComponent<Tabby::TextComponent>();
-    //     textComponent.TextString = "ComicSans at home";
-    //     textComponent.FontAsset = Tabby::CreateRef<Tabby::Font>("fonts/ldfcomicsans/Ldfcomicsans-jj7l.ttf");
-    // }
+    Tabby::Entity TextEntity2 = CreateEntity("Text2Entity");
+    {
+        TextEntity2.GetComponent<Tabby::TransformComponent>().Translation.y = 2;
+        auto& textComponent = TextEntity2.AddComponent<Tabby::TextComponent>();
+        textComponent.TextString = "ComicSans at home";
+        textComponent.Font = Tabby::CreateShared<Tabby::Font>("fonts/ldfcomicsans/Ldfcomicsans-jj7l.ttf");
+    }
 
     Tabby::Entity TextEntity = CreateEntity("TextEntity");
     {
+        TextEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3;
         auto& textComponent = TextEntity.AddComponent<Tabby::TextComponent>();
         textComponent.TextString = "Opensans";
     }
@@ -119,6 +120,102 @@ void TestScene::OnActivate()
         auto& playerMovement = SpriteEntity.AddComponent<Tabby::NativeScriptComponent>();
         playerMovement.Bind<PlayerMove>();
         auto playerMovementScript = static_cast<PlayerMove*>(playerMovement.Instance);
+    }
+
+    Tabby::Entity SpriteEntity2 = CreateEntity("SpriteEntity2");
+    {
+        auto& spriteComponent = SpriteEntity2.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("spritesheets/player/player_air_spin.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity3 = CreateEntity("SpriteEntity3");
+    {
+        auto& spriteComponent = SpriteEntity3.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("spritesheets/player/player_crouch_idle.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity4 = CreateEntity("SpriteEntity4");
+    {
+        auto& spriteComponent = SpriteEntity4.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("spritesheets/player/player_death.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity5 = CreateEntity("SpriteEntity5");
+    {
+        auto& spriteComponent = SpriteEntity5.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("textures/NoLife.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity6 = CreateEntity("SpriteEntity6");
+    {
+        auto& spriteComponent = SpriteEntity6.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("spritesheets/player/player_hurt.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity7 = CreateEntity("SpriteEntity7");
+    {
+        auto& spriteComponent = SpriteEntity7.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("hello.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity8 = CreateEntity("SpriteEntity8");
+    {
+        auto& spriteComponent = SpriteEntity8.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("textures/Alive.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity9 = CreateEntity("SpriteEntity9");
+    {
+        auto& spriteComponent = SpriteEntity9.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("textures/crate.jpg", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity10 = CreateEntity("SpriteEntity10");
+    {
+        auto& spriteComponent = SpriteEntity10.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("textures/Dead.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity11 = CreateEntity("SpriteEntity11");
+    {
+        auto& spriteComponent = SpriteEntity11.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("textures/noTexture.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity12 = CreateEntity("SpriteEntity12");
+    {
+        auto& spriteComponent = SpriteEntity12.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("tilemaps/Terrain.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity13 = CreateEntity("SpriteEntity13");
+    {
+        auto& spriteComponent = SpriteEntity13.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("tilemaps/tmw_desert_spacing.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity14 = CreateEntity("SpriteEntity14");
+    {
+        auto& spriteComponent = SpriteEntity14.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("tilemaps/topdown.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity15 = CreateEntity("SpriteEntity15");
+    {
+        auto& spriteComponent = SpriteEntity15.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("random/dinoCharactersVersion1.1/sheets/DinoSprites - doux.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity16 = CreateEntity("SpriteEntity16");
+    {
+        auto& spriteComponent = SpriteEntity16.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("random/dinoCharactersVersion1.1/sheets/DinoSprites - mort.png", spriteComponent.Texture);
+    }
+
+    Tabby::Entity SpriteEntity17 = CreateEntity("SpriteEntity17");
+    {
+        auto& spriteComponent = SpriteEntity17.AddComponent<Tabby::SpriteRendererComponent>();
+        spriteComponent.Texture = Tabby::AssetManager::Get()->LoadAssetSource("random/dinoCharactersVersion1.1/sheets/DinoSprites - tard.png", spriteComponent.Texture);
     }
 
     // Tabby::SceneManager::GetCurrentScene()->DestroyEntityWithChildren(ChildEntity);
