@@ -1,4 +1,3 @@
-Version: 19-04-2024_1 Alpha
+Version: 19-04-2024_2 Alpha
 Changes:
-- Multiple font support(up to 16 for now)
-- Fixed Openal-Soft seen as a submodule
+- Stripped lots of libraries from msdf and freetype. Probably it will be easier to build it on windows and android.

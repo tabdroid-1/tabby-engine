@@ -129,9 +129,15 @@ endif()
 
 # Extensions library
 if(NOT MSDFGEN_CORE_ONLY)
-    if(NOT TARGET Freetype::Freetype)
-        find_package(Freetype REQUIRED)
-    endif()
+    # if(NOT TARGET Freetype::Freetype)
+        # find_package(Freetype REQUIRED)
+        add_subdirectory("freetype")
+        set(FT_DISABLE_ZLIB ON CACHE BOOL "Disable use of system zlib and use internal zlib library instead." FORCE)
+        set(FT_DISABLE_BZIP2 ON CACHE BOOL "Disable support of bzip2 compressed fonts." FORCE)
+        set(FT_DISABLE_PNG ON CACHE BOOL "Disable support of PNG compressed OpenType embedded bitmaps." FORCE)
+        set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "Disable HarfBuzz (used for improving auto-hinting of OpenType fonts)." FORCE)
+        set(FT_DISABLE_BROTLI ON CACHE BOOL "Disable support of compressed WOFF2 fonts." FORCE)
+    # endif()
     if(NOT MSDFGEN_DISABLE_SVG AND NOT TARGET tinyxml2::tinyxml2)
         find_package(tinyxml2 REQUIRED)
     endif()
@@ -158,7 +164,8 @@ if(NOT MSDFGEN_CORE_ONLY)
     if(MSDFGEN_DISABLE_VARIABLE_FONTS)
         target_compile_definitions(msdfgen-ext PUBLIC MSDFGEN_DISABLE_VARIABLE_FONTS)
     endif()
-    target_link_libraries(msdfgen-ext PRIVATE Freetype::Freetype msdfgen::msdfgen-core)
+    target_link_libraries(msdfgen-ext PRIVATE freetype msdfgen::msdfgen-core)
+    target_include_directories(msdfgen-ext PRIVATE "freetype/include")
     target_include_directories(msdfgen-ext
         PUBLIC
             $<INSTALL_INTERFACE:include/msdfgen>
