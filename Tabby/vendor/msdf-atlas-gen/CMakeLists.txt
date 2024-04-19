@@ -82,7 +82,7 @@ if(MSDF_ATLAS_MSDFGEN_EXTERNAL)
 else()
     add_subdirectory(msdfgen)
 endif()
-find_package(Threads REQUIRED)
+# find_package(Threads REQUIRED) // CHANGE
 if(NOT MSDFGEN_DISABLE_PNG AND NOT TARGET PNG::PNG)
     find_package(PNG REQUIRED)
 endif()
@@ -114,7 +114,7 @@ endif()
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT msdf-atlas-gen)
 
 target_compile_features(msdf-atlas-gen PUBLIC cxx_std_11)
-target_link_libraries(msdf-atlas-gen PRIVATE Threads::Threads)
+# target_link_libraries(msdf-atlas-gen PRIVATE Threads::Threads) //CHANGE
 if(NOT MSDFGEN_DISABLE_PNG)
     target_link_libraries(msdf-atlas-gen PRIVATE PNG::PNG)
 endif()
