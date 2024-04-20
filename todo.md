@@ -6,7 +6,8 @@ Todo
         - <s>every 2d physics related stuff to Physics2D</s> Done
         - <s>2D Raycast</s> Done
         - <s>Return Entity, Collision etc info on body enter callback.</s> Done
-        - Maybe combine colliders in to one component instead of multiple components.
+        - Attach child colliders to parent with rigidbody. 
+          This will be iterated through all entities until child ends or child has rigidbody component.
         - Add collision filtering(layer/mask).
     - <s>Maybe use SDL2 for window creationg instead of glfw cus it has some problems.</s> Done
     - <s>Fix android.</s> Done
@@ -19,8 +20,10 @@ Todo
         - <s>Create queue for rigidbody initialization. Else application crashes </s> Done
     - <s>Use OpenAL instead of miniaudio. </s> Done
         - <s>Play SFX and delete when not needed. </s> Done 
-        - <s>Audio streaming for long audios. </s> Done after not noticing stupid mistake for 3 weeks.
+        - <s>Audio streaming for long audios. </s> Done 
     - <s>Asset manager. </s> Done
+    - Add font support to asset manager.
+    - Fix OpenGL ES Text Shader. 
     - Clean up the code, add comments etc.
     - Multithreading
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
@@ -28,6 +31,7 @@ Todo
 
 
 - Low priority
+    - Plugins
     - Angel Script
     - Animation
     - Basic networking

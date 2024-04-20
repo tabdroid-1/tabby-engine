@@ -95,6 +95,7 @@ private:
     entt::entity m_EntityHandle { entt::null };
 
     friend class Scene;
+    friend class Physisc2D;
 };
 
 }

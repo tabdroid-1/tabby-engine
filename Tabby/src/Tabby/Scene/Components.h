@@ -229,7 +229,7 @@ struct Rigidbody2DComponent {
 
     // Storage for runtime
     void* RuntimeBody = nullptr;
-    bool initialized;
+    bool queuedForInitialization;
 
     Rigidbody2DComponent() = default;
     Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
@@ -325,6 +325,7 @@ struct BoxCollider2DComponent {
 
     // Storage for runtime
     void* RuntimeFixture = nullptr;
+    bool queuedForInitialization;
 
     BoxCollider2DComponent() = default;
     BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
@@ -342,6 +343,7 @@ struct CircleCollider2DComponent {
 
     // Storage for runtime
     void* RuntimeFixture = nullptr;
+    bool queuedForInitialization;
 
     CircleCollider2DComponent() = default;
     CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
