@@ -20,18 +20,17 @@ void TestScene::OnActivate()
 
     Tabby::Entity RigidbodyEntity = CreateEntity("RigidbodyEntity2");
     {
-
         auto& idC = RigidbodyEntity.GetComponent<Tabby::IDComponent>();
         idC.IsPersistent = true;
 
         RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.x = 0.25f;
         RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 5.25f;
 
-        auto& boxColliderComponent = RigidbodyEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-        boxColliderComponent.Size = { 0.19f, 0.24f };
-
         auto& rigidbodyComponent = RigidbodyEntity.AddComponent<Tabby::Rigidbody2DComponent>();
         rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+
+        auto& boxColliderComponent = RigidbodyEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        boxColliderComponent.Size = { 0.19f, 0.24f };
     }
 
     Tabby::Entity GroundEntity = CreateEntity("RigidbodyEntity");
@@ -41,11 +40,11 @@ void TestScene::OnActivate()
 
         GroundEntity.GetComponent<Tabby::TransformComponent>().Translation.y = -2;
 
-        auto& boxColliderComponent = GroundEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-        boxColliderComponent.Size = { 4.0f, 0.5f };
-
         auto& rigidbodyComponent = GroundEntity.AddComponent<Tabby::Rigidbody2DComponent>();
         rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Static;
+
+        auto& boxColliderComponent = GroundEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        boxColliderComponent.Size = { 4.0f, 0.5f };
     }
 
     Tabby::Entity CameraEntity = CreateEntity("CameraEntity");
@@ -111,11 +110,11 @@ void TestScene::OnActivate()
 
         soundComponent.Playing = true;
 
-        auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-        boxColliderComponent.Size = { 0.19f, 0.24f };
-
         auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
         rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+
+        auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        boxColliderComponent.Size = { 0.19f, 0.24f };
 
         auto& playerMovement = SpriteEntity.AddComponent<Tabby::NativeScriptComponent>();
         playerMovement.Bind<PlayerMove>();
