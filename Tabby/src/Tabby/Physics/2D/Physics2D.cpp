@@ -101,6 +101,7 @@ void Physisc2D::EnqueueFixture(FixtureInfo2D fixtureInfo)
 
 void Physisc2D::ProcessBodyQueue()
 {
+    // TB_CORE_INFO("BODY");
     while (!s_Instance->bodyQueue.empty()) {
 
         s_Instance->queueEmpty = false;
@@ -141,33 +142,35 @@ void Physisc2D::ProcessFixtureQueue()
         // Check if entity it self has Rigidbody2DComponent. If there is, collider will be added to Rigidbody2DComponent of same entity.
         // If there is not, function will check its parent if it has Rigidbody2DComponent. And this will go on untill it finds an entity Rigidbody2DComponent;
         // This is is because an entity can have one component of same type. User can create More colliders by creating child entities.
-        Rigidbody2DComponent* rb2d;
+        Rigidbody2DComponent* rb2d = nullptr;
         if (fixtureInfo.entity.HasComponent<Rigidbody2DComponent>()) {
             rb2d = &fixtureInfo.entity.GetComponent<Rigidbody2DComponent>();
         } else {
 
-            auto FindParentRigidbody = [](auto&& self, Rigidbody2DComponent* rb2d, entt::entity parentEntity) -> void {
+            auto FindParentRigidbody = [](auto&& self, entt::entity parentEntity) -> Rigidbody2DComponent* {
                 auto& hierarchyNode = Entity(parentEntity).GetComponent<HierarchyNodeComponent>();
 
                 if (Entity(hierarchyNode.Parent.second).HasComponent<Rigidbody2DComponent>()) {
-                    rb2d = &Entity(hierarchyNode.Parent.second).GetComponent<Rigidbody2DComponent>();
+                    TB_CORE_INFO("{0}", Entity(hierarchyNode.Parent.second).GetComponent<TagComponent>().Tag);
+                    return &Entity(hierarchyNode.Parent.second).GetComponent<Rigidbody2DComponent>();
                 } else {
-                    self(self, rb2d, hierarchyNode.Parent.second);
+                    if (hierarchyNode.Parent.first.Valid())
+                        return self(self, hierarchyNode.Parent.second);
                 }
             };
 
-            FindParentRigidbody(FindParentRigidbody, rb2d, fixtureInfo.entity);
+            rb2d = FindParentRigidbody(FindParentRigidbody, fixtureInfo.entity);
         }
 
         if (!rb2d)
-            continue;
+            s_Instance->fixtureQueue.pop();
 
         if (fixtureInfo.colliderType == ColliderType2D::Box) {
             auto& bc2d = fixtureInfo.entity.GetComponent<BoxCollider2DComponent>();
 
             // --------- Create box collider def ---------
             b2PolygonShape* boxShape = new b2PolygonShape;
-            boxShape->SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
+            boxShape->SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y), 0.0f);
 
             b2FixtureDef* fixtureDef = new b2FixtureDef;
             fixtureDef->shape = boxShape;
@@ -185,7 +188,7 @@ void Physisc2D::ProcessFixtureQueue()
 
             // --------- Create circle collider def ---------
             b2CircleShape* circleShape = new b2CircleShape;
-            circleShape->m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
+            circleShape->m_p.Set(transform.LocalTranslation.x + cc2d.Offset.x, transform.LocalTranslation.y + cc2d.Offset.y);
             circleShape->m_radius = transform.Scale.x * cc2d.Radius;
 
             b2FixtureDef* fixtureDef = new b2FixtureDef;

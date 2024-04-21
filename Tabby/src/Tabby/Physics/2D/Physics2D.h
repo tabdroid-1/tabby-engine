@@ -43,8 +43,6 @@ private:
     std::queue<BodyInfo2D> bodyQueue;
     std::queue<FixtureInfo2D> fixtureQueue;
 
-    std::mutex m_QueueLock;
-
     bool queueEmpty = true;
 
 private:

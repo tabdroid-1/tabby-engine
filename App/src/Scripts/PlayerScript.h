@@ -31,19 +31,19 @@ public:
     {
         playerTransform = &GetComponent<Tabby::TransformComponent>();
 
-        Tabby::Entity RigidbodyEntity = Tabby::SceneManager::GetCurrentScene()->CreateEntity("RigidbodyEntity2");
-        {
-
-            RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.y = -1.1f;
-            auto& spriteComponent = RigidbodyEntity.AddComponent<Tabby::SpriteRendererComponent>();
-
-            // NOTE: Collider components have to be added before rigidbody component
-            auto& boxColliderComponent = RigidbodyEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-            boxColliderComponent.Size = { 0.19f, 0.24f };
-
-            auto& rigidbodyComponent = RigidbodyEntity.AddComponent<Tabby::Rigidbody2DComponent>();
-            rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
-        }
+        // Tabby::Entity RigidbodyEntity = Tabby::SceneManager::GetCurrentScene()->CreateEntity("RigidbodyEntity2");
+        // {
+        //
+        //     RigidbodyEntity.GetComponent<Tabby::TransformComponent>().Translation.y = -1.1f;
+        //     auto& spriteComponent = RigidbodyEntity.AddComponent<Tabby::SpriteRendererComponent>();
+        //
+        //     // NOTE: Collider components have to be added before rigidbody component
+        //     auto& boxColliderComponent = RigidbodyEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        //     boxColliderComponent.Size = { 0.19f, 0.24f };
+        //
+        //     auto& rigidbodyComponent = RigidbodyEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        //     rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+        // }
     }
 
     void Update(Tabby::Timestep ts) override

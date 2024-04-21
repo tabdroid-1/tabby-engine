@@ -14,17 +14,13 @@
 #include <imgui/imgui.h>
 #include <imguizmo/ImGuizmo.h>
 
-#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
 static Tabby::Shared<Tabby::Font> s_Font;
-#endif
 float fps = 0;
 
 Base::Base()
     : Layer("Base")
 {
-#if !defined TB_PLATFORM_WEB && !defined TB_PLATFORM_ANDROID
     s_Font = Tabby::Font::GetDefault();
-#endif
 }
 
 void Base::OnAttach()
@@ -289,7 +285,7 @@ void Base::OnOverlayRender()
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
                     * glm::scale(glm::mat4(1.0f), scale);
 
-                Tabby::Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
+                Tabby::Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.1f);
             }
         }
     }
