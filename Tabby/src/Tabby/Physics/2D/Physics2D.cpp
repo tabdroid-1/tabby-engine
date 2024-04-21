@@ -101,7 +101,6 @@ void Physisc2D::EnqueueFixture(FixtureInfo2D fixtureInfo)
 
 void Physisc2D::ProcessBodyQueue()
 {
-    // TB_CORE_INFO("BODY");
     while (!s_Instance->bodyQueue.empty()) {
 
         s_Instance->queueEmpty = false;
@@ -151,7 +150,6 @@ void Physisc2D::ProcessFixtureQueue()
                 auto& hierarchyNode = Entity(parentEntity).GetComponent<HierarchyNodeComponent>();
 
                 if (Entity(hierarchyNode.Parent.second).HasComponent<Rigidbody2DComponent>()) {
-                    TB_CORE_INFO("{0}", Entity(hierarchyNode.Parent.second).GetComponent<TagComponent>().Tag);
                     return &Entity(hierarchyNode.Parent.second).GetComponent<Rigidbody2DComponent>();
                 } else {
                     if (hierarchyNode.Parent.first.Valid())
