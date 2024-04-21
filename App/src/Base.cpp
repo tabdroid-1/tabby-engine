@@ -166,7 +166,7 @@ void Base::OnImGuiRender()
     ImGui::DragFloat2("Size", glm::value_ptr(m_ViewportSize));
     ImGui::Checkbox("Show physics colliders", &m_ShowPhysicsColliders);
 
-    // ImGui::Image((ImTextureID)s_Font->GetAtlasTexture()->GetRendererID(), { 512, 512 }, { 0, 1 }, { 1, 0 });
+    ImGui::Image((ImTextureID)s_Font->GetAtlasTexture()->GetRendererID(), { 512, 512 }, { 0, 1 }, { 1, 0 });
 
     ImGui::End();
 

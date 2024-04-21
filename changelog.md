@@ -1,3 +1,5 @@
-Version: 19-04-2024_2 Alpha
+Version: 21-04-2024_1 Alpha
 Changes:
-- Stripped lots of libraries from msdf and freetype. Probably it will be easier to build it on windows and android.
+- Physics2D rework.
+    - Now child objects collider(box or circle) will be used by parent(or parends parents.... parent)
+    - Proper body and fixture(collider) creation on run time.

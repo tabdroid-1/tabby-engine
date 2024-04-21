@@ -6,11 +6,12 @@ Todo
         - <s>every 2d physics related stuff to Physics2D</s> Done
         - <s>2D Raycast</s> Done
         - <s>Return Entity, Collision etc info on body enter callback.</s> Done
-        - Attach child colliders to parent with rigidbody. 
-          This will be iterated through all entities until child ends or child has rigidbody component.
+        - <s>Attach child colliders to parent with rigidbody. 
+          This will be iterated through all entities until child ends or child has rigidbody component. </s> Done Since 21-04-2024_1 Alpha
+        - Box2D 3.0 migration.
         - Add collision filtering(layer/mask).
     - <s>Maybe use SDL2 for window creationg instead of glfw cus it has some problems.</s> Done
-    - <s>Fix android.</s> Done
+    - <s>Android Support.</s> Done
     - <s>Controller support. </s> Done
     - <s>Way to Select preffered FPS for application.</s> Done
     - <s>Fixed Update for Scripts </s> Done
@@ -22,6 +23,7 @@ Todo
         - <s>Play SFX and delete when not needed. </s> Done 
         - <s>Audio streaming for long audios. </s> Done 
     - <s>Asset manager. </s> Done
+    - Make all variables private of component and use functions instead. This is to eliminate some edge cases.
     - Add font support to asset manager.
     - Fix OpenGL ES Text Shader. 
     - Clean up the code, add comments etc.
@@ -45,7 +47,6 @@ Todo
     <!--     - this is probably should be in a different repo -->
     - Vulkan.
     - C++ reflection
-    - Create a function that prints current output device name and a function to pick wich audio device you want to use.
 
 - Misc.
     - Create Documentation
