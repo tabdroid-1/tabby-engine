@@ -132,36 +132,6 @@ Shared<Scene> Scene::Copy(Shared<Scene> other)
     // return newScene;
 }
 
-void Scene::GetPersistentEntities(Shared<Scene> other)
-{
-
-    // auto& srcSceneRegistry = other->m_Registry;
-    // std::unordered_map<UUID, entt::entity> enttMap;
-    //
-    // // Create entities in new scene
-    // auto idView = srcSceneRegistry.view<IDComponent>();
-    // for (auto e : idView) {
-    //
-    //     // If should be destroyed on load ignore and if it has Rigidbody2DComponent delete body from world.
-    //     if (!srcSceneRegistry.get<IDComponent>(e).DoNotDestroyOnLoad) {
-    //         if (srcSceneRegistry.any_of<Rigidbody2DComponent>(e)) {
-    //             auto& rb = srcSceneRegistry.get<Rigidbody2DComponent>(e);
-    //             if ((b2Body*)rb.RuntimeBody)
-    //                 Physisc2D::GetPhysicsWorld()->DestroyBody((b2Body*)rb.RuntimeBody);
-    //         }
-    //         continue;
-    //     }
-    //
-    //     UUID uuid = srcSceneRegistry.get<IDComponent>(e).ID;
-    //     const auto& name = srcSceneRegistry.get<TagComponent>(e).Tag;
-    //     Entity newEntity = CreateEntityWithUUID(uuid, name);
-    //     enttMap[uuid] = (entt::entity)newEntity;
-    // }
-    //
-    // // Copy components (except IDComponent and TagComponent)
-    // CopyComponent(AllComponents {}, m_Registry, srcSceneRegistry, enttMap);
-}
-
 Entity Scene::CreateEntity(const std::string& name)
 {
     return CreateEntityWithUUID(UUID(), name);
@@ -312,9 +282,6 @@ void Scene::OnUpdate(Timestep ts)
         }
         // Physics
         {
-            // Physisc2D::ProcessBodyQueue();
-            // Physisc2D::ProcessFixtureQueue(); This is in Physisc2D::UpdateWorld now
-
             const int32_t velocityIterations = 6;
             const int32_t positionIterations = 2;
             Physisc2D::UpdateWorld(ts, velocityIterations, positionIterations);
@@ -547,9 +514,7 @@ void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptC
 template <>
 void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component)
 {
-    // TODO: Move this to ProcessBodyQueue
-
-    if (Physisc2D::GetPhysicsWorld())
+    if (!Physisc2D::GetPhysicsWorld())
         return;
 
     auto& transform = entity.GetComponent<TransformComponent>();

@@ -73,6 +73,9 @@ void TestScene::OnActivate()
         auto& spriteComponent = ChildChildEntity.AddComponent<Tabby::SpriteRendererComponent>();
 
         ChildChildEntity.GetComponent<Tabby::TransformComponent>().LocalTranslation.x = 0.55f;
+
+        auto& boxColliderComponent = ChildChildEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        boxColliderComponent.Size = { 0.19f, 0.24f };
     }
 
     Tabby::Entity ChildEntity = CreateEntity("ChildEntity");
@@ -113,8 +116,11 @@ void TestScene::OnActivate()
         auto& rigidbodyComponent = SpriteEntity.AddComponent<Tabby::Rigidbody2DComponent>();
         rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
 
-        auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-        boxColliderComponent.Size = { 0.19f, 0.24f };
+        // auto& boxColliderComponent = SpriteEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        // boxColliderComponent.Size = { 0.19f, 0.24f };
+
+        auto& circleColliderComponent = SpriteEntity.AddComponent<Tabby::CircleCollider2DComponent>();
+        circleColliderComponent.Radius = 0.24f;
 
         auto& playerMovement = SpriteEntity.AddComponent<Tabby::NativeScriptComponent>();
         playerMovement.Bind<PlayerMove>();
