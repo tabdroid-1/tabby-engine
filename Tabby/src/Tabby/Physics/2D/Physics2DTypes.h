@@ -39,10 +39,15 @@ namespace Utils {
 
 }
 
+struct UserData {
+    Entity entity;
+};
+
 // TODO: More collider types
 enum ColliderType2D : uint8_t {
     Box = 0,
-    Circle = 1
+    Circle = 1,
+    Capsule = 2
 };
 
 // Callback Data Structs
@@ -56,6 +61,7 @@ struct RaycastHit2D {
     Entity entity;
     Tabby::TransformComponent* transform;
     Tabby::Rigidbody2DComponent* rigidbody;
+    glm::vec2 origin = { 0.0f, 0.0f };
     glm::vec2 point = { 0.0f, 0.0f };
     glm::vec2 normal = { 0.0f, 0.0f };
     float distance;

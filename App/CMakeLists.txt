@@ -63,7 +63,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         "${PROJECT_ASSETS_DIR}"
         "${PROJECT_SOURCE_DIR}"
 
-        "${TABBY_DIR}/vendor/box2d/include"
+        "${TABBY_DIR}/vendor/box2c/include"
         )
 
 if (EMSCRIPTEN)

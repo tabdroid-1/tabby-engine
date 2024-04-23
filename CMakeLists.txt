@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.20)
 project(TabbyEngine)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_VERBOSE_MAKEFILE 0) # Enable for more verbose CMake output
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_VERBOSE_MAKEFILE 0) 
 
 if (WIN32)
     cmake_policy(SET CMP0091 NEW)

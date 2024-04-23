@@ -1,12 +1,11 @@
-
 #pragma once
 
 #include "Entity.h"
-#include <Tabby/Log/Log.h>
-#include <Tabby/Physics/2D/Physics2D.h>
-#include <Tabby/Scene/Components.h>
+#include <Tabby/Physics/2D/Physics2DTypes.h>
 
 namespace Tabby {
+
+class Physics2D;
 
 class ScriptableEntity {
 public:
@@ -16,6 +15,12 @@ public:
     T& GetComponent()
     {
         return m_Entity.GetComponent<T>();
+    }
+
+    template <typename T>
+    bool HasComponent()
+    {
+        return m_Entity.HasComponent<T>();
     }
 
 protected:
@@ -34,8 +39,7 @@ protected:
 private:
     Entity m_Entity;
     friend class Scene;
-    friend class Physics2DContactListener;
-    friend class b2Body;
+    friend class Physisc2D;
 };
 
 }

@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.22)
-project(tabby)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+project(tabby
+	VERSION 0.0.1
+    DESCRIPTION "Game engine"
+	HOMEPAGE_URL "https://github.com/tabdroid-1/TabbyEngine"
+    LANGUAGES CXX
+)
+
 if(APPLE)
     message(STATUS "Including Objective-C++ for APPLE")
     list(APPEND LANGUAGES OBJC)
@@ -25,7 +29,8 @@ set(STB "${PROJECT_VENDOR_DIR}/stb")
 set(SPDLOG "${PROJECT_VENDOR_DIR}/spdlog")
 set(MSDF-ATLAS-GEN "${PROJECT_VENDOR_DIR}/msdf-atlas-gen")
 set(YAML-CPP "${PROJECT_VENDOR_DIR}/yaml-cpp")
-set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
+# set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
+set(BOX2C "${PROJECT_VENDOR_DIR}/box2c")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
 set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
 set(IMGUIZMO "${PROJECT_VENDOR_DIR}/imguizmo")
@@ -62,6 +67,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${SPDLOG}/include
         ${OPENLAL}/include
         ${LIBSNDFILE}/include
+        ${BOX2C}/include
         )
 
 include_directories(SYSTEM src)
@@ -96,9 +102,11 @@ add_subdirectory(${YAML-CPP})
 add_subdirectory(${SPDLOG})
 
 # Box2d
-set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
-set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
-add_subdirectory(${BOX2D} EXCLUDE_FROM_ALL)
+set(BOX2D_SAMPLES OFF CACHE BOOL "" FORCE)
+set(BOX2D_DOCS OFF CACHE BOOL "" FORCE)
+set(BOX2D_PROFILE OFF CACHE BOOL "" FORCE)
+# add_subdirectory(${BOX2D} EXCLUDE_FROM_ALL)
+add_subdirectory(${BOX2C})
 
 add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
@@ -109,6 +117,10 @@ add_subdirectory(${IMGUIZMO})
 add_subdirectory(${LIBSNDFILE})
 
 if (WIN32)
+
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /experimental:c11atomics)
+endif()
     message(STATUS "Generating scripts for Windows")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui

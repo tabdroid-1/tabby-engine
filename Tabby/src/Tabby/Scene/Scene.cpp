@@ -1,29 +1,16 @@
 #include "Scene.h"
 #include "Entity.h"
-#include "ScriptableEntity.h"
 #include "glm/fwd.hpp"
+#include <Tabby/Scene/ScriptableEntity.h>
 
 #include "Components.h"
 #include "Tabby/Physics/2D/Physics2D.h"
 #include "Tabby/Renderer/Renderer2D.h"
-// #include <Tabby/Audio/AudioManager.h>
-// #include <Tabby/Audio/AudioSource.h>
 #include <Tabby/Audio/AudioEngine.h>
 
 #include <Tabby/Math/Math.h>
 #include <Tabby/Physics/2D/Physics2DTypes.h>
-#include <algorithm>
-#include <cstdint>
 #include <glm/glm.hpp>
-#include <type_traits>
-
-// Box2D
-#include "box2d/b2_body.h"
-#include "box2d/b2_circle_shape.h"
-#include "box2d/b2_fixture.h"
-#include "box2d/b2_polygon_shape.h"
-#include "box2d/b2_settings.h"
-#include "box2d/b2_world.h"
 
 namespace Tabby {
 
@@ -48,40 +35,40 @@ static void CopyComponent(entt::registry& dst, entt::registry& src, const std::u
     //     }
     // }(),
     //     ...);
-    ([&]() {
-        auto view = src.view<Component>();
-        for (auto srcEntity : view) {
-            UUID srcUUID = src.get<IDComponent>(srcEntity).ID;
-            if (enttMap.find(srcUUID) != enttMap.end()) {
-                entt::entity dstEntity = enttMap.at(srcUUID);
-                auto& srcComponent = src.get<Component>(srcEntity);
-                dst.emplace_or_replace<Component>(dstEntity, srcComponent);
-
-                if (std::is_same_v<Component, Rigidbody2DComponent>) {
-                    auto& rb = dst.get<Rigidbody2DComponent>(dstEntity);
-
-                    b2Body* body = (b2Body*)rb.RuntimeBody;
-                    body->GetUserData().pointer = static_cast<std::uintptr_t>(dstEntity);
-                }
-
-                // if (std::is_same_v<Component, TransformComponent>) {
-
-                // auto& transformComponent = dst.get<TransformComponent>(dstEntity);
-                // for (auto& childTransform : transformComponent.Children) {
-                //     childTransform.second = enttMap.find(childTransform.first)->second;
-                // }
-                //
-                // if (transformComponent.Parent.first != NULL) {
-                //     auto it = enttMap.find(transformComponent.Parent.first);
-                //     if (it != enttMap.end()) {
-                //         transformComponent.Parent.second = it->second;
-                //     }
-                // }
-                // }
-            }
-        }
-    }(),
-        ...);
+    // ([&]() {
+    //     auto view = src.view<Component>();
+    //     for (auto srcEntity : view) {
+    //         UUID srcUUID = src.get<IDComponent>(srcEntity).ID;
+    //         if (enttMap.find(srcUUID) != enttMap.end()) {
+    //             entt::entity dstEntity = enttMap.at(srcUUID);
+    //             auto& srcComponent = src.get<Component>(srcEntity);
+    //             dst.emplace_or_replace<Component>(dstEntity, srcComponent);
+    //
+    //             if (std::is_same_v<Component, Rigidbody2DComponent>) {
+    //                 auto& rb = dst.get<Rigidbody2DComponent>(dstEntity);
+    //
+    //                 b2Body* body = (b2Body*)rb.RuntimeBody;
+    //                 body->GetUserData().pointer = static_cast<std::uintptr_t>(dstEntity);
+    //             }
+    //
+    //             // if (std::is_same_v<Component, TransformComponent>) {
+    //
+    //             // auto& transformComponent = dst.get<TransformComponent>(dstEntity);
+    //             // for (auto& childTransform : transformComponent.Children) {
+    //             //     childTransform.second = enttMap.find(childTransform.first)->second;
+    //             // }
+    //             //
+    //             // if (transformComponent.Parent.first != NULL) {
+    //             //     auto it = enttMap.find(transformComponent.Parent.first);
+    //             //     if (it != enttMap.end()) {
+    //             //         transformComponent.Parent.second = it->second;
+    //             //     }
+    //             // }
+    //             // }
+    //         }
+    //     }
+    // }(),
+    //     ...);
 }
 
 template <typename... Component>
@@ -156,9 +143,9 @@ void Scene::DestroyEntity(Entity entity)
     if (entity.HasComponent<Rigidbody2DComponent>()) {
         auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
-        if (rb2d.RuntimeBody) {
-            Physisc2D::GetPhysicsWorld()->DestroyBody((b2Body*)rb2d.RuntimeBody);
-            rb2d.RuntimeBody = nullptr;
+        if (B2_IS_NON_NULL(rb2d.RuntimeBodyId)) {
+            b2DestroyBody(rb2d.RuntimeBodyId);
+            rb2d.RuntimeBodyId = b2_nullBodyId;
         }
     }
 
@@ -200,9 +187,9 @@ void Scene::DestroyEntityWithChildren(Entity entity)
     if (entity.HasComponent<Rigidbody2DComponent>()) {
         auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
-        if (rb2d.RuntimeBody) {
-            Physisc2D::GetPhysicsWorld()->DestroyBody((b2Body*)rb2d.RuntimeBody);
-            rb2d.RuntimeBody = nullptr;
+        if (B2_IS_NON_NULL(rb2d.RuntimeBodyId)) {
+            b2DestroyBody(rb2d.RuntimeBodyId);
+            rb2d.RuntimeBodyId = b2_nullBodyId;
         }
     }
 
@@ -282,9 +269,8 @@ void Scene::OnUpdate(Timestep ts)
         }
         // Physics
         {
-            const int32_t velocityIterations = 6;
-            const int32_t positionIterations = 2;
-            Physisc2D::UpdateWorld(ts, velocityIterations, positionIterations);
+            const int32_t subStepCount = 6;
+            Physisc2D::UpdateWorld(ts, subStepCount);
 
             // Retrieve transform from Box2D
             auto view = SceneManager::GetRegistry().view<Rigidbody2DComponent>();
@@ -292,12 +278,12 @@ void Scene::OnUpdate(Timestep ts)
                 Entity entity = { e };
                 auto& transform = entity.GetComponent<TransformComponent>();
                 auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
-                b2Body* body = (b2Body*)rb2d.RuntimeBody;
+                // b2Body* body = (b2Body*)rb2d.RuntimeBody;
 
-                const auto& position = body->GetPosition();
+                const auto& position = b2Body_GetPosition(rb2d.RuntimeBodyId);
                 transform.Translation.x = position.x;
                 transform.Translation.y = position.y;
-                transform.Rotation.z = Math::RAD2DEG * body->GetAngle();
+                transform.Rotation.z = Math::RAD2DEG * b2Body_GetAngle(rb2d.RuntimeBodyId);
             }
         }
 
@@ -514,85 +500,25 @@ void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptC
 template <>
 void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component)
 {
-    if (!Physisc2D::GetPhysicsWorld())
+    if (B2_IS_NULL(Physisc2D::GetPhysicsWorld()))
         return;
 
     auto& transform = entity.GetComponent<TransformComponent>();
-    auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
-    if (rb2d.RuntimeBody)
+    if (B2_IS_NON_NULL(component.RuntimeBodyId))
         return;
-
-    // b2BodyUserData bodyData;
-    // bodyData.pointer = static_cast<std::uintptr_t>(entity.GetEntityHandle());
-    //
-    // b2BodyDef* bodyDef = new b2BodyDef;
-    // bodyDef->type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
-    // bodyDef->position.Set(transform.Translation.x, transform.Translation.y);
-    // bodyDef->angle = transform.Rotation.z;
-    // bodyDef->userData = bodyData;
 
     BodyInfo2D bodyInfo {
         entity,
     };
 
     Physisc2D::EnqueueBody(bodyInfo);
-
-    // if (entity.HasComponent<BoxCollider2DComponent>()) {
-    //     auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
-    //
-    //     if (!bc2d.queuedForInitialization) {
-    //         // b2PolygonShape* boxShape = new b2PolygonShape;
-    //         // boxShape->SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
-    //         //
-    //         // b2FixtureDef* fixtureDef = new b2FixtureDef;
-    //         // fixtureDef->shape = boxShape;
-    //         // fixtureDef->density = bc2d.Density;
-    //         // fixtureDef->friction = bc2d.Friction;
-    //         // fixtureDef->restitution = bc2d.Restitution;
-    //         // fixtureDef->restitutionThreshold = bc2d.RestitutionThreshold;
-    //         //
-    //         FixtureInfo2D fixtureInfo {
-    //             entity,
-    //             Box
-    //         };
-    //
-    //         Physisc2D::EnqueueFixture(fixtureInfo);
-    //         bc2d.queuedForInitialization = true;
-    //     }
-    // }
-
-    // if (entity.HasComponent<CircleCollider2DComponent>()) {
-    //     auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
-    //
-    //     if (!cc2d.queuedForInitialization) {
-    //
-    //         b2CircleShape* circleShape = new b2CircleShape;
-    //         circleShape->m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
-    //         circleShape->m_radius = transform.Scale.x * cc2d.Radius;
-    //
-    //         b2FixtureDef* fixtureDef = new b2FixtureDef;
-    //         fixtureDef->shape = circleShape;
-    //         fixtureDef->density = cc2d.Density;
-    //         fixtureDef->friction = cc2d.Friction;
-    //         fixtureDef->restitution = cc2d.Restitution;
-    //         fixtureDef->restitutionThreshold = cc2d.RestitutionThreshold;
-    //
-    //         FixtureInfo2D fixtureInfo {
-    //             entity,
-    //             Circle
-    //         };
-    //
-    //         Physisc2D::EnqueueFixture(fixtureInfo);
-    //         component.queuedForInitialization = true;
-    //     }
-    // }
 }
 
 template <>
 void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
 {
-    if (component.queuedForInitialization || component.RuntimeFixture)
+    if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
     FixtureInfo2D fixtureInfo = {
@@ -604,87 +530,14 @@ void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2
     component.queuedForInitialization = true;
 
     return;
-
-    // if (entity.HasComponent<Rigidbody2DComponent>()) {
-    //
-    //     // b2PolygonShape* boxShape = new b2PolygonShape;
-    //     // boxShape->SetAsBox(component.Size.x * transform.Scale.x, component.Size.y * transform.Scale.y, b2Vec2(component.Offset.x, component.Offset.y), 0.0f);
-    //     //
-    //     // b2FixtureDef* fixtureDef = new b2FixtureDef;
-    //     // fixtureDef->shape = boxShape;
-    //     // fixtureDef->density = component.Density;
-    //     // fixtureDef->friction = component.Friction;
-    //     // fixtureDef->restitution = component.Restitution;
-    //     // fixtureDef->restitutionThreshold = component.RestitutionThreshold;
-    //
-    //     FixtureInfo2D fixtureInfo {
-    //         entity,
-    //         Box
-    //     };
-    //
-    //     Physisc2D::EnqueueFixture(fixtureInfo);
-    //     component.queuedForInitialization = true;
-    //
-    //     return;
-    // }
-    //
-    // // Iterate through all children recursively and add colliders to parent rigidbody
-    // auto AddChildColliders = [](auto&& self, entt::entity startedEntity, entt::entity parentEntity) -> void {
-    //     auto& hierarchyNode = Entity(parentEntity).GetComponent<HierarchyNodeComponent>();
-    //
-    //     for (auto& child : hierarchyNode.Children) {
-    //
-    //         if (Entity(child.second).HasComponent<Rigidbody2DComponent>())
-    //             continue;
-    //
-    //         auto& transform = Entity(child.second).GetComponent<TransformComponent>();
-    //
-    //         if (Entity(child.second).HasComponent<BoxCollider2DComponent>()) {
-    //             auto& bc2d = Entity(child.second).GetComponent<BoxCollider2DComponent>();
-    //
-    //             b2PolygonShape* boxShape = new b2PolygonShape;
-    //             boxShape->SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
-    //
-    //             b2FixtureDef* fixtureDef = new b2FixtureDef;
-    //             fixtureDef->shape = boxShape;
-    //             fixtureDef->density = bc2d.Density;
-    //             fixtureDef->friction = bc2d.Friction;
-    //             fixtureDef->restitution = bc2d.Restitution;
-    //             fixtureDef->restitutionThreshold = bc2d.RestitutionThreshold;
-    //             Physisc2D::EnqueueFixture(startedEntity, fixtureDef);
-    //         }
-    //
-    //         if (Entity(child.second).HasComponent<CircleCollider2DComponent>()) {
-    //             auto& cc2d = Entity(child.second).GetComponent<CircleCollider2DComponent>();
-    //
-    //             b2CircleShape* circleShape = new b2CircleShape;
-    //             circleShape->m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
-    //             circleShape->m_radius = transform.Scale.x * cc2d.Radius;
-    //
-    //             b2FixtureDef* fixtureDef = new b2FixtureDef;
-    //             fixtureDef->shape = circleShape;
-    //             fixtureDef->density = cc2d.Density;
-    //             fixtureDef->friction = cc2d.Friction;
-    //             fixtureDef->restitution = cc2d.Restitution;
-    //             fixtureDef->restitutionThreshold = cc2d.RestitutionThreshold;
-    //             Physisc2D::EnqueueFixture(startedEntity, fixtureDef);
-    //         }
-    //
-    //         self(self, startedEntity, child.second);
-    //     }
-    // };
-    //
-    // AddChildColliders(AddChildColliders, entity, entity);
 }
 
 template <>
 void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
 {
-    // TODO: Move this to ProcessFixtureQueu
-
     auto& transform = entity.GetComponent<TransformComponent>();
 
-    if (component.queuedForInitialization || component.RuntimeFixture)
+    if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
     FixtureInfo2D fixtureInfo {
@@ -694,76 +547,6 @@ void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCol
 
     Physisc2D::EnqueueFixture(fixtureInfo);
     component.queuedForInitialization = true;
-
-    // if (entity.HasComponent<Rigidbody2DComponent>()) {
-    //
-    //     b2CircleShape* circleShape = new b2CircleShape;
-    //     circleShape->m_p.Set(component.Offset.x, component.Offset.y);
-    //     circleShape->m_radius = transform.Scale.x * component.Radius;
-    //
-    //     b2FixtureDef* fixtureDef = new b2FixtureDef;
-    //     fixtureDef->shape = circleShape;
-    //     fixtureDef->density = component.Density;
-    //     fixtureDef->friction = component.Friction;
-    //     fixtureDef->restitution = component.Restitution;
-    //     fixtureDef->restitutionThreshold = component.RestitutionThreshold;
-    //
-    //     FixtureInfo2D fixtureInfo {
-    //         entity,
-    //         ColliderType2D::Circle
-    //     };
-    //
-    //     Physisc2D::EnqueueFixture(fixtureInfo);
-    //     component.queuedForInitialization = true;
-    // }
-    //
-    // // Iterate through all children recursively and add colliders to parent rigidbody
-    // auto AddChildColliders = [](auto&& self, entt::entity startedEntity, entt::entity parentEntity) -> void {
-    //     auto& hierarchyNode = Entity(parentEntity).GetComponent<HierarchyNodeComponent>();
-    //
-    //     for (auto& child : hierarchyNode.Children) {
-    //
-    //         if (Entity(child.second).HasComponent<Rigidbody2DComponent>())
-    //             continue;
-    //
-    //         auto& transform = Entity(child.second).GetComponent<TransformComponent>();
-    //
-    //         if (Entity(child.second).HasComponent<BoxCollider2DComponent>()) {
-    //             auto& bc2d = Entity(child.second).GetComponent<BoxCollider2DComponent>();
-    //
-    //             b2PolygonShape* boxShape = new b2PolygonShape;
-    //             boxShape->SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
-    //
-    //             b2FixtureDef* fixtureDef = new b2FixtureDef;
-    //             fixtureDef->shape = boxShape;
-    //             fixtureDef->density = bc2d.Density;
-    //             fixtureDef->friction = bc2d.Friction;
-    //             fixtureDef->restitution = bc2d.Restitution;
-    //             fixtureDef->restitutionThreshold = bc2d.RestitutionThreshold;
-    //             Physisc2D::EnqueueFixture(startedEntity, fixtureDef);
-    //         }
-    //
-    //         if (Entity(child.second).HasComponent<CircleCollider2DComponent>()) {
-    //             auto& cc2d = Entity(child.second).GetComponent<CircleCollider2DComponent>();
-    //
-    //             b2CircleShape* circleShape = new b2CircleShape;
-    //             circleShape->m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
-    //             circleShape->m_radius = transform.Scale.x * cc2d.Radius;
-    //
-    //             b2FixtureDef* fixtureDef = new b2FixtureDef;
-    //             fixtureDef->shape = circleShape;
-    //             fixtureDef->density = cc2d.Density;
-    //             fixtureDef->friction = cc2d.Friction;
-    //             fixtureDef->restitution = cc2d.Restitution;
-    //             fixtureDef->restitutionThreshold = cc2d.RestitutionThreshold;
-    //             Physisc2D::EnqueueFixture(startedEntity, fixtureDef);
-    //         }
-    //
-    //         self(self, startedEntity, child.second);
-    //     }
-    // };
-    //
-    // AddChildColliders(AddChildColliders, entity, entity);
 }
 
 template <>

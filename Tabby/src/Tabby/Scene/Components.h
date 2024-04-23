@@ -3,14 +3,13 @@
 #include "SceneCamera.h"
 #include "Tabby/Core/UUID.h"
 #include "Tabby/Renderer/Font.h"
-#include "Tabby/Renderer/Texture.h"
 
-#include "box2d/b2_body.h"
+#include <box2d/box2d.h>
 #include "entt/entt.hpp"
 #include "glm/fwd.hpp"
-#include <Tabby/Math/Math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <Tabby/Math/Math.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
@@ -53,9 +52,6 @@ struct TransformComponent {
     glm::vec3 LocalRotation = { 0.0f, 0.0f, 0.0f };
     glm::vec3 LocalScale = { 1.0f, 1.0f, 1.0f };
 
-    // std::pair<UUID, entt::entity> Parent;
-    // std::vector<std::pair<UUID, entt::entity>> Children;
-
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
     TransformComponent(const glm::vec3& translation)
@@ -67,18 +63,14 @@ struct TransformComponent {
     {
         glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians(Rotation)));
 
-        return glm::translate(glm::mat4(1.0f), Translation)
-            * rotation
-            * glm::scale(glm::mat4(1.0f), Scale);
+        return glm::translate(glm::mat4(1.0f), Translation) * rotation * glm::scale(glm::mat4(1.0f), Scale);
     }
 
     glm::mat4 GetLocalTransform() const
     {
         glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians(LocalRotation)));
 
-        return glm::translate(glm::mat4(1.0f), LocalTranslation)
-            * rotation
-            * glm::scale(glm::mat4(1.0f), LocalScale);
+        return glm::translate(glm::mat4(1.0f), LocalTranslation) * rotation * glm::scale(glm::mat4(1.0f), LocalScale);
     }
 
     void ApplyTransform(const glm::mat4& transform)
@@ -94,8 +86,7 @@ struct TransformComponent {
             return;
 
         // First, isolate perspective.  This is the messiest.
-        if (
-            epsilonNotEqual(LocalMatrix[0][3], static_cast<T>(0), epsilon<T>()) || epsilonNotEqual(LocalMatrix[1][3], static_cast<T>(0), epsilon<T>()) || epsilonNotEqual(LocalMatrix[2][3], static_cast<T>(0), epsilon<T>())) {
+        if (epsilonNotEqual(LocalMatrix[0][3], static_cast<T>(0), epsilon<T>()) || epsilonNotEqual(LocalMatrix[1][3], static_cast<T>(0), epsilon<T>()) || epsilonNotEqual(LocalMatrix[2][3], static_cast<T>(0), epsilon<T>())) {
             // Clear the perspective partition
             LocalMatrix[0][3] = LocalMatrix[1][3] = LocalMatrix[2][3] = static_cast<T>(0);
             LocalMatrix[3][3] = static_cast<T>(1);
@@ -213,8 +204,13 @@ struct NativeScriptComponent {
     template <typename T>
     void Bind()
     {
-        InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
-        DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+        InstantiateScript = []() {
+            return static_cast<ScriptableEntity*>(new T());
+        };
+        DestroyScript = [](NativeScriptComponent* nsc) {
+            delete nsc->Instance;
+            nsc->Instance = nullptr;
+        };
     }
 };
 
@@ -228,7 +224,7 @@ struct Rigidbody2DComponent {
     bool FixedRotation = false;
 
     // Storage for runtime
-    void* RuntimeBody = nullptr;
+    b2BodyId RuntimeBodyId = b2_nullBodyId;
     bool queuedForInitialization;
 
     Rigidbody2DComponent() = default;
@@ -265,28 +261,32 @@ struct Rigidbody2DComponent {
 
     void SetVelocity(glm::vec2 velocity)
     {
-        if (RuntimeBody)
-            static_cast<b2Body*>(RuntimeBody)->SetLinearVelocity({ velocity.x, velocity.y });
+        if (B2_IS_NON_NULL(RuntimeBodyId))
+            b2Body_SetLinearVelocity(RuntimeBodyId, { velocity.x, velocity.y });
+        // static_cast<b2Body*>(RuntimeBody)->SetLinearVelocity({ velocity.x,
+        // velocity.y });
     }
 
     void SetAngularVelocity(float velocity)
     {
-        if (RuntimeBody)
-            static_cast<b2Body*>(RuntimeBody)->SetAngularVelocity(velocity);
+        if (B2_IS_NON_NULL(RuntimeBodyId))
+            b2Body_SetAngularVelocity(RuntimeBodyId, velocity);
+        // static_cast<b2Body*>(RuntimeBody)->SetAngularVelocity(velocity);
     }
 
     glm::vec2 GetVelocity() const
     {
-        if (RuntimeBody)
-            return { static_cast<b2Body*>(RuntimeBody)->GetLinearVelocity().x, static_cast<b2Body*>(RuntimeBody)->GetLinearVelocity().y };
+        b2Vec2 velocity = b2Body_GetLinearVelocity(RuntimeBodyId);
+        if (B2_IS_NON_NULL(RuntimeBodyId))
+            return { velocity.x, velocity.y };
         else
             return { 0.0f, 0.0f };
     }
 
     float GetAngularVelocity() const
     {
-        if (RuntimeBody)
-            return static_cast<b2Body*>(RuntimeBody)->GetAngularVelocity();
+        if (B2_IS_NON_NULL(RuntimeBodyId))
+            return b2Body_GetAngularVelocity(RuntimeBodyId);
         else
             return 0.0f;
     }
@@ -295,8 +295,8 @@ struct Rigidbody2DComponent {
     {
         float angleRadians;
 
-        if (RuntimeBody)
-            angleRadians = static_cast<b2Body*>(RuntimeBody)->GetAngle();
+        if (B2_IS_NON_NULL(RuntimeBodyId))
+            angleRadians = b2Body_GetAngle(RuntimeBodyId);
 
         // Convert the angle from radians to degrees
         float angleDegrees = angleRadians * (180.0f / b2_pi);
@@ -316,6 +316,7 @@ struct Rigidbody2DComponent {
 struct BoxCollider2DComponent {
     glm::vec2 Offset = { 0.0f, 0.0f };
     glm::vec2 Size = { 0.5f, 0.5f };
+    float angle = 0.0f;
 
     // TODO(Yan): move into physics material in the future maybe
     float Density = 1.0f;
@@ -323,8 +324,26 @@ struct BoxCollider2DComponent {
     float Restitution = 0.0f;
     float RestitutionThreshold = 0.5f;
 
+    /// A sensor shape collects contact information but never generates a
+    /// collision response.
+    bool isSensor = false;
+
+    /// Enable sensor events for this shape. Only applies to kinematic and dynamic
+    /// bodies. Ignored for sensors.
+    bool enableSensorEvents = false;
+
+    /// Enable contact events for this shape. Only applies to kinematic and
+    /// dynamic bodies. Ignored for sensors.
+    bool enableContactEvents = false;
+
+    /// Enable pre-solve contact events for this shape. Only applies to dynamic
+    /// bodies. These are expensive
+    ///    and must be carefully handled due to multi-threading. Ignored for
+    ///    sensors.
+    bool enablePreSolveEvents = false;
+
     // Storage for runtime
-    void* RuntimeFixture = nullptr;
+    b2ShapeId RuntimeShapeId = b2_nullShapeId;
     bool queuedForInitialization;
 
     BoxCollider2DComponent() = default;
@@ -341,18 +360,72 @@ struct CircleCollider2DComponent {
     float Restitution = 0.0f;
     float RestitutionThreshold = 0.5f;
 
+    /// A sensor shape collects contact information but never generates a
+    /// collision response.
+    bool isSensor = false;
+
+    /// Enable sensor events for this shape. Only applies to kinematic and dynamic
+    /// bodies. Ignored for sensors.
+    bool enableSensorEvents = false;
+
+    /// Enable contact events for this shape. Only applies to kinematic and
+    /// dynamic bodies. Ignored for sensors.
+    bool enableContactEvents = false;
+
+    /// Enable pre-solve contact events for this shape. Only applies to dynamic
+    /// bodies. These are expensive
+    ///    and must be carefully handled due to multi-threading. Ignored for
+    ///    sensors.
+    bool enablePreSolveEvents = false;
+
     // Storage for runtime
-    void* RuntimeFixture = nullptr;
+    b2ShapeId RuntimeShapeId = b2_nullShapeId;
     bool queuedForInitialization;
 
     CircleCollider2DComponent() = default;
     CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
 };
 
+struct CapsuleCollider2DComponent {
+    glm::vec2 Offset = { 0.0f, 0.0f };
+    float Radius = 0.5f;
+
+    // TODO(Yan): move into physics material in the future maybe
+    float Density = 1.0f;
+    float Friction = 0.5f;
+    float Restitution = 0.0f;
+    float RestitutionThreshold = 0.5f;
+
+    /// A sensor shape collects contact information but never generates a
+    /// collision response.
+    bool isSensor = false;
+
+    /// Enable sensor events for this shape. Only applies to kinematic and dynamic
+    /// bodies. Ignored for sensors.
+    bool enableSensorEvents = false;
+
+    /// Enable contact events for this shape. Only applies to kinematic and
+    /// dynamic bodies. Ignored for sensors.
+    bool enableContactEvents = false;
+
+    /// Enable pre-solve contact events for this shape. Only applies to dynamic
+    /// bodies. These are expensive
+    ///    and must be carefully handled due to multi-threading. Ignored for
+    ///    sensors.
+    bool enablePreSolveEvents = false;
+
+    // Storage for runtime
+    b2ShapeId RuntimeShapeId = b2_nullShapeId;
+    bool queuedForInitialization;
+
+    CapsuleCollider2DComponent() = default;
+    CapsuleCollider2DComponent(const CapsuleCollider2DComponent&) = default;
+};
+
 struct TextComponent {
     std::string TextString;
 
-    Shared<Font> Font = Font::GetDefault();
+    Shared<Font> font = Font::GetDefault();
     // AssetHandle Font;
     glm::vec4 Color { 1.0f };
     float Kerning = 0.0f;
@@ -362,12 +435,12 @@ struct TextComponent {
 };
 
 template <typename... Component>
-struct ComponentGroup {
-};
+struct ComponentGroup { };
 
 using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
-    CircleRendererComponent, CameraComponent, SoundComponent, HierarchyNodeComponent,
-    NativeScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent,
+    CircleRendererComponent, CameraComponent, SoundComponent,
+    HierarchyNodeComponent, NativeScriptComponent,
+    Rigidbody2DComponent, BoxCollider2DComponent,
     CircleCollider2DComponent, TextComponent>;
 
-}
+} // namespace Tabby

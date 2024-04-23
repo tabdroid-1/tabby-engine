@@ -7,8 +7,6 @@
 #include "Tabby/Core/Layer/LayerStack.h"
 #include "Tabby/Core/Window.h"
 
-#include "Tabby/Core/Time/Timestep.h"
-
 #include "Tabby/UI/ImGui/ImGuiLayer.h"
 
 int main(int argc, char** argv);
@@ -67,10 +65,11 @@ private:
     ApplicationSpecification m_Specification;
     Scope<Window> m_Window;
     ImGuiLayer* m_ImGuiLayer;
-    bool m_Running = true;
-    bool m_Minimized = false;
     LayerStack m_LayerStack;
+
     double m_LastFrameTime = 0.0f;
+    bool m_Minimized = false;
+    bool m_Running = true;
 
     std::vector<std::function<void()>> m_MainThreadQueue;
     std::mutex m_MainThreadQueueMutex;
