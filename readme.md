@@ -14,7 +14,7 @@ Engine architecture is based on Hazel engine.
 External Dependencies
 -------------------
 - Bundled with engine
-  - box2d
+  - box2d 3.0
   - entt
   - ImGui
   - glad2
