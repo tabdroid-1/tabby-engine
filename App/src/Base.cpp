@@ -288,6 +288,37 @@ void Base::OnOverlayRender()
                 Tabby::Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.1f);
             }
         }
+
+        // Capsule Colliders
+        {
+            auto view = Tabby::SceneManager::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::CapsuleCollider2DComponent>();
+            for (auto entity : view) {
+                auto [tc, cc2d] = view.get<Tabby::TransformComponent, Tabby::CapsuleCollider2DComponent>(entity);
+
+                glm::vec3 translation1 = tc.Translation + glm::vec3(cc2d.center1, 0.001f);
+                glm::vec3 scale1 = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
+                glm::mat4 transform1 = glm::translate(glm::mat4(1.0f), tc.Translation)
+                    * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+                    * glm::translate(glm::mat4(1.0f), glm::vec3(cc2d.center1, 0.001f))
+                    * glm::scale(glm::mat4(1.0f), scale1);
+                Tabby::Renderer2D::DrawCircle(transform1, glm::vec4(0, 1, 0, 1), 0.1f);
+
+                glm::vec3 translation2 = tc.Translation + glm::vec3(cc2d.center2, 0.001f);
+                glm::vec3 scale2 = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
+                glm::mat4 transform2 = glm::translate(glm::mat4(1.0f), tc.Translation)
+                    * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+                    * glm::translate(glm::mat4(1.0f), glm::vec3(cc2d.center2, 0.001f))
+                    * glm::scale(glm::mat4(1.0f), scale2);
+                Tabby::Renderer2D::DrawCircle(transform2, glm::vec4(0, 1, 0, 1), 0.1f);
+
+                glm::vec3 translation3 = tc.Translation + glm::vec3(cc2d.center2, 0.001f);
+                glm::vec3 scale3 = tc.Scale * glm::vec3(cc2d.Radius * 2.0f) * glm::vec3(0.95f, 1.5f, 0.95f);
+                glm::mat4 transform3 = glm::translate(glm::mat4(1.0f), tc.Translation)
+                    * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+                    * glm::scale(glm::mat4(1.0f), scale3);
+                Tabby::Renderer2D::DrawRect(transform3, glm::vec4(0, 1, 0, 1));
+            }
+        }
     }
 
     // Draw selected entity outline

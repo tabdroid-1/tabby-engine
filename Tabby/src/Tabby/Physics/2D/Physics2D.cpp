@@ -138,30 +138,31 @@ void Physisc2D::ProcessFixtureQueue()
         // Check if entity it self has Rigidbody2DComponent. If there is, collider will be added to Rigidbody2DComponent of same entity.
         // If there is not, function will check its parent if it has Rigidbody2DComponent. And this will go on untill it finds an entity Rigidbody2DComponent;
         // This is is because an entity can have one component of same type. User can create More colliders by creating child entities.
-        Rigidbody2DComponent* rb2d = nullptr;
+        entt::entity rb2dEntity { entt::null };
         if (fixtureInfo.entity.HasComponent<Rigidbody2DComponent>()) {
-            rb2d = &fixtureInfo.entity.GetComponent<Rigidbody2DComponent>();
+            rb2dEntity = fixtureInfo.entity;
         } else {
 
-            auto FindParentRigidbody = [](auto&& self, entt::entity parentEntity) -> Rigidbody2DComponent* {
+            auto FindParentRigidbody = [](auto&& self, entt::entity parentEntity) -> entt::entity {
                 auto& hierarchyNode = Entity(parentEntity).GetComponent<HierarchyNodeComponent>();
 
                 if (Entity(hierarchyNode.Parent.second).HasComponent<Rigidbody2DComponent>()) {
-                    return &Entity(hierarchyNode.Parent.second).GetComponent<Rigidbody2DComponent>();
+                    return hierarchyNode.Parent.second;
                 } else {
                     if (hierarchyNode.Parent.first.Valid())
                         return self(self, hierarchyNode.Parent.second);
                 }
             };
 
-            rb2d = FindParentRigidbody(FindParentRigidbody, fixtureInfo.entity);
+            rb2dEntity = FindParentRigidbody(FindParentRigidbody, fixtureInfo.entity);
         }
 
-        if (!rb2d)
+        if (rb2dEntity == entt::null)
             s_Instance->fixtureQueue.pop();
 
         if (fixtureInfo.colliderType == ColliderType2D::Box) {
             auto& bc2d = fixtureInfo.entity.GetComponent<BoxCollider2DComponent>();
+            bc2d.AtachedRigidbody2DEntity = std::make_pair(Entity(rb2dEntity).GetUUID(), rb2dEntity);
 
             // --------- Create box collider def ---------
             b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.angle);
@@ -176,11 +177,12 @@ void Physisc2D::ProcessFixtureQueue()
             shapeDef.enablePreSolveEvents = bc2d.enablePreSolveEvents;
 
             // --------- Create box collider in body ---------
-            bc2d.RuntimeShapeId = b2CreatePolygonShape(rb2d->RuntimeBodyId, &shapeDef, &box);
+            bc2d.RuntimeShapeId = b2CreatePolygonShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &box);
             bc2d.queuedForInitialization = false;
 
         } else if (fixtureInfo.colliderType == ColliderType2D::Circle) {
             auto& cc2d = fixtureInfo.entity.GetComponent<CircleCollider2DComponent>();
+            cc2d.AtachedRigidbody2DEntity = std::make_pair(Entity(rb2dEntity).GetUUID(), rb2dEntity);
 
             // --------- Create circle collider def ---------
             b2Circle circleShape = { { transform.LocalTranslation.x + cc2d.Offset.x, transform.LocalTranslation.y + cc2d.Offset.y }, cc2d.Radius };
@@ -195,7 +197,29 @@ void Physisc2D::ProcessFixtureQueue()
             shapeDef.enablePreSolveEvents = cc2d.enablePreSolveEvents;
 
             // --------- Create circle collider in body ---------
-            cc2d.RuntimeShapeId = b2CreateCircleShape(rb2d->RuntimeBodyId, &shapeDef, &circleShape);
+            cc2d.RuntimeShapeId = b2CreateCircleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &circleShape);
+            cc2d.queuedForInitialization = false;
+        } else if (fixtureInfo.colliderType == ColliderType2D::Capsule) {
+            auto& cc2d = fixtureInfo.entity.GetComponent<CapsuleCollider2DComponent>();
+            cc2d.AtachedRigidbody2DEntity = std::make_pair(Entity(rb2dEntity).GetUUID(), rb2dEntity);
+
+            // --------- Create circle collider def ---------
+
+            b2Vec2 center1 = { cc2d.center1.x + transform.LocalTranslation.x, cc2d.center1.y + transform.LocalTranslation.y };
+            b2Vec2 center2 = { cc2d.center2.x + transform.LocalTranslation.x, cc2d.center2.y + transform.LocalTranslation.y };
+            b2Capsule capsuleShape = { center1, center2, cc2d.Radius };
+
+            b2ShapeDef shapeDef = b2DefaultShapeDef();
+            shapeDef.density = cc2d.Density;
+            shapeDef.friction = cc2d.Friction;
+            shapeDef.restitution = cc2d.Restitution;
+            shapeDef.isSensor = cc2d.isSensor;
+            shapeDef.enableSensorEvents = cc2d.enableSensorEvents;
+            shapeDef.enableContactEvents = cc2d.enableContactEvents;
+            shapeDef.enablePreSolveEvents = cc2d.enablePreSolveEvents;
+
+            // --------- Create circle collider in body ---------
+            cc2d.RuntimeShapeId = b2CreateCapsuleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &capsuleShape);
             cc2d.queuedForInitialization = false;
         }
 
@@ -223,7 +247,6 @@ float Physisc2D::Physics2DRaycastCallback(b2ShapeId shapeId, b2Vec2 point, b2Vec
     return fraction;
 }
 
-// BUG: Entity might not have Rigidbody2DComponent as it can be a child with just a collider.
 void Physisc2D::ProcessEvents()
 {
     b2ContactEvents contactEvents = b2World_GetContactEvents(s_Instance->m_PhysicsWorld);
