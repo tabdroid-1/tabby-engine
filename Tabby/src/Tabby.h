@@ -13,26 +13,30 @@
 #include <Tabby/Core/Time/Timestep.h>
 #include <Tabby/Log/Log.h>
 // -----------------------------------
-
+//
+// --- Scene -------------------------
+#include <Tabby/Scene/Scene.h>
+#include <Tabby/Scene/Components.h>
+#include <Tabby/Scene/Entity.h>
+#include <Tabby/Scene/SceneManager.h>
+#include <Tabby/Scene/ScriptableEntity.h>
+// -----------------------------------
+//
+// --- Physics -----------------------
+#include <Tabby/Physics/2D/Physics2D.h>
+#include <Tabby/Physics/2D/Physics2DTypes.h>
+// -----------------------------------
+//
 // --- Input -------------------------
 #include <Tabby/Input/Input.h>
 #include <Tabby/Input/KeyCodes.h>
 #include <Tabby/Input/MouseCodes.h>
 // -----------------------------------
-
-// --- Scene -------------------------
-#include <Tabby/Scene/Components.h>
-#include <Tabby/Scene/Entity.h>
-#include <Tabby/Scene/Scene.h>
-#include <Tabby/Scene/SceneManager.h>
-#include <Tabby/Scene/ScriptableEntity.h>
-// -----------------------------------
-
+//
 // --- Asset -------------------------
-// #include <Tabby/Asset/Importers/TextureImporter.h>
 #include <Tabby/Asset/AssetManager.h>
 // -----------------------------------
-
+//
 // ---Renderer------------------------
 #include <Tabby/Renderer/Buffer.h>
 #include <Tabby/Renderer/Framebuffer.h>

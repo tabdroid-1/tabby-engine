@@ -9,6 +9,7 @@ Todo
         - <s>Attach child colliders to parent with rigidbody. 
           This will be iterated through all entities until child ends or child has rigidbody component. </s> Done Since 21-04-2024_1 Alpha
         - Box2D 3.0 migration.
+        - Add Multiple raycast modes and circle, capsule and polygon casting.
         - Add collision filtering(layer/mask).
     - <s>Maybe use SDL2 for window creationg instead of glfw cus it has some problems.</s> Done
     - <s>Android Support.</s> Done

@@ -740,7 +740,7 @@ void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const 
 
 void Renderer2D::DrawString(const std::string& string, const glm::mat4& transform, const TextComponent& component, int entityID)
 {
-    DrawString(string, component.Font, transform, { component.Color, component.Kerning, component.LineSpacing }, entityID);
+    DrawString(string, component.font, transform, { component.Color, component.Kerning, component.LineSpacing }, entityID);
 }
 
 // void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID)

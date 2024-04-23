@@ -58,7 +58,7 @@ void TestScene::OnActivate()
         TextEntity2.GetComponent<Tabby::TransformComponent>().Translation.y = 2;
         auto& textComponent = TextEntity2.AddComponent<Tabby::TextComponent>();
         textComponent.TextString = "ComicSans at home";
-        textComponent.Font = Tabby::CreateShared<Tabby::Font>("fonts/ldfcomicsans/Ldfcomicsans-jj7l.ttf");
+        textComponent.font = Tabby::CreateShared<Tabby::Font>("fonts/ldfcomicsans/Ldfcomicsans-jj7l.ttf");
     }
 
     Tabby::Entity TextEntity = CreateEntity("TextEntity");

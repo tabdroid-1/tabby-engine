@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Application.h"
 #include <Tabby/Core/Application.h>
 
 extern Tabby::Application* Tabby::CreateApplication(ApplicationCommandLineArgs args);
