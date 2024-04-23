@@ -550,6 +550,23 @@ void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCol
 }
 
 template <>
+void Scene::OnComponentAdded<CapsuleCollider2DComponent>(Entity entity, CapsuleCollider2DComponent& component)
+{
+    auto& transform = entity.GetComponent<TransformComponent>();
+
+    if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
+        return;
+
+    FixtureInfo2D fixtureInfo {
+        entity,
+        ColliderType2D::Capsule
+    };
+
+    Physisc2D::EnqueueFixture(fixtureInfo);
+    component.queuedForInitialization = true;
+}
+
+template <>
 void Scene::OnComponentAdded<TextComponent>(Entity entity, TextComponent& component)
 {
 }
