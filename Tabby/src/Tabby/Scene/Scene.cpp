@@ -11,7 +11,6 @@
 #include <Tabby/Math/Math.h>
 #include <Tabby/Physics/2D/Physics2DTypes.h>
 #include <glm/glm.hpp>
-
 #include <Tabby/Debug/Debug.h>
 
 namespace Tabby {
@@ -212,7 +211,8 @@ void Scene::DestroyEntityWithChildren(Entity entity)
 
 void Scene::OnStart()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Scene::OnStart");
+
     m_IsRunning = true;
 
     glm::vec2 gravity(0.0f, -20.8f);
@@ -223,7 +223,7 @@ void Scene::OnStart()
 
 void Scene::OnStop()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Scene::OnStop");
     m_IsRunning = false;
 
     {
@@ -243,27 +243,26 @@ void Scene::OnStop()
 
 void Scene::OnUpdate(Timestep ts)
 {
-    TB_PROFILE_SCOPE();
-
+    TB_PROFILE_SCOPE_NAME("Scene::OnUpdate");
     SceneManager::ProcessQueue(Physisc2D::IsQueueEmpty());
 
     if (!m_IsPaused || m_StepFrames-- > 0) {
 
         TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate");
+
         // Update scripts
         {
-            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::NativeScriptUpdate");
             SceneManager::GetRegistry().view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
-                // TODO: Move to Scene::OnScenePlay
+                TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::NativeScriptComponentUpdate");
+
                 if (!nsc.Instance) {
                     nsc.Instance = nsc.InstantiateScript();
-                    nsc.Instance->m_Entity = entity;
+                    nsc.Instance->m_Entity = Entity { entity };
                     nsc.Instance->OnCreate();
                 }
 
                 nsc.Instance->Update(ts);
                 nsc.Instance->LateUpdate(ts);
-                nsc.Instance->Draw();
 
                 const double fixedTimeStep = 1.0 / FIXED_UPDATE_RATE;
 
@@ -277,7 +276,7 @@ void Scene::OnUpdate(Timestep ts)
         }
         // Physics
         {
-            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::Physisc2DUpdate");
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::UpdateWorld");
             const int32_t subStepCount = 6;
             Physisc2D::UpdateWorld(ts, subStepCount);
 
@@ -287,6 +286,7 @@ void Scene::OnUpdate(Timestep ts)
                 Entity entity = { e };
                 auto& transform = entity.GetComponent<TransformComponent>();
                 auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+                // b2Body* body = (b2Body*)rb2d.RuntimeBody;
 
                 const auto& position = b2Body_GetPosition(rb2d.RuntimeBodyId);
                 transform.Translation.x = position.x;
@@ -344,13 +344,12 @@ void Scene::OnUpdate(Timestep ts)
 
     if (mainCamera) {
 
-        TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DrawScene");
-
+        TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::RenderScene");
         Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
         // Draw circles
         {
-            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DrawCircle");
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::RenderScene::RenderCircle");
             auto view = SceneManager::GetRegistry().view<TransformComponent, CircleRendererComponent>();
             for (auto entity : view) {
                 auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
@@ -361,7 +360,7 @@ void Scene::OnUpdate(Timestep ts)
 
         // Draw sprites
         {
-            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DrawSprite");
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::RenderScene::RenderSprites");
 
             std::vector<entt::entity> sortedEntities;
 
@@ -384,7 +383,7 @@ void Scene::OnUpdate(Timestep ts)
 
         // Draw text
         {
-            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DrawText");
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::RenderScene::RenderText");
 
             auto view = SceneManager::GetRegistry().view<TransformComponent, TextComponent>();
             for (auto entity : view) {
@@ -394,9 +393,9 @@ void Scene::OnUpdate(Timestep ts)
             }
         }
 
-        // Draw text
+        // Draw DebugShapes
         {
-            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DebugDraw");
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::RenderScene::DebugDraw");
 
             Debug::ProcessDrawCalls();
         }
@@ -407,7 +406,7 @@ void Scene::OnUpdate(Timestep ts)
 
 void Scene::OnViewportResize(uint32_t width, uint32_t height)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Scene::OnViewportResize");
 
     if (m_ViewportWidth == width && m_ViewportHeight == height)
         return;
@@ -555,8 +554,6 @@ void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2
 
     Physisc2D::EnqueueShapeInit(ShapeInfo);
     component.queuedForInitialization = true;
-
-    return;
 }
 
 template <>

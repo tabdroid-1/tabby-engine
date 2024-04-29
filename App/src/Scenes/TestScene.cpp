@@ -31,8 +31,6 @@ void TestScene::OnActivate()
 
         auto& boxColliderComponent = RigidbodyEntity.AddComponent<Tabby::BoxCollider2DComponent>();
         boxColliderComponent.Size = { 0.19f, 0.24f };
-        boxColliderComponent.enableContactEvents = true;
-        boxColliderComponent.enableSensorEvents = true;
     }
 
     Tabby::Entity CapsuleRigidbodyEntity = CreateEntity("RigidbodyEntity2");
@@ -87,7 +85,7 @@ void TestScene::OnActivate()
         textComponent.TextString = "Opensans";
     }
 
-    Tabby::Entity ChildChildEntity = CreateEntity("ChildChildEntity");
+    Tabby::Entity ChildChildEntity = CreateEntity("ChildEntity");
     {
         auto& spriteComponent = ChildChildEntity.AddComponent<Tabby::SpriteRendererComponent>();
 
@@ -95,9 +93,6 @@ void TestScene::OnActivate()
 
         auto& boxColliderComponent = ChildChildEntity.AddComponent<Tabby::BoxCollider2DComponent>();
         boxColliderComponent.Size = { 0.19f, 0.24f };
-        boxColliderComponent.isSensor = false;
-        boxColliderComponent.enableContactEvents = true;
-        boxColliderComponent.enableSensorEvents = true;
     }
 
     Tabby::Entity ChildEntity = CreateEntity("ChildEntity");
@@ -142,12 +137,11 @@ void TestScene::OnActivate()
         // boxColliderComponent.Size = { 0.19f, 0.24f };
 
         auto& circleColliderComponent = SpriteEntity.AddComponent<Tabby::CircleCollider2DComponent>();
-        circleColliderComponent.Offset = { 0.5f, 0.5f };
         circleColliderComponent.Radius = 0.24f;
 
         auto& playerMovement = SpriteEntity.AddComponent<Tabby::NativeScriptComponent>();
         playerMovement.Bind<PlayerMove>();
-        // auto playerMovementScript = static_cast<PlayerMove*>(playerMovement.Instance);
+        auto playerMovementScript = static_cast<PlayerMove*>(playerMovement.Instance);
     }
 
     Tabby::Entity SpriteEntity2 = CreateEntity("SpriteEntity2");

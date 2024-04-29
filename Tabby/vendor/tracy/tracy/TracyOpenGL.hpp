@@ -1,7 +1,8 @@
 #ifndef __TRACYOPENGL_HPP__
 #define __TRACYOPENGL_HPP__
 
-#if !defined TRACY_ENABLE || defined __APPLE__
+// TODO: REMOVE LINUX DEFINE
+#if !defined TRACY_ENABLE || defined __APPLE__ || defined __linux__
 
 #define TracyGpuContext
 #define TracyGpuContextName(x, y)
@@ -38,9 +39,6 @@ public:
 #include "../client/TracyCallstack.hpp"
 #include "../common/TracyAlign.hpp"
 #include "../common/TracyAlloc.hpp"
-
-#include "Drivers/gl33/GL33.h"
-#include "../../glad/gl33.h"
 
 #if !defined GL_TIMESTAMP && defined GL_TIMESTAMP_EXT
 #define GL_TIMESTAMP GL_TIMESTAMP_EXT
@@ -110,17 +108,14 @@ public:
     {
         assert(m_context != 255);
 
-        // glGenQueries(QueryCount, m_query);
-        Tabby::GL33::GL()->GenQueries(QueryCount, m_query);
+        glGenQueries(QueryCount, m_query);
 
         int64_t tgpu;
-        // glGetInteger64v(GL_TIMESTAMP, &tgpu);
-        Tabby::GL33::GL()->GetInteger64v(GL_TIMESTAMP, &tgpu);
+        glGetInteger64v(GL_TIMESTAMP, &tgpu);
         int64_t tcpu = Profiler::GetTime();
 
         GLint bits;
-        // glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS, &bits);
-        Tabby::GL33::GL()->GetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS, &bits);
+        glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS, &bits);
 
         const float period = 1.f;
         const auto thread = GetThreadHandle();
@@ -171,14 +166,12 @@ public:
 
         while (m_tail != m_head) {
             GLint available;
-            // glGetQueryObjectiv(m_query[m_tail], GL_QUERY_RESULT_AVAILABLE, &available);
-            Tabby::GL33::GL()->GetQueryObjectiv(m_query[m_tail], GL_QUERY_RESULT_AVAILABLE, &available);
+            glGetQueryObjectiv(m_query[m_tail], GL_QUERY_RESULT_AVAILABLE, &available);
             if (!available)
                 return;
 
             uint64_t time;
-            // glGetQueryObjectui64v(m_query[m_tail], GL_QUERY_RESULT, &time);
-            Tabby::GL33::GL()->GetQueryObjectui64v(m_query[m_tail], GL_QUERY_RESULT, &time);
+            glGetQueryObjectui64v(m_query[m_tail], GL_QUERY_RESULT, &time);
 
             TracyLfqPrepare(QueueType::GpuTime);
             MemWrite(&item->gpuTime.gpuTime, (int64_t)time);
@@ -229,8 +222,7 @@ public:
             return;
 
         const auto queryId = GetGpuCtx().ptr->NextQueryId();
-        // glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
-        Tabby::GL33::GL()->QueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
+        glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
 
         TracyLfqPrepare(QueueType::GpuZoneBegin);
         MemWrite(&item->gpuZoneBegin.cpuTime, Profiler::GetTime());
@@ -252,8 +244,7 @@ public:
             return;
 
         const auto queryId = GetGpuCtx().ptr->NextQueryId();
-        // glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
-        Tabby::GL33::GL()->QueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
+        glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
 
 #ifdef TRACY_FIBERS
         TracyLfqPrepare(QueueType::GpuZoneBegin);
@@ -281,8 +272,7 @@ public:
             return;
 
         const auto queryId = GetGpuCtx().ptr->NextQueryId();
-        // glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
-        Tabby::GL33::GL()->QueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
+        glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
 
         TracyLfqPrepare(QueueType::GpuZoneBeginAllocSrcLoc);
         const auto srcloc = Profiler::AllocSourceLocation(line, source, sourceSz, function, functionSz, name, nameSz);
@@ -305,8 +295,7 @@ public:
             return;
 
         const auto queryId = GetGpuCtx().ptr->NextQueryId();
-        // glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
-        Tabby::GL33::GL()->QueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
+        glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
 
 #ifdef TRACY_FIBERS
         TracyLfqPrepare(QueueType::GpuZoneBeginAllocSrcLoc);
@@ -330,8 +319,7 @@ public:
             return;
 
         const auto queryId = GetGpuCtx().ptr->NextQueryId();
-        // glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
-        Tabby::GL33::GL()->QueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
+        glQueryCounter(GetGpuCtx().ptr->TranslateOpenGlQueryId(queryId), GL_TIMESTAMP);
 
         TracyLfqPrepare(QueueType::GpuZoneEnd);
         MemWrite(&item->gpuZoneEnd.cpuTime, Profiler::GetTime());

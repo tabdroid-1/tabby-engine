@@ -293,6 +293,8 @@ namespace Audio {
     void Engine::EnginePollingThread()
     {
         while (!s_Instance->m_ShouldThreadClose) {
+
+            TB_PROFILE_SCOPE_NAME("AudioEngine::Update");
             s_Instance->m_SfxMixerLock.lock();
 
             auto isStopped = [](const SfxBuffers& sfx) {

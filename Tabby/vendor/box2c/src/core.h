@@ -13,11 +13,7 @@
 	#define B2_DEBUG 1
 #endif
 
-#if defined(BOX2D_VALIDATE) && !defined(NDEBUG)
-	#define B2_VALIDATE 1
-#else
-	#define B2_VALIDATE 0
-#endif
+#define B2_VALIDATE B2_DEBUG
 
 // Define platform
 #if defined(_WIN64)
