@@ -137,6 +137,15 @@ float Rigidbody2DComponent::GetAngularVelocity() const
         return 0.0f;
 }
 
+glm::vec2 Rigidbody2DComponent::GetPosition() const
+{
+    if (B2_IS_NON_NULL(RuntimeBodyId)) {
+        b2Vec2 position = b2Body_GetPosition(RuntimeBodyId);
+        return { position.x, position.y };
+    } else
+        return { 0.0f, 0.0f };
+}
+
 float Rigidbody2DComponent::GetAngle() const
 {
     float angleRadians;

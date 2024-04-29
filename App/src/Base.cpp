@@ -262,7 +262,7 @@ void Base::OnOverlayRender()
                 auto [tc, bc2d] = view.get<Tabby::TransformComponent, Tabby::BoxCollider2DComponent>(entity);
 
                 glm::vec3 translation = tc.Translation + glm::vec3(bc2d.Offset, 0.001f);
-                glm::vec3 scale = tc.Scale * glm::vec3(bc2d.Size * 2.0f, 1.0f);
+                glm::vec3 scale = glm::vec3(bc2d.Size * 2.0f, 1.0f);
 
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
                     * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))

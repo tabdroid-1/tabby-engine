@@ -2,7 +2,7 @@
 #define __TRACYSYSPOWER_HPP__
 
 #if defined __linux__
-#define TRACY_HAS_SYSPOWER
+#  define TRACY_HAS_SYSPOWER
 #endif
 
 #ifdef TRACY_HAS_SYSPOWER
@@ -12,10 +12,13 @@
 
 #include "TracyFastVector.hpp"
 
-namespace tracy {
+namespace tracy
+{
 
-class SysPower {
-    struct Domain {
+class SysPower
+{
+    struct Domain
+    {
         uint64_t value;
         uint64_t overflow;
         FILE* handle;
@@ -29,7 +32,7 @@ public:
     void Tick();
 
 private:
-    void ScanDirectory(const char* path, int parent);
+    void ScanDirectory( const char* path, int parent );
 
     FastVector<Domain> m_domains;
     uint64_t m_lastTime;
