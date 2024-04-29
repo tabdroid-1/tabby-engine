@@ -264,7 +264,7 @@ void Base::OnOverlayRender()
                 glm::vec3 translation = tc.Translation + glm::vec3(bc2d.Offset, 0.001f);
                 glm::vec3 scale = tc.Scale * glm::vec3(bc2d.Size * 2.0f, 1.0f);
 
-                glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.Translation)
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
                     * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
                     * glm::translate(glm::mat4(1.0f), glm::vec3(bc2d.Offset, 0.001f))
                     * glm::scale(glm::mat4(1.0f), scale);
@@ -282,10 +282,12 @@ void Base::OnOverlayRender()
                 glm::vec3 translation = tc.Translation + glm::vec3(cc2d.Offset, 0.001f);
                 glm::vec3 scale = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
 
-                glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.Translation)
+                    * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+                    * glm::translate(glm::mat4(1.0f), glm::vec3(cc2d.Offset, 0.001f))
                     * glm::scale(glm::mat4(1.0f), scale);
 
-                Tabby::Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.1f);
+                Tabby::Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.07f);
             }
         }
 

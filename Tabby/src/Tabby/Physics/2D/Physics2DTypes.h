@@ -39,15 +39,21 @@ namespace Utils {
 
 }
 
-struct UserData {
-    Entity entity;
+struct ShapeUserData2D {
+    Entity shapeEntity;
+    Entity bodyEntity;
 };
 
-// TODO: More collider types
+struct BodyUserData2D {
+    Entity bodyEntity;
+    std::unordered_map<UUID, Entity> shapeEntities;
+};
+
 enum ColliderType2D : uint8_t {
     Box = 0,
     Circle = 1,
-    Capsule = 2
+    Capsule = 2,
+    Segment = 3
 };
 
 // Callback Data Structs
@@ -72,7 +78,7 @@ struct BodyInfo2D {
     Entity entity;
 };
 
-struct FixtureInfo2D {
+struct ShapeInfo2D {
     Entity entity;
     ColliderType2D colliderType;
 };

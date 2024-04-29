@@ -29,6 +29,7 @@ protected:
     virtual void Update(Timestep ts) { }
     virtual void LateUpdate(Timestep ts) { }
     virtual void FixedUpdate(Timestep ts) { }
+    virtual void Draw() { }
 
     // Physics Callback
     virtual void OnCollisionEnter(ContactCallback contact) { }

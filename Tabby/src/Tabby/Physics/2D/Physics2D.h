@@ -19,14 +19,22 @@ public:
     static RaycastHit2D Raycast(const glm::vec2& origin, const glm::vec2& direction, float distance);
     static RaycastHit2D Raycast(const glm::vec2& origin, const glm::vec2& direction);
 
+    // static RaycastHit2D Raycast(const glm::vec2& origin, const glm::vec2& direction, float distance, int minDepth, int maxDepth);
+    // static RaycastHit2D Raycast(const glm::vec2& origin, const glm::vec2& direction, float distance);
+    // static RaycastHit2D Raycast(const glm::vec2& origin, const glm::vec2& direction);
+
     static b2WorldId GetPhysicsWorld();
 
 private:
-    static void EnqueueBody(BodyInfo2D bodyInfo);
-    static void EnqueueFixture(FixtureInfo2D fixtureInfo);
-    static void ProcessBodyQueue();
-    static void ProcessFixtureQueue();
+    static void EnqueueBodyInit(BodyInfo2D bodyInfo);
+    static void EnqueueShapeInit(ShapeInfo2D shapeInfo);
+    static void EnqueueShapeUpdate(ShapeInfo2D shapeInfo);
+
+    static void ProcessBodyInitQueue();
+    static void ProcessShapeInitQueue();
+    static void ProcessShapeUpdateQueue();
     static void ProcessEvents();
+
     static bool IsQueueEmpty() { return s_Instance->queueEmpty; }
 
 private:
@@ -34,14 +42,18 @@ private:
 
 private:
     b2WorldId m_PhysicsWorld;
-    std::queue<BodyInfo2D> bodyQueue;
-    std::queue<FixtureInfo2D> fixtureQueue;
+    std::queue<BodyInfo2D> bodyInitQueue;
+    std::queue<ShapeInfo2D> shapeInitQueue;
+    std::queue<ShapeInfo2D> shapeUpdateQueue;
 
     bool queueEmpty = true;
 
 private:
     static Physisc2D* s_Instance;
     friend class Scene;
+    friend BoxCollider2DComponent;
+    friend CircleCollider2DComponent;
+    friend CapsuleCollider2DComponent;
 };
 
 }
