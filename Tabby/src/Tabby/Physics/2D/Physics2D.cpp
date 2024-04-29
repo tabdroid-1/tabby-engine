@@ -38,11 +38,13 @@ void Physisc2D::InitWorld(glm::vec2& gravity)
 
 void Physisc2D::UpdateWorld(float ts, int32_t subStepCount)
 {
+    ProcessBodyInitQueue();
+    ProcessShapeInitQueue();
+    ProcessShapeUpdateQueue();
+
     TB_CORE_ASSERT(s_Instance, "Physisc2D have to be initialized first!");
     b2World_Step(s_Instance->m_PhysicsWorld, ts, 4);
 
-    ProcessBodyQueue();
-    ProcessFixtureQueue();
     ProcessEvents();
 }
 
@@ -68,7 +70,6 @@ RaycastHit2D Physisc2D::Raycast(const glm::vec2& origin, const glm::vec2& direct
     b2Vec2 box2DOrigin = { origin.x, origin.y };
     b2Vec2 box2DDirection = { direction.x, direction.y };
     b2Vec2 box2DDestination = { direction.x * distance, direction.y * distance };
-
     // s_Instance->m_PhysicsRaycastCallback->RefreshCallbackInfo(origin, &tempRayCastHit);
     // s_Instance->m_PhysicsWorld->RayCast(s_Instance->m_PhysicsRaycastCallback, box2DOrigin, box2DOrigin + distance * box2DDirection);
     // b2World_RayCast(b2WorldId worldId, b2Vec2 origin, b2Vec2 translation, b2QueryFilter filter, b2CastResultFcn *fcn, void *context)
@@ -87,60 +88,65 @@ RaycastHit2D Physisc2D::Raycast(const glm::vec2& origin, const glm::vec2& direct
     return Raycast(origin, direction, std::numeric_limits<float>::infinity(), 0, std::numeric_limits<int>::max());
 }
 
-void Physisc2D::EnqueueBody(BodyInfo2D bodyInfo)
+void Physisc2D::EnqueueBodyInit(BodyInfo2D bodyInfo)
 {
-    s_Instance->bodyQueue.push(bodyInfo);
+    s_Instance->bodyInitQueue.push(bodyInfo);
 }
 
-void Physisc2D::EnqueueFixture(FixtureInfo2D fixtureInfo)
+void Physisc2D::EnqueueShapeInit(ShapeInfo2D shapeInfo)
 {
-    s_Instance->fixtureQueue.push(fixtureInfo);
+    s_Instance->shapeInitQueue.push(shapeInfo);
 }
 
-void Physisc2D::ProcessBodyQueue()
+void Physisc2D::EnqueueShapeUpdate(ShapeInfo2D shapeInfo)
 {
-    while (!s_Instance->bodyQueue.empty()) {
+    s_Instance->shapeUpdateQueue.push(shapeInfo);
+}
+
+void Physisc2D::ProcessBodyInitQueue()
+{
+    while (!s_Instance->bodyInitQueue.empty()) {
 
         s_Instance->queueEmpty = false;
 
-        BodyInfo2D bodyInfo = s_Instance->bodyQueue.front();
+        BodyInfo2D bodyInfo = s_Instance->bodyInitQueue.front();
         auto& transform = bodyInfo.entity.GetComponent<TransformComponent>();
         auto& rb2d = bodyInfo.entity.GetComponent<Rigidbody2DComponent>();
 
         // --------- Create Body def ---------
-        UserData* userData = new UserData { bodyInfo.entity };
+        BodyUserData2D* bodyUserData = new BodyUserData2D { bodyInfo.entity };
 
         b2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
         bodyDef.position = { transform.Translation.x, transform.Translation.y };
         bodyDef.angle = transform.Rotation.z;
-        bodyDef.userData = static_cast<void*>(userData);
+        bodyDef.userData = static_cast<void*>(bodyUserData);
 
         // --------- Create Body ---------
         rb2d.RuntimeBodyId = b2CreateBody(s_Instance->m_PhysicsWorld, &bodyDef);
         b2Body_SetFixedRotation(rb2d.RuntimeBodyId, rb2d.FixedRotation);
 
-        s_Instance->bodyQueue.pop();
+        s_Instance->bodyInitQueue.pop();
     }
 
-    if (s_Instance->bodyQueue.empty() && s_Instance->fixtureQueue.empty())
+    if (s_Instance->bodyInitQueue.empty() && s_Instance->shapeInitQueue.empty() && s_Instance->shapeUpdateQueue.empty())
         s_Instance->queueEmpty = true;
 }
 
-void Physisc2D::ProcessFixtureQueue()
+void Physisc2D::ProcessShapeInitQueue()
 {
-    while (!s_Instance->fixtureQueue.empty()) {
+    while (!s_Instance->shapeInitQueue.empty()) {
         s_Instance->queueEmpty = false;
 
-        FixtureInfo2D fixtureInfo = s_Instance->fixtureQueue.front();
-        auto& transform = fixtureInfo.entity.GetComponent<TransformComponent>();
+        ShapeInfo2D shapeInfo = s_Instance->shapeInitQueue.front();
+        auto& transform = shapeInfo.entity.GetComponent<TransformComponent>();
 
         // Check if entity it self has Rigidbody2DComponent. If there is, collider will be added to Rigidbody2DComponent of same entity.
         // If there is not, function will check its parent if it has Rigidbody2DComponent. And this will go on untill it finds an entity Rigidbody2DComponent;
         // This is is because an entity can have one component of same type. User can create More colliders by creating child entities.
         entt::entity rb2dEntity { entt::null };
-        if (fixtureInfo.entity.HasComponent<Rigidbody2DComponent>()) {
-            rb2dEntity = fixtureInfo.entity;
+        if (shapeInfo.entity.HasComponent<Rigidbody2DComponent>()) {
+            rb2dEntity = shapeInfo.entity;
         } else {
 
             auto FindParentRigidbody = [](auto&& self, entt::entity parentEntity) -> entt::entity {
@@ -154,15 +160,15 @@ void Physisc2D::ProcessFixtureQueue()
                 }
             };
 
-            rb2dEntity = FindParentRigidbody(FindParentRigidbody, fixtureInfo.entity);
+            rb2dEntity = FindParentRigidbody(FindParentRigidbody, shapeInfo.entity);
         }
 
         if (rb2dEntity == entt::null)
-            s_Instance->fixtureQueue.pop();
+            s_Instance->shapeInitQueue.pop();
 
-        if (fixtureInfo.colliderType == ColliderType2D::Box) {
-            auto& bc2d = fixtureInfo.entity.GetComponent<BoxCollider2DComponent>();
-            bc2d.AtachedRigidbody2DEntity = std::make_pair(Entity(rb2dEntity).GetUUID(), rb2dEntity);
+        if (shapeInfo.colliderType == ColliderType2D::Box) {
+            auto& bc2d = shapeInfo.entity.GetComponent<BoxCollider2DComponent>();
+            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity };
 
             // --------- Create box collider def ---------
             b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.angle);
@@ -175,14 +181,15 @@ void Physisc2D::ProcessFixtureQueue()
             shapeDef.enableSensorEvents = bc2d.enableSensorEvents;
             shapeDef.enableContactEvents = bc2d.enableContactEvents;
             shapeDef.enablePreSolveEvents = bc2d.enablePreSolveEvents;
+            shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create box collider in body ---------
             bc2d.RuntimeShapeId = b2CreatePolygonShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &box);
             bc2d.queuedForInitialization = false;
 
-        } else if (fixtureInfo.colliderType == ColliderType2D::Circle) {
-            auto& cc2d = fixtureInfo.entity.GetComponent<CircleCollider2DComponent>();
-            cc2d.AtachedRigidbody2DEntity = std::make_pair(Entity(rb2dEntity).GetUUID(), rb2dEntity);
+        } else if (shapeInfo.colliderType == ColliderType2D::Circle) {
+            auto& cc2d = shapeInfo.entity.GetComponent<CircleCollider2DComponent>();
+            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity };
 
             // --------- Create circle collider def ---------
             b2Circle circleShape = { { transform.LocalTranslation.x + cc2d.Offset.x, transform.LocalTranslation.y + cc2d.Offset.y }, cc2d.Radius };
@@ -195,13 +202,14 @@ void Physisc2D::ProcessFixtureQueue()
             shapeDef.enableSensorEvents = cc2d.enableSensorEvents;
             shapeDef.enableContactEvents = cc2d.enableContactEvents;
             shapeDef.enablePreSolveEvents = cc2d.enablePreSolveEvents;
+            shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create circle collider in body ---------
             cc2d.RuntimeShapeId = b2CreateCircleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &circleShape);
             cc2d.queuedForInitialization = false;
-        } else if (fixtureInfo.colliderType == ColliderType2D::Capsule) {
-            auto& cc2d = fixtureInfo.entity.GetComponent<CapsuleCollider2DComponent>();
-            cc2d.AtachedRigidbody2DEntity = std::make_pair(Entity(rb2dEntity).GetUUID(), rb2dEntity);
+        } else if (shapeInfo.colliderType == ColliderType2D::Capsule) {
+            auto& cc2d = shapeInfo.entity.GetComponent<CapsuleCollider2DComponent>();
+            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity };
 
             // --------- Create circle collider def ---------
 
@@ -217,16 +225,60 @@ void Physisc2D::ProcessFixtureQueue()
             shapeDef.enableSensorEvents = cc2d.enableSensorEvents;
             shapeDef.enableContactEvents = cc2d.enableContactEvents;
             shapeDef.enablePreSolveEvents = cc2d.enablePreSolveEvents;
+            shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create circle collider in body ---------
             cc2d.RuntimeShapeId = b2CreateCapsuleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &capsuleShape);
             cc2d.queuedForInitialization = false;
         }
 
-        s_Instance->fixtureQueue.pop();
+        s_Instance->shapeInitQueue.pop();
     }
 
-    if (s_Instance->bodyQueue.empty() && s_Instance->fixtureQueue.empty())
+    if (s_Instance->bodyInitQueue.empty() && s_Instance->shapeInitQueue.empty() && s_Instance->shapeUpdateQueue.empty())
+        s_Instance->queueEmpty = true;
+}
+
+void Physisc2D::ProcessShapeUpdateQueue()
+{
+    while (!s_Instance->shapeUpdateQueue.empty()) {
+        s_Instance->queueEmpty = false;
+
+        ShapeInfo2D shapeInfo = s_Instance->shapeUpdateQueue.front();
+        auto& transform = shapeInfo.entity.GetComponent<TransformComponent>();
+
+        if (shapeInfo.colliderType == ColliderType2D::Box) {
+            auto& bc2d = shapeInfo.entity.GetComponent<BoxCollider2DComponent>();
+
+            // --------- Create box collider def ---------
+            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.angle);
+
+            b2Shape_SetPolygon(bc2d.RuntimeShapeId, &box);
+            bc2d.queuedForInitialization = false;
+
+        } else if (shapeInfo.colliderType == ColliderType2D::Circle) {
+            auto& cc2d = shapeInfo.entity.GetComponent<CircleCollider2DComponent>();
+            b2Circle circleShape = { { transform.LocalTranslation.x + cc2d.Offset.x, transform.LocalTranslation.y + cc2d.Offset.y }, cc2d.Radius };
+
+            b2Shape_SetCircle(cc2d.RuntimeShapeId, &circleShape);
+            cc2d.queuedForInitialization = false;
+
+        } else if (shapeInfo.colliderType == ColliderType2D::Capsule) {
+            auto& cc2d = shapeInfo.entity.GetComponent<CapsuleCollider2DComponent>();
+
+            b2Vec2 center1 = { cc2d.center1.x + transform.LocalTranslation.x, cc2d.center1.y + transform.LocalTranslation.y };
+            b2Vec2 center2 = { cc2d.center2.x + transform.LocalTranslation.x, cc2d.center2.y + transform.LocalTranslation.y };
+            b2Capsule capsuleShape = { center1, center2, cc2d.Radius };
+
+            // --------- Create circle collider in body ---------
+            b2Shape_SetCapsule(cc2d.RuntimeShapeId, &capsuleShape);
+            cc2d.queuedForInitialization = false;
+        }
+
+        s_Instance->shapeUpdateQueue.pop();
+    }
+
+    if (s_Instance->bodyInitQueue.empty() && s_Instance->shapeInitQueue.empty() && s_Instance->shapeUpdateQueue.empty())
         s_Instance->queueEmpty = true;
 }
 
@@ -237,11 +289,11 @@ float Physisc2D::Physics2DRaycastCallback(b2ShapeId shapeId, b2Vec2 point, b2Vec
     static_cast<RaycastHit2D*>(context)->normal = { normal.x, normal.y };
     static_cast<RaycastHit2D*>(context)->fraction = fraction;
 
-    UserData* userData = (UserData*)b2Shape_GetUserData(shapeId);
+    ShapeUserData2D* userData = static_cast<ShapeUserData2D*>(b2Shape_GetUserData(shapeId));
 
-    static_cast<RaycastHit2D*>(context)->entity = userData->entity;
-    static_cast<RaycastHit2D*>(context)->transform = &userData->entity.GetComponent<TransformComponent>();
-    static_cast<RaycastHit2D*>(context)->rigidbody = &userData->entity.GetComponent<Rigidbody2DComponent>();
+    static_cast<RaycastHit2D*>(context)->entity = userData->bodyEntity;
+    static_cast<RaycastHit2D*>(context)->transform = &userData->bodyEntity.GetComponent<TransformComponent>();
+    static_cast<RaycastHit2D*>(context)->rigidbody = &userData->bodyEntity.GetComponent<Rigidbody2DComponent>();
     static_cast<RaycastHit2D*>(context)->distance = glm::distance(static_cast<RaycastHit2D*>(context)->origin, { point.x, point.y });
 
     return fraction;
@@ -257,41 +309,41 @@ void Physisc2D::ProcessEvents()
         b2BodyId bodyIdA = b2Shape_GetBody(event.shapeIdA);
         b2BodyId bodyIdB = b2Shape_GetBody(event.shapeIdB);
 
-        UserData* userDataA = static_cast<UserData*>(b2Body_GetUserData(bodyIdA));
-        UserData* userDataB = static_cast<UserData*>(b2Body_GetUserData(bodyIdB));
+        BodyUserData2D* userDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
+        BodyUserData2D* userDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
 
-        if (userDataA->entity.HasComponent<NativeScriptComponent>()) {
-            auto& nsc = userDataA->entity.GetComponent<NativeScriptComponent>();
+        if (userDataA->bodyEntity.HasComponent<NativeScriptComponent>()) {
+            auto& nsc = userDataA->bodyEntity.GetComponent<NativeScriptComponent>();
 
             // If entity has NativeScriptComponent it will call its OnCollisionEnter
-            if (!nsc.Instance) {
-                ContactCallback callbackA;
-                callbackA.entity = userDataB->entity;
-                callbackA.transform = &userDataB->entity.GetComponent<TransformComponent>();
-                callbackA.rigidbody = &userDataB->entity.GetComponent<Rigidbody2DComponent>();
+            ContactCallback callbackA;
+            callbackA.entity = userDataB->bodyEntity;
+            callbackA.transform = &userDataB->bodyEntity.GetComponent<TransformComponent>();
+            callbackA.rigidbody = &userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
 
+            if (!nsc.Instance) {
                 nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = userDataA->entity;
+                nsc.Instance->m_Entity = userDataA->bodyEntity;
                 nsc.Instance->OnCreate();
-                nsc.Instance->OnCollisionEnter(callbackA);
             }
+            nsc.Instance->OnCollisionEnter(callbackA);
         }
 
-        if (userDataB->entity.HasComponent<NativeScriptComponent>()) {
-            auto& nsc = userDataB->entity.GetComponent<NativeScriptComponent>();
+        if (userDataB->bodyEntity.HasComponent<NativeScriptComponent>()) {
+            auto& nsc = userDataB->bodyEntity.GetComponent<NativeScriptComponent>();
 
             // If entity has NativeScriptComponent it will call its OnCollisionEnter
-            if (!nsc.Instance) {
-                ContactCallback callbackB;
-                callbackB.entity = userDataA->entity;
-                callbackB.transform = &userDataA->entity.GetComponent<TransformComponent>();
-                callbackB.rigidbody = &userDataA->entity.GetComponent<Rigidbody2DComponent>();
+            ContactCallback callbackB;
+            callbackB.entity = userDataA->bodyEntity;
+            callbackB.transform = &userDataA->bodyEntity.GetComponent<TransformComponent>();
+            callbackB.rigidbody = &userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
 
+            if (!nsc.Instance) {
                 nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = userDataB->entity;
+                nsc.Instance->m_Entity = userDataB->bodyEntity;
                 nsc.Instance->OnCreate();
-                nsc.Instance->OnCollisionEnter(callbackB);
             }
+            nsc.Instance->OnCollisionEnter(callbackB);
         }
 
         // ----------------------------------------------
@@ -304,41 +356,41 @@ void Physisc2D::ProcessEvents()
         b2BodyId bodyIdA = b2Shape_GetBody(event.shapeIdA);
         b2BodyId bodyIdB = b2Shape_GetBody(event.shapeIdB);
 
-        UserData* userDataA = static_cast<UserData*>(b2Body_GetUserData(bodyIdA));
-        UserData* userDataB = static_cast<UserData*>(b2Body_GetUserData(bodyIdB));
+        BodyUserData2D* userDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
+        BodyUserData2D* userDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
 
-        if (userDataA->entity.HasComponent<NativeScriptComponent>()) {
-            auto& nsc = userDataA->entity.GetComponent<NativeScriptComponent>();
+        if (userDataA->bodyEntity.HasComponent<NativeScriptComponent>()) {
+            auto& nsc = userDataA->bodyEntity.GetComponent<NativeScriptComponent>();
 
             // If entity has NativeScriptComponent it will call its OnCollisionExit
-            if (!nsc.Instance) {
-                ContactCallback callbackA;
-                callbackA.entity = userDataB->entity;
-                callbackA.transform = &userDataB->entity.GetComponent<TransformComponent>();
-                callbackA.rigidbody = &userDataB->entity.GetComponent<Rigidbody2DComponent>();
+            ContactCallback callbackA;
+            callbackA.entity = userDataB->bodyEntity;
+            callbackA.transform = &userDataB->bodyEntity.GetComponent<TransformComponent>();
+            callbackA.rigidbody = &userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
 
+            if (!nsc.Instance) {
                 nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = userDataA->entity;
+                nsc.Instance->m_Entity = userDataA->bodyEntity;
                 nsc.Instance->OnCreate();
-                nsc.Instance->OnCollisionExit(callbackA);
             }
+            nsc.Instance->OnCollisionExit(callbackA);
         }
 
-        if (userDataB->entity.HasComponent<NativeScriptComponent>()) {
-            auto& nsc = userDataB->entity.GetComponent<NativeScriptComponent>();
+        if (userDataB->bodyEntity.HasComponent<NativeScriptComponent>()) {
+            auto& nsc = userDataB->bodyEntity.GetComponent<NativeScriptComponent>();
 
             // If entity has NativeScriptComponent it will call its OnCollisionExit
-            if (!nsc.Instance) {
-                ContactCallback callbackB;
-                callbackB.entity = userDataA->entity;
-                callbackB.transform = &userDataA->entity.GetComponent<TransformComponent>();
-                callbackB.rigidbody = &userDataA->entity.GetComponent<Rigidbody2DComponent>();
+            ContactCallback callbackB;
+            callbackB.entity = userDataA->bodyEntity;
+            callbackB.transform = &userDataA->bodyEntity.GetComponent<TransformComponent>();
+            callbackB.rigidbody = &userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
 
+            if (!nsc.Instance) {
                 nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = userDataB->entity;
+                nsc.Instance->m_Entity = userDataB->bodyEntity;
                 nsc.Instance->OnCreate();
-                nsc.Instance->OnCollisionExit(callbackB);
             }
+            nsc.Instance->OnCollisionExit(callbackB);
         }
 
         // ----------------------------------------------

@@ -19,6 +19,8 @@ SceneManager::SceneManager()
 
 void SceneManager::Update(Timestep ts)
 {
+    TB_PROFILE_SCOPE();
+
     if (!s_Instance) {
         s_Instance = new SceneManager();
     }
@@ -30,6 +32,8 @@ void SceneManager::Update(Timestep ts)
 
 void SceneManager::DrawImGui()
 {
+    TB_PROFILE_SCOPE();
+
     if (s_Instance->curScene.second) {
         s_Instance->curScene.second->DrawImGui();
     }
@@ -37,6 +41,7 @@ void SceneManager::DrawImGui()
 
 void SceneManager::Add(const std::string& sceneName, Shared<Tabby::Scene> scene)
 {
+    TB_PROFILE_SCOPE();
 
     if (!s_Instance) {
         s_Instance = new SceneManager();
@@ -53,6 +58,7 @@ void SceneManager::Add(const std::string& sceneName, Shared<Tabby::Scene> scene)
 
 void SceneManager::Remove(const std::string& SceneName)
 {
+    TB_PROFILE_SCOPE();
 
     auto it = s_Instance->scenes.find(SceneName);
     if (it != s_Instance->scenes.end()) {
@@ -71,6 +77,7 @@ void SceneManager::Remove(const std::string& SceneName)
 
 void SceneManager::SwitchTo(const std::string& SceneName)
 {
+    TB_PROFILE_SCOPE();
 
     auto it = s_Instance->scenes.find(SceneName);
     if (it != s_Instance->scenes.end()) {
@@ -85,6 +92,8 @@ void SceneManager::SwitchTo(const std::string& SceneName)
 
 void SceneManager::ProcessQueue(bool canSwitch)
 {
+    TB_PROFILE_SCOPE();
+
     if (canSwitch && s_Instance->nextSceneName != "") {
         private_SwitchTo(s_Instance->nextSceneName);
         s_Instance->nextSceneName = "";
@@ -93,6 +102,7 @@ void SceneManager::ProcessQueue(bool canSwitch)
 
 void SceneManager::private_SwitchTo(std::string SceneName)
 {
+    TB_PROFILE_SCOPE();
 
     auto it = s_Instance->scenes.find(SceneName);
     if (it != s_Instance->scenes.end()) {

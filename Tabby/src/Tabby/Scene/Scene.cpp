@@ -12,6 +12,8 @@
 #include <Tabby/Physics/2D/Physics2DTypes.h>
 #include <glm/glm.hpp>
 
+#include <Tabby/Debug/Debug.h>
+
 namespace Tabby {
 
 Scene::Scene()
@@ -210,7 +212,7 @@ void Scene::DestroyEntityWithChildren(Entity entity)
 
 void Scene::OnStart()
 {
-
+    TB_PROFILE_SCOPE();
     m_IsRunning = true;
 
     glm::vec2 gravity(0.0f, -20.8f);
@@ -221,6 +223,7 @@ void Scene::OnStart()
 
 void Scene::OnStop()
 {
+    TB_PROFILE_SCOPE();
     m_IsRunning = false;
 
     {
@@ -240,22 +243,27 @@ void Scene::OnStop()
 
 void Scene::OnUpdate(Timestep ts)
 {
+    TB_PROFILE_SCOPE();
+
     SceneManager::ProcessQueue(Physisc2D::IsQueueEmpty());
 
     if (!m_IsPaused || m_StepFrames-- > 0) {
 
+        TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate");
         // Update scripts
         {
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::NativeScriptUpdate");
             SceneManager::GetRegistry().view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
                 // TODO: Move to Scene::OnScenePlay
                 if (!nsc.Instance) {
                     nsc.Instance = nsc.InstantiateScript();
-                    nsc.Instance->m_Entity = Entity { entity };
+                    nsc.Instance->m_Entity = entity;
                     nsc.Instance->OnCreate();
                 }
 
                 nsc.Instance->Update(ts);
                 nsc.Instance->LateUpdate(ts);
+                nsc.Instance->Draw();
 
                 const double fixedTimeStep = 1.0 / FIXED_UPDATE_RATE;
 
@@ -269,6 +277,7 @@ void Scene::OnUpdate(Timestep ts)
         }
         // Physics
         {
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::Physisc2DUpdate");
             const int32_t subStepCount = 6;
             Physisc2D::UpdateWorld(ts, subStepCount);
 
@@ -278,7 +287,6 @@ void Scene::OnUpdate(Timestep ts)
                 Entity entity = { e };
                 auto& transform = entity.GetComponent<TransformComponent>();
                 auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
-                // b2Body* body = (b2Body*)rb2d.RuntimeBody;
 
                 const auto& position = b2Body_GetPosition(rb2d.RuntimeBodyId);
                 transform.Translation.x = position.x;
@@ -289,6 +297,7 @@ void Scene::OnUpdate(Timestep ts)
 
         // Apply transform to children
         {
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::TransformUpdate");
             auto view = SceneManager::GetRegistry().view<TransformComponent>();
 
             for (auto entity : view) {
@@ -334,10 +343,14 @@ void Scene::OnUpdate(Timestep ts)
     }
 
     if (mainCamera) {
+
+        TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DrawScene");
+
         Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
         // Draw circles
         {
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DrawCircle");
             auto view = SceneManager::GetRegistry().view<TransformComponent, CircleRendererComponent>();
             for (auto entity : view) {
                 auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
@@ -348,6 +361,7 @@ void Scene::OnUpdate(Timestep ts)
 
         // Draw sprites
         {
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DrawSprite");
 
             std::vector<entt::entity> sortedEntities;
 
@@ -370,6 +384,8 @@ void Scene::OnUpdate(Timestep ts)
 
         // Draw text
         {
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DrawText");
+
             auto view = SceneManager::GetRegistry().view<TransformComponent, TextComponent>();
             for (auto entity : view) {
                 auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
@@ -378,12 +394,21 @@ void Scene::OnUpdate(Timestep ts)
             }
         }
 
+        // Draw text
+        {
+            TB_PROFILE_SCOPE_NAME("Scene::OnUpdate::EntityUpdate::DebugDraw");
+
+            Debug::ProcessDrawCalls();
+        }
+
         Renderer2D::EndScene();
     }
 }
 
 void Scene::OnViewportResize(uint32_t width, uint32_t height)
 {
+    TB_PROFILE_SCOPE();
+
     if (m_ViewportWidth == width && m_ViewportHeight == height)
         return;
 
@@ -512,7 +537,7 @@ void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DCom
         entity,
     };
 
-    Physisc2D::EnqueueBody(bodyInfo);
+    Physisc2D::EnqueueBodyInit(bodyInfo);
 }
 
 template <>
@@ -521,12 +546,14 @@ void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2
     if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    FixtureInfo2D fixtureInfo = {
+    component.worldId = Physisc2D::GetPhysicsWorld();
+
+    ShapeInfo2D ShapeInfo = {
         entity,
         ColliderType2D::Box,
     };
 
-    Physisc2D::EnqueueFixture(fixtureInfo);
+    Physisc2D::EnqueueShapeInit(ShapeInfo);
     component.queuedForInitialization = true;
 
     return;
@@ -540,12 +567,14 @@ void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCol
     if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    FixtureInfo2D fixtureInfo {
+    component.worldId = Physisc2D::GetPhysicsWorld();
+
+    ShapeInfo2D shapeInfo {
         entity,
         ColliderType2D::Circle
     };
 
-    Physisc2D::EnqueueFixture(fixtureInfo);
+    Physisc2D::EnqueueShapeInit(shapeInfo);
     component.queuedForInitialization = true;
 }
 
@@ -557,12 +586,14 @@ void Scene::OnComponentAdded<CapsuleCollider2DComponent>(Entity entity, CapsuleC
     if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    FixtureInfo2D fixtureInfo {
+    component.worldId = Physisc2D::GetPhysicsWorld();
+
+    ShapeInfo2D shapeInfo {
         entity,
         ColliderType2D::Capsule
     };
 
-    Physisc2D::EnqueueFixture(fixtureInfo);
+    Physisc2D::EnqueueShapeInit(shapeInfo);
     component.queuedForInitialization = true;
 }
 

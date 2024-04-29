@@ -2,15 +2,12 @@
 #include "Drivers/gl33/GL33.h"
 #include "tbpch.h"
 
-// #if !defined(TB_PLATFORM_WEB) && !defined(TB_PLATFORM_ANDROID)
+#include <tracy/TracyOpenGL.hpp>
+
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl33.h>
 
 #include <SDL.h>
-
-#if !defined(TB_PLATFORM_ANDROID) && !defined(TB_PLATFORM_WEB)
-#include <TracyOpenGL.hpp>
-#endif
 
 namespace Tabby {
 
@@ -35,9 +32,7 @@ void OpenGL33Context::Init()
 
     GL33::Init(context);
 
-#if !defined(TB_PLATFORM_ANDROID) && !defined(TB_PLATFORM_WEB)
     TracyGpuContext;
-#endif
 
     TB_CORE_INFO("OpenGL Info:");
     TB_CORE_INFO("  Vendor: {0}", GL33::GL()->GetString(GL_VENDOR));
@@ -59,10 +54,7 @@ void OpenGL33Context::SwapBuffers()
 
     SDL_GL_SwapWindow(m_WindowHandle);
 
-#if !defined(TB_PLATFORM_ANDROID) && !defined(TB_PLATFORM_WEB)
     TracyGpuCollect;
-#endif
 }
 
 }
-// #endif

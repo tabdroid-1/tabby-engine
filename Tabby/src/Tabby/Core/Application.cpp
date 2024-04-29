@@ -13,6 +13,7 @@ Application* Application::s_Instance = nullptr;
 Application::Application(const ApplicationSpecification& specification)
     : m_Specification(specification)
 {
+
     TB_PROFILE_SCOPE();
 
     TB_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -101,7 +102,7 @@ void Application::Run()
                                                  // and that breaks the phyiscs and some other stuff.
                                                  // this happens because m_LastFrameTime is 0 in first frame.
             {
-                TB_PROFILE_SCOPE_NAME("LayerStack OnUpdate");
+                TB_PROFILE_SCOPE_NAME("Application::Run::LayerStackOnUpdate");
 
                 for (Layer* layer : m_LayerStack)
                     layer->OnUpdate(timestep);
@@ -109,7 +110,7 @@ void Application::Run()
 
             m_ImGuiLayer->Begin();
             {
-                TB_PROFILE_SCOPE_NAME("LayerStack OnImGuiRender");
+                TB_PROFILE_SCOPE_NAME("Application::Run::LayerStackOnImGuiRender");
 
                 for (Layer* layer : m_LayerStack)
                     layer->OnImGuiRender();

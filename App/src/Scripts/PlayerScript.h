@@ -1,23 +1,15 @@
 #pragma once
 
-#include "Tabby/Input/GamepadCodes.h"
-#include "Tabby/Input/MouseCodes.h"
-#include "Tabby/Math/Math.h"
-#include "Tabby/Physics/2D/Physics2D.h"
-#include "Tabby/Scene/Components.h"
-#include "Tabby/Scene/SceneManager.h"
-#include "glm/fwd.hpp"
-#include <Tabby/Scene/ScriptableEntity.h>
+#include <Tabby.h>
 
-#include "Tabby/Core/Application.h"
-#include "Tabby/Core/Time/Timestep.h"
-#include "Tabby/Input/Input.h"
-#include "Tabby/Input/KeyCodes.h"
-#include "Tabby/Scene/Components.h"
+#include "glm/fwd.hpp"
 
 class PlayerMove : public Tabby::ScriptableEntity {
 private:
+    Tabby::Entity childChildEntity;
     Tabby::TransformComponent* playerTransform;
+    Tabby::CircleCollider2DComponent* circleCollider;
+    Tabby::BoxCollider2DComponent* boxCollider;
     int facingDirection = 1;
     glm::vec2 input = { 0, 0 };
     glm::vec2 velocity;
@@ -25,11 +17,18 @@ private:
     float playerSpeed = 2.5f;
 
 public:
-    PlayerMove() { }
+    PlayerMove()
+    {
+    }
 
     void OnCreate() override
     {
         playerTransform = &GetComponent<Tabby::TransformComponent>();
+        circleCollider = &GetComponent<Tabby::CircleCollider2DComponent>();
+
+        boxCollider = &Tabby::Entity(Tabby::Entity(GetComponent<Tabby::HierarchyNodeComponent>().Children[0].second).GetComponent<Tabby::HierarchyNodeComponent>().Children[0].second).GetComponent<Tabby::BoxCollider2DComponent>();
+
+        // boxCollider = &Tabby::SceneManager::GetCurrentScene()->FindEntityByName("ChildChildEntity").GetComponent<Tabby::BoxCollider2DComponent>();
 
         // Tabby::Entity RigidbodyEntity = Tabby::SceneManager::GetCurrentScene()->CreateEntity("RigidbodyEntity2");
         // {
@@ -114,6 +113,11 @@ public:
         // TB_INFO("FixedUpdate: {0}", ++fixedUpdateCallTime);
     }
 
+    void Draw() override
+    {
+        Tabby::Debug::DrawLine({ -2.0f, -2.0f, 0.0f }, { 2.0f, 2.0f, 0.0f });
+    }
+
     void CheckIfShouldFlip()
     {
         if (input.x != 0 && input.x != facingDirection) {
@@ -169,8 +173,8 @@ public:
                 Tabby::SceneManager::SwitchTo("Test3");
         }
 
-        input.x = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::Axis::GAMEPAD_AXIS_LEFT_X);
-        input.y = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::Axis::GAMEPAD_AXIS_LEFT_Y);
+        // input.x = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::Axis::GAMEPAD_AXIS_LEFT_X);
+        // input.y = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::Axis::GAMEPAD_AXIS_LEFT_Y);
 
         // TB_INFO("Input: ({0}, {1})", input.x, input.y);
 
@@ -283,17 +287,17 @@ public:
 
     void OnCollisionEnter(Tabby::ContactCallback contact) override
     {
-        // TB_INFO("COLLISION ENTER");
-        //
-        // TB_INFO("Velocity: {0} {1}", contact.rigidbody->GetVelocity().x, contact.rigidbody->GetVelocity().y);
-        // TB_INFO("Translation: {0} {1}\n", contact.transform->Translation.x, contact.transform->Translation.y);
+        TB_INFO("COLLISION ENTER");
+
+        TB_INFO("Velocity: {0} {1}", contact.rigidbody->GetVelocity().x, contact.rigidbody->GetVelocity().y);
+        TB_INFO("Translation: {0} {1}\n", contact.transform->Translation.x, contact.transform->Translation.y);
     }
     void OnCollisionExit(Tabby::ContactCallback contact) override
     {
-        // TB_INFO("COLLISION ExIT");
-        //
-        // TB_INFO("Velocity: {0} {1}", contact.rigidbody->GetVelocity().x, contact.rigidbody->GetVelocity().y);
-        // TB_INFO("Translation: {0} {1}\n", contact.transform->Translation.x, contact.transform->Translation.y);
+        TB_INFO("COLLISION ExIT");
+
+        TB_INFO("Velocity: {0} {1}", contact.rigidbody->GetVelocity().x, contact.rigidbody->GetVelocity().y);
+        TB_INFO("Translation: {0} {1}\n", contact.transform->Translation.x, contact.transform->Translation.y);
     }
     void OnPreSolve(Tabby::ContactCallback contact) override { }
     void OnPostSolve(Tabby::ContactCallback contact) override { }
