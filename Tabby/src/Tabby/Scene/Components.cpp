@@ -214,4 +214,20 @@ void CapsuleCollider2DComponent::RefreshShape()
     Physisc2D::EnqueueShapeUpdate(shapeInfo);
 }
 
+// --------------------------------------------------
+//
+//
+//
+// ----- EdgeCollider2DComponent -----------------------
+
+void SegmentCollider2DComponent::RefreshShape()
+{
+    ShapeInfo2D shapeInfo {
+        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->shapeEntity,
+        ColliderType2D::Segment
+    };
+
+    Physisc2D::EnqueueShapeUpdate(shapeInfo);
+}
+
 }

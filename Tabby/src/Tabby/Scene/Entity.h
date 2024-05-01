@@ -78,6 +78,8 @@ public:
         return !(*this == other);
     }
 
+    bool Valid() { return m_EntityHandle != entt::null; }
+
 private:
     void UpdateIsPersistent(bool enable)
     {

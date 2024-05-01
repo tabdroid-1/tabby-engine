@@ -33,6 +33,22 @@ void TestScene::OnActivate()
         boxColliderComponent.Size = { 0.19f, 0.24f };
     }
 
+    Tabby::Entity SegmentColliderEntity = CreateEntity("RigidbodyEntity2");
+    {
+        auto& idC = SegmentColliderEntity.GetComponent<Tabby::IDComponent>();
+        idC.IsPersistent = true;
+
+        SegmentColliderEntity.GetComponent<Tabby::TransformComponent>().Translation.x = 0.25f;
+        SegmentColliderEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 0.25f;
+
+        auto& rigidbodyComponent = SegmentColliderEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+
+        auto& segmentColliderComponent = SegmentColliderEntity.AddComponent<Tabby::SegmentCollider2DComponent>();
+        segmentColliderComponent.point1 = { -1.0f, 1.0f };
+        segmentColliderComponent.point1 = { 1.0f, -0.5f };
+    }
+
     Tabby::Entity CapsuleRigidbodyEntity = CreateEntity("RigidbodyEntity2");
     {
         auto& idC = CapsuleRigidbodyEntity.GetComponent<Tabby::IDComponent>();

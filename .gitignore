@@ -1,5 +1,7 @@
 .idea/
 build/
+build-release/
+build-debug/
 build-native/
 build-macos/
 build-linux/

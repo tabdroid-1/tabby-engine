@@ -321,6 +321,26 @@ void Base::OnOverlayRender()
                 Tabby::Renderer2D::DrawRect(transform3, glm::vec4(0, 1, 0, 1));
             }
         }
+
+        // Segment Colliders
+        {
+            auto view = Tabby::SceneManager::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::SegmentCollider2DComponent>();
+            for (auto entity : view) {
+                auto [tc, sc2d] = view.get<Tabby::TransformComponent, Tabby::SegmentCollider2DComponent>(entity);
+
+                glm::vec3 point1 = tc.Translation + glm::vec3(sc2d.point1, 0.001f);
+                glm::vec3 point2 = tc.Translation + glm::vec3(sc2d.point2, 0.001f);
+
+                // Apply rotation to both endpoints
+                glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+
+                point1 = tc.Translation + glm::vec3(rotationMatrix * glm::vec4(sc2d.point1, 0.0f, 0.0f));
+                point2 = tc.Translation + glm::vec3(rotationMatrix * glm::vec4(sc2d.point2, 0.0f, 0.0f));
+
+                // Draw the line
+                Tabby::Renderer2D::DrawLine(point1, point2, glm::vec4(0, 1, 0, 1));
+            }
+        }
     }
 
     // Draw selected entity outline

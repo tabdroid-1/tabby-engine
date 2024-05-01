@@ -39,6 +39,13 @@ namespace Utils {
 
 }
 
+enum ColliderType2D : uint8_t {
+    Box = 0,
+    Circle = 1,
+    Capsule = 2,
+    Segment = 3
+};
+
 struct ShapeUserData2D {
     Entity shapeEntity;
     Entity bodyEntity;
@@ -49,14 +56,6 @@ struct BodyUserData2D {
     std::unordered_map<UUID, Entity> shapeEntities;
 };
 
-enum ColliderType2D : uint8_t {
-    Box = 0,
-    Circle = 1,
-    Capsule = 2,
-    Segment = 3
-};
-
-// Callback Data Structs
 struct ContactCallback {
     Entity entity;
     Tabby::TransformComponent* transform;

@@ -66,14 +66,21 @@ public:
             //     rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
             // }
 
-            // Tabby::RaycastHit2D hit = Tabby::Physisc2D::Raycast(playerTransform->Translation, { 0.0, -1.0f }, 100.0f, -10, 10);
-            // TB_INFO("Normal: {0} : {1}", hit.normal.x, hit.normal.y);
-            // TB_INFO("Point: {0} : {1}", hit.point.x, hit.point.y);
-            // TB_INFO("Velocity: {0} {1}", hit.rigidbody->GetVelocity().x, hit.rigidbody->GetVelocity().y);
-            // TB_INFO("Translation: {0} {1}", hit.transform->Translation.x, hit.transform->Translation.y);
-            // TB_INFO("Distance: {0}", hit.distance);
-            // TB_INFO("Fraction: {0}", hit.fraction);
-            // TB_INFO("Tag: {0}", hit.entity.GetComponent<Tabby::TagComponent>().Tag);
+            // Tabby::RaycastHit2D hit = Tabby::Physisc2D::RayCast(playerTransform->Translation, { 0.0, -1.0f }, 100.0f, -10, 10);
+            // Tabby::RaycastHit2D hit = Tabby::Physisc2D::BoxCast({ 0.2f, 0.2f }, playerTransform->Translation, { 0.0, -1.0f }, 100.0f, -10, 10);
+            Tabby::RaycastHit2D hit = Tabby::Physisc2D::CapsuleCast({ 0.0f, 0.2f }, { 0.0f, -0.2f }, 0.2f, playerTransform->Translation, { 0.0, -1.0f }, 100.0f, -10, 10);
+            if (hit.entity.Valid()) {
+
+                TB_INFO("Normal: {0} : {1}", hit.normal.x, hit.normal.y);
+                TB_INFO("Point: {0} : {1}", hit.point.x, hit.point.y);
+                TB_INFO("Velocity: {0} {1}", hit.rigidbody->GetVelocity().x, hit.rigidbody->GetVelocity().y);
+                TB_INFO("Translation: {0} {1}", hit.transform->Translation.x, hit.transform->Translation.y);
+                TB_INFO("Distance: {0}", hit.distance);
+                TB_INFO("Fraction: {0}", hit.fraction);
+                TB_INFO("Tag: {0}", hit.entity.GetComponent<Tabby::TagComponent>().Tag);
+            } else {
+                TB_TRACE("IS NOT VALID");
+            }
         }
 
         // float leftTriggerAxis = Tabby::Input::GetGamepadAxis(0, Tabby::Gamepad::GAMEPAD_AXIS_LEFT_TRIGGER);
