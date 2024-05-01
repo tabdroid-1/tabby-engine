@@ -595,6 +595,25 @@ void Scene::OnComponentAdded<CapsuleCollider2DComponent>(Entity entity, CapsuleC
 }
 
 template <>
+void Scene::OnComponentAdded<SegmentCollider2DComponent>(Entity entity, SegmentCollider2DComponent& component)
+{
+    auto& transform = entity.GetComponent<TransformComponent>();
+
+    if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
+        return;
+
+    component.worldId = Physisc2D::GetPhysicsWorld();
+
+    ShapeInfo2D shapeInfo {
+        entity,
+        ColliderType2D::Segment
+    };
+
+    Physisc2D::EnqueueShapeInit(shapeInfo);
+    component.queuedForInitialization = true;
+}
+
+template <>
 void Scene::OnComponentAdded<TextComponent>(Entity entity, TextComponent& component)
 {
 }

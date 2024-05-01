@@ -1,5 +1,6 @@
 #include "Physics2D.h"
 #include "box2d/box2d.h"
+#include "box2d/math_functions.h"
 #include "entt/entt.hpp"
 #include <Tabby/Physics/2D/Physics2DTypes.h>
 #include <Tabby/Scene/ScriptableEntity.h>
@@ -60,7 +61,7 @@ b2WorldId Physisc2D::GetPhysicsWorld()
     }
 }
 
-RaycastHit2D Physisc2D::Raycast(const glm::vec2& origin, const glm::vec2& direction, float distance, int minDepth, int maxDepth)
+RaycastHit2D Physisc2D::RayCast(const glm::vec2& origin, const glm::vec2& direction, float distance, int minDepth, int maxDepth)
 {
     RaycastHit2D tempRayCastHit;
     tempRayCastHit.origin = origin;
@@ -80,14 +81,98 @@ RaycastHit2D Physisc2D::Raycast(const glm::vec2& origin, const glm::vec2& direct
     return tempRayCastHit;
 }
 
-RaycastHit2D Physisc2D::Raycast(const glm::vec2& origin, const glm::vec2& direction, float distance)
+RaycastHit2D Physisc2D::RayCast(const glm::vec2& origin, const glm::vec2& direction, float distance)
 {
-    return Raycast(origin, direction, distance, 0, std::numeric_limits<int>::max());
+    return RayCast(origin, direction, distance, 0, std::numeric_limits<int>::max());
 }
 
-RaycastHit2D Physisc2D::Raycast(const glm::vec2& origin, const glm::vec2& direction)
+RaycastHit2D Physisc2D::RayCast(const glm::vec2& origin, const glm::vec2& direction)
 {
-    return Raycast(origin, direction, std::numeric_limits<float>::infinity(), 0, std::numeric_limits<int>::max());
+    return RayCast(origin, direction, std::numeric_limits<float>::infinity(), 0, std::numeric_limits<int>::max());
+}
+
+RaycastHit2D Physisc2D::BoxCast(const glm::vec2& boxSize, const glm::vec2& origin, const glm::vec2& direction, float distance, int minDepth, int maxDepth)
+{
+    RaycastHit2D tempRayCastHit;
+
+    tempRayCastHit.origin = origin;
+
+    b2Polygon box = b2MakeBox(boxSize.x, boxSize.y);
+
+    b2CastResultFcn* fcn = Physics2DRaycastCallback;
+    b2Transform box2DOrigin = { { origin.x, origin.y }, b2MakeRot(0.0f) };
+    b2Vec2 box2DDirection = { direction.x, direction.y };
+    b2Vec2 box2DDestination = { direction.x * distance, direction.y * distance };
+
+    b2World_PolygonCast(s_Instance->m_PhysicsWorld, &box, box2DOrigin, box2DDestination, b2DefaultQueryFilter(), fcn, &tempRayCastHit);
+
+    return tempRayCastHit;
+}
+
+RaycastHit2D Physisc2D::BoxCast(const glm::vec2& boxSize, const glm::vec2& origin, const glm::vec2& direction, float distance)
+{
+    return BoxCast(boxSize, origin, direction, distance, 0, std::numeric_limits<int>::max());
+}
+
+RaycastHit2D Physisc2D::BoxCast(const glm::vec2& boxSize, const glm::vec2& origin, const glm::vec2& direction)
+{
+    return BoxCast(boxSize, origin, direction, std::numeric_limits<float>::infinity(), 0, std::numeric_limits<int>::max());
+}
+
+RaycastHit2D Physisc2D::CapsuleCast(const glm::vec2& point1, const glm::vec2& point2, float radius, const glm::vec2& origin, const glm::vec2& direction, float distance, int minDepth, int maxDepth)
+{
+    RaycastHit2D tempRayCastHit;
+
+    tempRayCastHit.origin = origin;
+
+    b2Capsule capsule = { { point1.x, point1.y }, { point2.x, point2.y }, radius };
+
+    b2CastResultFcn* fcn = Physics2DRaycastCallback;
+    b2Transform box2DOrigin = { { origin.x, origin.y }, b2MakeRot(0.0f) };
+    b2Vec2 box2DDirection = { direction.x, direction.y };
+    b2Vec2 box2DDestination = { direction.x * distance, direction.y * distance };
+
+    b2World_CapsuleCast(s_Instance->m_PhysicsWorld, &capsule, box2DOrigin, box2DDestination, b2DefaultQueryFilter(), fcn, &tempRayCastHit);
+
+    return tempRayCastHit;
+}
+
+RaycastHit2D Physisc2D::CapsuleCast(const glm::vec2& point1, const glm::vec2& point2, float radius, const glm::vec2& origin, const glm::vec2& direction, float distance)
+{
+    return CapsuleCast(point1, point2, radius, origin, direction, distance, 0, std::numeric_limits<int>::max());
+}
+
+RaycastHit2D Physisc2D::CapsuleCast(const glm::vec2& point1, const glm::vec2& point2, float radius, const glm::vec2& origin, const glm::vec2& direction)
+{
+    return CapsuleCast(point1, point2, radius, origin, direction, std::numeric_limits<float>::infinity(), 0, std::numeric_limits<int>::max());
+}
+
+RaycastHit2D Physisc2D::CircleCast(float radius, const glm::vec2& origin, const glm::vec2& direction, float distance, int minDepth, int maxDepth)
+{
+    RaycastHit2D tempRayCastHit;
+
+    tempRayCastHit.origin = origin;
+
+    b2Circle circle = { { 0.0f, 0.0f }, radius };
+
+    b2CastResultFcn* fcn = Physics2DRaycastCallback;
+    b2Transform box2DOrigin = { { origin.x, origin.y }, b2MakeRot(0.0f) };
+    b2Vec2 box2DDirection = { direction.x, direction.y };
+    b2Vec2 box2DDestination = { direction.x * distance, direction.y * distance };
+
+    b2World_CircleCast(s_Instance->m_PhysicsWorld, &circle, box2DOrigin, box2DDestination, b2DefaultQueryFilter(), fcn, &tempRayCastHit);
+
+    return tempRayCastHit;
+}
+
+RaycastHit2D Physisc2D::CircleCast(float radius, const glm::vec2& origin, const glm::vec2& direction, float distance)
+{
+    return CircleCast(radius, origin, direction, distance, 0, std::numeric_limits<int>::max());
+}
+
+RaycastHit2D Physisc2D::CircleCast(float radius, const glm::vec2& origin, const glm::vec2& direction)
+{
+    return CircleCast(radius, origin, direction, std::numeric_limits<float>::infinity(), 0, std::numeric_limits<int>::max());
 }
 
 void Physisc2D::EnqueueBodyInit(BodyInfo2D bodyInfo)
@@ -232,6 +317,29 @@ void Physisc2D::ProcessShapeInitQueue()
             // --------- Create circle collider in body ---------
             cc2d.RuntimeShapeId = b2CreateCapsuleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &capsuleShape);
             cc2d.queuedForInitialization = false;
+        } else if (shapeInfo.colliderType == ColliderType2D::Segment) {
+            auto& sc2d = shapeInfo.entity.GetComponent<SegmentCollider2DComponent>();
+            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity };
+
+            // --------- Create circle collider def ---------
+
+            b2Vec2 point1 = { sc2d.point1.x + transform.LocalTranslation.x, sc2d.point1.y + transform.LocalTranslation.y };
+            b2Vec2 point2 = { sc2d.point2.x + transform.LocalTranslation.x, sc2d.point2.y + transform.LocalTranslation.y };
+            b2Segment segmentShape = { point1, point2 };
+
+            b2ShapeDef shapeDef = b2DefaultShapeDef();
+            shapeDef.density = sc2d.Density;
+            shapeDef.friction = sc2d.Friction;
+            shapeDef.restitution = sc2d.Restitution;
+            shapeDef.isSensor = sc2d.isSensor;
+            shapeDef.enableSensorEvents = sc2d.enableSensorEvents;
+            shapeDef.enableContactEvents = sc2d.enableContactEvents;
+            shapeDef.enablePreSolveEvents = sc2d.enablePreSolveEvents;
+            shapeDef.userData = static_cast<void*>(userData);
+
+            // --------- Create circle collider in body ---------
+            sc2d.RuntimeShapeId = b2CreateSegmentShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &segmentShape);
+            sc2d.queuedForInitialization = false;
         }
 
         s_Instance->shapeInitQueue.pop();
@@ -275,6 +383,16 @@ void Physisc2D::ProcessShapeUpdateQueue()
             // --------- Create circle collider in body ---------
             b2Shape_SetCapsule(cc2d.RuntimeShapeId, &capsuleShape);
             cc2d.queuedForInitialization = false;
+        } else if (shapeInfo.colliderType == ColliderType2D::Segment) {
+            auto& sc2d = shapeInfo.entity.GetComponent<SegmentCollider2DComponent>();
+
+            b2Vec2 point1 = { sc2d.point1.x + transform.LocalTranslation.x, sc2d.point1.y + transform.LocalTranslation.y };
+            b2Vec2 point2 = { sc2d.point2.x + transform.LocalTranslation.x, sc2d.point2.y + transform.LocalTranslation.y };
+            b2Segment segmentShape = { point1, point2 };
+
+            // --------- Create circle collider in body ---------
+            b2Shape_SetSegment(sc2d.RuntimeShapeId, &segmentShape);
+            sc2d.queuedForInitialization = false;
         }
 
         s_Instance->shapeUpdateQueue.pop();

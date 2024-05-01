@@ -236,6 +236,7 @@ struct CircleCollider2DComponent {
 };
 
 struct CapsuleCollider2DComponent {
+    glm::vec2 Offset = { 0.0f, 0.0f };
     glm::vec2 center1, center2;
     float Radius = 0.5f;
 
@@ -270,6 +271,45 @@ struct CapsuleCollider2DComponent {
 
     CapsuleCollider2DComponent() = default;
     CapsuleCollider2DComponent(const CapsuleCollider2DComponent&) = default;
+
+    void RefreshShape();
+};
+
+struct SegmentCollider2DComponent {
+    glm::vec2 Offset = { 0.0f, 0.0f };
+    glm::vec2 point1, point2;
+
+    // TODO(Yan): move into physics material in the future maybe
+    float Density = 1.0f;
+    float Friction = 0.5f;
+    float Restitution = 0.0f;
+    float RestitutionThreshold = 0.5f;
+
+    /// A sensor shape collects contact information but never generates a
+    /// collision response.
+    bool isSensor = false;
+
+    /// Enable sensor events for this shape. Only applies to kinematic and dynamic
+    /// bodies. Ignored for sensors.
+    bool enableSensorEvents = false;
+
+    /// Enable contact events for this shape. Only applies to kinematic and
+    /// dynamic bodies. Ignored for sensors.
+    bool enableContactEvents = false;
+
+    /// Enable pre-solve contact events for this shape. Only applies to dynamic
+    /// bodies. These are expensive
+    ///    and must be carefully handled due to multi-threading. Ignored for
+    ///    sensors.
+    bool enablePreSolveEvents = false;
+
+    // Storage for runtime
+    b2ShapeId RuntimeShapeId = b2_nullShapeId;
+    b2WorldId worldId = b2_nullWorldId;
+    bool queuedForInitialization;
+
+    SegmentCollider2DComponent() = default;
+    SegmentCollider2DComponent(const SegmentCollider2DComponent&) = default;
 
     void RefreshShape();
 };

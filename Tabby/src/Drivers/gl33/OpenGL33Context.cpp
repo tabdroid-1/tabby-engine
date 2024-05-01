@@ -33,7 +33,7 @@ void OpenGL33Context::Init()
 
     GL33::Init(context);
 
-    TracyGpuContext;
+    // TracyGpuContext;
 
     TB_CORE_INFO("OpenGL Info:");
     TB_CORE_INFO("  Vendor: {0}", GL33::GL()->GetString(GL_VENDOR));
@@ -55,7 +55,7 @@ void OpenGL33Context::SwapBuffers()
 
     SDL_GL_SwapWindow(m_WindowHandle);
 
-    TracyGpuCollect;
+    // TracyGpuCollect;
 }
 
 }
