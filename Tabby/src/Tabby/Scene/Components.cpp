@@ -172,6 +172,80 @@ float Rigidbody2DComponent::GetAngle() const
 //
 // ----- BoxCollider2DComponent -----------------------
 
+void BoxCollider2DComponent::SetCollisionLayer(uint32_t layer)
+{
+    collisionLayer = layer;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = layer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+uint32_t BoxCollider2DComponent::GetCollisionLayer() const
+{
+    return collisionLayer;
+}
+
+void BoxCollider2DComponent::SetCollisionMask(uint32_t mask)
+{
+    collisionMask = mask;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = mask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+uint32_t BoxCollider2DComponent::GetCollisionMask() const
+{
+    return collisionMask;
+}
+
+void BoxCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        collisionLayer |= 1 << (layerNumber - 1);
+    } else {
+        collisionLayer &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = collisionLayer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+bool BoxCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return collisionLayer & (1 << (layerNumber - 1));
+}
+
+void BoxCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        collisionMask |= 1 << (layerNumber - 1);
+    } else {
+        collisionMask &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = collisionMask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+bool BoxCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return collisionMask & (1 << (layerNumber - 1));
+}
+
 void BoxCollider2DComponent::RefreshShape()
 {
     ShapeInfo2D shapeInfo {
@@ -187,6 +261,80 @@ void BoxCollider2DComponent::RefreshShape()
 //
 //
 // ----- CircleCollider2DComponent -----------------------
+
+void CircleCollider2DComponent::SetCollisionLayer(uint32_t layer)
+{
+    collisionLayer = layer;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = layer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+uint32_t CircleCollider2DComponent::GetCollisionLayer() const
+{
+    return collisionLayer;
+}
+
+void CircleCollider2DComponent::SetCollisionMask(uint32_t mask)
+{
+    collisionMask = mask;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = mask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+uint32_t CircleCollider2DComponent::GetCollisionMask() const
+{
+    return collisionMask;
+}
+
+void CircleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        collisionLayer |= 1 << (layerNumber - 1);
+    } else {
+        collisionLayer &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = collisionLayer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+bool CircleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return collisionLayer & (1 << (layerNumber - 1));
+}
+
+void CircleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        collisionMask |= 1 << (layerNumber - 1);
+    } else {
+        collisionMask &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = collisionMask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+bool CircleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return collisionMask & (1 << (layerNumber - 1));
+}
 
 void CircleCollider2DComponent::RefreshShape()
 {
@@ -204,6 +352,79 @@ void CircleCollider2DComponent::RefreshShape()
 //
 // ----- CapsuleCollider2DComponent -----------------------
 
+void CapsuleCollider2DComponent::SetCollisionLayer(uint32_t layer)
+{
+    collisionLayer = layer;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = layer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+uint32_t CapsuleCollider2DComponent::GetCollisionLayer() const
+{
+    return collisionLayer;
+}
+
+void CapsuleCollider2DComponent::SetCollisionMask(uint32_t mask)
+{
+    collisionMask = mask;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = mask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+uint32_t CapsuleCollider2DComponent::GetCollisionMask() const
+{
+    return collisionMask;
+}
+
+void CapsuleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        collisionLayer |= 1 << (layerNumber - 1);
+    } else {
+        collisionLayer &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = collisionLayer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+bool CapsuleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return collisionLayer & (1 << (layerNumber - 1));
+}
+
+void CapsuleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        collisionMask |= 1 << (layerNumber - 1);
+    } else {
+        collisionMask &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = collisionMask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+bool CapsuleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return collisionMask & (1 << (layerNumber - 1));
+}
 void CapsuleCollider2DComponent::RefreshShape()
 {
     ShapeInfo2D shapeInfo {
@@ -218,7 +439,81 @@ void CapsuleCollider2DComponent::RefreshShape()
 //
 //
 //
-// ----- EdgeCollider2DComponent -----------------------
+// ----- SegmentCollider2DComponent -----------------------
+
+void SegmentCollider2DComponent::SetCollisionLayer(uint32_t layer)
+{
+    collisionLayer = layer;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = layer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+uint32_t SegmentCollider2DComponent::GetCollisionLayer() const
+{
+    return collisionLayer;
+}
+
+void SegmentCollider2DComponent::SetCollisionMask(uint32_t mask)
+{
+    collisionMask = mask;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = mask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+uint32_t SegmentCollider2DComponent::GetCollisionMask() const
+{
+    return collisionMask;
+}
+
+void SegmentCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        collisionLayer |= 1 << (layerNumber - 1);
+    } else {
+        collisionLayer &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = collisionLayer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+bool SegmentCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return collisionLayer & (1 << (layerNumber - 1));
+}
+
+void SegmentCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        collisionMask |= 1 << (layerNumber - 1);
+    } else {
+        collisionMask &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = collisionMask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+bool SegmentCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
+{
+    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return collisionMask & (1 << (layerNumber - 1));
+}
 
 void SegmentCollider2DComponent::RefreshShape()
 {

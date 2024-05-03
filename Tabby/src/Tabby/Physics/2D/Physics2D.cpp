@@ -268,6 +268,8 @@ void Physisc2D::ProcessShapeInitQueue()
             shapeDef.enableSensorEvents = bc2d.enableSensorEvents;
             shapeDef.enableContactEvents = bc2d.enableContactEvents;
             shapeDef.enablePreSolveEvents = bc2d.enablePreSolveEvents;
+            shapeDef.filter.categoryBits = bc2d.collisionLayer;
+            shapeDef.filter.maskBits = bc2d.collisionMask;
             shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create box collider in body ---------
@@ -289,6 +291,8 @@ void Physisc2D::ProcessShapeInitQueue()
             shapeDef.enableSensorEvents = cc2d.enableSensorEvents;
             shapeDef.enableContactEvents = cc2d.enableContactEvents;
             shapeDef.enablePreSolveEvents = cc2d.enablePreSolveEvents;
+            shapeDef.filter.categoryBits = cc2d.collisionLayer;
+            shapeDef.filter.maskBits = cc2d.collisionMask;
             shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create circle collider in body ---------
@@ -312,6 +316,8 @@ void Physisc2D::ProcessShapeInitQueue()
             shapeDef.enableSensorEvents = cc2d.enableSensorEvents;
             shapeDef.enableContactEvents = cc2d.enableContactEvents;
             shapeDef.enablePreSolveEvents = cc2d.enablePreSolveEvents;
+            shapeDef.filter.categoryBits = cc2d.collisionLayer;
+            shapeDef.filter.maskBits = cc2d.collisionMask;
             shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create circle collider in body ---------
@@ -335,6 +341,8 @@ void Physisc2D::ProcessShapeInitQueue()
             shapeDef.enableSensorEvents = sc2d.enableSensorEvents;
             shapeDef.enableContactEvents = sc2d.enableContactEvents;
             shapeDef.enablePreSolveEvents = sc2d.enablePreSolveEvents;
+            shapeDef.filter.categoryBits = sc2d.collisionLayer;
+            shapeDef.filter.maskBits = sc2d.collisionMask;
             shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create circle collider in body ---------

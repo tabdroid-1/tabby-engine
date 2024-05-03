@@ -8,8 +8,8 @@ class PlayerMove : public Tabby::ScriptableEntity {
 private:
     Tabby::Entity childChildEntity;
     Tabby::TransformComponent* playerTransform;
-    Tabby::CircleCollider2DComponent* circleCollider;
-    Tabby::BoxCollider2DComponent* boxCollider;
+    // Tabby::CircleCollider2DComponent* circleCollider;
+    // Tabby::BoxCollider2DComponent* boxCollider;
     int facingDirection = 1;
     glm::vec2 input = { 0, 0 };
     glm::vec2 velocity;
@@ -24,9 +24,9 @@ public:
     void OnCreate() override
     {
         playerTransform = &GetComponent<Tabby::TransformComponent>();
-        circleCollider = &GetComponent<Tabby::CircleCollider2DComponent>();
+        // circleCollider = &GetComponent<Tabby::CircleCollider2DComponent>();
 
-        boxCollider = &Tabby::Entity(Tabby::Entity(GetComponent<Tabby::HierarchyNodeComponent>().Children[0].second).GetComponent<Tabby::HierarchyNodeComponent>().Children[0].second).GetComponent<Tabby::BoxCollider2DComponent>();
+        // boxCollider = &Tabby::Entity(Tabby::Entity(GetComponent<Tabby::HierarchyNodeComponent>().Children[0].second).GetComponent<Tabby::HierarchyNodeComponent>().Children[0].second).GetComponent<Tabby::BoxCollider2DComponent>();
 
         // boxCollider = &Tabby::SceneManager::GetCurrentScene()->FindEntityByName("ChildChildEntity").GetComponent<Tabby::BoxCollider2DComponent>();
 

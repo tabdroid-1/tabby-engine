@@ -1,5 +1,4 @@
-Version: 01-04-2024_1 Alpha
+Version: 03-05-2024_1 Alpha
 Changes:
 - Physics2D rework.
-    - Added segment collider
-    - Added shape casting(Box, capsule, circle)
+    - Collision filtering for colliders
