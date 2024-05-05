@@ -18,7 +18,7 @@ void TestScene::OnCreate()
 void TestScene::OnActivate()
 {
 
-    Tabby::Entity GroundEntityLower = CreateEntity("GroundEntity");
+    Tabby::Entity GroundEntityLower = CreateEntity("GroundEntity1");
     {
         auto& idC = GroundEntityLower.GetComponent<Tabby::IDComponent>();
         idC.IsPersistent = true;
@@ -38,10 +38,11 @@ void TestScene::OnActivate()
         boxColliderComponent.SetCollisionLayerValue(3, true);
 
         boxColliderComponent.SetCollisionMaskValue(2, true);
+        boxColliderComponent.SetCollisionMaskValue(3, true);
         boxColliderComponent.SetCollisionMaskValue(4, true);
     }
 
-    Tabby::Entity GroundEntity = CreateEntity("GroundEntity");
+    Tabby::Entity GroundEntity = CreateEntity("GroundEntity2");
     {
         auto& idC = GroundEntity.GetComponent<Tabby::IDComponent>();
         idC.IsPersistent = true;

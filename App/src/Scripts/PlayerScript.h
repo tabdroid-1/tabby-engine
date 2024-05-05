@@ -66,11 +66,18 @@ public:
             //     rigidbodyComponent.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
             // }
 
-            // Tabby::RaycastHit2D hit = Tabby::Physisc2D::RayCast(playerTransform->Translation, { 0.0, -1.0f }, 100.0f, -10, 10);
-            // Tabby::RaycastHit2D hit = Tabby::Physisc2D::BoxCast({ 0.2f, 0.2f }, playerTransform->Translation, { 0.0, -1.0f }, 100.0f, -10, 10);
-            Tabby::RaycastHit2D hit = Tabby::Physisc2D::CapsuleCast({ 0.0f, 0.2f }, { 0.0f, -0.2f }, 0.2f, playerTransform->Translation, { 0.0, -1.0f }, 100.0f, -10, 10);
-            if (hit.entity.Valid()) {
+            Tabby::RaycastFilter2D filter;
+            filter.SetCollisionLayer(0xFFFFFFFF); // Equal to setting layer to everything
+            // filter.SetCollisionMask(0xFFFFFFFF); // Equal to setting layer to everything
+            filter.SetMaskValue(1, false); // Enable 3rd layer to be hit to
+            filter.SetMaskValue(2, false); // Enable 3rd layer to be hit to
+            filter.SetMaskValue(3, true); // Enable 3rd layer to be hit to
+            filter.SetMaskValue(4, true); // Enable 4th layer to be hit to
 
+            Tabby::RaycastHit2D hit = Tabby::Physisc2D::RayCast(playerTransform->Translation + glm::vec3(0.0f, 1.0f, 0.0f), { 0.0, -1.0f }, 100.0f, filter, -10, 10);
+            // Tabby::RaycastHit2D hit = Tabby::Physisc2D::BoxCast({ 0.2f, 0.2f }, playerTransform->Translation, { 0.0, -1.0f }, 100.0f, -10, 10);
+            // Tabby::RaycastHit2D hit = Tabby::Physisc2D::CapsuleCast({ 0.0f, 0.2f }, { 0.0f, -0.2f }, 0.2f, playerTransform->Translation, { 0.0, -1.0f }, 100.0f, -10, 10);
+            if (hit) {
                 TB_INFO("Normal: {0} : {1}", hit.normal.x, hit.normal.y);
                 TB_INFO("Point: {0} : {1}", hit.point.x, hit.point.y);
                 TB_INFO("Velocity: {0} {1}", hit.rigidbody->GetVelocity().x, hit.rigidbody->GetVelocity().y);
@@ -78,6 +85,7 @@ public:
                 TB_INFO("Distance: {0}", hit.distance);
                 TB_INFO("Fraction: {0}", hit.fraction);
                 TB_INFO("Tag: {0}", hit.entity.GetComponent<Tabby::TagComponent>().Tag);
+                Tabby::Debug::DrawLine({ hit.origin, 0 }, { hit.point, 0 });
             } else {
                 TB_TRACE("IS NOT VALID");
             }

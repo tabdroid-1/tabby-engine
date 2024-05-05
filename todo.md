@@ -11,7 +11,7 @@ Todo
         - <s>Box2D 3.0 migration </s> Done Since 23-04-2024_1 Alpha.
         - <s>Add circle, capsule and polygon casting. </s> Done since 01-05-2024_1 Alpha
         - <s>Add collision filtering(layer/mask). </s> Done since 03-05-2024_1 Alpha
-        - Collision filtering for raycasting.
+        - <s>Collision filtering for raycasting. </s> Done since 05-05-2024_1 Alpha
     - <s>Maybe use SDL2 for window creationg instead of glfw cus it has some problems.</s> Done
     - <s>Android Support.</s> Done
     - <s>Controller support. </s> Done
@@ -26,7 +26,6 @@ Todo
         - <s>Audio streaming for long audios. </s> Done 
     - <s>Asset manager. </s> Done
     - Go balls deep in to ECS (ECS like in Bevy Engine). 
-    - Make all variables private of component and use functions instead. This is to eliminate some edge cases.
     - Add font support to asset manager.
     - Fix OpenGL ES Text Shader. 
     - Clean up the code, add comments etc.
