@@ -25,7 +25,9 @@ Todo
         - <s>Play SFX and delete when not needed. </s> Done 
         - <s>Audio streaming for long audios. </s> Done 
     - <s>Asset manager. </s> Done
-    - Go balls deep in to ECS (ECS like in Bevy Engine). 
+    - <s>Go balls deep in to ECS (ECS like in Bevy Engine)</s> idk. 
+    - Initial Level Editor work.
+    - Edit CMakeLists.txt files to load source files non-recursively.
     - Add font support to asset manager.
     - Fix OpenGL ES Text Shader. 
     - Clean up the code, add comments etc.

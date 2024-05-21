@@ -12,5 +12,6 @@ endif ()
 
 add_definitions(-w) # disables warnings
 
-add_subdirectory(Tabby)
-add_subdirectory(App)
+add_subdirectory(tabby)
+add_subdirectory(app)
+add_subdirectory(level-editor)
