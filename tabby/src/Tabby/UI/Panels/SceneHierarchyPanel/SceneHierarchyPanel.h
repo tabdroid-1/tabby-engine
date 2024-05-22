@@ -1,33 +1,32 @@
 #pragma once
 
-#include "Tabby/Core/Base.h"
-#include "Tabby/Scene/Entity.h"
-#include "Tabby/Scene/Scene.h"
+#include <Tabby/World/Entity.h>
 
 namespace Tabby {
 
 class SceneHierarchyPanel {
 public:
     SceneHierarchyPanel() = default;
-    SceneHierarchyPanel(const Shared<Scene>& scene);
-
-    void SetContext(const Shared<Scene>& scene);
+    ~SceneHierarchyPanel();
 
     void OnImGuiRender();
+    void SetSelectedNode(Entity node, bool is_selected)
+    {
+        m_SelectedNode = node;
+        m_IsSelected = is_selected;
+    }
 
-    Entity GetSelectedEntity() const { return m_SelectionContext; }
-    void SetSelectedEntity(Entity entity);
-
-private:
-    template <typename T>
-    void DisplayAddComponentEntry(const std::string& entryName);
-
-    void DrawEntityNode(Entity entity);
-    void DrawComponents(Entity entity);
+    Entity GetSelectedNode() const { return m_SelectedNode; }
+    bool IsNodeSelected() const { return m_IsSelected; }
 
 private:
-    Shared<Scene> m_Context;
-    Entity m_SelectionContext;
+    void RenderHierarchyNode(Entity entity);
+
+private:
+    Entity m_SelectedNode;
+    bool m_IsSelected = false;
+
+    bool m_IsOpen = true;
 };
 
 }

@@ -62,7 +62,7 @@ private:
 
 private:
     static Physisc2D* s_Instance;
-    friend class Scene;
+    friend class World;
     friend BoxCollider2DComponent;
     friend CircleCollider2DComponent;
     friend CapsuleCollider2DComponent;

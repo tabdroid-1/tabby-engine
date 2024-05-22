@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Tabby/Core/UUID.h>
+// #include <Tabby/Core/UUID.h>
 #include <Tabby/Renderer/Camera.h>
 #include <Tabby/Renderer/Font.h>
 
@@ -29,7 +29,7 @@ struct TagComponent {
 };
 
 struct HierarchyNodeComponent {
-    std::pair<UUID, entt::entity> Parent;
+    std::pair<UUID, entt::entity> Parent = std::pair(0, entt::null);
     std::vector<std::pair<UUID, entt::entity>> Children;
 
     HierarchyNodeComponent() = default;
@@ -44,6 +44,9 @@ struct TransformComponent {
     glm::vec3 LocalRotation = { 0.0f, 0.0f, 0.0f };
     glm::vec3 LocalScale = { 1.0f, 1.0f, 1.0f };
 
+    glm::mat4 TransformMatrix = glm::mat4(1);
+    glm::mat4 LocalTransformMatrix = glm::mat4(1);
+
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
     TransformComponent(const glm::vec3& translation)
@@ -51,9 +54,13 @@ struct TransformComponent {
     {
     }
 
-    glm::mat4 GetTransform() const;
-    glm::mat4 GetLocalTransform() const;
+    glm::mat4& GetTransform() { return TransformMatrix; }
+    const glm::mat4& GetTransform() const { return TransformMatrix; }
+    glm::mat4& GetLocalTransform() { return LocalTransformMatrix; }
+    const glm::mat4& GetLocalTransform() const { return LocalTransformMatrix; }
     void ApplyTransform(const glm::mat4& transform);
+
+    operator glm::mat4&() { return TransformMatrix; }
 };
 
 struct SpriteRendererComponent {
@@ -145,10 +152,12 @@ struct Rigidbody2DComponent {
     Rigidbody2DComponent() = default;
     Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
 
+    void SetBodyType(BodyType type);
     void SetFixedRotation(bool enable);
     void SetVelocity(glm::vec2 velocity);
     void SetAngularVelocity(float velocity);
 
+    BodyType GetType() const;
     glm::vec2 GetVelocity() const;
     glm::vec2 GetPosition() const;
     float GetAngularVelocity() const;

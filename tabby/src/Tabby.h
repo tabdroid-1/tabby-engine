@@ -10,15 +10,14 @@
 #include <Tabby/Core/Base.h>
 #include <Tabby/Core/Layer/Layer.h>
 #include <Tabby/Core/Time/Timestep.h>
-#include <Tabby/Log/Log.h>
+#include <Tabby/Core/Log/Log.h>
 // -----------------------------------
 //
 // --- Scene -------------------------
-#include <Tabby/Scene/Scene.h>
-#include <Tabby/Scene/Components.h>
-#include <Tabby/Scene/Entity.h>
-#include <Tabby/Scene/SceneManager.h>
-#include <Tabby/Scene/ScriptableEntity.h>
+#include <Tabby/World/World.h>
+#include <Tabby/World/Components.h>
+#include <Tabby/World/Entity.h>
+#include <Tabby/World/ScriptableEntity.h>
 // -----------------------------------
 //
 // --- Physics -----------------------
@@ -27,9 +26,9 @@
 // -----------------------------------
 //
 // --- Input -------------------------
-#include <Tabby/Input/Input.h>
-#include <Tabby/Input/KeyCodes.h>
-#include <Tabby/Input/MouseCodes.h>
+#include <Tabby/Core/Input/Input.h>
+#include <Tabby/Core/Input/KeyCodes.h>
+#include <Tabby/Core/Input/MouseCodes.h>
 // -----------------------------------
 //
 // --- Asset -------------------------

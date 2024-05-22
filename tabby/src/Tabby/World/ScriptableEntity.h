@@ -39,7 +39,7 @@ protected:
 
 private:
     Entity m_Entity;
-    friend class Scene;
+    friend class World;
     friend class Physisc2D;
 };
 

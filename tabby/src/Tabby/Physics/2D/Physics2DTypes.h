@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Tabby/Scene/Components.h>
-#include <Tabby/Scene/Entity.h>
+#include <Tabby/World/Components.h>
+#include <Tabby/World/Entity.h>
 
 namespace Tabby {
 

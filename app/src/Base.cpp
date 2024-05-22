@@ -1,13 +1,4 @@
 #include "Base.h"
-#include "Tabby/Core/Application.h"
-#include "Tabby/Core/Window.h"
-#include "Tabby/Input/Input.h"
-#include "Tabby/Input/KeyCodes.h"
-#include "Tabby/Math/Math.h"
-#include "Tabby/Scene/SceneManager.h"
-#include <Scenes/Test2Scene.h>
-#include <Scenes/Test3Scene.h>
-#include <Scenes/TestScene.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -29,33 +20,51 @@ void Base::OnAttach()
 
     Tabby::Application::Get().GetWindow().SetVSync(false);
 
-    Tabby::Shared<TestScene> testScene = Tabby::CreateShared<TestScene>();
-    Tabby::Shared<Test2Scene> test2Scene = Tabby::CreateShared<Test2Scene>();
-    Tabby::Shared<Test3Scene> test3Scene = Tabby::CreateShared<Test3Scene>();
-
-    Tabby::SceneManager::Add("Test", testScene);
-    Tabby::SceneManager::Add("Test2", test2Scene);
-    Tabby::SceneManager::Add("Test3", test3Scene);
-    Tabby::SceneManager::SwitchTo("Test");
-
     Tabby::FramebufferSpecification fbSpec;
     fbSpec.Attachments = { Tabby::FramebufferTextureFormat::RGBA8, Tabby::FramebufferTextureFormat::RED_INTEGER, Tabby::FramebufferTextureFormat::RGBA8 };
     fbSpec.Width = 2560;
     fbSpec.Height = 1600;
     m_Framebuffer = Tabby::Framebuffer::Create(fbSpec);
 
-    m_SceneHierarchyPanel.SetContext(Tabby::SceneManager::GetCurrentScene());
+    Tabby::World::OnStart();
+
+    {
+        auto cameraEntity = Tabby::World::CreateEntity("cameraEntity");
+        cameraEntity.AddComponent<Tabby::CameraComponent>();
+    }
+
+    {
+        auto GroundEntity = Tabby::World::CreateEntity("GroundEntity");
+        // GroundEntity.AddComponent<Tabby::SpriteRendererComponent>();
+        auto& rb = GroundEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        rb.Type = Tabby::Rigidbody2DComponent::BodyType::Static;
+        auto& bc = GroundEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        bc.Size = { 3.0f, 0.5f };
+    }
+
+    {
+        auto DynamicEntity = Tabby::World::CreateEntity("DynamicEntity");
+        DynamicEntity.AddComponent<Tabby::SpriteRendererComponent>();
+        auto& rb = DynamicEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+        rb.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+        auto& bc = DynamicEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+        bc.Size = { 2.0f, 0.5f };
+
+        DynamicEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3;
+    }
 }
 
 void Base::OnDetach()
 {
     TB_PROFILE_SCOPE();
+
+    Tabby::World::OnStop();
 }
 
 void Base::OnUpdate(Tabby::Timestep ts)
 {
 
-    Tabby::SceneManager::GetCurrentScene()->OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
+    Tabby::World::OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
 
     if (Tabby::FramebufferSpecification spec = m_Framebuffer->GetSpecification();
         m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
@@ -74,7 +83,7 @@ void Base::OnUpdate(Tabby::Timestep ts)
 
     m_Framebuffer->ClearAttachment(1, -1);
 
-    Tabby::SceneManager::Update(ts);
+    Tabby::World::Update(ts);
     OnOverlayRender();
 
     m_Framebuffer->Unbind();
@@ -97,7 +106,7 @@ void Base::OnImGuiRender()
 {
     TB_PROFILE_SCOPE();
 
-    Tabby::SceneManager::DrawImGui();
+    Tabby::World::DrawImGui();
 
     // Note: Switch this to true to enable dockspace
     static bool dockspaceOpen = true;
@@ -148,6 +157,8 @@ void Base::OnImGuiRender()
     style.WindowMinSize.x = minWinSizeX;
 
     m_SceneHierarchyPanel.OnImGuiRender();
+    m_PropertiesPanel.SetEntity(m_SceneHierarchyPanel.GetSelectedNode(), m_SceneHierarchyPanel.IsNodeSelected());
+    m_PropertiesPanel.OnImGuiRender();
 
     ImGui::Begin("Stats");
 
@@ -198,7 +209,7 @@ void Base::OnImGuiRender()
     // }
 
     // Gizmos
-    Tabby::Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+    Tabby::Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedNode();
     if (selectedEntity && m_GizmoType != -1) {
         ImGuizmo::SetOrthographic(true);
         ImGuizmo::SetDrawlist();
@@ -208,7 +219,7 @@ void Base::OnImGuiRender()
         // Camera
 
         // Runtime camera from entity
-        auto cameraEntity = Tabby::SceneManager::GetCurrentScene()->GetPrimaryCameraEntity();
+        auto cameraEntity = Tabby::World::GetPrimaryCameraEntity();
         const auto& camera = cameraEntity.GetComponent<Tabby::CameraComponent>().Camera;
         const glm::mat4& cameraProjection = camera.GetProjection();
         glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<Tabby::TransformComponent>().GetTransform());
@@ -248,7 +259,7 @@ void Base::OnImGuiRender()
 }
 void Base::OnOverlayRender()
 {
-    Tabby::Entity camera = Tabby::SceneManager::GetCurrentScene()->GetPrimaryCameraEntity();
+    Tabby::Entity camera = Tabby::World::GetPrimaryCameraEntity();
     if (!camera)
         return;
 
@@ -257,7 +268,7 @@ void Base::OnOverlayRender()
     if (m_ShowPhysicsColliders) {
         // Box Colliders
         {
-            auto view = Tabby::SceneManager::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::BoxCollider2DComponent>();
+            auto view = Tabby::World::GetAllEntitiesWith<Tabby::TransformComponent, Tabby::BoxCollider2DComponent>();
             for (auto entity : view) {
                 auto [tc, bc2d] = view.get<Tabby::TransformComponent, Tabby::BoxCollider2DComponent>(entity);
 
@@ -275,7 +286,7 @@ void Base::OnOverlayRender()
 
         // Circle Colliders
         {
-            auto view = Tabby::SceneManager::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::CircleCollider2DComponent>();
+            auto view = Tabby::World::GetAllEntitiesWith<Tabby::TransformComponent, Tabby::CircleCollider2DComponent>();
             for (auto entity : view) {
                 auto [tc, cc2d] = view.get<Tabby::TransformComponent, Tabby::CircleCollider2DComponent>(entity);
 
@@ -293,7 +304,7 @@ void Base::OnOverlayRender()
 
         // Capsule Colliders
         {
-            auto view = Tabby::SceneManager::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::CapsuleCollider2DComponent>();
+            auto view = Tabby::World::GetAllEntitiesWith<Tabby::TransformComponent, Tabby::CapsuleCollider2DComponent>();
             for (auto entity : view) {
                 auto [tc, cc2d] = view.get<Tabby::TransformComponent, Tabby::CapsuleCollider2DComponent>(entity);
 
@@ -324,7 +335,7 @@ void Base::OnOverlayRender()
 
         // Segment Colliders
         {
-            auto view = Tabby::SceneManager::GetCurrentScene()->GetAllEntitiesWith<Tabby::TransformComponent, Tabby::SegmentCollider2DComponent>();
+            auto view = Tabby::World::GetAllEntitiesWith<Tabby::TransformComponent, Tabby::SegmentCollider2DComponent>();
             for (auto entity : view) {
                 auto [tc, sc2d] = view.get<Tabby::TransformComponent, Tabby::SegmentCollider2DComponent>(entity);
 
@@ -344,7 +355,7 @@ void Base::OnOverlayRender()
     }
 
     // Draw selected entity outline
-    if (Tabby::Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity()) {
+    if (Tabby::Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedNode()) {
         const Tabby::TransformComponent& transform = selectedEntity.GetComponent<Tabby::TransformComponent>();
         Tabby::Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
     }

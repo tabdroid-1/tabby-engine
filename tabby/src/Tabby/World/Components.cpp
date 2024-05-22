@@ -1,4 +1,4 @@
-#include <Tabby/Scene/Components.h>
+#include <Tabby/World/Components.h>
 #include <Tabby/Physics/2D/Physics2D.h>
 #include <Tabby/Physics/2D/Physics2DTypes.h>
 #include <Tabby/Math/Math.h>
@@ -14,20 +14,6 @@
 namespace Tabby {
 
 // ----- TransformComponent ---------------------
-glm::mat4 TransformComponent::GetTransform() const
-{
-    glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians(Rotation)));
-
-    return glm::translate(glm::mat4(1.0f), Translation) * rotation * glm::scale(glm::mat4(1.0f), Scale);
-}
-
-glm::mat4 TransformComponent::GetLocalTransform() const
-{
-    glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians(LocalRotation)));
-
-    return glm::translate(glm::mat4(1.0f), LocalTranslation) * rotation * glm::scale(glm::mat4(1.0f), LocalScale);
-}
-
 void TransformComponent::ApplyTransform(const glm::mat4& transform)
 {
 
@@ -101,6 +87,13 @@ void TransformComponent::ApplyTransform(const glm::mat4& transform)
 //
 // ----- Rigidbody2DComponent -----------------------
 
+void Rigidbody2DComponent::SetBodyType(BodyType type)
+{
+    if (B2_IS_NON_NULL(RuntimeBodyId))
+        b2Body_SetType(RuntimeBodyId, Utils::Rigidbody2DTypeToBox2DBody(type));
+    Type = type;
+}
+
 void Rigidbody2DComponent::SetFixedRotation(bool enable)
 {
     if (B2_IS_NON_NULL(RuntimeBodyId))
@@ -118,6 +111,11 @@ void Rigidbody2DComponent::SetAngularVelocity(float velocity)
 {
     if (B2_IS_NON_NULL(RuntimeBodyId))
         b2Body_SetAngularVelocity(RuntimeBodyId, velocity);
+}
+
+Rigidbody2DComponent::BodyType Rigidbody2DComponent::GetType() const
+{
+    return Type;
 }
 
 glm::vec2 Rigidbody2DComponent::GetVelocity() const

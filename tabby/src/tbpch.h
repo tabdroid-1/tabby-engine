@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tabby/Core/PlatformDetection.h"
+#include <Tabby/Core/PlatformDetection.h>
 
 #ifdef TB_PLATFORM_WINDOWS
 #ifndef NOMINMAX
@@ -34,11 +34,11 @@
 #include <utility>
 #include <vector>
 
+#include "Tabby/Core/UUID.h"
 #include "Tabby/Core/Assert.h"
 #include "Tabby/Core/Base.h"
-#include "Tabby/Core/UUID.h"
 #include "Tabby/Debug/Instrumentor.h"
-#include "Tabby/Log/Log.h"
+#include "Tabby/Core/Log/Log.h"
 
 #include "Config.h"
 

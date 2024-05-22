@@ -1,7 +1,5 @@
 #pragma once
 
-#include <tbpch.h>
-
 namespace Tabby {
 
 class Scene;
@@ -41,7 +39,7 @@ private:
     static std::vector<Circle> m_Circles;
 
 private:
-    friend class Scene;
+    friend class World;
 };
 
 }

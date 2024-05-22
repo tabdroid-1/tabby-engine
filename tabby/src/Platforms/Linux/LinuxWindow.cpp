@@ -3,7 +3,7 @@
 #include "Platforms/Linux/LinuxWindow.h"
 #include "tbpch.h"
 
-#include "Tabby/Input/Input.h"
+#include "Tabby/Core/Input/Input.h"
 #include "backends/imgui_impl_sdl2.h"
 
 #include "Tabby/Core/Events/ApplicationEvent.h"

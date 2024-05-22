@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Tabby.h"
+#include <Tabby.h>
 #include <Tabby/UI/Panels/SceneHierarchyPanel/SceneHierarchyPanel.h>
+#include <Tabby/UI/Panels/SceneHierarchyPanel/Properties.h>
 
 class Base : public Tabby::Layer {
 public:
@@ -19,6 +20,7 @@ public:
 
 private:
     Tabby::SceneHierarchyPanel m_SceneHierarchyPanel;
+    Tabby::PropertiesPanel m_PropertiesPanel;
     bool m_ShowPhysicsColliders = true;
     int m_GizmoType = -1;
 

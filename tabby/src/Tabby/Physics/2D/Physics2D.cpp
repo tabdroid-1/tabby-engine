@@ -1,9 +1,10 @@
-#include "Physics2D.h"
+#include <Tabby/Physics/2D/Physics2D.h>
+#include <Tabby/Physics/2D/Physics2DTypes.h>
+#include <Tabby/World/ScriptableEntity.h>
+
 #include "box2d/box2d.h"
 #include "box2d/math_functions.h"
 #include "entt/entt.hpp"
-#include <Tabby/Physics/2D/Physics2DTypes.h>
-#include <Tabby/Scene/ScriptableEntity.h>
 
 namespace Tabby {
 
@@ -259,14 +260,18 @@ void Physisc2D::ProcessShapeInitQueue()
                 } else {
                     if (hierarchyNode.Parent.first.Valid())
                         return self(self, hierarchyNode.Parent.second);
+                    else
+                        return entt::null;
                 }
             };
 
             rb2dEntity = FindParentRigidbody(FindParentRigidbody, shapeInfo.entity);
         }
 
-        if (rb2dEntity == entt::null)
+        if (rb2dEntity == entt::null) {
             s_Instance->shapeInitQueue.pop();
+            continue;
+        }
 
         if (shapeInfo.colliderType == ColliderType2D::Box) {
             auto& bc2d = shapeInfo.entity.GetComponent<BoxCollider2DComponent>();

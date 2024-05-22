@@ -1,5 +1,4 @@
-#include "Tabby/Log/Log.h"
-#include "tbpch.h"
+#include <Tabby/Core/Log/Log.h>
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>

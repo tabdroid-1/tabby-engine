@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Components.h"
-#include "Scene.h"
+#include <Tabby/World/Components.h>
+#include <Tabby/World/World.h>
 
 #include "entt/entt.hpp"
 
@@ -17,8 +17,8 @@ public:
     T& AddComponent(Args&&... args)
     {
         TB_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
-        T& component = SceneManager::GetRegistry().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
-        SceneManager::GetCurrentScene()->OnComponentAdded<T>(*this, component);
+        T& component = World::GetRegistry().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        World::OnComponentAdded<T>(*this, component);
 
         return component;
     }
@@ -26,8 +26,8 @@ public:
     template <typename T, typename... Args>
     T& AddOrReplaceComponent(Args&&... args)
     {
-        T& component = SceneManager::GetRegistry().emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
-        SceneManager::GetCurrentScene()->OnComponentAdded<T>(*this, component);
+        T& component = World::GetRegistry().emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        World::OnComponentAdded<T>(*this, component);
         return component;
     }
 
@@ -35,20 +35,20 @@ public:
     T& GetComponent()
     {
         TB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
-        return SceneManager::GetRegistry().get<T>(m_EntityHandle);
+        return World::GetRegistry().get<T>(m_EntityHandle);
     }
 
     template <typename T>
     bool HasComponent()
     {
-        return SceneManager::GetRegistry().any_of<T>(m_EntityHandle);
+        return World::GetRegistry().any_of<T>(m_EntityHandle);
     }
 
     template <typename T>
     void RemoveComponent()
     {
         TB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
-        SceneManager::GetRegistry().remove<T>(m_EntityHandle);
+        World::GetRegistry().remove<T>(m_EntityHandle);
     }
 
     void AddChild(Entity& child)
