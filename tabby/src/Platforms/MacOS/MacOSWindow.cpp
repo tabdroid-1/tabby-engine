@@ -1,7 +1,7 @@
-#include <Tabby/Input/KeyCodes.h>
+#ifdef TB_PLATFORM_MACOS
+#include <Tabby/Core/Input/KeyCodes.h>
 #include <Tabby/Renderer/Renderer.h>
 #include <Tabby/Renderer/RendererAPI.h>
-#ifdef TB_PLATFORM_MACOS
 
 #include "Platforms/MacOS/MacOSWindow.h"
 

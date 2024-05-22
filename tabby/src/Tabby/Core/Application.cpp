@@ -1,5 +1,5 @@
 #include "Tabby/Renderer/Renderer.h"
-#include <Tabby/Input/Input.h>
+#include <Tabby/Core/Input/Input.h>
 
 #include "Tabby/Utils/PlatformUtils.h"
 #include <Tabby/Asset/AssetManager.h>

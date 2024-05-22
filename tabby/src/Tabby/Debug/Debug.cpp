@@ -1,8 +1,6 @@
 #include <Tabby/Debug/Debug.h>
 #include <Tabby/Renderer/Renderer2D.h>
 
-#include <tbpch.h>
-
 namespace Tabby {
 
 std::vector<Debug::Line> Debug::m_Lines;

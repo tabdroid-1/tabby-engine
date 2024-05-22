@@ -1,9 +1,9 @@
 #pragma once
 
 #include <tbpch.h>
-#include "Tabby/Input/GamepadCodes.h"
-#include "Tabby/Input/KeyCodes.h"
-#include "Tabby/Input/MouseCodes.h"
+#include "Tabby/Core/Input/GamepadCodes.h"
+#include "Tabby/Core/Input/KeyCodes.h"
+#include "Tabby/Core/Input/MouseCodes.h"
 #include <Tabby/Core/Events/MouseEvent.h>
 #include <Tabby/Core/Application.h>
 

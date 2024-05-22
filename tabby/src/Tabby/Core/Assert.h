@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Tabby/Core/Base.h"
-#include "Tabby/Log/Log.h"
+#include "Tabby/Core/Log/Log.h"
 #include <filesystem>
 
 #ifdef TB_ENABLE_ASSERTS

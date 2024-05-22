@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Tabby/Core/Events/Event.h"
-#include "Tabby/Input/MouseCodes.h"
+#include "Tabby/Core/Input/MouseCodes.h"
 
 namespace Tabby {
 
