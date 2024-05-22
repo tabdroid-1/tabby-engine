@@ -1,5 +1,5 @@
 
-![TabbyEngine](/Resources/Logo/Tabby_Engine_Logo_And_Name_1024X256.png?raw=true "TabbyEngine")
+![TabbyEngine](/resources/logo/Tabby_Engine_Logo_And_Name_1024X256.png?raw=true "TabbyEngine")
 
 
 Simple game engine written in C++.
