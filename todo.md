@@ -27,7 +27,7 @@ Todo
     - <s>Asset manager. </s> Done
     - <s>Go balls deep in to ECS (ECS like in Bevy Engine)</s> idk. 
     - Initial Level Editor work.
-    - Edit CMakeLists.txt files to load source files non-recursively.
+    - Implement File Dialog to linux(maybe using gtk)
     - Add font support to asset manager.
     - Fix OpenGL ES Text Shader. 
     - Clean up the code, add comments etc.
