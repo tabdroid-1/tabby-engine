@@ -243,10 +243,10 @@ Entity Prefab::Instantiate() const
 Entity Prefab::CreateEntityFromPrefab(EntityData entityData) const
 {
     Entity newEntity = World::CreateEntityWithUUID(entityData.m_UUID, entityData.m_Name);
-    TB_INFO("Entity Name: {0} ID: {1}", entityData.m_Name, (entt::entity)newEntity);
 
     for (auto& entData : entityData.m_ChildMapping) {
-        CreateEntityFromPrefab(entityData);
+        Entity childEntity = CreateEntityFromPrefab(entData.second);
+        newEntity.AddChild(childEntity);
     }
 
     for (const auto& componentData : entityData.m_Components) {
