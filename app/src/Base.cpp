@@ -57,14 +57,15 @@ void Base::OnAttach()
     }
 
     // Tabby::Shared<Tabby::Prefab> prefab = Tabby::CreateShared<Tabby::ExamplePrefab>();
+    // prefab->Instantiate();
 
     // std::vector<uint8_t> data = Tabby::Prefab::SerializePrefab(prefab);
     // Tabby::Shared<Tabby::Prefab> deserializedPrefab = Tabby::Prefab::DeserializePrefab(data);
     // deserializedPrefab->Instantiate();
 
     // Export Prefab
-    // Tabby::Shared<Tabby::Prefab> createdPrefab = Tabby::CreateShared<Tabby::ExamplePrefab>();
-    // Tabby::Prefab::SerializePrefabToFile(createdPrefab, "prefabs/ExamplePrefab.tbpf");
+    Tabby::Shared<Tabby::Prefab> createdPrefab = Tabby::CreateShared<Tabby::ExamplePrefab>();
+    Tabby::Prefab::SerializePrefabToFile(createdPrefab, "prefabs/ExamplePrefab.tbpf");
 
     // Import Prefab
     Tabby::AssetHandle exportedPrefabHande = Tabby::AssetManager::Get()->LoadAssetSource("prefabs/ExamplePrefab.tbpf", exportedPrefabHande);
