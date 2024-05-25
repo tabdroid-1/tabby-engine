@@ -13,7 +13,6 @@ LevelEditor::LevelEditor(Camera* camera, TransformComponent* cameraTransform)
 
 void LevelEditor::OnAttach()
 {
-    m_ContentBrowserPanel = CreateScope<ContentBrowserPanel>();
 }
 
 void LevelEditor::OnDetach()
@@ -111,7 +110,6 @@ void LevelEditor::OnUpdate(Timestep ts)
 
 void LevelEditor::OnImGuiRender()
 {
-    m_ContentBrowserPanel->OnImGuiRender();
 }
 
 void LevelEditor::OnEvent(Event& e)

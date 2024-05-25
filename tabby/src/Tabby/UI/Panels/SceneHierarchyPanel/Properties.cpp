@@ -305,7 +305,8 @@ void PropertiesPanel::OnImGuiRender()
                                 for (int32_t i = 0; i < IM_ARRAYSIZE(motion_type_strings); i++) {
                                     bool selected = i == (int32_t)rb2d_component.Type;
                                     if (ImGui::Selectable(motion_type_strings[i], &selected))
-                                        rb2d_component.Type = (Rigidbody2DComponent::BodyType)i;
+                                        rb2d_component.SetBodyType((Rigidbody2DComponent::BodyType)i);
+                                    // rb2d_component.Type = (Rigidbody2DComponent::BodyType)i;
                                 }
                                 ImGui::EndCombo();
                             }

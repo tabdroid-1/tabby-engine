@@ -26,6 +26,7 @@ private:
     Camera m_Camera;
 
     Scope<LevelEditor> m_LevelEditor;
+    Scope<ContentBrowserPanel> m_ContentBrowserPanel;
 };
 
 }

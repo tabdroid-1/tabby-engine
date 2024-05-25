@@ -33,6 +33,7 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <typeindex>
 
 #include "Tabby/Core/UUID.h"
 #include "Tabby/Core/Assert.h"
