@@ -21,7 +21,6 @@ private:
     bool OnMouseScroll(MouseScrolledEvent& e);
 
 private:
-    Scope<ContentBrowserPanel> m_ContentBrowserPanel;
     int m_GizmoType = -1;
 
     float m_CameraZoom = 1;

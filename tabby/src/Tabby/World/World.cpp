@@ -13,6 +13,8 @@
 // #include <Tabby/Audio/AudioEngine.h>
 // #include <Tabby/Debug/Debug.h>
 
+#include <Tabby/World/Prefab.h>
+
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 
@@ -28,6 +30,14 @@ World::World()
 {
     TB_CORE_ASSERT(!s_Instance, "Scene State Machine already exists!");
     s_Instance = this;
+}
+
+void World::Init()
+{
+    if (!s_Instance)
+        s_Instance = new World();
+
+    Prefab::InitializeTypeMap();
 }
 
 template <typename... Component>

@@ -26,6 +26,7 @@ Todo
         - <s>Audio streaming for long audios. </s> Done 
     - <s>Asset manager. </s> Done
     - <s>Go balls deep in to ECS (ECS like in Bevy Engine)</s> idk. 
+    - <s>Initial Prefab class which serializes in to Tabby Prefab Format. </s> Done Since 25-05-2024_1 Alpha
     - Initial Level Editor work.
     - Implement File Dialog to linux(maybe using gtk)
     - Add font support to asset manager.
@@ -42,13 +43,6 @@ Todo
     - Animation
     - Basic networking
     - Create pop-up showing error on release builds instead of just crashing without any info. 
-    <!-- - tbpf (TabbyPrefabFormat) format and Prefab editor. (kinda like level editor that generates tbpf format)  -->
-    <!--     - tbpf file will contain -->
-    <!--         - entity prefabs(player, npc, level elemets etc.) -->
-    <!--         - levels (basically compilation of prefabs) -->
-    <!--     - individual prefabs and/or level can be spawned. preferably each app should hold 1 tbpf file which will hold everything. -->
-    <!--     - encryption -->
-    <!--     - this is probably should be in a different repo -->
     - Vulkan.
     - C++ reflection
 

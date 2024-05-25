@@ -14,6 +14,8 @@ class World {
 public:
     World();
 
+    static void Init();
+
     static void LoadMap(const std::string& mapPath);
 
     static Entity CreateEntity(const std::string& name = std::string());

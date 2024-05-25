@@ -12,10 +12,13 @@ enum class AssetType : uint8_t {
     TABBY_IMAGE,
     TABBY_MESH,
     TABBY_MODEL,
+    TABBY_PREFAB,
     UNKNOWN
 };
 
 inline static const std::unordered_map<std::string, AssetType> g_AssetTypesExtensionMap = {
+    { ".tbpf", AssetType::TABBY_PREFAB },
+
     { ".ttf", AssetType::FONT_SRC },
 
     { ".png", AssetType::IMAGE_SRC },

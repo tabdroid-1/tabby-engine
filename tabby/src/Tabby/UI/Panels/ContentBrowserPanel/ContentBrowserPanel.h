@@ -10,7 +10,12 @@ public:
 
     void OnImGuiRender();
 
+    void Open(bool open) { m_IsOpen = open; }
+    bool IsOpen() { return m_IsOpen; }
+
 private:
+    bool m_IsOpen = true;
+
     std::filesystem::path m_BaseDirectory;
     std::filesystem::path m_CurrentDirectory;
 

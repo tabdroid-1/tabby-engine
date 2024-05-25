@@ -1,4 +1,5 @@
 #include <LevelEditorLayer.h>
+#include <Prefab/ExamplePrefab.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -17,6 +18,7 @@ void LevelEditorLayer::OnAttach()
 {
     TB_PROFILE_SCOPE();
 
+    Tabby::World::Init();
     Tabby::Application::Get().GetWindow().SetVSync(false);
 
     Tabby::FramebufferSpecification fbSpec;
@@ -25,10 +27,23 @@ void LevelEditorLayer::OnAttach()
     fbSpec.Height = 1600;
     m_Framebuffer = Tabby::Framebuffer::Create(fbSpec);
 
+    m_ContentBrowserPanel = CreateScope<ContentBrowserPanel>();
     m_LevelEditor = CreateScope<LevelEditor>(&m_Camera, &m_CameraTransform);
     m_Camera.SetOrthographic(10, -1, 1000);
 
     m_LevelEditor->OnAttach();
+
+    // TransformComponent transformComp;
+    // transformComp.Translation = { 3.442f, 13.231f, 123.2f };
+    //
+    // std::vector<uint8_t> data(sizeof(TransformComponent));
+    // std::memcpy(data.data(), &transformComp, sizeof(TransformComponent));
+    //
+    // TransformComponent newTransformComp;
+    // std::memcpy(&newTransformComp, data.data(), sizeof(TransformComponent));
+    //
+    // TB_INFO("Deserialized Translation:");
+    // TB_INFO("   x: {0} y: {1} z:{2}", newTransformComp.Translation.x, newTransformComp.Translation.y, newTransformComp.Translation.z);
 }
 
 void LevelEditorLayer::OnDetach()
@@ -105,6 +120,42 @@ void LevelEditorLayer::OnImGuiRender()
     ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
     ImGui::PopStyleVar();
 
+    ImGui::BeginMainMenuBar();
+    if (ImGui::MenuItem("File")) {
+        ImGui::OpenPopup("menu_bar_file");
+    };
+    if (ImGui::MenuItem("View")) {
+        ImGui::OpenPopup("menu_bar_view");
+    };
+    // if (ImGui::BeginPopup("menu_bar_file")) {
+    //     // if (ImGui::MenuItem("Open project", "Ctrl + O")) {
+    //     //     LoadProject();
+    //     // };
+    //     // if (ImGui::MenuItem("Save project", "Ctrl + S")) {
+    //     //     SaveProject();
+    //     // };
+    //     // if (ImGui::MenuItem("New project", "Ctrl + N")) {
+    //     //     NewProject();
+    //     // };
+    //     // ImGui::EndPopup();
+    // };
+    if (ImGui::BeginPopup("menu_bar_view")) {
+        // if (ImGui::MenuItem("Scene hierarchy")) {
+        //     m_HierarchyPanel->Open(true);
+        // }
+        // if (ImGui::MenuItem("Properties")) {
+        //     m_PropertiesPanel->Open(true);
+        // }
+        if (ImGui::MenuItem("Content browser")) {
+            if (m_ContentBrowserPanel->IsOpen())
+                m_ContentBrowserPanel->Open(false);
+            else
+                m_ContentBrowserPanel->Open(true);
+        }
+        ImGui::EndPopup();
+    }
+    ImGui::EndMainMenuBar();
+
     if (opt_fullscreen)
         ImGui::PopStyleVar(2);
 
@@ -147,6 +198,8 @@ void LevelEditorLayer::OnImGuiRender()
     ImGui::DragFloat3("Camera Scale", glm::value_ptr(m_CameraTransform.Scale));
 
     ImGui::End();
+
+    m_ContentBrowserPanel->OnImGuiRender();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2 { 0, 0 });
     ImGui::Begin("Viewport");

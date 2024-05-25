@@ -1,5 +1,7 @@
 #include "Base.h"
 
+#include <Tabby/World/Prefab.h>
+#include <Prefab/ExamplePrefab.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
@@ -18,6 +20,7 @@ void Base::OnAttach()
 {
     TB_PROFILE_SCOPE();
 
+    Tabby::World::Init();
     Tabby::Application::Get().GetWindow().SetVSync(false);
 
     Tabby::FramebufferSpecification fbSpec;
@@ -52,6 +55,21 @@ void Base::OnAttach()
 
         DynamicEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3;
     }
+
+    // Tabby::Shared<Tabby::Prefab> prefab = Tabby::CreateShared<Tabby::ExamplePrefab>();
+
+    // std::vector<uint8_t> data = Tabby::Prefab::SerializePrefab(prefab);
+    // Tabby::Shared<Tabby::Prefab> deserializedPrefab = Tabby::Prefab::DeserializePrefab(data);
+    // deserializedPrefab->Instantiate();
+
+    // Export Prefab
+    // Tabby::Shared<Tabby::Prefab> createdPrefab = Tabby::CreateShared<Tabby::ExamplePrefab>();
+    // Tabby::Prefab::SerializePrefabToFile(createdPrefab, "prefabs/ExamplePrefab.tbpf");
+
+    // Import Prefab
+    Tabby::AssetHandle exportedPrefabHande = Tabby::AssetManager::Get()->LoadAssetSource("prefabs/ExamplePrefab.tbpf", exportedPrefabHande);
+    Tabby::Shared<Tabby::Prefab> exportedPrefab = Tabby::AssetManager::Get()->GetAsset<Tabby::Prefab>(exportedPrefabHande);
+    exportedPrefab->Instantiate();
 }
 
 void Base::OnDetach()
