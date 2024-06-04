@@ -48,9 +48,8 @@ protected:
         }
 
         template <typename T, typename... Args>
-        T& AddComponent(Args&&... args)
+        T& AddComponent(T component)
         {
-            T component(std::forward<Args>(args)...);
             m_Components.emplace_back(ComponentData { typeid(T), SerializeComponent<T>(component) });
             return component;
         }

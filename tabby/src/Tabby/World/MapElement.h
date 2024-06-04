@@ -20,9 +20,11 @@ private:
     std::string m_ElementName;
 };
 
-class PrefabSpawner : public MapElement {
+class
+
+    class PrefabSpawnerElement : public MapElement {
 public:
-    PrefabSpawner(const std::string& elementName)
+    PrefabSpawnerElement(const std::string& elementName)
         : MapElement(elementName)
     {
     }
@@ -30,6 +32,41 @@ public:
 private:
     glm::vec3 Position;
     glm::vec3 Rotation;
+};
+
+class TriggerElement : public MapElement {
+public:
+    TriggerElement(const std::string& elementName)
+        : MapElement(elementName)
+    {
+    }
+
+    enum Type {
+        Box = 0,
+        Circle,
+        Capcule,
+        Line,
+    };
+
+private:
+    glm::vec3 Position;
+    glm::vec3 Rotation;
+};
+
+class AudioSouceElement : public MapElement {
+public:
+    AudioSouceElement(const std::string& elementName)
+        : MapElement(elementName)
+    {
+    }
+
+    enum class Type {
+        Spatial,
+        NonSpatial
+    };
+
+private:
+    glm::vec3 Position;
 };
 
 }
