@@ -2,7 +2,7 @@
 
 #include <Tabby.h>
 
-#include <Map/Map.h>
+#include <Tabby/World/Map.h>
 
 namespace Tabby {
 

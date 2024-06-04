@@ -108,6 +108,12 @@ public:
         CalculateOffsetsAndStride();
     }
 
+    BufferLayout(std::vector<BufferElement> elements)
+        : m_Elements(elements)
+    {
+        CalculateOffsetsAndStride();
+    }
+
     uint32_t GetStride() const { return m_Stride; }
     const std::vector<BufferElement>& GetElements() const { return m_Elements; }
 

@@ -1,7 +1,10 @@
 #include "Base.h"
 
 #include <Tabby/World/Prefab.h>
+#include <Tabby/Renderer/GLTF.h>
+
 #include <Prefab/ExamplePrefab.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
@@ -71,6 +74,8 @@ void Base::OnAttach()
     Tabby::AssetHandle exportedPrefabHande = Tabby::AssetManager::Get()->LoadAssetSource("prefabs/ExamplePrefab.tbpf", exportedPrefabHande);
     Tabby::Shared<Tabby::Prefab> exportedPrefab = Tabby::AssetManager::Get()->GetAsset<Tabby::Prefab>(exportedPrefabHande);
     exportedPrefab->Instantiate();
+
+    Tabby::GLTF testGlTF("scenes/sponza/Sponza.gltf");
 }
 
 void Base::OnDetach()

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Tabby.h>
-#include <Map/MapElement.h>
+#include <Tabby/World/MapElement.h>
 
 namespace Tabby {
 

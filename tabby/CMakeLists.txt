@@ -37,6 +37,8 @@ set(IMGUIZMO "${PROJECT_VENDOR_DIR}/imguizmo")
 set(TRACY "${PROJECT_VENDOR_DIR}/tracy")
 set(OPENLAL "${PROJECT_VENDOR_DIR}/openal-soft")
 set(LIBSNDFILE "${PROJECT_VENDOR_DIR}/libsndfile")
+set(TINYOBJLOADER "${PROJECT_VENDOR_DIR}/tinyobjloader")
+set(TINYGLTF "${PROJECT_VENDOR_DIR}/tinygltf")
 
 # ##############################################################################
 # Project executable setup
@@ -54,6 +56,10 @@ list(APPEND PROJECT_SOURCES
         "${STB}/stb_image.h"
         "${STB}/stb_image.cpp"
         "${SDL2}/include/SDL.h"
+        "${TINYOBJLOADER}/tiny_obj_loader.cc"
+        "${TINYOBJLOADER}/tiny_obj_loader.h"
+        "${TINYGLTF}/tiny_gltf.h"
+        "${TINYGLTF}/tiny_gltf.cpp"
         )
 
 
@@ -68,6 +74,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${OPENLAL}/include
         ${LIBSNDFILE}/include
         ${BOX2C}/include
+        # ${ASSIMP}/include
         )
 
 include_directories(SYSTEM src)
@@ -105,15 +112,11 @@ add_subdirectory(${SPDLOG})
 set(BOX2D_SAMPLES OFF CACHE BOOL "" FORCE)
 set(BOX2D_DOCS OFF CACHE BOOL "" FORCE)
 set(BOX2D_PROFILE OFF CACHE BOOL "" FORCE)
-# add_subdirectory(${BOX2D} EXCLUDE_FROM_ALL)
 add_subdirectory(${BOX2C})
 
 add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
 
-# set(LIBTYPE "STATIC" CACHE STRING "Set LibType to static for openal" FORCE)
-# set(ALSOFT_EXAMPLES OFF CACHE BOOL "Disable example builds" FORCE)
-# add_subdirectory(${OPENLAL})
 add_subdirectory(${LIBSNDFILE})
 
 if (WIN32)

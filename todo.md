@@ -27,7 +27,9 @@ Todo
     - <s>Asset manager. </s> Done
     - <s>Go balls deep in to ECS (ECS like in Bevy Engine)</s> idk. 
     - <s>Initial Prefab class which serializes in to Tabby Prefab Format. </s> Done Since 25-05-2024_1 Alpha
+    - Try vulkan
     - Initial Level Editor work.
+    - Way for Prefabs to hold asset paths that will be required by components.
     - Implement File Dialog to linux(maybe using gtk)
     - Add font support to asset manager.
     - Fix OpenGL ES Text Shader. 
