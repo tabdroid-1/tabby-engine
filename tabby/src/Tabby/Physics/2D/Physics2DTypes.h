@@ -18,7 +18,7 @@ namespace Utils {
             return b2_kinematicBody;
         }
 
-        TB_CORE_ASSERT(false, "Unknown body type");
+        TB_CORE_ASSERT_TAGGED(false, "Unknown body type");
         return b2_staticBody;
     }
 
@@ -33,7 +33,7 @@ namespace Utils {
             return Rigidbody2DComponent::BodyType::Kinematic;
         }
 
-        TB_CORE_ASSERT(false, "Unknown body type");
+        TB_CORE_ASSERT_TAGGED(false, "Unknown body type");
         return Rigidbody2DComponent::BodyType::Static;
     }
 

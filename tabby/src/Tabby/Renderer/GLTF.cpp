@@ -1,195 +1,327 @@
 #include <Tabby/Renderer/GLTF.h>
+#include <Tabby/Renderer/Texture.h>
+#include <Tabby/Renderer/Mesh.h>
+#include <Tabby/Renderer/Material.h>
 
+#include <Tabby/Asset/AssetFile.h>
+#include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Renderer/Buffer.h>
 #include <Tabby/Renderer/VertexArray.h>
+#include <Tabby/Renderer/RenderCommand.h>
+
+#include <fastgltf/core.hpp>
+#include <fastgltf/types.hpp>
+#include <fastgltf/tools.hpp>
+#include <stb/stb_image.h>
 
 namespace Tabby {
 
-tinygltf::TinyGLTF GLTF::m_Loader;
-
-static ShaderDataType GLTFTypeToShaderDataType(int type)
-{
-
-    switch (type) {
-    case TINYGLTF_TYPE_SCALAR:
-        return ShaderDataType::Int;
-    case TINYGLTF_TYPE_VEC2:
-        return ShaderDataType::Float2;
-    case TINYGLTF_TYPE_VEC3:
-        return ShaderDataType::Float3;
-    case TINYGLTF_TYPE_VEC4:
-        return ShaderDataType::Float4;
-    // case TINYGLTF_TYPE_MAT2:
-    //     return ShaderDataType::Mat2;
-    case TINYGLTF_TYPE_MAT3:
-        return ShaderDataType::Mat3;
-    case TINYGLTF_TYPE_MAT4:
-        return ShaderDataType::Mat4;
-    }
-
-    TB_CORE_ASSERT(false, "Unknown ShaderDataType!");
-    return ShaderDataType::Float;
-}
-
-GLTF::GLTF(const std::string& filePath)
+GLTF::GLTF(const std::filesystem::path& filePath)
 {
     std::string err;
     std::string warn;
 
-    bool ret;
-    if (std::filesystem::path(filePath).extension().string() == ".gltf")
-        ret = m_Loader.LoadASCIIFromFile(&m_Model, &err, &warn, filePath);
-    else if (std::filesystem::path(filePath).extension().string() == ".glb")
-        ret = m_Loader.LoadBinaryFromFile(&m_Model, &err, &warn, filePath);
-    else
-        TB_CORE_ASSERT(false, "Unknown File Format");
+    fastgltf::Parser parser;
 
-    if (!warn.empty()) {
-        TB_CORE_WARN("{0}", warn);
-    }
+    constexpr auto gltfOptions = fastgltf::Options::DontRequireValidAssetMember | fastgltf::Options::AllowDouble | fastgltf::Options::LoadGLBBuffers | fastgltf::Options::LoadExternalBuffers | fastgltf::Options::LoadExternalImages | fastgltf::Options::GenerateMeshIndices;
 
-    if (!err.empty()) {
-        TB_CORE_ERROR("{0}", err);
-    }
+    auto gltfFile = fastgltf::MappedGltfFile::FromPath(filePath);
+    TB_CORE_ASSERT_TAGGED(bool(gltfFile), "Failed to open glTF file: {0}", fastgltf::getErrorMessage(gltfFile.error()));
 
-    TB_CORE_ASSERT(ret, "Failed to parse glTF");
+    auto asset = parser.loadGltf(gltfFile.get(), filePath.parent_path(), gltfOptions);
 
-    Initialize();
+    TB_CORE_ASSERT_TAGGED(asset.error() == fastgltf::Error::None, "Failed to load glTF file: {0}", fastgltf::getErrorMessage(asset.error()));
+
+    m_Asset = std::move(asset.get());
+    // TB_CORE_ASSERT_TAGGED(false, "Unknown File Format");
+
+    // Add a default material
+    auto& defaultMaterial = m_Materials.emplace_back();
+
+    LoadImages();
+    LoadMaterials();
+    LoadMeshes();
 }
 
-void GLTF::Initialize()
+void GLTF::LoadImages()
 {
-    m_VertexArray = VertexArray::Create();
-    m_VertexArray->Bind();
+    auto getLevelCount = [](int width, int height) -> int {
+        return static_cast<int>(1 + floor(log2(width > height ? width : height)));
+    };
 
-    const tinygltf::Scene& scene = m_Model.scenes[m_Model.defaultScene];
-    for (size_t i = 0; i < scene.nodes.size(); i++) {
-        TB_CORE_ASSERT((scene.nodes[i] >= 0) && (scene.nodes[i] < scene.nodes.size()), "Invalid node!");
+    for (auto& image : m_Asset.images) {
+        Shared<Texture> imageptr;
+        std::visit(fastgltf::visitor {
+                       [](auto& arg) {},
+                       [&](fastgltf::sources::URI& filePath) {
+                           TB_CORE_ASSERT_TAGGED(filePath.fileByteOffset == 0, "File offsets not supported");
+                           TB_CORE_ASSERT_TAGGED(filePath.uri.isLocalPath(), "Only local files allowed"); // We're only capable of loading local files.
+
+                           const std::string path(filePath.uri.path().begin(), filePath.uri.path().end()); // Thanks C++.
+
+                           Buffer data;
+                           int image_width, image_height, channels;
+                           data.Data = stbi_load(path.c_str(), &image_width, &image_height, &channels, STBI_rgb_alpha);
+                           data.Size = image_width * image_height * channels;
+                           if (data.Data == nullptr) {
+                               TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from filepath: {0}", path);
+                           }
+
+                           AssetFileHeader file_header = {};
+                           file_header.header_size = sizeof(AssetFileHeader);
+                           file_header.asset_type = AssetType::IMAGE_SRC;
+                           file_header.subresources_size = 0;
+                           file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
+
+                           TextureSpecification texture_spec = {};
+                           // switch (channels) {
+                           // case 3:
+                           //     texture_spec.Format = ImageFormat::RGB8;
+                           //     break;
+                           // case 4:
+                           texture_spec.Format = ImageFormat::RGBA32_UNORM;
+                           //     break;
+                           // }
+                           texture_spec.Width = image_width;
+                           texture_spec.Height = image_height;
+                           texture_spec.type = ImageType::TYPE_2D;
+                           texture_spec.usage = ImageUsage::TEXTURE;
+                           texture_spec.array_layers = 1;
+                           texture_spec.path = path;
+                           texture_spec.GenerateMips = false;
+
+                           AssetHandle handle;
+                           imageptr = Texture::Create(texture_spec, handle, data);
+                           data.Release();
+                       },
+                       [&](fastgltf::sources::Array& vector) {
+                           Buffer data;
+                           int image_width, image_height, channels;
+
+                           data.Data = stbi_load_from_memory(vector.bytes.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, STBI_rgb_alpha);
+                           data.Size = image_width * image_height * channels;
+                           if (data.Data == nullptr) {
+                               TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from data");
+                           }
+
+                           AssetFileHeader file_header = {};
+                           file_header.header_size = sizeof(AssetFileHeader);
+                           file_header.asset_type = AssetType::IMAGE_SRC;
+                           file_header.subresources_size = 0;
+                           file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
+
+                           TextureSpecification texture_spec = {};
+                           // switch (channels) {
+                           // case 3:
+                           //     texture_spec.Format = ImageFormat::RGB8;
+                           //     break;
+                           // case 4:
+                           texture_spec.Format = ImageFormat::RGBA8;
+                           //     break;
+                           // }
+                           texture_spec.Width = image_width;
+                           texture_spec.Height = image_height;
+                           texture_spec.type = ImageType::TYPE_2D;
+                           texture_spec.usage = ImageUsage::TEXTURE;
+                           texture_spec.array_layers = 1;
+                           // texture_spec.path = path;
+                           texture_spec.GenerateMips = false;
+
+                           AssetHandle handle;
+                           imageptr = Texture::Create(texture_spec, handle, data);
+                           data.Release();
+                       },
+                       [&](fastgltf::sources::BufferView& view) {
+                           auto& bufferView = m_Asset.bufferViews[view.bufferViewIndex];
+                           auto& buffer = m_Asset.buffers[bufferView.bufferIndex];
+                           // Yes, we've already loaded every buffer into some GL buffer. However, with GL it's simpler
+                           // to just copy the buffer data again for the texture. Besides, this is just an example.
+                           std::visit(fastgltf::visitor {
+                                          // We only care about VectorWithMime here, because we specify LoadExternalBuffers, meaning
+                                          // all buffers are already loaded into a vector.
+                                          [](auto& arg) {},
+                                          [&](fastgltf::sources::Array& vector) {
+                                              Buffer data;
+                                              int image_width, image_height, channels;
+
+                                              data.Data = stbi_load_from_memory(vector.bytes.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, 4);
+                                              data.Size = image_width * image_height * channels;
+                                              if (data.Data == nullptr) {
+                                                  TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from data");
+                                              }
+
+                                              AssetFileHeader file_header = {};
+                                              file_header.header_size = sizeof(AssetFileHeader);
+                                              file_header.asset_type = AssetType::IMAGE_SRC;
+                                              file_header.subresources_size = 0;
+                                              file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
+
+                                              TextureSpecification texture_spec = {};
+                                              // switch (channels) {
+                                              // case 3:
+                                              //     texture_spec.Format = ImageFormat::RGB8;
+                                              //     break;
+                                              // case 4:
+                                              texture_spec.Format = ImageFormat::RGBA8;
+                                              //     break;
+                                              // }
+                                              texture_spec.Width = image_width;
+                                              texture_spec.Height = image_height;
+                                              texture_spec.type = ImageType::TYPE_2D;
+                                              texture_spec.usage = ImageUsage::TEXTURE;
+                                              texture_spec.array_layers = 1;
+                                              // texture_spec.path = path;
+                                              texture_spec.GenerateMips = false;
+
+                                              AssetHandle handle;
+                                              imageptr = Texture::Create(texture_spec, handle, data);
+                                              data.Release();
+                                          } },
+                               buffer.data);
+                       },
+                   },
+            image.data);
+
+        m_Images.emplace_back(imageptr);
+        // viewer->textures.emplace_back(Texture { texture });
+        // return true;
     }
-
-    m_VertexArray->Unbind();
-
-    for (auto it = m_IndexBuffers.cbegin(); it != m_IndexBuffers.cend();) {
-        tinygltf::BufferView bufferView = m_Model.bufferViews[it->first];
-        if (bufferView.target != 0x8893) { // GL_ELEMENT_ARRAY_BUFFER
-            // glDeleteBuffers(1, &ebos[it->first]);
-            m_IndexBuffers.erase(it->first);
-        } else {
-            ++it;
-        }
-    }
-
-    // m_VertexBuffer = VertexBuffer::Create(m_Model.meshes.at(0).primitives.at(0).mode);
-    // m_VertexBuffer->SetLayout(m_BufferElements);
-    // m_VertexArray->AddVertexBuffer(m_VertexBuffer);
 }
 
-void GLTF::BindModelNodes(tinygltf::Node& node)
+void GLTF::LoadMaterials()
 {
-    if ((node.mesh >= 0) && (node.mesh < m_Model.meshes.size())) {
-        BindMesh(m_Model.meshes[node.mesh]);
-    }
+    for (auto& material : m_Asset.materials) {
 
-    for (size_t i = 0; i < node.children.size(); i++) {
-        TB_CORE_ASSERT((node.children[i] >= 0) && (node.children[i] < m_Model.nodes.size()), "Invalid node!");
-        BindModelNodes(m_Model.nodes[node.children[i]]);
+        auto uniforms = m_Materials.emplace_back();
+        uniforms.alphaCutoff = material.alphaCutoff;
+
+        uniforms.baseColorFactor = glm::vec4(material.pbrData.baseColorFactor.x(), material.pbrData.baseColorFactor.y(), material.pbrData.baseColorFactor.z(), material.pbrData.baseColorFactor.w());
+        if (material.pbrData.baseColorTexture.has_value())
+            uniforms.flags |= MaterialUniformFlags::HasAlbedoMap;
+
+        if (material.normalTexture.has_value())
+            uniforms.flags |= MaterialUniformFlags::HasNormalMap;
+
+        if (material.pbrData.metallicRoughnessTexture.has_value())
+            uniforms.flags |= MaterialUniformFlags::HasRoughnessMap;
+
+        if (material.occlusionTexture.has_value())
+            uniforms.flags |= MaterialUniformFlags::HasOcclusionMap;
+
+        m_Materials.emplace_back(uniforms);
+
+        // auto tabbyMaterial = m_Materials.emplace_back();
+        // tabbyMaterial->SetAlbedoColor({ material.pbrData.baseColorFactor.x(), material.pbrData.baseColorFactor.y(), material.pbrData.baseColorFactor.z(), material.pbrData.baseColorFactor.w() });
+        // if (material.pbrData.baseColorTexture.has_value()) {
+        //     auto& albedoMap = material.pbrData.baseColorTexture;
+        //     tabbyMaterial->SetAlbedoMap(m_Images[albedoMap->texCoordIndex]);
+        //     tabbyMaterial->SetAlbedoMapOffset({ albedoMap->transform->uvOffset.x(), albedoMap->transform->uvOffset.y() });
+        //     tabbyMaterial->SetAlbedoMapTiling({ albedoMap->transform->uvScale.x(), albedoMap->transform->uvScale.y() });
+        //     // albedoMap->transform->texCoordIndex
+        // }
+        //
+        // if (material.normalTexture.has_value())
+        //     tabbyMaterial->SetNormalMap(m_Images[material.normalTexture->textureIndex]);
+        //
+        // if (material.pbrData.metallicRoughnessTexture.has_value())
+        //     tabbyMaterial->SetMetallicMap(m_Images[material.pbrData.metallicRoughnessTexture->textureIndex]);
+        //
+        // if (material.occlusionTexture.has_value())
+        //     tabbyMaterial->SetAmbientOcclusionMap(m_Images[material.occlusionTexture->textureIndex]);
     }
 }
 
-void GLTF::BindMesh(tinygltf::Mesh& mesh)
+void GLTF::LoadMeshes()
 {
-    for (size_t i = 0; i < m_Model.bufferViews.size(); i++) {
-        const tinygltf::BufferView& bufferView = m_Model.bufferViews[i];
-        if (bufferView.target == 0) {
-            continue;
-        }
+    for (auto& mesh : m_Asset.meshes) {
+        // auto tabbyMesh = m_Meshes.p;
 
-        const tinygltf::Buffer& buffer = m_Model.buffers[bufferView.buffer];
-        // m_IndexBuffers[i] = IndexBuffer::Create(reinterpret_cast<const uint32_t*>(&buffer.data.at(0) + bufferView.byteOffset), bufferView.byteLength / sizeof(uint32_t));
-        m_IndexBuffers[i] = IndexBuffer::Create((uint32_t*)(&buffer.data.at(0) + bufferView.byteOffset), bufferView.byteLength);
-    }
+        for (auto it = mesh.primitives.begin(); it != mesh.primitives.end(); ++it) {
 
-    for (size_t i = 0; i < mesh.primitives.size(); i++) {
-        tinygltf::Primitive primitive = mesh.primitives[i];
-        tinygltf::Accessor indexAccessor = m_Model.accessors[primitive.indices];
+            auto tabbyMesh = CreateShared<Mesh>();
+            tabbyMesh->SetName(mesh.name.c_str());
+            auto* positionIt = it->findAttribute("POSITION");
+            TB_CORE_ASSERT(positionIt != it->attributes.end()); // A mesh primitive is required to hold the POSITION attribute.
+            TB_CORE_ASSERT(it->indicesAccessor.has_value()); // We specify GenerateMeshIndices, so we should always have indices
 
-        for (auto& attrib : primitive.attributes) {
-            tinygltf::Accessor accessor = m_Model.accessors[attrib.second];
-            int byteStride = accessor.ByteStride(m_Model.bufferViews[accessor.bufferView]);
-            m_IndexBuffers[accessor.bufferView]->Bind();
+            auto index = std::distance(mesh.primitives.begin(), it);
+            // auto& primitive = .primitives[index];
+            tabbyMesh->SetPrimitiveType((Mesh::PrimitiveType)fastgltf::to_underlying(it->type));
 
-            int size = 1;
-            if (accessor.type != TINYGLTF_TYPE_SCALAR)
-                size = accessor.type;
+            std::size_t materialUniformsIndex;
+            std::size_t baseColorTexcoordIndex;
+            Shared<Material> tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gl33/Renderer3D_MeshUnlit.glsl");
 
-            // static ShaderDataType OpenGLBaseTypeToShaderDataType(int type)
-            // {
-            //     switch (type) {
-            //     case GL_FLOAT:
-            //         return ShaderDataType::Float;
-            //     case GL_INT:
-            //         return ShaderDataType::Int;
-            //     case GL_BOOL:
-            //         return ShaderDataType::Bool;
-            //     }
-            //
-            //     TB_CORE_ASSERT(false, "Unknown ShaderDataType!");
-            //     return ShaderDataType::Int;
-            // }
+            if (it->materialIndex.has_value()) {
+                materialUniformsIndex = it->materialIndex.value() + 1; // Adjust for default material
+                auto& material = m_Asset.materials[it->materialIndex.value()];
 
-            // glEnableVertexAttribArray(attribLocation);
-            // glVertexAttribPointer(attribLocation, accessor.type, accessor.componentType,
-            //     accessor.normalized ? GL_TRUE : GL_FALSE,
-            //     accessor.ByteStride(bufferView), BUFFER_OFFSET(accessor.byteOffset));
-            int attribute = -1;
-            if (attrib.first.compare("POSITION") == 0)
-                m_BufferElements[0] = { GLTFTypeToShaderDataType(accessor.componentType), "o_Position", accessor.normalized };
-            if (attrib.first.compare("TEXCOORD_0") == 0)
-                m_BufferElements[1] = { GLTFTypeToShaderDataType(accessor.componentType), "a_TexCoord", accessor.normalized };
-            if (attrib.first.compare("NORMAL") == 0)
-                m_BufferElements[2] = { GLTFTypeToShaderDataType(accessor.componentType), "o_Normal", accessor.normalized };
-            // if (attribute > 0) {
-            //     // layout(location = 0) in vec3 a_Position;
-            //     // layout(location = 1) in vec2 a_TexCoord;
-            //     // layout(location = 2) in vec3 a_Normal;
-            //
-            //     elements[attribute] =
-            // }
+                auto& baseColorTexture = material.pbrData.baseColorTexture;
+                if (baseColorTexture.has_value()) {
+                    auto& texture = m_Asset.textures[baseColorTexture->textureIndex];
+                    if (!texture.imageIndex.has_value())
+                        return; // Huh?
+
+                    tabbyMaterial->SetAlbedoMap(m_Images[texture.imageIndex.value()]);
+
+                    if (baseColorTexture->transform && baseColorTexture->transform->texCoordIndex.has_value()) {
+                        baseColorTexcoordIndex = baseColorTexture->transform->texCoordIndex.value();
+                    } else {
+                        baseColorTexcoordIndex = material.pbrData.baseColorTexture->texCoordIndex;
+                    }
+                }
+            } else {
+                materialUniformsIndex = 0;
+            }
+
+            std::vector<Mesh::Vertex> meshVertices;
+            {
+                // Position
+                auto& positionAccessor = m_Asset.accessors[positionIt->second];
+                if (!positionAccessor.bufferViewIndex.has_value())
+                    continue;
+
+                meshVertices.resize(positionAccessor.count);
+
+                fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec3>(m_Asset, positionAccessor, [&](fastgltf::math::fvec3 pos, std::size_t idx) {
+                    meshVertices[idx].Position = glm::vec4(pos.x(), pos.y(), pos.z(), 0.0f);
+                    meshVertices[idx].TexCoords = glm::vec2();
+                });
+            }
+
+            auto texcoordAttribute = std::string("TEXCOORD_") + std::to_string(baseColorTexcoordIndex);
+            if (const auto* texcoord = it->findAttribute(texcoordAttribute); texcoord != it->attributes.end()) {
+                // Tex coord
+                auto& texCoordAccessor = m_Asset.accessors[texcoord->second];
+                if (!texCoordAccessor.bufferViewIndex.has_value())
+                    continue;
+
+                fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec2>(m_Asset, texCoordAccessor, [&](fastgltf::math::fvec2 uv, std::size_t idx) {
+                    meshVertices[idx].TexCoords = glm::vec2(uv.x(), uv.y());
+                });
+            }
+
+            auto& indexAccessor = m_Asset.accessors[it->indicesAccessor.value()];
+            if (!indexAccessor.bufferViewIndex.has_value())
+                return;
+            std::vector<uint32_t> meshIndices(indexAccessor.count);
+
+            fastgltf::copyFromAccessor<std::uint32_t>(m_Asset, indexAccessor, (std::uint32_t*)meshIndices.data());
+
+            tabbyMesh->SetMaterial(tabbyMaterial);
+            tabbyMesh->SetVertices(meshVertices);
+            tabbyMesh->SetIndices(meshIndices);
+
+            tabbyMesh->Create();
+            m_Meshes.push_back(tabbyMesh);
         }
     }
 }
 
 void GLTF::Draw()
 {
-    const tinygltf::Scene& scene = m_Model.scenes[m_Model.defaultScene];
-    for (int i = 0; i < scene.nodes.size(); i++) {
-        DrawNode(m_Model.nodes[scene.nodes[i]]);
+    for (auto mesh : m_Meshes) {
+        mesh->Render();
     }
 }
-
-void GLTF::DrawNode(tinygltf::Node& node)
-{
-    if ((node.mesh >= 0) && (node.mesh < m_Model.meshes.size())) {
-        DrawMesh(m_Model.meshes[node.mesh]);
-    }
-    for (size_t i = 0; i < node.children.size(); i++) {
-        DrawNode(m_Model.nodes[node.children[i]]);
-    }
-}
-
-void GLTF::DrawMesh(tinygltf::Mesh& mesh)
-{
-    for (size_t i = 0; i < mesh.primitives.size(); ++i) {
-        tinygltf::Primitive primitive = mesh.primitives[i];
-        tinygltf::Accessor indexAccessor = m_Model.accessors[primitive.indices];
-
-        m_IndexBuffers.at(indexAccessor.bufferView)->Bind();
-        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebos.at(indexAccessor.bufferView));
-
-        // glDrawElements(primitive.mode, indexAccessor.count,
-        //     indexAccessor.componentType,
-        //     ((char*)NULL + indexAccessor.byteOffset));
-    }
-}
-
 }

@@ -15,7 +15,7 @@ namespace Tabby {
 OpenGL33Context::OpenGL33Context(SDL_Window* windowHandle)
     : m_WindowHandle(windowHandle)
 {
-    TB_CORE_ASSERT(windowHandle, "Window handle is null!")
+    TB_CORE_ASSERT_TAGGED(windowHandle, "Window handle is null!");
 }
 
 void OpenGL33Context::Init()
@@ -26,10 +26,10 @@ void OpenGL33Context::Init()
     SDL_GL_MakeCurrent(m_WindowHandle, windowContext);
 
     GladGLContext* context = (GladGLContext*)calloc(1, sizeof(GladGLContext));
-    TB_CORE_ASSERT(context, "Failed to initialize GL33 context!");
+    TB_CORE_ASSERT_TAGGED(context, "Failed to initialize GL33 context!");
 
     int status = gladLoadGLContext(context, (GLADloadfunc)SDL_GL_GetProcAddress);
-    TB_CORE_ASSERT(status, "Failed to initialize Glad!");
+    TB_CORE_ASSERT_TAGGED(status, "Failed to initialize Glad!");
 
     GL33::Init(context);
 
@@ -46,7 +46,7 @@ void OpenGL33Context::Init()
     int major = std::stoi(version.substr(0, dotPosition));
     int minor = std::stoi(version.substr(dotPosition + 1));
 
-    TB_CORE_ASSERT(major > 3 || (major == 3 && minor >= 3), "Tabby requires at least OpenGL version 3.3!");
+    TB_CORE_ASSERT_TAGGED(major > 3 || (major == 3 && minor >= 3), "Tabby requires at least OpenGL version 3.3!");
 }
 
 void OpenGL33Context::SwapBuffers()

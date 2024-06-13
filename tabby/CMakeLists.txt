@@ -29,7 +29,6 @@ set(STB "${PROJECT_VENDOR_DIR}/stb")
 set(SPDLOG "${PROJECT_VENDOR_DIR}/spdlog")
 set(MSDF-ATLAS-GEN "${PROJECT_VENDOR_DIR}/msdf-atlas-gen")
 set(YAML-CPP "${PROJECT_VENDOR_DIR}/yaml-cpp")
-# set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
 set(BOX2C "${PROJECT_VENDOR_DIR}/box2c")
 set(ENTT "${PROJECT_VENDOR_DIR}/entt")
 set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
@@ -38,7 +37,7 @@ set(TRACY "${PROJECT_VENDOR_DIR}/tracy")
 set(OPENLAL "${PROJECT_VENDOR_DIR}/openal-soft")
 set(LIBSNDFILE "${PROJECT_VENDOR_DIR}/libsndfile")
 set(TINYOBJLOADER "${PROJECT_VENDOR_DIR}/tinyobjloader")
-set(TINYGLTF "${PROJECT_VENDOR_DIR}/tinygltf")
+set(FASTGLTF "${PROJECT_VENDOR_DIR}/fastgltf")
 
 # ##############################################################################
 # Project executable setup
@@ -58,8 +57,6 @@ list(APPEND PROJECT_SOURCES
         "${SDL2}/include/SDL.h"
         "${TINYOBJLOADER}/tiny_obj_loader.cc"
         "${TINYOBJLOADER}/tiny_obj_loader.h"
-        "${TINYGLTF}/tiny_gltf.h"
-        "${TINYGLTF}/tiny_gltf.cpp"
         )
 
 
@@ -74,7 +71,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${OPENLAL}/include
         ${LIBSNDFILE}/include
         ${BOX2C}/include
-        # ${ASSIMP}/include
+        ${FASTGLTF}/include
         )
 
 include_directories(SYSTEM src)
@@ -84,9 +81,7 @@ include_directories(${STB})
 include_directories(${SDL2_INCLUDE_DIRS})
 
 include_directories(${MSDF-ATLAS-GEN}/msdf-atlas-gen)
-if (NOT EMSCRIPTEN AND NOT ANDROID)
-    include_directories(${TRACY})
-endif()
+include_directories(${TRACY})
 
 # ####################
 # Add Subdirectories
@@ -102,9 +97,7 @@ set(MSDFGEN_DISABLE_SVG ON CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 set(MSDFGEN_DISABLE_PNG ON CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
 
 add_subdirectory(${MSDF-ATLAS-GEN} EXCLUDE_FROM_ALL)
-if (NOT EMSCRIPTEN AND NOT ANDROID)
-    add_subdirectory(${TRACY})
-endif()
+add_subdirectory(${TRACY})
 add_subdirectory(${YAML-CPP})
 add_subdirectory(${SPDLOG})
 
@@ -118,6 +111,7 @@ add_subdirectory(${IMGUI})
 add_subdirectory(${IMGUIZMO})
 
 add_subdirectory(${LIBSNDFILE})
+add_subdirectory(${FASTGLTF})
 
 if (WIN32)
 
@@ -143,6 +137,7 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
     message(STATUS "Generating scripts for Linux")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         imgui
+        fastgltf
         box2d
         spdlog
         SDL2::SDL2-static
@@ -198,12 +193,7 @@ elseif (ANDROID)
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    if(EMSCRIPTEN)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_PROFILE=1")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTRACY_ENABLE=1 -DTB_DEBUG=1 -DTB_PROFILE=1")
-    endif()
-    target_compile_definitions(${PROJECT_NAME} PUBLIC TRACY_ENABLE=1 )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_DEBUG=1")
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")

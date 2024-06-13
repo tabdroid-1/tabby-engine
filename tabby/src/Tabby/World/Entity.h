@@ -16,7 +16,7 @@ public:
     template <typename T, typename... Args>
     T& AddComponent(Args&&... args)
     {
-        TB_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
+        TB_CORE_ASSERT_TAGGED(!HasComponent<T>(), "Entity already has component!");
         T& component = World::GetRegistry().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
         World::OnComponentAdded<T>(*this, component);
 
@@ -34,7 +34,7 @@ public:
     template <typename T>
     T& GetComponent()
     {
-        TB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+        TB_CORE_ASSERT_TAGGED(HasComponent<T>(), "Entity does not have component!");
         return World::GetRegistry().get<T>(m_EntityHandle);
     }
 
@@ -47,7 +47,7 @@ public:
     template <typename T>
     void RemoveComponent()
     {
-        TB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+        TB_CORE_ASSERT_TAGGED(HasComponent<T>(), "Entity does not have component!");
         World::GetRegistry().remove<T>(m_EntityHandle);
     }
 

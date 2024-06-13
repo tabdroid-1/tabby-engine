@@ -14,7 +14,7 @@ Application::Application(const ApplicationSpecification& specification)
 {
     TB_PROFILE_SCOPE();
 
-    TB_CORE_ASSERT(!s_Instance, "Application already exists!");
+    TB_CORE_ASSERT_TAGGED(!s_Instance, "Application already exists!");
     s_Instance = this;
 
     if (!m_Specification.WorkingDirectory.empty())

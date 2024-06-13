@@ -33,7 +33,7 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
         return GL_BOOL;
     }
 
-    TB_CORE_ASSERT(false, "Unknown ShaderDataType!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown ShaderDataType!");
     return 0;
 }
 
@@ -69,7 +69,7 @@ void OpenGLES3VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuf
 {
     // TB_PROFILE_FUNCTION();
 
-    TB_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+    TB_CORE_ASSERT_TAGGED(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
     GLES3::GL()->BindVertexArray(m_RendererID);
     vertexBuffer->Bind();
@@ -122,7 +122,7 @@ void OpenGLES3VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuf
             break;
         }
         default:
-            TB_CORE_ASSERT(false, "Unknown ShaderDataType!");
+            TB_CORE_ASSERT_TAGGED(false, "Unknown ShaderDataType!");
         }
     }
 

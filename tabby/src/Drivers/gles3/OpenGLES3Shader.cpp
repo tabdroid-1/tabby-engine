@@ -20,7 +20,7 @@ static GLenum ShaderTypeFromString(const std::string& type)
         return GL_VERTEX_SHADER;
     if (type == "fragment" || type == "pixel")
         return GL_FRAGMENT_SHADER;
-    TB_CORE_ASSERT(false, "unknown shader type");
+    TB_CORE_ASSERT_TAGGED(false, "unknown shader type");
     return 0;
 }
 
@@ -70,7 +70,7 @@ std::unordered_map<GLenum, std::string> OpenGLES3Shader::PreProcess(const std::s
     size_t pos = source.find(typeToken, 0);
     while (pos != std::string::npos) {
         size_t eol = source.find_first_of("\r\n", pos);
-        TB_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+        TB_CORE_ASSERT_TAGGED(eol != std::string::npos, "Syntax error");
         size_t begin = pos + typeTokenLength + 1;
         std::string type = source.substr(begin, eol - begin);
 
@@ -131,7 +131,7 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
     TB_PROFILE_SCOPE();
 
     GLuint program = GLES3::GL()->CreateProgram();
-    TB_CORE_ASSERT(shaderSource.size() <= 2, "Only 3 shaders are supported");
+    TB_CORE_ASSERT_TAGGED(shaderSource.size() <= 2, "Only 3 shaders are supported");
     std::array<GLenum, 3> glShaderIDs;
     int glShaderIDIndex = 0;
     for (auto& kv_pair : shaderSource) {
@@ -159,7 +159,7 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
 
             TB_CORE_ERROR("Shader compilation error for {0}!", shaderInfo);
             TB_CORE_ERROR("{0}", infoLog.data());
-            TB_CORE_ASSERT(false, "Shader compilation issue");
+            TB_CORE_ASSERT_TAGGED(false, "Shader compilation issue");
 
             break;
         }
@@ -186,7 +186,7 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
 
         TB_CORE_ERROR("Linking shader error for {0}!", shaderInfo);
         TB_CORE_ERROR("{0}", infoLog.data());
-        TB_CORE_ASSERT(false, "Shader linking issue");
+        TB_CORE_ASSERT_TAGGED(false, "Shader linking issue");
         return;
     }
     for (auto id : glShaderIDs)
@@ -209,6 +209,14 @@ void OpenGLES3Shader::Unbind() const
     GLES3::GL()->UseProgram(0);
 }
 
+void OpenGLES3Shader::SetBool(const std::string& name, bool value)
+{
+    TB_PROFILE_SCOPE_NAME("Set bool");
+
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->Uniform1i(location, (int)value);
+}
+
 void OpenGLES3Shader::SetInt(const std::string& name, int value)
 {
     TB_PROFILE_SCOPE();
@@ -219,6 +227,14 @@ void OpenGLES3Shader::SetInt(const std::string& name, int value)
 void OpenGLES3Shader::SetIntArray(const std::string& name, int* values, uint32_t count)
 {
     UploadUniformIntArray(name, values, count);
+}
+
+void OpenGLES3Shader::SetFloatArray(const std::string& name, float* values, uint32_t count)
+{
+    TB_PROFILE_SCOPE_NAME("Set int array");
+
+    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GLES3::GL()->Uniform1fv(location, count, values);
 }
 
 void OpenGLES3Shader::SetFloat(const std::string& name, float value)

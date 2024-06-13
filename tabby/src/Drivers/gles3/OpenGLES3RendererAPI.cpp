@@ -77,4 +77,23 @@ void OpenGLES3RendererAPI::SetLineWidth(float width)
     GLES3::GL()->LineWidth(width);
 }
 
+void OpenGLES3RendererAPI::EnableDepthTest(bool enable)
+{
+    if (enable) {
+        GLES3::GL()->Enable(GL_DEPTH_TEST);
+    } else {
+        GLES3::GL()->Disable(GL_DEPTH_TEST);
+    }
+}
+
+void OpenGLES3RendererAPI::EnableAlphaBlending(bool enable)
+{
+    if (enable) {
+        GLES3::GL()->Enable(GL_BLEND);
+        GLES3::GL()->BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+        GLES3::GL()->Disable(GL_BLEND);
+    }
+}
+
 }

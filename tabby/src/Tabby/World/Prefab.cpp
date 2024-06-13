@@ -43,7 +43,7 @@ std::vector<uint8_t> Prefab::SerializePrefab(Shared<Prefab> prefab)
     return buffer;
 }
 
-Shared<Prefab> Prefab::DeserializePrefab(const std::vector<uint8_t>& data)
+Shared<Prefab> Prefab::DeserializePrefab(AssetHandle handle, const std::vector<uint8_t>& data)
 {
     // Shared<Prefab> prefab = CreateShared<Prefab>(UUID());
     //
@@ -60,7 +60,7 @@ Shared<Prefab> Prefab::DeserializePrefab(const std::vector<uint8_t>& data)
         throw std::runtime_error("Insufficient data to deserialize Prefab");
     }
 
-    Shared<Prefab> prefab = CreateShared<Prefab>(UUID());
+    Shared<Prefab> prefab = CreateShared<Prefab>(handle);
 
     size_t offset = 0;
 
@@ -318,4 +318,3 @@ Entity Prefab::CreateEntityFromPrefab(EntityData entityData) const
 }
 
 }
-        

@@ -12,7 +12,7 @@ Shared<VertexBuffer> VertexBuffer::Create(uint32_t size)
 {
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
-        TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+        TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33VertexBuffer>(size);
@@ -20,7 +20,7 @@ Shared<VertexBuffer> VertexBuffer::Create(uint32_t size)
         return CreateShared<OpenGLES3VertexBuffer>(size);
     }
 
-    TB_CORE_ASSERT(false, "Unknown RendererAPI!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown RendererAPI!");
     return nullptr;
 }
 
@@ -28,7 +28,7 @@ Shared<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
 {
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
-        TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+        TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33VertexBuffer>(vertices, size);
@@ -36,7 +36,7 @@ Shared<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
         return CreateShared<OpenGLES3VertexBuffer>(vertices, size);
     }
 
-    TB_CORE_ASSERT(false, "Unknown RendererAPI!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown RendererAPI!");
     return nullptr;
 }
 
@@ -44,7 +44,7 @@ Shared<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
 {
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
-        TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+        TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33IndexBuffer>(indices, size);
@@ -52,7 +52,7 @@ Shared<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
         return CreateShared<OpenGLES3IndexBuffer>(indices, size);
     }
 
-    TB_CORE_ASSERT(false, "Unknown RendererAPI!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown RendererAPI!");
     return nullptr;
 }
 

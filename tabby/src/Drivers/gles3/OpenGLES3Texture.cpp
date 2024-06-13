@@ -86,7 +86,7 @@ void OpenGLES3Texture::SetData(Buffer data)
     // TB_PROFILE_FUNCTION();
 
     uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-    TB_CORE_ASSERT(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
+    TB_CORE_ASSERT_TAGGED(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
 
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
     GLES3::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);

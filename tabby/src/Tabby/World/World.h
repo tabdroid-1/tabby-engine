@@ -8,6 +8,7 @@
 namespace Tabby {
 
 class Entity;
+class GLTF;
 
 class World {
 

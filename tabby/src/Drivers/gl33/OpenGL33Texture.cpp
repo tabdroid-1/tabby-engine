@@ -14,6 +14,8 @@ namespace Utils {
             return GL_RGB;
         case ImageFormat::RGBA8:
             return GL_RGBA;
+        case ImageFormat::RGBA32_UNORM:
+            return GL_RGB32UI;
         }
 
         TB_CORE_ASSERT(false);
@@ -27,6 +29,8 @@ namespace Utils {
             return GL_RGB8;
         case ImageFormat::RGBA8:
             return GL_RGBA8;
+        case ImageFormat::RGBA32_UNORM:
+            return GL_RGB32UI;
         }
 
         TB_CORE_ASSERT(false);
@@ -83,8 +87,8 @@ void OpenGL33Texture::SetData(Buffer data)
 {
     TB_PROFILE_SCOPE_NAME("(Texture) Set data");
 
-    uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-    TB_CORE_ASSERT(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
+    // uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
+    // TB_CORE_ASSERT_TAGGED(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
 
     GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
     GL33::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);

@@ -57,7 +57,7 @@ namespace Audio {
             throw std::runtime_error(err_msg_stream.str());
         }
 
-        // TB_CORE_ASSERT(!error_found);
+        // TB_CORE_ASSERT_TAGGED(!error_found);
     }
 
     void FetchALCErrors(ALCdevice* device, const std::filesystem::path& file, int line)
@@ -101,24 +101,24 @@ namespace Audio {
             throw std::runtime_error(err_msg_stream.str());
         }
 
-        // TB_CORE_ASSERT(!error_found);
+        // TB_CORE_ASSERT_TAGGED(!error_found);
     }
 
     Engine::Engine()
     {
-        TB_CORE_ASSERT(!s_Instance, "Audio Engine instance already created!");
+        TB_CORE_ASSERT_TAGGED(!s_Instance, "Audio Engine instance already created!");
         s_Instance = this;
 
         m_AlcDevice = alcOpenDevice(nullptr);
         CHECK_ALC_ERRORS(m_AlcDevice);
-        TB_CORE_ASSERT(m_AlcDevice, "alcOpenDevice: Unable to create OpenAL device");
+        TB_CORE_ASSERT_TAGGED(m_AlcDevice, "alcOpenDevice: Unable to create OpenAL device");
 
         m_AlcContext = alcCreateContext(m_AlcDevice, nullptr);
         CHECK_ALC_ERRORS(m_AlcDevice);
-        TB_CORE_ASSERT(m_AlcContext, "alcCreateContext: Unable to create OpenAL context");
+        TB_CORE_ASSERT_TAGGED(m_AlcContext, "alcCreateContext: Unable to create OpenAL context");
 
         if (!alcMakeContextCurrent(m_AlcContext))
-            TB_CORE_ASSERT(false, "alcMakeCurrentContext: Could not set OpenAL context to current context");
+            TB_CORE_ASSERT_TAGGED(false, "alcMakeCurrentContext: Could not set OpenAL context to current context");
         CHECK_ALC_ERRORS(m_AlcDevice);
 
         alListenerf(AL_GAIN, 0.50f);
@@ -539,13 +539,13 @@ namespace Audio {
         sndFile = sf_open(sfxFileName.c_str(), SFM_READ, &sfinfo);
         if (!sndFile) {
 
-            TB_CORE_ASSERT(false, "Could not open audio file");
+            TB_CORE_ASSERT_TAGGED(false, "Could not open audio file");
         }
 
         // verify file has valid data
         if (sfinfo.frames < 1 || sfinfo.frames > (sf_count_t)(INT_MAX / sizeof(short)) / sfinfo.channels) {
             sf_close(sndFile);
-            TB_CORE_ASSERT(false, "Audio file produced invalid data");
+            TB_CORE_ASSERT_TAGGED(false, "Audio file produced invalid data");
         }
 
         duration = float((float)sfinfo.frames / (float)sfinfo.samplerate);
@@ -568,7 +568,7 @@ namespace Audio {
         if (!format) {
 
             sf_close(sndFile);
-            TB_CORE_ASSERT(false, "Unsuported channel count/format");
+            TB_CORE_ASSERT_TAGGED(false, "Unsuported channel count/format");
         }
 
         // decode the audio file into a buffer
@@ -578,7 +578,7 @@ namespace Audio {
         if (num_frames < 1) {
             free(membuf);
             sf_close(sndFile);
-            TB_CORE_ASSERT(false, "Failed to read samples in audio file");
+            TB_CORE_ASSERT_TAGGED(false, "Failed to read samples in audio file");
         }
 
         num_bytes = (ALsizei)(num_frames * sfinfo.channels) * (ALsizei)sizeof(short);

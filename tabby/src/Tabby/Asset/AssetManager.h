@@ -28,7 +28,6 @@ public:
     auto* GetAssetRegistry() const { return &m_AssetRegistry; }
 
 private:
-    AssetHandle ImportImage(std::filesystem::path path, AssetHandle handle);
     AssetHandle ImportMeshSource(std::filesystem::path path, AssetHandle handle);
     AssetHandle ImportImageSource(std::filesystem::path path, AssetHandle handle);
     AssetHandle ImportFontSource(std::filesystem::path path, AssetHandle handle);

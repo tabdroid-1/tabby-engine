@@ -25,6 +25,25 @@ enum class ImageUsage : uint8_t {
     RENDER_TARGET,
     DEPTH_BUFFER
 };
+// enum class ImageFormat : uint8_t {
+//     R8,
+//     RB16,
+//     RGB24,
+//     RGBA32_SRGB,
+//     RGBA32_UNORM,
+//     BGRA32_SRGB,
+//     BGRA32_UNORM,
+//     RGB32_HDR,
+//     RGBA64_HDR,
+//     RGBA128_HDR,
+//     D32,
+//     BC1,
+//     BC5,
+//     BC6h,
+//     BC7,
+//     RGBA64_SFLOAT,
+//     RGB24_UNORM
+// };
 
 enum class ImageFormat : uint8_t {
     None = 0,

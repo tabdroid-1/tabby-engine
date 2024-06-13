@@ -394,8 +394,15 @@ struct TextComponent {
     int renderOrder = 0;
 };
 
+class GLTF;
+
+struct GLTFComponent {
+    Shared<GLTF> m_GLTF;
+};
+
 template <typename... Component>
-struct ComponentGroup { };
+struct ComponentGroup {
+};
 
 using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
     CircleRendererComponent, CameraComponent, SoundComponent, HierarchyNodeComponent, NativeScriptComponent,
