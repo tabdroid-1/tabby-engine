@@ -10,7 +10,7 @@ GladGLContext* GL33::gl = nullptr;
 
 GL33::GL33()
 {
-    TB_CORE_ASSERT(!s_Instance, "GL33 context already exists!");
+    TB_CORE_ASSERT_TAGGED(!s_Instance, "GL33 context already exists!");
     s_Instance = this;
 }
 

@@ -36,7 +36,9 @@ void Base::OnAttach()
 
     {
         auto cameraEntity = Tabby::World::CreateEntity("cameraEntity");
-        cameraEntity.AddComponent<Tabby::CameraComponent>();
+        auto cc = cameraEntity.AddComponent<Tabby::CameraComponent>();
+        cc.Camera.SetPerspectiveFarClip(10000);
+        cc.Camera.SetPerspectiveNearClip(0);
     }
 
     {
@@ -59,6 +61,14 @@ void Base::OnAttach()
         DynamicEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3;
     }
 
+    {
+        auto GLTFEntity = Tabby::World::CreateEntity("GLTFEntity");
+        auto& GLTFComponent = GLTFEntity.AddComponent<Tabby::GLTFComponent>();
+        GLTFComponent.m_GLTF = Tabby::CreateShared<Tabby::GLTF>("scenes/sponza/Sponza.gltf");
+
+        // DynamicEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3;
+    }
+
     // Tabby::Shared<Tabby::Prefab> prefab = Tabby::CreateShared<Tabby::ExamplePrefab>();
     // prefab->Instantiate();
 
@@ -67,15 +77,13 @@ void Base::OnAttach()
     // deserializedPrefab->Instantiate();
 
     // Export Prefab
-    Tabby::Shared<Tabby::Prefab> createdPrefab = Tabby::CreateShared<Tabby::ExamplePrefab>();
+    Tabby::Shared<Tabby::Prefab> createdPrefab = Tabby::CreateShared<Tabby::ExamplePrefab>(Tabby::UUID());
     Tabby::Prefab::SerializePrefabToFile(createdPrefab, "prefabs/ExamplePrefab.tbpf");
 
     // Import Prefab
     Tabby::AssetHandle exportedPrefabHande = Tabby::AssetManager::Get()->LoadAssetSource("prefabs/ExamplePrefab.tbpf", exportedPrefabHande);
     Tabby::Shared<Tabby::Prefab> exportedPrefab = Tabby::AssetManager::Get()->GetAsset<Tabby::Prefab>(exportedPrefabHande);
     exportedPrefab->Instantiate();
-
-    Tabby::GLTF testGlTF("scenes/sponza/Sponza.gltf");
 }
 
 void Base::OnDetach()

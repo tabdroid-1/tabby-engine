@@ -20,7 +20,7 @@ public:
     Entity Instantiate() const;
 
     static std::vector<uint8_t> SerializePrefab(Shared<Prefab> prefab);
-    static Shared<Prefab> DeserializePrefab(const std::vector<uint8_t>& data);
+    static Shared<Prefab> DeserializePrefab(AssetHandle handle, const std::vector<uint8_t>& data);
 
     static void SerializePrefabToFile(Shared<Prefab> prefab, const std::string& filePath);
 

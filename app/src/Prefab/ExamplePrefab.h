@@ -7,8 +7,8 @@ namespace Tabby {
 
 class ExamplePrefab : public Prefab {
 public:
-    ExamplePrefab()
-        : Prefab(UUID())
+    ExamplePrefab(AssetHandle handle)
+        : Prefab(handle)
     {
         EntityData& rootEntity = GetRootEntity();
 

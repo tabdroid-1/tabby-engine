@@ -153,7 +153,7 @@ void OpenGLES3Framebuffer::Invalidate()
     // }
 
     if (m_ColorAttachments.size() > 1) {
-        TB_CORE_ASSERT(m_ColorAttachments.size() <= 4, "There should be <4 color attachments in framebuffers");
+        TB_CORE_ASSERT_TAGGED(m_ColorAttachments.size() <= 4, "There should be <4 color attachments in framebuffers");
         GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
         GLES3::GL()->DrawBuffers(m_ColorAttachments.size(), buffers);
     } else if (m_ColorAttachments.empty()) {

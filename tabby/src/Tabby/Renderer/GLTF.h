@@ -1,41 +1,50 @@
 #pragma once
 
-// #include <Tabby/Renderer/Buffer.h>
-// #include <Tabby/Renderer/VertexArray.h>
+#include <Tabby/Asset/AssetManager.h>
 
-#include <tinygltf/tiny_gltf.h>
+#include <fastgltf/core.hpp>
 
 namespace Tabby {
 
-class VertexArray;
-class VertexBuffer;
-class IndexBuffer;
-struct BufferElement;
+class Mesh;
+class Texture;
+// class Material;
 
 class GLTF {
 public:
-    GLTF(const std::string& filePath);
+    GLTF(const std::filesystem::path& filePath);
 
     void Draw();
 
-private:
-    void Initialize();
-    void BindModelNodes(tinygltf::Node& node);
-    void BindMesh(tinygltf::Mesh& mesh);
-
-    void DrawNode(tinygltf::Node& nodes);
-    void DrawMesh(tinygltf::Mesh& mesh);
+    std::vector<Shared<Mesh>> m_Meshes;
 
 private:
-    // TODO: Move this to asset manager
-    static tinygltf::TinyGLTF m_Loader;
+    void LoadImages();
+    void LoadMaterials();
+    void LoadMeshes();
+    void LoadCamera();
 
-    tinygltf::Model m_Model;
-    Shared<VertexArray> m_VertexArray;
-    Shared<VertexBuffer> m_VertexBuffer;
-    std::unordered_map<int, Shared<IndexBuffer>> m_IndexBuffers;
+    enum MaterialUniformFlags : std::uint32_t {
+        None = 0 << 0,
+        HasAlbedoMap = 1 << 0,
+        HasNormalMap = 2 << 0,
+        HasRoughnessMap = 3 << 0,
+        HasOcclusionMap = 4 << 0,
+    };
 
-    std::vector<BufferElement> m_BufferElements;
+    struct MaterialUniforms {
+        Vector4 baseColorFactor;
+        float alphaCutoff = 0.f;
+        uint32_t flags = 0;
+
+        Vector2 padding;
+    };
+
+private:
+    fastgltf::Asset m_Asset;
+    std::vector<Shared<Texture>> m_Images;
+    std::vector<MaterialUniforms> m_Materials;
+    // std::vector<Shared<Material>> m_Materials;
 };
 
 }

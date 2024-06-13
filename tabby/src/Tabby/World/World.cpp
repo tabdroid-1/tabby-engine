@@ -14,6 +14,8 @@
 // #include <Tabby/Debug/Debug.h>
 
 #include <Tabby/World/Prefab.h>
+#include <Tabby/Renderer/GLTF.h>
+#include <Tabby/Renderer/Mesh.h>
 
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
@@ -28,7 +30,7 @@ entt::registry World::m_EntityRegistry;
 
 World::World()
 {
-    TB_CORE_ASSERT(!s_Instance, "Scene State Machine already exists!");
+    TB_CORE_ASSERT_TAGGED(!s_Instance, "World already exists!");
     s_Instance = this;
 }
 
@@ -408,6 +410,20 @@ void World::Update(Timestep ts)
             }
         }
 
+        // Draw circles
+        {
+            TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene::RenderGLTF");
+            auto view = GetRegistry().view<TransformComponent, GLTFComponent>();
+            for (auto entity : view) {
+                auto [transform, gltf] = view.get<TransformComponent, GLTFComponent>(entity);
+
+                for (auto mesh : gltf.m_GLTF->m_Meshes) {
+                    mesh->SetTransform(transform.GetTransform());
+                }
+                gltf.m_GLTF->Draw();
+            }
+        }
+
         // Draw text
         {
             TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene::RenderText");
@@ -642,6 +658,11 @@ void World::OnComponentAdded<SegmentCollider2DComponent>(Entity entity, SegmentC
 
 template <>
 void World::OnComponentAdded<TextComponent>(Entity entity, TextComponent& component)
+{
+}
+
+template <>
+void World::OnComponentAdded<GLTFComponent>(Entity entity, GLTFComponent& component)
 {
 }
 

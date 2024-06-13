@@ -12,7 +12,7 @@ namespace Tabby {
 
 AssetManager::AssetManager()
 {
-    TB_CORE_ASSERT(!s_Instance, "AssetManager already Initialized!");
+    TB_CORE_ASSERT_TAGGED(!s_Instance, "AssetManager already Initialized!");
     s_Instance = this;
 
     stbi_set_flip_vertically_on_load(true);
@@ -80,7 +80,7 @@ AssetHandle AssetManager::RegisterAsset(Shared<AssetBase> asset, const AssetHand
 
 AssetHandle AssetManager::ImportMeshSource(std::filesystem::path path, AssetHandle handle)
 {
-    TB_CORE_ASSERT(false, "Not implemented");
+    TB_CORE_ASSERT_TAGGED(false, "Not implemented");
 
     return 0;
 }
@@ -281,7 +281,7 @@ AssetHandle AssetManager::ImportPrefabSource(std::filesystem::path path, AssetHa
 #endif
     }
 
-    Shared<Prefab> prefab = Prefab::DeserializePrefab(data);
+    Shared<Prefab> prefab = Prefab::DeserializePrefab(handle, data);
 
     m_AssetRegistry.emplace(prefab->Handle, prefab);
     m_UUIDs.emplace(path.string(), prefab->Handle);

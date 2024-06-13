@@ -51,4 +51,23 @@ void OpenGL33RendererAPI::SetLineWidth(float width)
     GL33::GL()->LineWidth(width);
 }
 
+void OpenGL33RendererAPI::EnableDepthTest(bool enable)
+{
+    if (enable) {
+        GL33::GL()->Enable(GL_DEPTH_TEST);
+    } else {
+        GL33::GL()->Disable(GL_DEPTH_TEST);
+    }
+}
+
+void OpenGL33RendererAPI::EnableAlphaBlending(bool enable)
+{
+    if (enable) {
+        GL33::GL()->Enable(GL_BLEND);
+        GL33::GL()->BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+        GL33::GL()->Disable(GL_BLEND);
+    }
+}
+
 }

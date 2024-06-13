@@ -41,6 +41,16 @@ public:
         s_RendererAPI->SetLineWidth(width);
     }
 
+    static void EnableDepthTest(bool enable)
+    {
+        s_RendererAPI->EnableDepthTest(enable);
+    }
+
+    static void EnableAlphaBlending(bool enable)
+    {
+        s_RendererAPI->EnableAlphaBlending(enable);
+    }
+
 private:
     static Scope<RendererAPI> s_RendererAPI;
 };

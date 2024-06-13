@@ -46,7 +46,7 @@ void Physisc2D::UpdateWorld(float ts, int32_t subStepCount)
     ProcessShapeInitQueue();
     ProcessShapeUpdateQueue();
 
-    TB_CORE_ASSERT(s_Instance, "Physisc2D have to be initialized first!");
+    TB_CORE_ASSERT_TAGGED(s_Instance, "Physisc2D have to be initialized first!");
     b2World_Step(s_Instance->m_PhysicsWorld, ts, 4);
 
     ProcessEvents();

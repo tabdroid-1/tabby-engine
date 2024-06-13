@@ -9,7 +9,7 @@ GladGLES2Context* GLES3::gl = nullptr;
 
 GLES3::GLES3()
 {
-    TB_CORE_ASSERT(!s_Instance, "GLES3 context already exists!");
+    TB_CORE_ASSERT_TAGGED(!s_Instance, "GLES3 context already exists!");
     s_Instance = this;
 }
 

@@ -12,7 +12,7 @@ Shared<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
 {
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
-        TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+        TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33Framebuffer>(spec);
@@ -20,7 +20,7 @@ Shared<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
         return CreateShared<OpenGLES3Framebuffer>(spec);
     }
 
-    TB_CORE_ASSERT(false, "Unknown RendererAPI!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown RendererAPI!");
     return nullptr;
 }
 

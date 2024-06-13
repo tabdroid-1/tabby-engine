@@ -2,6 +2,7 @@
 #include <Tabby/Physics/2D/Physics2D.h>
 #include <Tabby/Physics/2D/Physics2DTypes.h>
 #include <Tabby/Math/Math.h>
+#include <Tabby/Renderer/GLTF.h>
 
 #include <box2d/box2d.h>
 #include "glm/fwd.hpp"
@@ -17,40 +18,40 @@ namespace Tabby {
 void TransformComponent::ApplyTransform(const glm::mat4& transform)
 {
 
-    using namespace glm;
+    // using namespace glm;
     using T = float;
 
-    mat4 LocalMatrix(transform);
+    glm::mat4 LocalMatrix(transform);
 
     // Normalize the matrix.
-    if (epsilonEqual(LocalMatrix[3][3], static_cast<float>(0), epsilon<T>()))
+    if (glm::epsilonEqual(LocalMatrix[3][3], static_cast<float>(0), glm::epsilon<T>()))
         return;
 
     // First, isolate perspective.  This is the messiest.
-    if (epsilonNotEqual(LocalMatrix[0][3], static_cast<T>(0), epsilon<T>()) || epsilonNotEqual(LocalMatrix[1][3], static_cast<T>(0), epsilon<T>()) || epsilonNotEqual(LocalMatrix[2][3], static_cast<T>(0), epsilon<T>())) {
+    if (glm::epsilonNotEqual(LocalMatrix[0][3], static_cast<T>(0), glm::epsilon<T>()) || glm::epsilonNotEqual(LocalMatrix[1][3], static_cast<T>(0), glm::epsilon<T>()) || glm::epsilonNotEqual(LocalMatrix[2][3], static_cast<T>(0), glm::epsilon<T>())) {
         // Clear the perspective partition
         LocalMatrix[0][3] = LocalMatrix[1][3] = LocalMatrix[2][3] = static_cast<T>(0);
         LocalMatrix[3][3] = static_cast<T>(1);
     }
 
     // Next take care of translation (easy).
-    Translation = vec3(LocalMatrix[3]);
-    LocalMatrix[3] = vec4(0, 0, 0, LocalMatrix[3].w);
+    Translation = glm::vec3(LocalMatrix[3]);
+    LocalMatrix[3] = glm::vec4(0, 0, 0, LocalMatrix[3].w);
 
-    vec3 Row[3], Pdum3;
+    glm::vec3 Row[3], Pdum3;
 
     // Now get scale and shear.
-    for (length_t i = 0; i < 3; ++i)
-        for (length_t j = 0; j < 3; ++j)
+    for (glm::length_t i = 0; i < 3; ++i)
+        for (glm::length_t j = 0; j < 3; ++j)
             Row[i][j] = LocalMatrix[i][j];
 
     // Compute X scale factor and normalize first row.
     Scale.x = length(Row[0]);
-    Row[0] = detail::scale(Row[0], static_cast<T>(1));
+    Row[0] = glm::detail::scale(Row[0], static_cast<T>(1));
     Scale.y = length(Row[1]);
-    Row[1] = detail::scale(Row[1], static_cast<T>(1));
+    Row[1] = glm::detail::scale(Row[1], static_cast<T>(1));
     Scale.z = length(Row[2]);
-    Row[2] = detail::scale(Row[2], static_cast<T>(1));
+    Row[2] = glm::detail::scale(Row[2], static_cast<T>(1));
 
     // At this point, the matrix (in rows[]) is orthonormal.
     // Check for a coordinate system flip.  If the determinant
@@ -200,8 +201,8 @@ uint32_t BoxCollider2DComponent::GetCollisionMask() const
 
 void BoxCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
         collisionLayer |= 1 << (layerNumber - 1);
     } else {
@@ -216,15 +217,15 @@ void BoxCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
 }
 bool BoxCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return collisionLayer & (1 << (layerNumber - 1));
 }
 
 void BoxCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
         collisionMask |= 1 << (layerNumber - 1);
     } else {
@@ -239,8 +240,8 @@ void BoxCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
 }
 bool BoxCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return collisionMask & (1 << (layerNumber - 1));
 }
 
@@ -290,8 +291,8 @@ uint32_t CircleCollider2DComponent::GetCollisionMask() const
 
 void CircleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
         collisionLayer |= 1 << (layerNumber - 1);
     } else {
@@ -306,15 +307,15 @@ void CircleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool val
 }
 bool CircleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return collisionLayer & (1 << (layerNumber - 1));
 }
 
 void CircleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
         collisionMask |= 1 << (layerNumber - 1);
     } else {
@@ -329,8 +330,8 @@ void CircleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool valu
 }
 bool CircleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return collisionMask & (1 << (layerNumber - 1));
 }
 
@@ -380,8 +381,8 @@ uint32_t CapsuleCollider2DComponent::GetCollisionMask() const
 
 void CapsuleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
         collisionLayer |= 1 << (layerNumber - 1);
     } else {
@@ -396,15 +397,15 @@ void CapsuleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool va
 }
 bool CapsuleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return collisionLayer & (1 << (layerNumber - 1));
 }
 
 void CapsuleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
         collisionMask |= 1 << (layerNumber - 1);
     } else {
@@ -419,8 +420,8 @@ void CapsuleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool val
 }
 bool CapsuleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return collisionMask & (1 << (layerNumber - 1));
 }
 void CapsuleCollider2DComponent::RefreshShape()
@@ -469,8 +470,8 @@ uint32_t SegmentCollider2DComponent::GetCollisionMask() const
 
 void SegmentCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
         collisionLayer |= 1 << (layerNumber - 1);
     } else {
@@ -485,15 +486,15 @@ void SegmentCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool va
 }
 bool SegmentCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return collisionLayer & (1 << (layerNumber - 1));
 }
 
 void SegmentCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
         collisionMask |= 1 << (layerNumber - 1);
     } else {
@@ -508,8 +509,8 @@ void SegmentCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool val
 }
 bool SegmentCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return collisionMask & (1 << (layerNumber - 1));
 }
 

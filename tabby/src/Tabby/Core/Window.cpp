@@ -27,7 +27,7 @@ Scope<Window> Window::Create(const WindowProps& props)
 #elif defined(TB_PLATFORM_ANDROID)
     return CreateScope<AndroidWindow>(props);
 #else
-    TB_CORE_ASSERT(false, "Unknown platform!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown platform!");
     return nullptr;
 #endif
 }

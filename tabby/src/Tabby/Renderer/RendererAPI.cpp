@@ -16,11 +16,11 @@ Scope<RendererAPI> RendererAPI::Create()
 {
     switch (s_API) {
     case RendererAPI::API::None:
-        TB_CORE_ASSERT(false, "No renderer API selected.");
+        TB_CORE_ASSERT_TAGGED(false, "No renderer API selected.");
         return nullptr;
     case RendererAPI::API::OpenGL33:
 #if defined(TB_PLATFORM_WEB) || defined(TB_PLATFORM_ANDROID)
-        TB_CORE_ASSERT(false, "Android/Web does not support OpenGL 3.3");
+        TB_CORE_ASSERT_TAGGED(false, "Android/Web does not support OpenGL 3.3");
         return nullptr;
 #else
         return CreateScope<OpenGL33RendererAPI>();
@@ -29,7 +29,7 @@ Scope<RendererAPI> RendererAPI::Create()
         return CreateScope<OpenGLES3RendererAPI>();
     }
 
-    TB_CORE_ASSERT(false, "Unknown RendererAPI!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown RendererAPI!");
     return nullptr;
 }
 

@@ -16,8 +16,8 @@ uint32_t RaycastFilter2D::GetCollisionLayer() const
 
 void RaycastFilter2D::SetLayerValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
         collisionLayer |= 1 << (layerNumber - 1);
     } else {
@@ -27,8 +27,8 @@ void RaycastFilter2D::SetLayerValue(int layerNumber, bool value)
 
 bool RaycastFilter2D::GetLayerValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return collisionLayer & (1 << (layerNumber - 1));
 }
 
@@ -44,8 +44,8 @@ uint32_t RaycastFilter2D::GetCollisionMask() const
 
 void RaycastFilter2D::SetMaskValue(int layerNumber, bool value)
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision mask number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision mask number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision mask number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision mask number must be between 1 and 32 inclusive.");
     if (value) {
         collisionMask |= 1 << (layerNumber - 1);
     } else {
@@ -55,8 +55,8 @@ void RaycastFilter2D::SetMaskValue(int layerNumber, bool value)
 
 bool RaycastFilter2D::GetMaskValue(int layerNumber) const
 {
-    TB_CORE_VERIFY(layerNumber >= 1, "Collision mask number must be between 1 and 32 inclusive.");
-    TB_CORE_VERIFY(layerNumber <= 32, "Collision mask number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision mask number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision mask number must be between 1 and 32 inclusive.");
     return collisionMask & (1 << (layerNumber - 1));
 }
 // -------------------------------------

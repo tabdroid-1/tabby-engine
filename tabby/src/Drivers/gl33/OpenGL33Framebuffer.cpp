@@ -170,7 +170,7 @@ void OpenGL33Framebuffer::Invalidate()
         GL33::GL()->DrawBuffer(GL_NONE);
     }
 
-    TB_CORE_ASSERT(GL33::GL()->CheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+    TB_CORE_ASSERT_TAGGED(GL33::GL()->CheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 
     GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
 }

@@ -15,6 +15,9 @@ public:
     virtual void DrawIndexed(const Shared<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
     virtual void DrawLines(const Shared<VertexArray>& vertexArray, uint32_t vertexCount) override;
 
+    void EnableDepthTest(bool enable);
+    void EnableAlphaBlending(bool enable);
+
     virtual void SetLineWidth(float width) override;
 };
 

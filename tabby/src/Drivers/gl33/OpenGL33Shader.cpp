@@ -16,7 +16,7 @@ static GLenum ShaderTypeFromString(const std::string& type)
         return GL_VERTEX_SHADER;
     if (type == "fragment" || type == "pixel")
         return GL_FRAGMENT_SHADER;
-    TB_CORE_ASSERT(false, "unknown shader type");
+    TB_CORE_ASSERT_TAGGED(false, "unknown shader type");
     return 0;
 }
 
@@ -65,7 +65,7 @@ std::unordered_map<GLenum, std::string> OpenGL33Shader::PreProcess(const std::st
     size_t pos = source.find(typeToken, 0);
     while (pos != std::string::npos) {
         size_t eol = source.find_first_of("\r\n", pos);
-        TB_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+        TB_CORE_ASSERT_TAGGED(eol != std::string::npos, "Syntax error");
         size_t begin = pos + typeTokenLength + 1;
         std::string type = source.substr(begin, eol - begin);
 
@@ -101,7 +101,7 @@ void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shad
     TB_PROFILE_SCOPE_NAME("Compile Shader");
 
     GLuint program = GL33::GL()->CreateProgram();
-    TB_CORE_ASSERT(shaderSource.size() <= 2, "Only 3 shaders are supported");
+    TB_CORE_ASSERT_TAGGED(shaderSource.size() <= 2, "Only 3 shaders are supported");
     std::array<GLenum, 3> glShaderIDs;
     int glShaderIDIndex = 0;
     for (auto& kv_pair : shaderSource) {
@@ -129,7 +129,7 @@ void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shad
 
             TB_CORE_ERROR("Shader compilation error for {0}!", shaderInfo);
             TB_CORE_ERROR("{0}", infoLog.data());
-            TB_CORE_ASSERT(false, "Shader compilation issue");
+            TB_CORE_ASSERT_TAGGED(false, "Shader compilation issue");
 
             break;
         }
@@ -156,7 +156,7 @@ void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shad
 
         TB_CORE_ERROR("Linking shader error for {0}!", shaderInfo);
         TB_CORE_ERROR("{0}", infoLog.data());
-        TB_CORE_ASSERT(false, "Shader linking issue");
+        TB_CORE_ASSERT_TAGGED(false, "Shader linking issue");
         return;
     }
     for (auto id : glShaderIDs)
@@ -179,6 +179,14 @@ void OpenGL33Shader::Unbind() const
     GL33::GL()->UseProgram(0);
 }
 
+void OpenGL33Shader::SetBool(const std::string& name, bool value)
+{
+    TB_PROFILE_SCOPE_NAME("Set bool");
+
+    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GL33::GL()->Uniform1i(location, (int)value);
+}
+
 void OpenGL33Shader::SetInt(const std::string& name, int value)
 {
     TB_PROFILE_SCOPE_NAME("Set int");
@@ -191,6 +199,14 @@ void OpenGL33Shader::SetIntArray(const std::string& name, int* values, uint32_t 
     TB_PROFILE_SCOPE_NAME("Set int array");
 
     UploadUniformIntArray(name, values, count);
+}
+
+void OpenGL33Shader::SetFloatArray(const std::string& name, float* values, uint32_t count)
+{
+    TB_PROFILE_SCOPE_NAME("Set int array");
+
+    GLint location = GL33::GL()->GetUniformLocation(m_RendererID, name.c_str());
+    GL33::GL()->Uniform1fv(location, count, values);
 }
 
 void OpenGL33Shader::SetFloat(const std::string& name, float value)

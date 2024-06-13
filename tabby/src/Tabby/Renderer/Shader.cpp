@@ -11,7 +11,7 @@ Shared<Shader> Shader::Create(const std::string& filepath)
 {
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
-        TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+        TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33Shader>(filepath);
@@ -19,7 +19,7 @@ Shared<Shader> Shader::Create(const std::string& filepath)
         return CreateShared<OpenGLES3Shader>(filepath);
     }
 
-    TB_CORE_ASSERT(false, "Unknown RendererAPI!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown RendererAPI!");
     return nullptr;
 }
 
@@ -27,7 +27,7 @@ Shared<Shader> Shader::Create(const std::string& name, const std::string& vertex
 {
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
-        TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+        TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33Shader>(name, vertexSrc, fragmentSrc);
@@ -35,13 +35,13 @@ Shared<Shader> Shader::Create(const std::string& name, const std::string& vertex
         return CreateShared<OpenGLES3Shader>(name, vertexSrc, fragmentSrc);
     }
 
-    TB_CORE_ASSERT(false, "Unknown RendererAPI!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown RendererAPI!");
     return nullptr;
 }
 
 void ShaderLibrary::Add(const std::string& name, const Shared<Shader>& shader)
 {
-    TB_CORE_ASSERT(!Exists(name), "Shader already exists!");
+    TB_CORE_ASSERT_TAGGED(!Exists(name), "Shader already exists!");
     m_Shaders[name] = shader;
 }
 
@@ -67,7 +67,7 @@ Shared<Shader> ShaderLibrary::Load(const std::string& name, const std::string& f
 
 Shared<Shader> ShaderLibrary::Get(const std::string& name)
 {
-    TB_CORE_ASSERT(Exists(name), "Shader not found!");
+    TB_CORE_ASSERT_TAGGED(Exists(name), "Shader not found!");
     return m_Shaders[name];
 }
 

@@ -12,7 +12,7 @@ Shared<Texture> Texture::Create(const TextureSpecification& specification, Asset
 {
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
-        TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+        TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33Texture>(specification, handle, data);
@@ -20,7 +20,7 @@ Shared<Texture> Texture::Create(const TextureSpecification& specification, Asset
         return CreateShared<OpenGLES3Texture>(specification, handle, data);
     }
 
-    TB_CORE_ASSERT(false, "Unknown RendererAPI!");
+    TB_CORE_ASSERT_TAGGED(false, "Unknown RendererAPI!");
     return nullptr;
 }
 
@@ -28,7 +28,7 @@ Shared<Texture> Texture::Create(const TextureSpecification& specification, Asset
 // {
 //     switch (Renderer::GetAPI()) {
 //     case RendererAPI::API::None:
-//         TB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+//         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
 //         return nullptr;
 //     case RendererAPI::API::OpenGL33:
 //         return CreateShared<OpenGL33Texture>(path);
@@ -36,7 +36,7 @@ Shared<Texture> Texture::Create(const TextureSpecification& specification, Asset
 //         return CreateShared<OpenGLES3Texture>(path);
 //     }
 //
-//     TB_CORE_ASSERT(false, "Unknown RendererAPI!");
+//     TB_CORE_ASSERT_TAGGED(false, "Unknown RendererAPI!");
 //     return nullptr;
 // }
 
