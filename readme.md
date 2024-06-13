@@ -25,6 +25,7 @@ External Dependencies
   - stb_image
   - yaml-cpp
   - msdf-atlas-gen
+  - fastgltf
   - tracy profiler
   - OpenAL-Soft 
 
