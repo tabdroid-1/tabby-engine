@@ -92,6 +92,9 @@ void OpenGL33Texture::SetData(Buffer data)
 
     GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
     GL33::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);
+
+    if (m_Specification.GenerateMips)
+        GL33::GL()->GenerateMipmap(GL_TEXTURE_2D);
 }
 
 void OpenGL33Texture::SetSubData(void* data, uint32_t width, uint32_t height)
@@ -100,6 +103,9 @@ void OpenGL33Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 
     GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
     GL33::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+
+    if (m_Specification.GenerateMips)
+        GL33::GL()->GenerateMipmap(GL_TEXTURE_2D);
 }
 
 void OpenGL33Texture::Bind(uint32_t slot) const

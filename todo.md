@@ -32,7 +32,7 @@ Todo
     - Way for Prefabs to hold asset paths that will be required by components.
     - Implement File Dialog to linux(maybe using gtk)
     - Add font support to asset manager.
-    - Fix OpenGL ES Text Shader. 
+    - Fix OpenGL ES Text Shader and fix framebuffer. 
     - Clean up the code, add comments etc.
     - Multithreading
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.

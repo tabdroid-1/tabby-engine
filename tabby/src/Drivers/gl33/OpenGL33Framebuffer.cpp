@@ -54,20 +54,32 @@ namespace Utils {
     {
         TB_PROFILE_SCOPE_NAME("(Framebuffer) Attch Depth Texture");
 
-        bool multisampled = samples > 1;
-        if (multisampled) {
-            GL33::GL()->TexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
-        } else {
-            GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        // uint32_t rbo;
+        // GL33::GL()->GenRenderbuffers(1, &rbo);
+        // GL33::GL()->BindRenderbuffer(GL_RENDERBUFFER, rbo);
+        // GL33::GL()->RenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); // use a single renderbuffer object for both a depth AND stencil buffer.
+        // GL33::GL()->FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
 
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        }
+        // bool multisampled = samples > 1;
+        // if (multisampled) {
+        //     GL33::GL()->TexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
+        // } else {
+        // GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
 
-        GL33::GL()->FramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), id, 0);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+        // }
+
+        GL33::GL()->FramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, id, 0);
+
+        // GL33::GL()->FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, id, 0);
     }
 
     static bool IsDepthFormat(FramebufferTextureFormat format)
@@ -117,8 +129,6 @@ OpenGL33Framebuffer::~OpenGL33Framebuffer()
 
 void OpenGL33Framebuffer::Invalidate()
 {
-    TB_PROFILE_SCOPE_NAME("(Framebuffer) Invalidate");
-
     if (m_RendererID) {
         GL33::GL()->DeleteFramebuffers(1, &m_RendererID);
         GL33::GL()->DeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
@@ -140,6 +150,7 @@ void OpenGL33Framebuffer::Invalidate()
 
         for (size_t i = 0; i < m_ColorAttachments.size(); i++) {
             Utils::BindTexture(multisample, m_ColorAttachments[i]);
+
             switch (m_ColorAttachmentSpecifications[i].TextureFormat) {
             case FramebufferTextureFormat::RGBA8:
                 Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
@@ -167,12 +178,67 @@ void OpenGL33Framebuffer::Invalidate()
         GL33::GL()->DrawBuffers(m_ColorAttachments.size(), buffers);
     } else if (m_ColorAttachments.empty()) {
         // Only depth-pass
-        GL33::GL()->DrawBuffer(GL_NONE);
+        GL33::GL()->DrawBuffers(0, GL_NONE);
     }
 
     TB_CORE_ASSERT_TAGGED(GL33::GL()->CheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
-
     GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
+    // TB_PROFILE_SCOPE_NAME("(Framebuffer) Invalidate");
+    //
+    // if (m_RendererID) {
+    //     GL33::GL()->DeleteFramebuffers(1, &m_RendererID);
+    //     GL33::GL()->DeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
+    //     GL33::GL()->DeleteTextures(1, &m_DepthAttachment);
+    //
+    //     m_ColorAttachments.clear();
+    //     m_DepthAttachment = 0;
+    // }
+    //
+    // GL33::GL()->GenFramebuffers(1, &m_RendererID);
+    // GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+    //
+    // bool multisample = m_Specification.Samples > 1;
+    //
+    // // Attachments
+    // if (m_ColorAttachmentSpecifications.size()) {
+    //     m_ColorAttachments.resize(m_ColorAttachmentSpecifications.size());
+    //     Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
+    //
+    //     for (size_t i = 0; i < m_ColorAttachments.size(); i++) {
+    //         Utils::BindTexture(multisample, m_ColorAttachments[i]);
+    //         switch (m_ColorAttachmentSpecifications[i].TextureFormat) {
+    //         case FramebufferTextureFormat::RGBA8:
+    //             Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
+    //             break;
+    //         case FramebufferTextureFormat::RED_INTEGER:
+    //             Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
+    //             break;
+    //         }
+    //     }
+    // }
+    //
+    // if (m_DepthAttachmentSpecification.TextureFormat != FramebufferTextureFormat::None) {
+    //     Utils::CreateTextures(multisample, &m_DepthAttachment, 1);
+    //     Utils::BindTexture(multisample, m_DepthAttachment);
+    //     switch (m_DepthAttachmentSpecification.TextureFormat) {
+    //     case FramebufferTextureFormat::DEPTH24STENCIL8:
+    //         Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
+    //         break;
+    //     }
+    // }
+    //
+    // if (m_ColorAttachments.size() > 1) {
+    //     TB_CORE_ASSERT(m_ColorAttachments.size() <= 4);
+    //     GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+    //     GL33::GL()->DrawBuffers(m_ColorAttachments.size(), buffers);
+    // } else if (m_ColorAttachments.empty()) {
+    //     // Only depth-pass
+    //     GL33::GL()->DrawBuffer(GL_NONE);
+    // }
+    //
+    // TB_CORE_ASSERT_TAGGED(GL33::GL()->CheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+    //
+    // GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OpenGL33Framebuffer::Bind()

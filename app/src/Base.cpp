@@ -27,7 +27,7 @@ void Base::OnAttach()
     Tabby::Application::Get().GetWindow().SetVSync(false);
 
     Tabby::FramebufferSpecification fbSpec;
-    fbSpec.Attachments = { Tabby::FramebufferTextureFormat::RGBA8, Tabby::FramebufferTextureFormat::RED_INTEGER, Tabby::FramebufferTextureFormat::RGBA8 };
+    fbSpec.Attachments = { Tabby::FramebufferTextureFormat::RGBA8, Tabby::FramebufferTextureFormat::RED_INTEGER, Tabby::FramebufferTextureFormat::DEPTH24STENCIL8 };
     fbSpec.Width = 2560;
     fbSpec.Height = 1600;
     m_Framebuffer = Tabby::Framebuffer::Create(fbSpec);
@@ -38,7 +38,6 @@ void Base::OnAttach()
         auto cameraEntity = Tabby::World::CreateEntity("cameraEntity");
         auto cc = cameraEntity.AddComponent<Tabby::CameraComponent>();
         cc.Camera.SetPerspectiveFarClip(10000);
-        cc.Camera.SetPerspectiveNearClip(0);
     }
 
     {
@@ -64,7 +63,8 @@ void Base::OnAttach()
     {
         auto GLTFEntity = Tabby::World::CreateEntity("GLTFEntity");
         auto& GLTFComponent = GLTFEntity.AddComponent<Tabby::GLTFComponent>();
-        GLTFComponent.m_GLTF = Tabby::CreateShared<Tabby::GLTF>("scenes/sponza/Sponza.gltf");
+        GLTFComponent.m_GLTF = Tabby::CreateShared<Tabby::GLTF>("scenes/sponza-small/sponza.gltf");
+        // GLTFComponent.m_GLTF = Tabby::CreateShared<Tabby::GLTF>("scenes/sponza/Sponza.gltf");
 
         // DynamicEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3;
     }
@@ -113,7 +113,8 @@ void Base::OnUpdate(Tabby::Timestep ts)
         Tabby::RenderCommand::Clear();
     }
 
-    m_Framebuffer->ClearAttachment(1, -1);
+    // BROKEN:
+    // m_Framebuffer->ClearAttachment(1, -1);
 
     Tabby::World::Update(ts);
     OnOverlayRender();
@@ -141,7 +142,8 @@ void Base::OnImGuiRender()
     Tabby::World::DrawImGui();
 
     // Note: Switch this to true to enable dockspace
-    static bool dockspaceOpen = true;
+    static bool dockspaceOpen = false;
+    // static bool dockspaceOpen = true;
     static bool opt_fullscreen_persistant = true;
     bool opt_fullscreen = opt_fullscreen_persistant;
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
