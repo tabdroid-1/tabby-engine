@@ -13,8 +13,8 @@ public:
 
     struct Vertex {
         glm::vec4 Position;
-        glm::vec3 Normal;
         glm::vec2 TexCoords;
+        glm::vec3 Normal;
     };
 
     enum DrawMode {

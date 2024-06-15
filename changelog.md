@@ -1,3 +1,11 @@
+Version: 15-06-2024_1 Alpha
+Changes:
+- Further mesh/gltf work and bug fix.
+- Framebuffer temp bug fix.
+    - Now has working depth buffer
+
+--------------------------------------------------------------------------------------
+
 Version: 14-06-2024_1 Alpha
 Changes:
 - Initial mesh/gltf work. 

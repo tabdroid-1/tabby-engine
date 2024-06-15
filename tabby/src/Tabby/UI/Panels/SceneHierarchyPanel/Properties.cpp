@@ -228,7 +228,7 @@ void PropertiesPanel::OnImGuiRender()
                                             // camera = ShareAs<Camera>(camera_2D);
 
                                             camera.SetProjectionType(Camera::ProjectionType::Perspective);
-                                            camera.SetPerspective(45.0f, 1.0f, 1000.0f);
+                                            camera.SetPerspective(45.0f, 0.001f, 1000.0f);
                                             break;
                                         }
 

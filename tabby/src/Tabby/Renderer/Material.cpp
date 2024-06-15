@@ -1,6 +1,7 @@
 #include <Tabby/Renderer/Material.h>
 
 #include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Renderer/Renderer2D.h>
 #include <Tabby/Renderer/RenderCommand.h>
 
 namespace Tabby {
@@ -17,6 +18,7 @@ Material::Material()
     , m_NormalMapTiling(1)
     , m_BumpValue(1.0f)
     , m_DepthTestEnabled(true)
+    , m_AlphaBlendingEnabled(true)
 {
     m_ModelMatrix = glm::mat4(1.0f);
     m_ModelMatrix = glm::translate(m_ModelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -37,6 +39,7 @@ Material::Material(const std::string& name, Shared<Shader> shader)
     , m_NormalMapTiling(1)
     , m_BumpValue(1.0f)
     , m_DepthTestEnabled(true)
+    , m_AlphaBlendingEnabled(true)
 {
     m_ModelMatrix = glm::mat4(1.0f);
     m_ModelMatrix = glm::translate(m_ModelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -56,6 +59,7 @@ Material::Material(const std::string& name, const std::string& shaderPath)
     , m_NormalMapTiling(1)
     , m_BumpValue(1.0f)
     , m_DepthTestEnabled(true)
+    , m_AlphaBlendingEnabled(true)
 {
     m_Shader = Shader::Create(shaderPath);
 

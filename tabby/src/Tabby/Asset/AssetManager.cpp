@@ -15,7 +15,6 @@ AssetManager::AssetManager()
     TB_CORE_ASSERT_TAGGED(!s_Instance, "AssetManager already Initialized!");
     s_Instance = this;
 
-    stbi_set_flip_vertically_on_load(true);
     TB_CORE_INFO("Initialized asset manager");
 }
 
@@ -95,6 +94,7 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
 
     {
 
+        stbi_set_flip_vertically_on_load(true);
         TB_PROFILE_SCOPE_NAME("stbi_load - AssetManager::ImportTexture");
 #if defined(TB_PLATFORM_ANDROID)
         std::vector<unsigned char> imageData;
