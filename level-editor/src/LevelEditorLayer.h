@@ -1,6 +1,8 @@
 #include <Tabby.h>
+#include <Tabby/World/Map/MapRegistry.h>
 
-#include <Core/LevelEditor.h>
+#include <Core/LevelEditorLogic.h>
+#include <UI/Canvas.h>
 
 namespace Tabby {
 
@@ -17,16 +19,18 @@ public:
     void OnEvent(Event& e) override;
 
 private:
-    Tabby::Shared<Framebuffer> m_Framebuffer;
-    glm::vec2 m_ViewportSize = { 1280.0f, 720.0f };
-    glm::vec2 m_ViewportBounds[2];
-    bool m_ViewportFocused = false, m_ViewportHovered = false;
+    MapRegistry m_MapRegistry;
+
+    Shared<Framebuffer> m_Framebuffer;
+    Vector2 m_ViewportSize = { 1280.0f, 720.0f };
+    std::array<Vector2, 2> m_ViewportBounds;
 
     TransformComponent m_CameraTransform;
     Camera m_Camera;
 
-    Scope<LevelEditor> m_LevelEditor;
+    Scope<LevelEditorLogic> m_LevelEditorLogic;
     Scope<ContentBrowserPanel> m_ContentBrowserPanel;
+    Scope<Canvas> m_Canvas;
 };
 
 }

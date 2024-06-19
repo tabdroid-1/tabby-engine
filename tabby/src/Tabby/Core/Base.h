@@ -53,6 +53,18 @@ constexpr Shared<T> CreateShared(Args&&... args)
     return std::make_shared<T>(std::forward<Args>(args)...);
 }
 
+template <typename T1, typename T2>
+Shared<T1> ShareAs(Shared<T2>& ptr)
+{
+    return std::static_pointer_cast<T1>(ptr);
+};
+
+template <typename T1, typename T2>
+Shared<T1> ShareAs(const Shared<T2>& ptr)
+{
+    return std::static_pointer_cast<T1>(ptr);
+};
+
 }
 
 #include "Tabby/Core/Assert.h"

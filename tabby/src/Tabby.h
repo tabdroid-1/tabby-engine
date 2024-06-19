@@ -54,3 +54,8 @@
 // --- UI ----------------------------
 #include <Tabby/UI/ImGui/ImGuiLayer.h>
 // -----------------------------------
+//
+// --- Util --------------------------
+#include <Tabby/Utils/PlatformUtils.h>
+#include <Tabby/Utils/Utils.h>
+// -----------------------------------

@@ -1,31 +1,15 @@
 #include <Tabby.h>
-
-// #include <Tabby/World/World.h>
-// #include <Tabby/World/Entity.h>
-//
-// #include <Tabby/Physics/2D/Physics2D.h>
-// #include <Tabby/Physics/2D/Physics2DTypes.h>
-// #include <Tabby/World/ScriptableEntity.h>
-// #include <Tabby/Math/Math.h>
-// #include <Tabby/Renderer/Renderer2D.h>
-// #include <Tabby/World/Components.h>
-// #include <Tabby/Asset/AssetManager.h>
-// #include <Tabby/Audio/AudioEngine.h>
-// #include <Tabby/Debug/Debug.h>
-
-#include <Tabby/World/Prefab.h>
+#include <Tabby/World/Map/Prefab.h>
 #include <Tabby/Renderer/GLTF.h>
 #include <Tabby/Renderer/Mesh.h>
 
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
-
 #include <glm/gtx/quaternion.hpp>
 
 namespace Tabby {
 
 World* World::s_Instance = nullptr;
-std::string World::m_CurrentMap = "";
 entt::registry World::m_EntityRegistry;
 
 World::World()
@@ -40,6 +24,127 @@ void World::Init()
         s_Instance = new World();
 
     Prefab::InitializeTypeMap();
+
+    AddSystem(Schedule::PreUpdate, [](entt::registry&) {
+        TB_PROFILE_SCOPE_NAME("World::PreUpdate::UpdatePhysics2DWorld");
+        const int32_t subStepCount = 6;
+        Physisc2D::UpdateWorld(Time::GetDeltaTime(), subStepCount);
+
+        // Retrieve transform from Box2D
+        auto view = World::GetRegistry().view<Rigidbody2DComponent>();
+        for (auto e : view) {
+            Entity entity = { e };
+            auto& transform = entity.GetComponent<TransformComponent>();
+            auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+
+            const auto& position = b2Body_GetPosition(rb2d.RuntimeBodyId);
+            transform.Translation.x = position.x;
+            transform.Translation.y = position.y;
+            transform.Rotation.z = Math::RAD2DEG * b2Body_GetAngle(rb2d.RuntimeBodyId);
+        }
+    });
+
+    AddSystem(Schedule::PreUpdate, [](entt::registry&) {
+        // Apply transform to children
+        TB_PROFILE_SCOPE_NAME("World::PreUpdate::TransformUpdate");
+        auto view = World::GetRegistry().view<TransformComponent>();
+
+        for (auto entity : view) {
+            auto& hierarchy_node_component = World::GetRegistry().get<HierarchyNodeComponent>(entity);
+            auto& transform = World::GetRegistry().get<TransformComponent>(entity);
+
+            glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians((glm::vec3&)transform.Rotation)));
+            transform.TransformMatrix = glm::translate(glm::mat4(1.0f), (glm::vec3&)transform.Translation) * rotation * glm::scale(glm::mat4(1.0f), (glm::vec3&)transform.Scale);
+
+            glm::mat4 localRotation = glm::toMat4(glm::quat(glm::radians((glm::vec3&)transform.LocalRotation)));
+            transform.LocalTransformMatrix = glm::translate(glm::mat4(1.0f), (glm::vec3&)transform.LocalTranslation) * localRotation * glm::scale(glm::mat4(1.0f), (glm::vec3&)transform.LocalScale);
+
+            for (auto& child : hierarchy_node_component.Children) {
+                auto& childTransform = World::GetRegistry().get<TransformComponent>(child.second);
+                childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
+            }
+        };
+    });
+
+    AddSystem(Schedule::PostUpdate, [](entt::registry&) {
+        TB_PROFILE_SCOPE_NAME("World::PostUpdate::SetCurrentCamera");
+        auto view = World::GetRegistry().view<TransformComponent, CameraComponent>();
+        for (auto entity : view) {
+            auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+
+            if (camera.Primary) {
+                World::SetCurrentCamera(&camera.Camera, &transform.GetTransform());
+                break;
+            }
+        }
+    });
+
+    AddSystem(Schedule::Draw, [](entt::registry&) {
+        TB_PROFILE_SCOPE_NAME("World::Draw::RenderCircle");
+        auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
+        for (auto entity : view) {
+            auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+
+            Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+        }
+    });
+
+    AddSystem(Schedule::Draw, [](entt::registry&) {
+        TB_PROFILE_SCOPE_NAME("World::Draw::RenderCircle");
+        auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
+        for (auto entity : view) {
+            auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+
+            Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+        }
+    });
+
+    AddSystem(Schedule::Draw, [](entt::registry&) {
+        TB_PROFILE_SCOPE_NAME("World::Draw::RenderSprites");
+
+        World::GetRegistry().sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs) {
+            return lhs.renderOrder < rhs.renderOrder;
+        });
+
+        auto sprite_view = World::GetRegistry().view<SpriteRendererComponent>();
+
+        for (const entt::entity entity : sprite_view) {
+            auto transform = World::GetRegistry().get<TransformComponent>(entity);
+            auto sprite = World::GetRegistry().get<SpriteRendererComponent>(entity);
+
+            Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+        }
+    });
+
+    AddSystem(Schedule::Draw, [](entt::registry&) {
+        TB_PROFILE_SCOPE_NAME("World::Draw::RenderGLTF");
+        auto view = World::GetRegistry().view<TransformComponent, GLTFComponent>();
+        for (auto entity : view) {
+            auto [transform, gltf] = view.get<TransformComponent, GLTFComponent>(entity);
+
+            for (auto mesh : gltf.m_GLTF->m_Meshes) {
+                mesh->SetTransform(transform.GetTransform());
+            }
+            gltf.m_GLTF->Draw();
+        }
+    });
+
+    AddSystem(Schedule::Draw, [](entt::registry&) {
+        TB_PROFILE_SCOPE_NAME("World::Draw::RenderText");
+
+        auto view = GetRegistry().view<TransformComponent, TextComponent>();
+        for (auto entity : view) {
+            auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
+
+            Renderer2D::DrawString(text.TextString, transform.GetTransform(), text, (int)entity);
+        }
+    });
+
+    AddSystem(Schedule::Draw, [](entt::registry&) {
+        TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene::DebugDraw");
+
+        Debug::ProcessDrawCalls();
+    });
 }
 
 template <typename... Component>
@@ -79,19 +184,43 @@ static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Enti
     CopyComponentIfExists<Component...>(dst, src);
 }
 
-void World::LoadMap(const std::string& mapPath)
+void World::AddSystem(Schedule schedule, const std::function<void(entt::registry&)>& function)
 {
+    switch (schedule) {
+    case Schedule::PreStartup:
+        s_Instance->m_PreStartupSystems.push_back(function);
+        break;
+    case Schedule::Startup:
+        s_Instance->m_StartupSystems.push_back(function);
+        break;
+    case Schedule::PostStartup:
+        s_Instance->m_PostStartupSystems.push_back(function);
+        break;
 
-    TB_PROFILE_SCOPE_NAME("World::SwitchTo");
-    // auto it = s_Instance->scenes.find(SceneName);
-    // if (it != s_Instance->scenes.end()) {
-    //
-    //     if (s_Instance->curScene.second) {
-    //         nextSceneName = it->first;
-    //     } else {
-    //         private_SwitchTo(SceneName);
-    //     }
-    // }
+    case Schedule::PreUpdate:
+        s_Instance->m_PreUpdateSystems.push_back(function);
+        break;
+    case Schedule::Update:
+        s_Instance->m_UpdateSystems.push_back(function);
+        break;
+    case Schedule::PostUpdate:
+        s_Instance->m_PostUpdateSystems.push_back(function);
+        break;
+
+    case Schedule::FixedPreUpdate:
+        s_Instance->m_FixedPreUpdateSystems.push_back(function);
+        break;
+    case Schedule::FixedUpdate:
+        s_Instance->m_FixedUpdateSystems.push_back(function);
+        break;
+    case Schedule::FixedPostUpdate:
+        s_Instance->m_FixedPostUpdateSystems.push_back(function);
+        break;
+
+    case Schedule::Draw:
+        s_Instance->m_DrawSystems.push_back(function);
+        break;
+    }
 }
 
 Entity World::CreateEntity(const std::string& name)
@@ -234,6 +363,15 @@ void World::OnStart()
 
     glm::vec2 gravity(0.0f, -20.8f);
     Physisc2D::InitWorld(gravity);
+
+    for (const auto& preStartup : s_Instance->m_PreStartupSystems)
+        preStartup(s_Instance->m_EntityRegistry);
+
+    for (const auto& startup : s_Instance->m_StartupSystems)
+        startup(s_Instance->m_EntityRegistry);
+
+    for (const auto& startup : s_Instance->m_StartupSystems)
+        startup(s_Instance->m_EntityRegistry);
 }
 
 void World::OnStop()
@@ -256,192 +394,43 @@ void World::OnStop()
 
 void World::Update(Timestep ts)
 {
-    if (!s_Instance) {
-        s_Instance = new World();
-    }
-
-    TB_PROFILE_SCOPE_NAME("World::Update");
-    // SceneManager::ProcessQueue(Physisc2D::IsQueueEmpty());
 
     if (!s_Instance->m_IsPaused || s_Instance->m_StepFrames-- > 0) {
 
-        TB_PROFILE_SCOPE_NAME("World::OnUpdate::EntityUpdate");
+        for (const auto& preUpdate : s_Instance->m_PreUpdateSystems)
+            preUpdate(s_Instance->m_EntityRegistry);
 
-        // Update scripts
-        {
-            GetRegistry().view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
-                TB_PROFILE_SCOPE_NAME("World::OnUpdate::EntityUpdate::NativeScriptComponentUpdate");
+        for (const auto& update : s_Instance->m_UpdateSystems)
+            update(s_Instance->m_EntityRegistry);
 
-                if (!nsc.Instance) {
-                    nsc.Instance = nsc.InstantiateScript();
-                    nsc.Instance->m_Entity = Entity { entity };
-                    nsc.Instance->OnCreate();
-                }
+        for (const auto& postUpdate : s_Instance->m_PostUpdateSystems)
+            postUpdate(s_Instance->m_EntityRegistry);
 
-                nsc.Instance->Update(ts);
-                nsc.Instance->LateUpdate(ts);
+        constexpr double fixedTimeStep = 1.0 / FIXED_UPDATE_RATE;
 
-                const double fixedTimeStep = 1.0 / FIXED_UPDATE_RATE;
+        s_Instance->m_FixedUpdateAccumulator += ts;
 
-                s_Instance->m_FixedUpdateAccumulator += ts;
+        while (s_Instance->m_FixedUpdateAccumulator >= fixedTimeStep) {
 
-                while (s_Instance->m_FixedUpdateAccumulator >= fixedTimeStep) {
-                    nsc.Instance->FixedUpdate(fixedTimeStep);
-                    s_Instance->m_FixedUpdateAccumulator -= fixedTimeStep;
-                }
-            });
-        }
-        // Physics
-        {
-            TB_PROFILE_SCOPE_NAME("World::OnUpdate::EntityUpdate::UpdateWorld");
-            const int32_t subStepCount = 6;
-            Physisc2D::UpdateWorld(ts, subStepCount);
+            for (const auto& fixedPreUpdate : s_Instance->m_FixedPreUpdateSystems)
+                fixedPreUpdate(s_Instance->m_EntityRegistry);
 
-            // Retrieve transform from Box2D
-            auto view = GetRegistry().view<Rigidbody2DComponent>();
-            for (auto e : view) {
-                Entity entity = { e };
-                auto& transform = entity.GetComponent<TransformComponent>();
-                auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
-                // b2Body* body = (b2Body*)rb2d.RuntimeBody;
+            for (const auto& fixedUpdate : s_Instance->m_FixedUpdateSystems)
+                fixedUpdate(s_Instance->m_EntityRegistry);
 
-                const auto& position = b2Body_GetPosition(rb2d.RuntimeBodyId);
-                transform.Translation.x = position.x;
-                transform.Translation.y = position.y;
-                transform.Rotation.z = Math::RAD2DEG * b2Body_GetAngle(rb2d.RuntimeBodyId);
-            }
-        }
+            for (const auto& fixedPostUpdate : s_Instance->m_FixedPostUpdateSystems)
+                fixedPostUpdate(s_Instance->m_EntityRegistry);
 
-        // Apply transform to children
-        {
-            TB_PROFILE_SCOPE_NAME("World::OnUpdate::EntityUpdate::TransformUpdate");
-            auto view = GetRegistry().view<TransformComponent>();
-
-            for (auto entity : view) {
-                auto& hierarchy_node_component = GetRegistry().get<HierarchyNodeComponent>(entity);
-                auto& transform = GetRegistry().get<TransformComponent>(entity);
-
-                glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians(transform.Rotation)));
-                transform.TransformMatrix = glm::translate(glm::mat4(1.0f), transform.Translation) * rotation * glm::scale(glm::mat4(1.0f), transform.Scale);
-
-                glm::mat4 localRotation = glm::toMat4(glm::quat(glm::radians(transform.LocalRotation)));
-                transform.LocalTransformMatrix = glm::translate(glm::mat4(1.0f), transform.LocalTranslation) * localRotation * glm::scale(glm::mat4(1.0f), transform.LocalScale);
-
-                for (auto& child : hierarchy_node_component.Children) {
-                    auto& childTransform = GetRegistry().get<TransformComponent>(child.second);
-                    childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
-                }
-            };
+            s_Instance->m_FixedUpdateAccumulator -= fixedTimeStep;
         }
     }
 
-    // Sound
-    {
-        auto view = GetRegistry().view<SoundComponent>();
-        for (auto e : view) {
-            Entity entity = { e };
-            auto& sc = entity.GetComponent<SoundComponent>();
+    if (s_Instance->m_CurrentCamera) {
 
-            // sc.Sound->SetGain(sc.Gain);
+        Renderer2D::BeginScene(*s_Instance->m_CurrentCamera, *s_Instance->m_CurrentCameraTransform);
 
-            // if (sc.Playing)
-            //     sc.Sound->Play();
-        }
-    }
-
-    // Render 2D
-    Camera* mainCamera = nullptr;
-    glm::mat4 cameraTransform;
-    {
-        auto view = GetRegistry().view<TransformComponent, CameraComponent>();
-        for (auto entity : view) {
-            auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
-
-            if (camera.Primary) {
-                mainCamera = &camera.Camera;
-                cameraTransform = transform.GetTransform();
-                break;
-            }
-        }
-    }
-
-    if (mainCamera) {
-
-        TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene");
-        Renderer2D::BeginScene(*mainCamera, cameraTransform);
-
-        // Draw circles
-        {
-            TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene::RenderCircle");
-            auto view = GetRegistry().view<TransformComponent, CircleRendererComponent>();
-            for (auto entity : view) {
-                auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-
-                Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
-            }
-        }
-
-        // Draw sprites
-        {
-            TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene::RenderSprites");
-
-            // std::vector<entt::entity> sortedEntities;
-            //
-            // auto view = SceneManager::GetRegistry().view<SpriteRendererComponent>();
-            // for (auto entity : view) {
-            //     sortedEntities.push_back(entity);
-            // }
-            //
-            // std::sort(sortedEntities.begin(), sortedEntities.end(), [this](const entt::entity& a, const entt::entity& b) {
-            //     return SceneManager::GetRegistry().get<SpriteRendererComponent>(a).renderOrder < SceneManager::GetRegistry().get<SpriteRendererComponent>(b).renderOrder;
-            // });
-
-            GetRegistry().sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs) {
-                return lhs.renderOrder < rhs.renderOrder;
-            });
-
-            auto sprite_view = GetRegistry().view<SpriteRendererComponent>();
-
-            for (const entt::entity entity : sprite_view) {
-                auto transform = GetRegistry().get<TransformComponent>(entity);
-                auto sprite = GetRegistry().get<SpriteRendererComponent>(entity);
-
-                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
-            }
-        }
-
-        // Draw circles
-        {
-            TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene::RenderGLTF");
-            auto view = GetRegistry().view<TransformComponent, GLTFComponent>();
-            for (auto entity : view) {
-                auto [transform, gltf] = view.get<TransformComponent, GLTFComponent>(entity);
-
-                for (auto mesh : gltf.m_GLTF->m_Meshes) {
-                    mesh->SetTransform(transform.GetTransform());
-                }
-                gltf.m_GLTF->Draw();
-            }
-        }
-
-        // Draw text
-        {
-            TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene::RenderText");
-
-            auto view = GetRegistry().view<TransformComponent, TextComponent>();
-            for (auto entity : view) {
-                auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
-
-                Renderer2D::DrawString(text.TextString, transform.GetTransform(), text, (int)entity);
-            }
-        }
-
-        // Draw DebugShapes
-        {
-            TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene::DebugDraw");
-
-            Debug::ProcessDrawCalls();
-        }
+        for (const auto& draw : s_Instance->m_DrawSystems)
+            draw(s_Instance->m_EntityRegistry);
 
         Renderer2D::EndScene();
     }
@@ -474,6 +463,12 @@ void World::OnViewportResize(uint32_t width, uint32_t height)
 void World::Step(int frames)
 {
     s_Instance->m_StepFrames = frames;
+}
+
+void World::SetCurrentCamera(Camera* currentCamera, glm::mat4* currentCameraTransform)
+{
+    s_Instance->m_CurrentCamera = currentCamera;
+    s_Instance->m_CurrentCameraTransform = currentCameraTransform;
 }
 
 // void World::ProcessQueue(bool canSwitch)

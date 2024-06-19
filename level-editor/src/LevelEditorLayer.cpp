@@ -22,28 +22,17 @@ void LevelEditorLayer::OnAttach()
     Tabby::Application::Get().GetWindow().SetVSync(false);
 
     Tabby::FramebufferSpecification fbSpec;
-    fbSpec.Attachments = { Tabby::FramebufferTextureFormat::RGBA8, Tabby::FramebufferTextureFormat::RED_INTEGER, Tabby::FramebufferTextureFormat::RGBA8 };
+    fbSpec.Attachments = { Tabby::FramebufferTextureFormat::RGBA8, Tabby::FramebufferTextureFormat::RED_INTEGER, Tabby::FramebufferTextureFormat::DEPTH24STENCIL8 };
     fbSpec.Width = 2560;
     fbSpec.Height = 1600;
     m_Framebuffer = Tabby::Framebuffer::Create(fbSpec);
 
-    m_ContentBrowserPanel = CreateScope<ContentBrowserPanel>();
-    m_LevelEditor = CreateScope<LevelEditor>(&m_Camera, &m_CameraTransform);
     m_Camera.SetOrthographic(10, -1, 1000);
+    m_Canvas = CreateScope<Canvas>(m_Framebuffer, m_ViewportSize, m_ViewportBounds);
+    m_LevelEditorLogic = CreateScope<LevelEditorLogic>(&m_Camera, &m_CameraTransform);
+    m_ContentBrowserPanel = CreateScope<ContentBrowserPanel>();
 
-    m_LevelEditor->OnAttach();
-
-    // TransformComponent transformComp;
-    // transformComp.Translation = { 3.442f, 13.231f, 123.2f };
-    //
-    // std::vector<uint8_t> data(sizeof(TransformComponent));
-    // std::memcpy(data.data(), &transformComp, sizeof(TransformComponent));
-    //
-    // TransformComponent newTransformComp;
-    // std::memcpy(&newTransformComp, data.data(), sizeof(TransformComponent));
-    //
-    // TB_INFO("Deserialized Translation:");
-    // TB_INFO("   x: {0} y: {1} z:{2}", newTransformComp.Translation.x, newTransformComp.Translation.y, newTransformComp.Translation.z);
+    m_LevelEditorLogic->OnAttach();
 }
 
 void LevelEditorLayer::OnDetach()
@@ -51,7 +40,7 @@ void LevelEditorLayer::OnDetach()
     TB_PROFILE_SCOPE();
 }
 
-void LevelEditorLayer::OnUpdate(Tabby::Timestep ts)
+void LevelEditorLayer::OnUpdate(Timestep ts)
 {
 
     m_Camera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
@@ -71,11 +60,13 @@ void LevelEditorLayer::OnUpdate(Tabby::Timestep ts)
         Tabby::RenderCommand::Clear();
     }
 
-    m_Framebuffer->ClearAttachment(1, -1);
+    // m_Framebuffer->ClearAttachment(1, -1);
 
     Renderer2D::BeginScene(m_Camera, m_CameraTransform.GetTransform());
 
-    m_LevelEditor->OnUpdate(ts);
+    if (m_Canvas->ShouldShowGameView())
+        m_LevelEditorLogic->Update(ts);
+    m_Canvas->Update(ts);
 
     Renderer2D::EndScene();
 
@@ -185,95 +176,23 @@ void LevelEditorLayer::OnImGuiRender()
     ImGui::Begin("Settings");
 
     ImGui::Text("FPS: %.2f", fps);
-    ImGui::DragFloat2("Size", glm::value_ptr(m_ViewportSize));
+    ImGui::Text("Viewport Size: %f, %f", m_ViewportSize.x, m_ViewportSize.y);
 
     float orthoSize = m_Camera.GetOrthographicSize();
 
-    // ImGui::Text("Camera Settings:");
-    // ImGui::DragFloat("Size", &orthoSize);
-    // m_Camera.SetOrthographicSize(orthoSize);
+    ImGui::Text("Camera Settings:");
+    ImGui::DragFloat("Size", &orthoSize);
+    m_Camera.SetOrthographicSize(orthoSize);
 
-    ImGui::DragFloat3("Camera Position", glm::value_ptr(m_CameraTransform.Translation));
-    ImGui::DragFloat3("Camera Rotation", glm::value_ptr(m_CameraTransform.Rotation));
-    ImGui::DragFloat3("Camera Scale", glm::value_ptr(m_CameraTransform.Scale));
+    ImGui::DragFloat3("Camera Position", glm::value_ptr((glm::vec3&)m_CameraTransform.Translation));
+    ImGui::DragFloat3("Camera Rotation", glm::value_ptr((glm::vec3&)m_CameraTransform.Rotation));
+    ImGui::DragFloat3("Camera Scale", glm::value_ptr((glm::vec3&)m_CameraTransform.Scale));
 
     ImGui::End();
 
     m_ContentBrowserPanel->OnImGuiRender();
-
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2 { 0, 0 });
-    ImGui::Begin("Viewport");
-    auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
-    auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
-    auto viewportOffset = ImGui::GetWindowPos();
-    m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
-    m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
-
-    m_ViewportFocused = ImGui::IsWindowFocused();
-    m_ViewportHovered = ImGui::IsWindowHovered();
-
-    Tabby::Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportHovered);
-
-    ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-    m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-
-    uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
-    ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2 { m_ViewportSize.x, m_ViewportSize.y }, ImVec2 { 0, 1 }, ImVec2 { 1, 0 });
-
-    if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
-            const char* path = (const char*)payload->Data;
-            // OpenScene(path);
-        }
-        ImGui::EndDragDropTarget();
-    }
-
-    // Gizmos
-    // Tabby::Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
-    // if (selectedEntity && m_GizmoType != -1) {
-    //     ImGuizmo::SetOrthographic(true);
-    //     ImGuizmo::SetDrawlist();
-    //
-    //     ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
-    //
-    //     // Camera
-    //
-    //     // Runtime camera from entity
-    //     auto cameraEntity = Tabby::SceneManager::GetCurrentScene()->GetPrimaryCameraEntity();
-    //     const auto& camera = cameraEntity.GetComponent<Tabby::CameraComponent>().Camera;
-    //     const glm::mat4& cameraProjection = camera.GetProjection();
-    //     glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<Tabby::TransformComponent>().GetTransform());
-    //
-    //     // Entity transform
-    //     auto& tc = selectedEntity.GetComponent<Tabby::TransformComponent>();
-    //     glm::mat4 transform = tc.GetTransform();
-    //
-    //     // Snapping
-    //     bool snap = Tabby::Input::IsKeyPressed(Tabby::Key::LeftControl);
-    //     float snapValue = 0.5f; // Snap to 0.5m for translation/scale
-    //     // Snap to 45 degrees for rotation
-    //     if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
-    //         snapValue = 45.0f;
-    //
-    //     float snapValues[3] = { snapValue, snapValue, snapValue };
-    //
-    //     ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-    //         (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
-    //         nullptr, snap ? snapValues : nullptr);
-    //
-    //     if (ImGuizmo::IsUsing()) {
-    //         glm::vec3 translation, rotation, scale;
-    //         Tabby::Math::DecomposeTransform(transform, translation, rotation, scale);
-    //
-    //         glm::vec3 deltaRotation = rotation - tc.Rotation;
-    //         tc.Translation = translation;
-    //         tc.Rotation += deltaRotation;
-    //         tc.Scale = scale;
-    //     }
-    // }
-
-    ImGui::End();
-    ImGui::PopStyleVar();
+    m_LevelEditorLogic->ImGuiRender();
+    m_Canvas->ImGuiRender();
 
     ImGui::End();
 }
@@ -284,7 +203,7 @@ void LevelEditorLayer::OnEvent(Tabby::Event& e)
     // dispatcher.Dispatch<Tabby::KeyPressedEvent>(TB_BIND_EVENT_FN(LevelEditorLayer::OnKeyPressed));
     // dispatcher.Dispatch<Tabby::MouseButtonPressedEvent>(TB_BIND_EVENT_FN(LevelEditorLayer::OnMouseButtonPressed));
 
-    m_LevelEditor->OnEvent(e);
+    m_LevelEditorLogic->OnEvent(e);
 }
 
 }

@@ -5,16 +5,16 @@
 
 namespace Tabby {
 
-class LevelEditor {
+class LevelEditorLogic {
 public:
-    LevelEditor(Camera* camera, TransformComponent* cameraTransform);
-    ~LevelEditor() = default;
+    LevelEditorLogic(Camera* camera, TransformComponent* cameraTransform);
+    ~LevelEditorLogic() = default;
 
     void OnAttach();
     void OnDetach();
 
-    void OnUpdate(Timestep ts);
-    void OnImGuiRender();
+    void Update(Timestep ts);
+    void ImGuiRender();
     void OnEvent(Event& e);
 
 private:

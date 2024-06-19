@@ -36,7 +36,7 @@ private:
 private:
     inline static AssetManager* s_Instance;
     std::unordered_map<AssetHandle, Shared<AssetBase>> m_AssetRegistry;
-    std::unordered_map<std::filesystem::path, UUID> m_UUIDs;
+    std::unordered_map<std::string, UUID> m_UUIDs;
     std::shared_mutex m_Mutex;
 };
 

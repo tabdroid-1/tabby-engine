@@ -1,6 +1,6 @@
 #include "Base.h"
 
-#include <Tabby/World/Prefab.h>
+#include <Tabby/World/Map/Prefab.h>
 #include <Tabby/Renderer/GLTF.h>
 
 #include <Prefab/ExamplePrefab.h>
@@ -276,10 +276,10 @@ void Base::OnImGuiRender()
             nullptr, snap ? snapValues : nullptr);
 
         if (ImGuizmo::IsUsing()) {
-            glm::vec3 translation, rotation, scale;
-            Tabby::Math::DecomposeTransform(transform, translation, rotation, scale);
+            Tabby::Vector3 translation, rotation, scale;
+            Tabby::Math::DecomposeTransform(transform, (glm::vec3&)translation, (glm::vec3&)rotation, (glm::vec3&)scale);
 
-            glm::vec3 deltaRotation = rotation - tc.Rotation;
+            Tabby::Vector3 deltaRotation = rotation - tc.Rotation;
             tc.Translation = translation;
             tc.Rotation += deltaRotation;
             tc.Scale = scale;
@@ -325,9 +325,9 @@ void Base::OnOverlayRender()
                 auto [tc, cc2d] = view.get<Tabby::TransformComponent, Tabby::CircleCollider2DComponent>(entity);
 
                 glm::vec3 translation = tc.Translation + glm::vec3(cc2d.Offset, 0.001f);
-                glm::vec3 scale = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
+                glm::vec3 scale = (glm::vec3&)tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
 
-                glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.Translation)
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), (glm::vec3&)tc.Translation)
                     * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
                     * glm::translate(glm::mat4(1.0f), glm::vec3(cc2d.Offset, 0.001f))
                     * glm::scale(glm::mat4(1.0f), scale);
@@ -343,24 +343,24 @@ void Base::OnOverlayRender()
                 auto [tc, cc2d] = view.get<Tabby::TransformComponent, Tabby::CapsuleCollider2DComponent>(entity);
 
                 glm::vec3 translation1 = tc.Translation + glm::vec3(cc2d.center1, 0.001f);
-                glm::vec3 scale1 = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
-                glm::mat4 transform1 = glm::translate(glm::mat4(1.0f), tc.Translation)
+                glm::vec3 scale1 = (glm::vec3&)tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
+                glm::mat4 transform1 = glm::translate(glm::mat4(1.0f), (glm::vec3&)tc.Translation)
                     * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
                     * glm::translate(glm::mat4(1.0f), glm::vec3(cc2d.center1, 0.001f))
                     * glm::scale(glm::mat4(1.0f), scale1);
                 Tabby::Renderer2D::DrawCircle(transform1, glm::vec4(0, 1, 0, 1), 0.1f);
 
                 glm::vec3 translation2 = tc.Translation + glm::vec3(cc2d.center2, 0.001f);
-                glm::vec3 scale2 = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
-                glm::mat4 transform2 = glm::translate(glm::mat4(1.0f), tc.Translation)
+                glm::vec3 scale2 = (glm::vec3&)tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
+                glm::mat4 transform2 = glm::translate(glm::mat4(1.0f), (glm::vec3&)tc.Translation)
                     * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
                     * glm::translate(glm::mat4(1.0f), glm::vec3(cc2d.center2, 0.001f))
                     * glm::scale(glm::mat4(1.0f), scale2);
                 Tabby::Renderer2D::DrawCircle(transform2, glm::vec4(0, 1, 0, 1), 0.1f);
 
                 glm::vec3 translation3 = tc.Translation + glm::vec3(cc2d.center2, 0.001f);
-                glm::vec3 scale3 = tc.Scale * glm::vec3(cc2d.Radius * 2.0f) * glm::vec3(0.95f, 1.5f, 0.95f);
-                glm::mat4 transform3 = glm::translate(glm::mat4(1.0f), tc.Translation)
+                glm::vec3 scale3 = (glm::vec3&)tc.Scale * glm::vec3(cc2d.Radius * 2.0f) * glm::vec3(0.95f, 1.5f, 0.95f);
+                glm::mat4 transform3 = glm::translate(glm::mat4(1.0f), (glm::vec3&)tc.Translation)
                     * glm::rotate(glm::mat4(1.0f), Tabby::Math::DEG2RAD * tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
                     * glm::scale(glm::mat4(1.0f), scale3);
                 Tabby::Renderer2D::DrawRect(transform3, glm::vec4(0, 1, 0, 1));

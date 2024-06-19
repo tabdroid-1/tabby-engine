@@ -1,3 +1,10 @@
+Version: 20-06-2024_1 Alpha
+Changes:
+- Bevy like system thingy idk check World.h/cpp
+    - Instead of NativeSctiptComponent now u create components and systems like in bevy. Prefab need a bit of work to fully work.
+
+--------------------------------------------------------------------------------------
+
 Version: 15-06-2024_1 Alpha
 Changes:
 - Further mesh/gltf work and bug fix.
