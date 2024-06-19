@@ -1,4 +1,4 @@
-#include <Tabby/World/Map/Prefab.h>
+#include <Tabby/World/Prefab.h>
 #include <Tabby/World/Entity.h>
 
 namespace Tabby {

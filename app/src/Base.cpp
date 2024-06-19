@@ -1,6 +1,6 @@
 #include "Base.h"
 
-#include <Tabby/World/Map/Prefab.h>
+#include <Tabby/World/Prefab.h>
 #include <Tabby/Renderer/GLTF.h>
 
 #include <Prefab/ExamplePrefab.h>

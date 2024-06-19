@@ -1,5 +1,4 @@
 #include <Tabby.h>
-#include <Tabby/World/Map/MapRegistry.h>
 
 #include <Core/LevelEditorLogic.h>
 #include <UI/Canvas.h>
@@ -19,8 +18,6 @@ public:
     void OnEvent(Event& e) override;
 
 private:
-    MapRegistry m_MapRegistry;
-
     Shared<Framebuffer> m_Framebuffer;
     Vector2 m_ViewportSize = { 1280.0f, 720.0f };
     std::array<Vector2, 2> m_ViewportBounds;

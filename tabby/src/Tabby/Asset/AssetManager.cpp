@@ -3,7 +3,7 @@
 #include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Renderer/Font.h>
 #include <Tabby/Renderer/Texture.h>
-#include <Tabby/World/Map/Prefab.h>
+#include <Tabby/World/Prefab.h>
 
 #include <Tabby/Utils/Utils.h>
 #include <stb_image.h>
