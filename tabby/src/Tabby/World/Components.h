@@ -35,13 +35,13 @@ struct HierarchyNodeComponent {
 };
 
 struct TransformComponent {
-    glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
-    glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
-    glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
+    Vector3 Translation = { 0.0f, 0.0f, 0.0f };
+    Vector3 Rotation = { 0.0f, 0.0f, 0.0f };
+    Vector3 Scale = { 1.0f, 1.0f, 1.0f };
 
-    glm::vec3 LocalTranslation = { 0.0f, 0.0f, 0.0f };
-    glm::vec3 LocalRotation = { 0.0f, 0.0f, 0.0f };
-    glm::vec3 LocalScale = { 1.0f, 1.0f, 1.0f };
+    Vector3 LocalTranslation = { 0.0f, 0.0f, 0.0f };
+    Vector3 LocalRotation = { 0.0f, 0.0f, 0.0f };
+    Vector3 LocalScale = { 1.0f, 1.0f, 1.0f };
 
     glm::mat4 TransformMatrix = glm::mat4(1);
     glm::mat4 LocalTransformMatrix = glm::mat4(1);

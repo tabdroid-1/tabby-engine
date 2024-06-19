@@ -91,7 +91,7 @@ void PropertiesPanel::OnImGuiRender()
                 ImGui::SameLine();
                 ImGui::TableNextColumn();
                 ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-                ImGui::DragFloat3("##floatT", glm::value_ptr(trs_component.Translation), 0.1f);
+                ImGui::DragFloat3("##floatT", glm::value_ptr((glm::vec3&)trs_component.Translation), 0.1f);
                 // if (ImGui::DragFloat3("##floatT", glm::value_ptr(trs_component.Translation), 0.1f))
                 //     transform = Utils::ComposeMatrix(trs_component.Translation, trs_component.Rotation, trs_component.Scale);
 
@@ -101,7 +101,7 @@ void PropertiesPanel::OnImGuiRender()
                 ImGui::SameLine();
                 ImGui::TableNextColumn();
                 ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-                ImGui::DragFloat3("##floatR", glm::value_ptr(trs_component.Rotation), 0.1f);
+                ImGui::DragFloat3("##floatR", glm::value_ptr((glm::vec3&)trs_component.Rotation), 0.1f);
                 // if (ImGui::DragFloat3("##floatR", glm::value_ptr(trs_component.rotation), 0.1f))
                 //     transform = Utils::ComposeMatrix(trs_component.translation, trs_component.rotation, trs_component.scale);
 
@@ -111,7 +111,7 @@ void PropertiesPanel::OnImGuiRender()
                 ImGui::SameLine();
                 ImGui::TableNextColumn();
                 ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-                ImGui::DragFloat3("##floatS", glm::value_ptr(trs_component.Scale), 0.01f);
+                ImGui::DragFloat3("##floatS", glm::value_ptr((glm::vec3&)trs_component.Scale), 0.01f);
                 // if (ImGui::DragFloat3("##floatS", glm::value_ptr(trs_component.scale), 0.01f))
                 //     transform = Utils::ComposeMatrix(trs_component.translation, trs_component.rotation, trs_component.scale);
 

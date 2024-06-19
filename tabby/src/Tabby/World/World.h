@@ -7,8 +7,28 @@
 
 namespace Tabby {
 
+class Camera;
 class Entity;
-class GLTF;
+
+enum Schedule : uint8_t {
+    PreStartup = 0,
+    Startup,
+    PostStartup,
+
+    // First,
+    PreUpdate,
+    Update,
+    PostUpdate,
+    // Last,
+
+    // FixedFirst,
+    FixedPreUpdate,
+    FixedUpdate,
+    FixedPostUpdate,
+    // FixedLast,
+
+    Draw,
+};
 
 class World {
 
@@ -17,7 +37,7 @@ public:
 
     static void Init();
 
-    static void LoadMap(const std::string& mapPath);
+    static void AddSystem(Schedule schedule, const std::function<void(entt::registry&)>& function);
 
     static Entity CreateEntity(const std::string& name = std::string());
     static Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
@@ -54,9 +74,7 @@ public:
 
     static entt::registry& GetRegistry();
 
-    // private:
-    //     static void ProcessQueue(bool canSwitch);
-    //     static void private_SwitchTo(std::string sceneName);
+    static void SetCurrentCamera(Camera* currentCamera, glm::mat4* currentCameraTransform);
 
 private:
     template <typename T>
@@ -70,10 +88,33 @@ private:
 
     float m_FixedUpdateAccumulator = 0;
 
+    Camera* m_CurrentCamera;
+    const glm::mat4* m_CurrentCameraTransform;
+
     static entt::registry m_EntityRegistry;
     std::unordered_map<UUID, entt::entity> m_EntityMap;
 
-    static std::string m_CurrentMap;
+    // Called onece on application startup
+    std::vector<std::function<void(entt::registry&)>> m_PreStartupSystems;
+    std::vector<std::function<void(entt::registry&)>> m_StartupSystems;
+    std::vector<std::function<void(entt::registry&)>> m_PostStartupSystems;
+
+    // Called every frame
+    // std::vector<std::function<void(entt::registry&)>> m_FirstSystems;
+    std::vector<std::function<void(entt::registry&)>> m_PreUpdateSystems;
+    std::vector<std::function<void(entt::registry&)>> m_UpdateSystems;
+    std::vector<std::function<void(entt::registry&)>> m_PostUpdateSystems;
+    // std::vector<std::function<void(entt::registry&)>> m_LastSystems;
+
+    // Called fixed update
+    // std::vector<std::function<void(entt::registry&)>> m_FixedFirstSystems;
+    std::vector<std::function<void(entt::registry&)>> m_FixedPreUpdateSystems;
+    std::vector<std::function<void(entt::registry&)>> m_FixedUpdateSystems;
+    std::vector<std::function<void(entt::registry&)>> m_FixedPostUpdateSystems;
+    // std::vector<std::function<void(entt::registry&)>> m_FixedLastSystems;
+
+    // Called everyupdate
+    std::vector<std::function<void(entt::registry&)>> m_DrawSystems;
 
 private:
     static World* s_Instance;

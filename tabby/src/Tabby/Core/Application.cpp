@@ -92,19 +92,20 @@ void Application::Run()
         TB_PROFILE_FRAME("Application");
 
         double time = Time::GetTime();
-        Timestep timestep = time - m_LastFrameTime;
+        Time::SetDeltaTime(time - m_LastFrameTime);
         m_LastFrameTime = time;
 
         ExecuteMainThreadQueue();
 
-        if (!m_Minimized && timestep < 200.0f) { // ts < 200  because ts is really high number in first frame
-                                                 // and that breaks the phyiscs and some other stuff.
-                                                 // this happens because m_LastFrameTime is 0 in first frame.
+        if (!m_Minimized && Time::GetDeltaTime() < 200.0f) { // ts < 200  because ts is really high number in first frame
+            // and that breaks the phyiscs and some other stuff.
+            // this happens because m_LastFrameTime is 0 in first frame.
             {
                 TB_PROFILE_SCOPE_NAME("LayerStack OnUpdate");
 
+                // TODO: Remove TimeStep
                 for (Layer* layer : m_LayerStack)
-                    layer->OnUpdate(timestep);
+                    layer->OnUpdate(Time::GetDeltaTime());
             }
 
             m_ImGuiLayer->Begin();

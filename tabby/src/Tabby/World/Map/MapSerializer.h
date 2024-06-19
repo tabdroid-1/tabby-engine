@@ -2,9 +2,9 @@
 
 #include <Tabby.h>
 
-#include <Tabby/World/Map.h>
-
 namespace Tabby {
+
+class Map;
 
 class MapSerializer {
 public:

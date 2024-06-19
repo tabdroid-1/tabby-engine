@@ -37,10 +37,10 @@ Supported Graphics Apis
 Supported Platforms
 -------------------
 - Linux
-- Windows (probably. not tested)
+- Windows (not tested)
 - MacOS
-- Web
-- Android
+- Web (not tested in a while)
+- Android (not tested in a while)
 
 Compiling
 ---------
@@ -96,3 +96,4 @@ Special Thanks
 - Peppino Spaghetti
 - Soilder from TF2
 - 2008 Toyota Corolla
+- Bon

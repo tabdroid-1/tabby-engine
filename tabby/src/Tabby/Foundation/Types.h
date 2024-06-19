@@ -56,7 +56,7 @@ struct Plane {
     }
 };
 
-template <typename T = float32>
+template <typename T = float>
 struct vec2 {
     union {
         T values[2];
@@ -94,14 +94,18 @@ struct vec2 {
     explicit constexpr operator vec2<T>() const { return { (T)x, (T)y }; }
     vec2 operator+(const vec2& other) { return { x + other.x, y + other.y }; }
     vec2 operator-(const vec2& other) { return { x - other.x, y - other.y }; }
+
     vec2& operator+=(const vec2& other)
     {
-        this = this + other;
+        x += other.x;
+        y += other.y;
         return *this;
     }
+
     vec2& operator-=(const vec2& other)
     {
-        this = this - other;
+        x -= other.x;
+        y -= other.y;
         return *this;
     }
 
@@ -111,7 +115,7 @@ struct vec2 {
     }
 };
 
-template <typename T = float32>
+template <typename T = float>
 struct vec3 {
     union {
         T x, r;
@@ -147,16 +151,22 @@ struct vec3 {
 
     // template <typename T>
     explicit constexpr operator vec3<T>() const { return { T(x), T(y), T(z) }; }
-    vec3 operator+(const vec3& other) { return { x + other.x, y + other.y, z + other.z }; }
-    vec3 operator-(const vec3& other) { return { x - other.x, y - other.y, z - other.z }; }
+    vec3 operator+(const vec3& other) const { return { x + other.x, y + other.y, z + other.z }; }
+    vec3 operator-(const vec3& other) const { return { x - other.x, y - other.y, z - other.z }; }
+
     vec3& operator+=(const vec3& other)
     {
-        this = this + other;
+        x += other.x;
+        y += other.y;
+        z += other.z;
         return *this;
     }
+
     vec3& operator-=(const vec3& other)
     {
-        this = this - other;
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
         return *this;
     }
 
@@ -166,7 +176,7 @@ struct vec3 {
     }
 };
 
-template <typename T = float32>
+template <typename T = float>
 struct vec4 {
     union {
         T x, r;
@@ -212,14 +222,22 @@ struct vec4 {
 
     vec4 operator+(const vec4& other) { return { x + other.x, y + other.y, z + other.z, w + other.w }; }
     vec4 operator-(const vec4& other) { return { x - other.x, y - other.y, z - other.z, w - other.w }; }
+
     vec4& operator+=(const vec4& other)
     {
-        this = this + other;
+        x += other.x;
+        y += other.y;
+        z += other.z;
+        w -= other.w;
         return *this;
     }
+
     vec4& operator-=(const vec4& other)
     {
-        this = this - other;
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+        w -= other.w;
         return *this;
     }
 
@@ -237,9 +255,9 @@ using UIntVector2 = vec2<uint32_t>;
 using UIntVector3 = vec3<uint32_t>;
 using UIntVector4 = vec4<uint32_t>;
 
-using Vector2 = vec2<float32>;
-using Vector3 = vec3<float32>;
-using Vector4 = vec4<float32>;
+using Vector2 = vec2<float>;
+using Vector3 = vec3<float>;
+using Vector4 = vec4<float>;
 
 class Frustum {
 public:
