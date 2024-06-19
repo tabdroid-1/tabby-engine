@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Tabby.h>
-#include <Tabby/World/Map/Prefab.h>
+#include <Tabby/World/Prefab.h>
 
 namespace Tabby {
 

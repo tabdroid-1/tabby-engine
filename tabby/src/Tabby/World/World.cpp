@@ -1,5 +1,5 @@
 #include <Tabby.h>
-#include <Tabby/World/Map/Prefab.h>
+#include <Tabby/World/Prefab.h>
 #include <Tabby/Renderer/GLTF.h>
 #include <Tabby/Renderer/Mesh.h>
 
