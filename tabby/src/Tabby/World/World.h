@@ -37,6 +37,17 @@ public:
 
     static void Init();
 
+    template <typename... PluginTypes>
+    static void AddPlugins()
+    {
+
+        ([&]() {
+            auto var = new PluginTypes();
+            var->Build();
+            delete var;
+        }(),
+            ...);
+    }
     static void AddSystem(Schedule schedule, const std::function<void(entt::registry&)>& function);
 
     static Entity CreateEntity(const std::string& name = std::string());
@@ -80,6 +91,11 @@ private:
     template <typename T>
     static void OnComponentAdded(Entity entity, T& component);
 
+    template <typename T>
+    void ProcessPlugin()
+    {
+    }
+
 private:
     uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
     bool m_IsRunning = false;
@@ -91,7 +107,7 @@ private:
     Camera* m_CurrentCamera;
     const glm::mat4* m_CurrentCameraTransform;
 
-    static entt::registry m_EntityRegistry;
+    inline static entt::registry m_EntityRegistry;
     std::unordered_map<UUID, entt::entity> m_EntityMap;
 
     // Called onece on application startup
@@ -117,7 +133,7 @@ private:
     std::vector<std::function<void(entt::registry&)>> m_DrawSystems;
 
 private:
-    static World* s_Instance;
+    inline static World* s_Instance;
 
     friend class Entity;
 };

@@ -1,3 +1,10 @@
+Version: 02-07-2024_1 Alpha
+Changes:
+- File dialog support for linux 
+    - Using gtk4 to create file dialog
+
+--------------------------------------------------------------------------------------
+
 Version: 20-06-2024_1 Alpha
 Changes:
 - Bevy like system thingy idk check World.h/cpp

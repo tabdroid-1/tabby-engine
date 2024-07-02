@@ -9,9 +9,6 @@
 
 namespace Tabby {
 
-World* World::s_Instance = nullptr;
-entt::registry World::m_EntityRegistry;
-
 World::World()
 {
     TB_CORE_ASSERT_TAGGED(!s_Instance, "World already exists!");
@@ -23,7 +20,7 @@ void World::Init()
     if (!s_Instance)
         s_Instance = new World();
 
-    Prefab::InitializeTypeMap();
+    Prefab::InitializeStandardTypes();
 
     AddSystem(Schedule::PreUpdate, [](entt::registry&) {
         TB_PROFILE_SCOPE_NAME("World::PreUpdate::UpdatePhysics2DWorld");
@@ -470,36 +467,6 @@ void World::SetCurrentCamera(Camera* currentCamera, glm::mat4* currentCameraTran
     s_Instance->m_CurrentCamera = currentCamera;
     s_Instance->m_CurrentCameraTransform = currentCameraTransform;
 }
-
-// void World::ProcessQueue(bool canSwitch)
-// {
-//     TB_PROFILE_SCOPE_NAME("World::ProcessQueue");
-//     if (canSwitch && s_Instance->nextSceneName != "") {
-//         private_SwitchTo(s_Instance->nextSceneName);
-//         s_Instance->nextSceneName = "";
-//     }
-// }
-//
-// void World::private_SwitchTo(std::string SceneName)
-// {
-//     TB_PROFILE_SCOPE_NAME("World::private_SwitchTo");
-//
-//     auto it = s_Instance->scenes.find(SceneName);
-//     if (it != s_Instance->scenes.end()) {
-//         if (s_Instance->curScene.second) {
-//             s_Instance->curScene.second->OnStop();
-//         }
-//
-//         s_Instance->curScene.first = it->first;
-//         s_Instance->curScene.second = it->second;
-//
-//         TB_CORE_TRACE("Switched to scene {0}", SceneName);
-//
-//         s_Instance->curScene.second->OnStart();
-//     } else {
-//         TB_CORE_ERROR("Scene {0} not found", SceneName);
-//     }
-// }
 
 entt::registry& World::GetRegistry()
 {
