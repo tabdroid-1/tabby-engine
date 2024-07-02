@@ -2,6 +2,7 @@ Version: 02-07-2024_1 Alpha
 Changes:
 - File dialog support for linux 
     - Using gtk4 to create file dialog
+- Removed level-editor. Instead a new project has started to create 2D level/map standard.
 
 --------------------------------------------------------------------------------------
 
