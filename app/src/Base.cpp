@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
 #include <imguizmo/ImGuizmo.h>
+#include <CustomComponent/PlayerComponent.h>
 
 static Tabby::Shared<Tabby::Font> s_Font;
 float fps = 0;
@@ -31,6 +32,8 @@ void Base::OnAttach()
     fbSpec.Width = 2560;
     fbSpec.Height = 1600;
     m_Framebuffer = Tabby::Framebuffer::Create(fbSpec);
+
+    Tabby::World::AddPlugins<PlayerPlugin>();
 
     Tabby::World::OnStart();
 
@@ -211,7 +214,14 @@ void Base::OnImGuiRender()
     ImGui::DragFloat2("Size", glm::value_ptr(m_ViewportSize));
     ImGui::Checkbox("Show physics colliders", &m_ShowPhysicsColliders);
 
-    ImGui::Image((ImTextureID)s_Font->GetAtlasTexture()->GetRendererID(), { 512, 512 }, { 0, 1 }, { 1, 0 });
+    // ImGui::Image((ImTextureID)s_Font->GetAtlasTexture()->GetRendererID(), { 512, 512 }, { 0, 1 }, { 1, 0 });
+
+    if (ImGui::Button("File Dialog Open(test)")) {
+        TB_INFO("{0}", Tabby::FileDialogs::OpenFile(".png"));
+    }
+    if (ImGui::Button("File Dialog Save(test)")) {
+        TB_INFO("{0}", Tabby::FileDialogs::SaveFile(".png"));
+    }
 
     ImGui::End();
 

@@ -3,33 +3,24 @@
 
 namespace Tabby {
 
-static std::unordered_map<std::string, std::type_index> typeMap;
-
 template <typename T>
-void RegisterType()
+void Prefab::AddComponent(Entity& newEntity, const EntityData& entityData, const std::vector<uint8_t>& componentData)
 {
-    typeMap.emplace(typeid(T).name(), std::type_index(typeid(T)));
+    auto deserializedComp = entityData.DeserializeComponent<T>(componentData);
+    auto& createdComp = newEntity.AddOrReplaceComponent<T>();
+    createdComp = deserializedComp;
 }
 
-template <typename... Components>
-void RegisterComponents(ComponentGroup<Components...>)
+void Prefab::InitializeStandardTypes()
 {
-    (RegisterType<Components>(), ...);
-}
-
-void Prefab::InitializeTypeMap()
-{
-    RegisterComponents(AllComponents {});
+    RegisterComponents<TagComponent, HierarchyNodeComponent, TransformComponent, SpriteRendererComponent,
+        CircleRendererComponent, CameraComponent, SoundComponent, Rigidbody2DComponent,
+        BoxCollider2DComponent, CircleRendererComponent, CapsuleCollider2DComponent,
+        SegmentCollider2DComponent, TextComponent>();
 }
 
 std::vector<uint8_t> Prefab::SerializePrefab(Shared<Prefab> prefab)
 {
-    // std::vector<uint8_t> buffer;
-    //
-    // buffer = EntityData::SerializeEntityData(prefab->m_RootEntityData);
-    //
-    // return buffer;
-
     std::vector<uint8_t> buffer;
     // Serialize AssetHandle
     size_t handleSize = sizeof(prefab->Handle);
@@ -45,17 +36,6 @@ std::vector<uint8_t> Prefab::SerializePrefab(Shared<Prefab> prefab)
 
 Shared<Prefab> Prefab::DeserializePrefab(AssetHandle handle, const std::vector<uint8_t>& data)
 {
-    // Shared<Prefab> prefab = CreateShared<Prefab>(UUID());
-    //
-    // if (data.size() < sizeof(prefab->m_RootEntityData)) {
-    //     throw std::runtime_error("Insufficient data to deserialize Prefab");
-    // }
-    //
-    // size_t offset = 0;
-    // prefab->m_RootEntityData = EntityData::DeserializeEntityData(data, offset);
-    //
-    // return prefab;
-
     if (data.size() < sizeof(AssetHandle)) {
         throw std::runtime_error("Insufficient data to deserialize Prefab");
     }
@@ -195,8 +175,8 @@ Prefab::EntityData Prefab::EntityData::DeserializeEntityData(const std::vector<u
         std::string typeName(reinterpret_cast<const char*>(data.data() + offset), typeNameSize);
         offset += typeNameSize;
 
-        auto it = typeMap.find(typeName);
-        if (it == typeMap.end()) {
+        auto it = m_TypeMap.find(typeName);
+        if (it == m_TypeMap.end()) {
             throw std::runtime_error("Unknown component type: " + typeName);
         }
         std::type_index typeIndex = it->second;
@@ -255,66 +235,12 @@ Entity Prefab::CreateEntityFromPrefab(EntityData entityData) const
             auto& createdComp = newEntity.AddOrReplaceComponent<IDComponent>();
             createdComp = deserializedComp;
             createdComp.ID = entityData.m_UUID;
-        } else if (componentData.type == typeid(TagComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<TagComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<TagComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(HierarchyNodeComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<HierarchyNodeComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<HierarchyNodeComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(TransformComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<TransformComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<TransformComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(SpriteRendererComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<SpriteRendererComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<SpriteRendererComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(CircleRendererComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<CircleRendererComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<CircleRendererComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(CameraComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<CameraComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<CameraComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(SoundComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<SoundComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<SoundComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(NativeScriptComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<NativeScriptComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<NativeScriptComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(Rigidbody2DComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<Rigidbody2DComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<Rigidbody2DComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(BoxCollider2DComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<BoxCollider2DComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<BoxCollider2DComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(CircleCollider2DComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<CircleCollider2DComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<CircleCollider2DComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(CapsuleCollider2DComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<CapsuleCollider2DComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<CapsuleCollider2DComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(SegmentCollider2DComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<SegmentCollider2DComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<SegmentCollider2DComponent>();
-            createdComp = deserializedComp;
-        } else if (componentData.type == typeid(TextComponent)) {
-            auto deserializedComp = entityData.DeserializeComponent<TextComponent>(componentData.data);
-            auto& createdComp = newEntity.AddOrReplaceComponent<TextComponent>();
-            createdComp = deserializedComp;
+        } else {
+            auto func = m_TypeAddComponentMap.find(componentData.type);
+            func->second(newEntity, entityData, componentData.data);
         }
     }
 
     return newEntity;
 }
-
 }

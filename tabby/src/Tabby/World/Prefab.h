@@ -17,6 +17,19 @@ public:
 
     virtual ~Prefab() = default;
 
+    template <typename... Components>
+    static void RegisterComponents()
+    {
+        (RegisterComponent<Components>(), ...);
+    }
+
+    template <typename T>
+    static void RegisterComponent()
+    {
+        m_TypeAddComponentMap.emplace(typeid(T), AddComponent<T>);
+        m_TypeMap.emplace(typeid(T).name(), std::type_index(typeid(T)));
+    }
+
     Entity Instantiate() const;
 
     static std::vector<uint8_t> SerializePrefab(Shared<Prefab> prefab);
@@ -97,10 +110,17 @@ protected:
 private:
     Entity CreateEntityFromPrefab(EntityData entityData) const;
 
-    static void InitializeTypeMap();
+    static void InitializeStandardTypes();
+
+    template <typename T>
+    static void AddComponent(Entity& newEntity, const EntityData& entityData, const std::vector<uint8_t>& componentData);
 
 private:
     EntityData m_RootEntityData;
+
+    inline static std::unordered_map<std::string, std::type_index> m_TypeMap;
+    inline static std::unordered_map<std::type_index, std::function<void(Entity& newEntity, const EntityData& entityData, const std::vector<uint8_t>& componentData)>> m_TypeAddComponentMap;
+
     friend class World;
 };
 

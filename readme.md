@@ -28,6 +28,7 @@ External Dependencies
   - fastgltf
   - tracy profiler
   - OpenAL-Soft 
+  - gtk4 (just on Linux) 
 
 Supported Graphics Apis
 -----------------------
