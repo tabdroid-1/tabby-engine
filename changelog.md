@@ -1,3 +1,9 @@
+Version: 06-07-2024_2 Alpha
+Changes:
+- Fixed oversight where working directory in FileSystem did not get updated  
+
+--------------------------------------------------------------------------------------
+
 Version: 06-07-2024_1 Alpha
 Changes:
 - Removed ImGui Panels from engine code 

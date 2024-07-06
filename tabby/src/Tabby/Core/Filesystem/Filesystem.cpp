@@ -56,7 +56,8 @@ bool FileSystem::DestroyDirectory(std::filesystem::path path)
 
 void FileSystem::SetWorkingDirectory(std::filesystem::path path)
 {
-    s_FileSystemData.working_directory = path;
+    std::filesystem::current_path(path.string());
+    s_FileSystemData.working_directory = std::filesystem::current_path();
 }
 
 std::filesystem::path FileSystem::GetWorkingDirectory()
