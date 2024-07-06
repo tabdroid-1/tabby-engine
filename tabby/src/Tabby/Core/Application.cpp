@@ -4,6 +4,7 @@
 #include "Tabby/Utils/PlatformUtils.h"
 #include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Audio/AudioEngine.h>
+#include <Tabby/Core/Filesystem/Filesystem.h>
 
 namespace Tabby {
 
@@ -17,8 +18,9 @@ Application::Application(const ApplicationSpecification& specification)
     TB_CORE_ASSERT_TAGGED(!s_Instance, "Application already exists!");
     s_Instance = this;
 
-    if (!m_Specification.WorkingDirectory.empty())
-        std::filesystem::current_path(m_Specification.WorkingDirectory);
+    if (!m_Specification.WorkingDirectory.empty()) {
+        FileSystem::SetWorkingDirectory(m_Specification.WorkingDirectory);
+    }
 
     m_Window = Window::Create(WindowProps(m_Specification.Name));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
