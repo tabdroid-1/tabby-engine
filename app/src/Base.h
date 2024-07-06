@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Tabby.h>
-#include <Tabby/UI/Panels/SceneHierarchyPanel/SceneHierarchyPanel.h>
-#include <Tabby/UI/Panels/SceneHierarchyPanel/Properties.h>
+#include <Panels/SceneHierarchyPanel/SceneHierarchyPanel.h>
+#include <Panels/SceneHierarchyPanel/Properties.h>
 
 class Base : public Tabby::Layer {
 public:

@@ -29,14 +29,12 @@ Todo
     - <s>Initial Prefab class which serializes in to Tabby Prefab Format. </s> Done Since 25-05-2024_1 Alpha
     - Try vulkan
     - Initial Level Editor work.
-    - Way for Prefabs to hold asset paths that will be required by components.
-    - Implement File Dialog to linux(maybe using gtk)
+    - <s>Implement File Dialog to linux.</s> Done Since 02-07-2024_1 Alpha
     - Add font support to asset manager.
     - Fix OpenGL ES Text Shader and fix framebuffer. 
     - Clean up the code, add comments etc.
     - Multithreading
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
-    - Renderer is shit
 
 
 - Low priority

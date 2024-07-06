@@ -1,3 +1,9 @@
+Version: 06-07-2024_1 Alpha
+Changes:
+- Removed ImGui Panels from engine code 
+
+--------------------------------------------------------------------------------------
+
 Version: 02-07-2024_1 Alpha
 Changes:
 - File dialog support for linux 
