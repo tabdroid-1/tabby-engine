@@ -2,10 +2,6 @@
 
 namespace Tabby {
 
-struct FileSystemData {
-    std::filesystem::path working_directory = std::filesystem::current_path();
-} s_FileSystemData;
-
 Tabby::Shared<File> FileSystem::ReadFile(std::filesystem::path path, const BitMask& flags)
 {
     byte* data;
@@ -57,12 +53,11 @@ bool FileSystem::DestroyDirectory(std::filesystem::path path)
 void FileSystem::SetWorkingDirectory(std::filesystem::path path)
 {
     std::filesystem::current_path(path.string());
-    s_FileSystemData.working_directory = std::filesystem::current_path();
 }
 
 std::filesystem::path FileSystem::GetWorkingDirectory()
 {
-    return s_FileSystemData.working_directory;
+    return std::filesystem::current_path();
 }
 
 }
