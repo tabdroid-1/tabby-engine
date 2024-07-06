@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tbpch.h>
 #include <Tabby/Asset/AssetBase.h>
 
 namespace Tabby {

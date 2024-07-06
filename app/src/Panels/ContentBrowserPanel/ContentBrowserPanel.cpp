@@ -1,4 +1,4 @@
-#include <Tabby/UI/Panels/ContentBrowserPanel/ContentBrowserPanel.h>
+#include <Panels/ContentBrowserPanel/ContentBrowserPanel.h>
 
 #include <Tabby/Asset/AssetManager.h>
 #include <imgui/imgui.h>

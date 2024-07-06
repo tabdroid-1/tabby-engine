@@ -367,8 +367,8 @@ void World::OnStart()
     for (const auto& startup : s_Instance->m_StartupSystems)
         startup(s_Instance->m_EntityRegistry);
 
-    for (const auto& startup : s_Instance->m_StartupSystems)
-        startup(s_Instance->m_EntityRegistry);
+    for (const auto& postStartup : s_Instance->m_PostStartupSystems)
+        postStartup(s_Instance->m_EntityRegistry);
 }
 
 void World::OnStop()

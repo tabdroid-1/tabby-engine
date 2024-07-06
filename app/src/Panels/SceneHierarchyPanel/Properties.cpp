@@ -1,5 +1,5 @@
 #include <Tabby.h>
-#include <Tabby/UI/Panels/SceneHierarchyPanel/Properties.h>
+#include <Panels/SceneHierarchyPanel/Properties.h>
 #include <Tabby/Renderer/Camera.h>
 
 #include <imgui/imgui.h>
@@ -9,8 +9,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include <Tabby/UI/tinyfiledialogs.h>
 
 namespace Tabby {
 
@@ -152,15 +150,9 @@ void PropertiesPanel::OnImGuiRender()
                             if (ImGui::Button("Browse", { -FLT_MIN, 0.0f })) {
                                 const char* filters[] = { "*.png", "*.jpg", "*.jpeg" };
 
-                                char* filepath = tinyfd_openFileDialog(
-                                    "Open file",
-                                    std::filesystem::current_path().string().c_str(),
-                                    3,
-                                    filters,
-                                    NULL,
-                                    false);
+                                std::string filepath = Tabby::FileDialogs::OpenFile(filters[0]).c_str();
 
-                                if (filepath != NULL) {
+                                if (filepath != "") {
                                     std::filesystem::path full_texture_path(filepath);
                                     std::filesystem::path texture_path = std::filesystem::current_path().append(full_texture_path.filename().string());
 
@@ -168,7 +160,10 @@ void PropertiesPanel::OnImGuiRender()
                                         texture_path,
                                         std::filesystem::copy_options::overwrite_existing);
 
-                                    sc.Texture = AssetManager::Get()->GetHandle(texture_path);
+                                    sc.Texture = AssetManager::Get()->LoadAssetSource(texture_path);
+
+                                    // sc.Texture =
+
                                     // m_Context->GetRenderer()->AcquireTextureIndex(AssetManager::Get()->GetTexture(sc.texture), SamplerFilteringMode::NEAREST);
                                     // uvec3 texture_resolution = AssetManager::Get()->GetTexture(sc.texture)->GetSpecification().extent;
                                     // sc.aspect_ratio = { (float32)texture_resolution.x / (float32)texture_resolution.y };
