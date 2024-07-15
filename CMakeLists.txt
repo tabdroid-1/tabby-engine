@@ -10,7 +10,7 @@ if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
 endif ()
 
-add_definitions(-w) # disables warnings
+# add_definitions(-w) # disables warnings
 
 add_subdirectory(tabby)
 add_subdirectory(app)
