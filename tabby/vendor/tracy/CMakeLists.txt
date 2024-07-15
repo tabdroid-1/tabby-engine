@@ -6,16 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 file(GLOB_RECURSE PROJECT_SOURCES
-        "client/*.h"
-        "client/*.hpp"
-        "client/*.cpp"
-        "common/*.h"
-        "common/*.hpp"
-        "common/*.cpp"
-        "libbacktrace/*.h"
-        "libbacktrace/*.hpp"
-        "libbacktrace/*.cpp"
-        "tracy/*.h"
+        "TracyClient.cpp"
         "tracy/Tracy.hpp"
         )
 

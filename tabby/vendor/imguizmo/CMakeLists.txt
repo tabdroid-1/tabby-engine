@@ -28,3 +28,5 @@ add_library(imguizmo STATIC
             ${HEADERS}
             ${SOURCE}
             )
+
+target_include_directories(${PROJECT_NAME} PRIVATE ../imgui)
