@@ -1,7 +1,7 @@
 #include <Panels/ContentBrowserPanel/ContentBrowserPanel.h>
 
 #include <Tabby/Asset/AssetManager.h>
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 namespace Tabby {
 
@@ -47,7 +47,7 @@ void ContentBrowserPanel::OnImGuiRender()
 
             if (ImGui::BeginDragDropSource()) {
                 std::filesystem::path relativePath(path);
-                const char* itemPath = relativePath.c_str();
+                const char* itemPath = (char*)relativePath.c_str();
                 ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (strlen(itemPath) + 1) * sizeof(wchar_t));
                 ImGui::EndDragDropSource();
             }

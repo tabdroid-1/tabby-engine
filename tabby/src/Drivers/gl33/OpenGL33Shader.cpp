@@ -4,7 +4,7 @@
 
 #include <fstream>
 
-#include <glad/gl33.h>
+#include <gl33.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 

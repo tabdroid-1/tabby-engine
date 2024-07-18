@@ -1,7 +1,7 @@
 
 #include "Drivers/gl33/GL33.h"
 #if !defined(TB_PLATFORM_WEB) || !defined(TB_PLATFORM_ANDROID)
-#include <glad/gl33.h>
+#include <gl33.h>
 
 namespace Tabby {
 

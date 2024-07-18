@@ -2,7 +2,7 @@
 #include "GL33.h"
 #include "tbpch.h"
 
-#include <glad/gl33.h>
+#include <gl33.h>
 
 namespace Tabby {
 

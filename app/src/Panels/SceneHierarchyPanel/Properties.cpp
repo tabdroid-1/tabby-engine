@@ -2,9 +2,9 @@
 #include <Panels/SceneHierarchyPanel/Properties.h>
 #include <Tabby/Renderer/Camera.h>
 
-#include <imgui/imgui.h>
-#include <imgui/imgui_internal.h>
-#include <imgui/misc/cpp/imgui_stdlib.h>
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <misc/cpp/imgui_stdlib.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/matrix_decompose.hpp>

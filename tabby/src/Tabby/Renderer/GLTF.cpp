@@ -12,7 +12,11 @@
 #include <fastgltf/core.hpp>
 #include <fastgltf/types.hpp>
 #include <fastgltf/tools.hpp>
-#include <stb/stb_image.h>
+#include <stb_image.h>
+
+#include <fastgltf/core.hpp>
+#include <fastgltf/types.hpp>
+#include <fastgltf/tools.hpp>
 
 namespace Tabby {
 
@@ -25,10 +29,13 @@ GLTF::GLTF(const std::filesystem::path& filePath)
 
     constexpr auto gltfOptions = fastgltf::Options::DontRequireValidAssetMember | fastgltf::Options::AllowDouble | fastgltf::Options::LoadGLBBuffers | fastgltf::Options::LoadExternalBuffers | fastgltf::Options::LoadExternalImages | fastgltf::Options::GenerateMeshIndices;
 
+#ifdef TB_PLATFORM_ANDROID
+    auto asset = parser.loadFileFromApk(filePath);
+#else
     auto gltfFile = fastgltf::MappedGltfFile::FromPath(filePath);
     TB_CORE_ASSERT_TAGGED(bool(gltfFile), "Failed to open glTF file: {0}", fastgltf::getErrorMessage(gltfFile.error()));
-
     auto asset = parser.loadGltf(gltfFile.get(), filePath.parent_path(), gltfOptions);
+#endif // DEBUG
 
     TB_CORE_ASSERT_TAGGED(asset.error() == fastgltf::Error::None, "Failed to load glTF file: {0}", fastgltf::getErrorMessage(asset.error()));
 
@@ -93,7 +100,16 @@ void GLTF::LoadImages()
                            int image_width, image_height, channels;
 
                            stbi_set_flip_vertically_on_load(false);
-                           data.Data = stbi_load_from_memory(vector.bytes.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, STBI_rgb_alpha);
+                           // data.Data = stbi_load_from_memory(vector.bytes.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, STBI_rgb_alpha);
+
+                           std::vector<uint8_t> imageData;
+                           imageData.resize(vector.bytes.size());
+                           std::transform(vector.bytes.begin(), vector.bytes.end(), imageData.begin(), [](std::byte b) {
+                               return static_cast<uint8_t>(b);
+                           });
+
+                           data.Data = stbi_load_from_memory(imageData.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, STBI_rgb_alpha);
+
                            data.Size = image_width * image_height * channels;
                            if (data.Data == nullptr) {
                                TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from data");
@@ -140,7 +156,14 @@ void GLTF::LoadImages()
                                               int image_width, image_height, channels;
 
                                               stbi_set_flip_vertically_on_load(false);
-                                              data.Data = stbi_load_from_memory(vector.bytes.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, 4);
+
+                                              std::vector<uint8_t> imageData;
+                                              imageData.resize(vector.bytes.size());
+                                              std::transform(vector.bytes.begin(), vector.bytes.end(), imageData.begin(), [](std::byte b) {
+                                                  return static_cast<uint8_t>(b);
+                                              });
+
+                                              data.Data = stbi_load_from_memory(imageData.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, 4);
                                               data.Size = image_width * image_height * channels;
                                               if (data.Data == nullptr) {
                                                   TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from data");
@@ -273,7 +296,7 @@ void GLTF::LoadMeshes()
             std::vector<Mesh::Vertex> meshVertices;
             {
                 // Position
-                auto& positionAccessor = m_Asset.accessors[positionIt->second];
+                auto& positionAccessor = m_Asset.accessors[positionIt->accessorIndex];
                 if (!positionAccessor.bufferViewIndex.has_value())
                     continue;
 
@@ -288,7 +311,7 @@ void GLTF::LoadMeshes()
             auto texcoordAttribute = std::string("TEXCOORD_") + std::to_string(baseColorTexcoordIndex);
             if (const auto* texcoord = it->findAttribute(texcoordAttribute); texcoord != it->attributes.end()) {
                 // Tex coord
-                auto& texCoordAccessor = m_Asset.accessors[texcoord->second];
+                auto& texCoordAccessor = m_Asset.accessors[texcoord->accessorIndex];
                 if (!texCoordAccessor.bufferViewIndex.has_value())
                     continue;
 

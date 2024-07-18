@@ -3,7 +3,7 @@
 #include <tbpch.h>
 #include <Tabby/Core/Time/Timestep.h>
 
-#include "entt/entt.hpp"
+#include <entt.hpp>
 
 namespace Tabby {
 

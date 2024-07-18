@@ -1,10 +1,11 @@
 #include <Tabby/Physics/2D/Physics2D.h>
 #include <Tabby/Physics/2D/Physics2DTypes.h>
+#include <Tabby/Physics/2D/Physics2DUtil.h>
 #include <Tabby/World/ScriptableEntity.h>
 
-#include "box2d/box2d.h"
+#include <box2d/box2d.h>
 #include "box2d/math_functions.h"
-#include "entt/entt.hpp"
+#include <entt.hpp>
 
 namespace Tabby {
 
@@ -72,7 +73,8 @@ RaycastHit2D Physisc2D::RayCast(const glm::vec2& origin, const glm::vec2& direct
     b2Vec2 box2DOrigin = { origin.x, origin.y };
     b2Vec2 box2DDirection = { direction.x, direction.y };
     b2Vec2 box2DDestination = { direction.x * distance, direction.y * distance };
-    b2World_RayCast(s_Instance->m_PhysicsWorld, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
+    b2World_CastRay(s_Instance->m_PhysicsWorld, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
+    // b2World_RayCast(s_Instance->m_PhysicsWorld, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
 
     return tempRayCastHit;
 }
@@ -105,7 +107,8 @@ RaycastHit2D Physisc2D::BoxCast(const glm::vec2& boxSize, const glm::vec2& origi
     b2Vec2 box2DDirection = { direction.x, direction.y };
     b2Vec2 box2DDestination = { direction.x * distance, direction.y * distance };
 
-    b2World_PolygonCast(s_Instance->m_PhysicsWorld, &box, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
+    b2World_CastPolygon(s_Instance->m_PhysicsWorld, &box, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
+    // b2World_PolygonCast(s_Instance->m_PhysicsWorld, &box, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
 
     return tempRayCastHit;
 }
@@ -138,7 +141,8 @@ RaycastHit2D Physisc2D::CapsuleCast(const glm::vec2& point1, const glm::vec2& po
     b2Vec2 box2DDirection = { direction.x, direction.y };
     b2Vec2 box2DDestination = { direction.x * distance, direction.y * distance };
 
-    b2World_CapsuleCast(s_Instance->m_PhysicsWorld, &capsule, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
+    b2World_CastCapsule(s_Instance->m_PhysicsWorld, &capsule, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
+    // b2World_CapsuleCast(s_Instance->m_PhysicsWorld, &capsule, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
 
     return tempRayCastHit;
 }
@@ -171,7 +175,8 @@ RaycastHit2D Physisc2D::CircleCast(float radius, const glm::vec2& origin, const 
     b2Vec2 box2DDirection = { direction.x, direction.y };
     b2Vec2 box2DDestination = { direction.x * distance, direction.y * distance };
 
-    b2World_CircleCast(s_Instance->m_PhysicsWorld, &circle, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
+    b2World_CastCircle(s_Instance->m_PhysicsWorld, &circle, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
+    // b2World_CircleCast(s_Instance->m_PhysicsWorld, &circle, box2DOrigin, box2DDestination, { raycastFilter.GetCollisionLayer(), raycastFilter.GetCollisionMask() }, fcn, &tempRayCastHit);
 
     return tempRayCastHit;
 }
@@ -278,23 +283,23 @@ void Physisc2D::ProcessShapeInitQueue()
             ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity, ColliderType2D::Box };
 
             // --------- Create box collider def ---------
-            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.angle);
+            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.Angle);
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = bc2d.Density;
             shapeDef.friction = bc2d.Friction;
             shapeDef.restitution = bc2d.Restitution;
-            shapeDef.isSensor = bc2d.isSensor;
-            shapeDef.enableSensorEvents = bc2d.enableSensorEvents;
-            shapeDef.enableContactEvents = bc2d.enableContactEvents;
-            shapeDef.enablePreSolveEvents = bc2d.enablePreSolveEvents;
-            shapeDef.filter.categoryBits = bc2d.collisionLayer;
-            shapeDef.filter.maskBits = bc2d.collisionMask;
+            shapeDef.isSensor = bc2d.IsSensor;
+            shapeDef.enableSensorEvents = bc2d.EnableSensorEvents;
+            shapeDef.enableContactEvents = bc2d.EnableContactEvents;
+            shapeDef.enablePreSolveEvents = bc2d.EnablePreSolveEvents;
+            shapeDef.filter.categoryBits = bc2d.CollisionLayer;
+            shapeDef.filter.maskBits = bc2d.CollisionMask;
             shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create box collider in body ---------
             bc2d.RuntimeShapeId = b2CreatePolygonShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &box);
-            bc2d.queuedForInitialization = false;
+            bc2d.QueuedForInitialization = false;
 
         } else if (shapeInfo.colliderType == ColliderType2D::Circle) {
             auto& cc2d = shapeInfo.entity.GetComponent<CircleCollider2DComponent>();
@@ -307,17 +312,17 @@ void Physisc2D::ProcessShapeInitQueue()
             shapeDef.density = cc2d.Density;
             shapeDef.friction = cc2d.Friction;
             shapeDef.restitution = cc2d.Restitution;
-            shapeDef.isSensor = cc2d.isSensor;
-            shapeDef.enableSensorEvents = cc2d.enableSensorEvents;
-            shapeDef.enableContactEvents = cc2d.enableContactEvents;
-            shapeDef.enablePreSolveEvents = cc2d.enablePreSolveEvents;
-            shapeDef.filter.categoryBits = cc2d.collisionLayer;
-            shapeDef.filter.maskBits = cc2d.collisionMask;
+            shapeDef.isSensor = cc2d.IsSensor;
+            shapeDef.enableSensorEvents = cc2d.EnableSensorEvents;
+            shapeDef.enableContactEvents = cc2d.EnableContactEvents;
+            shapeDef.enablePreSolveEvents = cc2d.EnablePreSolveEvents;
+            shapeDef.filter.categoryBits = cc2d.CollisionLayer;
+            shapeDef.filter.maskBits = cc2d.CollisionMask;
             shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create circle collider in body ---------
             cc2d.RuntimeShapeId = b2CreateCircleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &circleShape);
-            cc2d.queuedForInitialization = false;
+            cc2d.QueuedForInitialization = false;
         } else if (shapeInfo.colliderType == ColliderType2D::Capsule) {
             auto& cc2d = shapeInfo.entity.GetComponent<CapsuleCollider2DComponent>();
             ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity, ColliderType2D::Capsule };
@@ -332,17 +337,17 @@ void Physisc2D::ProcessShapeInitQueue()
             shapeDef.density = cc2d.Density;
             shapeDef.friction = cc2d.Friction;
             shapeDef.restitution = cc2d.Restitution;
-            shapeDef.isSensor = cc2d.isSensor;
-            shapeDef.enableSensorEvents = cc2d.enableSensorEvents;
-            shapeDef.enableContactEvents = cc2d.enableContactEvents;
-            shapeDef.enablePreSolveEvents = cc2d.enablePreSolveEvents;
-            shapeDef.filter.categoryBits = cc2d.collisionLayer;
-            shapeDef.filter.maskBits = cc2d.collisionMask;
+            shapeDef.isSensor = cc2d.IsSensor;
+            shapeDef.enableSensorEvents = cc2d.EnableSensorEvents;
+            shapeDef.enableContactEvents = cc2d.EnableContactEvents;
+            shapeDef.enablePreSolveEvents = cc2d.EnablePreSolveEvents;
+            shapeDef.filter.categoryBits = cc2d.CollisionLayer;
+            shapeDef.filter.maskBits = cc2d.CollisionMask;
             shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create circle collider in body ---------
             cc2d.RuntimeShapeId = b2CreateCapsuleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &capsuleShape);
-            cc2d.queuedForInitialization = false;
+            cc2d.QueuedForInitialization = false;
         } else if (shapeInfo.colliderType == ColliderType2D::Segment) {
             auto& sc2d = shapeInfo.entity.GetComponent<SegmentCollider2DComponent>();
             ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity, ColliderType2D::Segment };
@@ -357,17 +362,17 @@ void Physisc2D::ProcessShapeInitQueue()
             shapeDef.density = sc2d.Density;
             shapeDef.friction = sc2d.Friction;
             shapeDef.restitution = sc2d.Restitution;
-            shapeDef.isSensor = sc2d.isSensor;
-            shapeDef.enableSensorEvents = sc2d.enableSensorEvents;
-            shapeDef.enableContactEvents = sc2d.enableContactEvents;
-            shapeDef.enablePreSolveEvents = sc2d.enablePreSolveEvents;
-            shapeDef.filter.categoryBits = sc2d.collisionLayer;
-            shapeDef.filter.maskBits = sc2d.collisionMask;
+            shapeDef.isSensor = sc2d.IsSensor;
+            shapeDef.enableSensorEvents = sc2d.EnableSensorEvents;
+            shapeDef.enableContactEvents = sc2d.EnableContactEvents;
+            shapeDef.enablePreSolveEvents = sc2d.EnablePreSolveEvents;
+            shapeDef.filter.categoryBits = sc2d.CollisionLayer;
+            shapeDef.filter.maskBits = sc2d.CollisionMask;
             shapeDef.userData = static_cast<void*>(userData);
 
             // --------- Create circle collider in body ---------
             sc2d.RuntimeShapeId = b2CreateSegmentShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &segmentShape);
-            sc2d.queuedForInitialization = false;
+            sc2d.QueuedForInitialization = false;
         }
 
         s_Instance->shapeInitQueue.pop();
@@ -389,16 +394,16 @@ void Physisc2D::ProcessShapeUpdateQueue()
             auto& bc2d = shapeInfo.entity.GetComponent<BoxCollider2DComponent>();
 
             // --------- Create box collider def ---------
-            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.angle);
+            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.Angle);
 
             b2Shape_SetPolygon(bc2d.RuntimeShapeId, &box);
 
             b2Filter filter = b2Shape_GetFilter(bc2d.RuntimeShapeId);
-            filter.categoryBits = bc2d.collisionLayer;
-            filter.maskBits = bc2d.collisionMask;
+            filter.categoryBits = bc2d.CollisionLayer;
+            filter.maskBits = bc2d.CollisionMask;
             b2Shape_SetFilter(bc2d.RuntimeShapeId, filter);
 
-            bc2d.queuedForInitialization = false;
+            bc2d.QueuedForInitialization = false;
 
         } else if (shapeInfo.colliderType == ColliderType2D::Circle) {
             auto& cc2d = shapeInfo.entity.GetComponent<CircleCollider2DComponent>();
@@ -407,11 +412,11 @@ void Physisc2D::ProcessShapeUpdateQueue()
             b2Shape_SetCircle(cc2d.RuntimeShapeId, &circleShape);
 
             b2Filter filter = b2Shape_GetFilter(cc2d.RuntimeShapeId);
-            filter.categoryBits = cc2d.collisionLayer;
-            filter.maskBits = cc2d.collisionMask;
+            filter.categoryBits = cc2d.CollisionLayer;
+            filter.maskBits = cc2d.CollisionMask;
             b2Shape_SetFilter(cc2d.RuntimeShapeId, filter);
 
-            cc2d.queuedForInitialization = false;
+            cc2d.QueuedForInitialization = false;
 
         } else if (shapeInfo.colliderType == ColliderType2D::Capsule) {
             auto& cc2d = shapeInfo.entity.GetComponent<CapsuleCollider2DComponent>();
@@ -424,11 +429,11 @@ void Physisc2D::ProcessShapeUpdateQueue()
             b2Shape_SetCapsule(cc2d.RuntimeShapeId, &capsuleShape);
 
             b2Filter filter = b2Shape_GetFilter(cc2d.RuntimeShapeId);
-            filter.categoryBits = cc2d.collisionLayer;
-            filter.maskBits = cc2d.collisionMask;
+            filter.categoryBits = cc2d.CollisionLayer;
+            filter.maskBits = cc2d.CollisionMask;
             b2Shape_SetFilter(cc2d.RuntimeShapeId, filter);
 
-            cc2d.queuedForInitialization = false;
+            cc2d.QueuedForInitialization = false;
         } else if (shapeInfo.colliderType == ColliderType2D::Segment) {
             auto& sc2d = shapeInfo.entity.GetComponent<SegmentCollider2DComponent>();
 
@@ -440,11 +445,11 @@ void Physisc2D::ProcessShapeUpdateQueue()
             b2Shape_SetSegment(sc2d.RuntimeShapeId, &segmentShape);
 
             b2Filter filter = b2Shape_GetFilter(sc2d.RuntimeShapeId);
-            filter.categoryBits = sc2d.collisionLayer;
-            filter.maskBits = sc2d.collisionMask;
+            filter.categoryBits = sc2d.CollisionLayer;
+            filter.maskBits = sc2d.CollisionMask;
             b2Shape_SetFilter(sc2d.RuntimeShapeId, filter);
 
-            sc2d.queuedForInitialization = false;
+            sc2d.QueuedForInitialization = false;
         }
 
         s_Instance->shapeUpdateQueue.pop();

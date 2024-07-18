@@ -547,7 +547,7 @@ void World::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DCom
 template <>
 void World::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
 {
-    if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
+    if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
     component.worldId = Physisc2D::GetPhysicsWorld();
@@ -558,18 +558,16 @@ void World::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2
     };
 
     Physisc2D::EnqueueShapeInit(ShapeInfo);
-    component.queuedForInitialization = true;
+    component.QueuedForInitialization = true;
 }
 
 template <>
 void World::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
 {
-    auto& transform = entity.GetComponent<TransformComponent>();
-
-    if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
+    if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    component.worldId = Physisc2D::GetPhysicsWorld();
+    component.WorldId = Physisc2D::GetPhysicsWorld();
 
     ShapeInfo2D shapeInfo {
         entity,
@@ -577,18 +575,16 @@ void World::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCol
     };
 
     Physisc2D::EnqueueShapeInit(shapeInfo);
-    component.queuedForInitialization = true;
+    component.QueuedForInitialization = true;
 }
 
 template <>
 void World::OnComponentAdded<CapsuleCollider2DComponent>(Entity entity, CapsuleCollider2DComponent& component)
 {
-    auto& transform = entity.GetComponent<TransformComponent>();
-
-    if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
+    if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    component.worldId = Physisc2D::GetPhysicsWorld();
+    component.WorldId = Physisc2D::GetPhysicsWorld();
 
     ShapeInfo2D shapeInfo {
         entity,
@@ -596,18 +592,16 @@ void World::OnComponentAdded<CapsuleCollider2DComponent>(Entity entity, CapsuleC
     };
 
     Physisc2D::EnqueueShapeInit(shapeInfo);
-    component.queuedForInitialization = true;
+    component.QueuedForInitialization = true;
 }
 
 template <>
 void World::OnComponentAdded<SegmentCollider2DComponent>(Entity entity, SegmentCollider2DComponent& component)
 {
-    auto& transform = entity.GetComponent<TransformComponent>();
-
-    if (component.queuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
+    if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    component.worldId = Physisc2D::GetPhysicsWorld();
+    component.WorldId = Physisc2D::GetPhysicsWorld();
 
     ShapeInfo2D shapeInfo {
         entity,
@@ -615,7 +609,7 @@ void World::OnComponentAdded<SegmentCollider2DComponent>(Entity entity, SegmentC
     };
 
     Physisc2D::EnqueueShapeInit(shapeInfo);
-    component.queuedForInitialization = true;
+    component.QueuedForInitialization = true;
 }
 
 template <>

@@ -1,14 +1,13 @@
 // Platform detection using predefined macros
+// TODO: Add TB_ARCH
 #ifdef _WIN32
 /* Windows x64/x86 */
 #ifdef _WIN64
 /* Windows x64  */
 #define TB_PLATFORM_WINDOWS
-#define TB_ARCH_X64
 #else
 /* Windows x86 */
 #define TB_PLATFORM_WINDOWS
-#define TB_ARCH_X86
 #endif
 #elif defined(__APPLE__) || defined(__MACH__)
 #include <TargetConditionals.h>
@@ -40,3 +39,17 @@
 /* Unknown compiler/platform */
 #error "Unknown platform!"
 #endif // End of platform detection
+
+#if defined(__x86_64__) || defined(_M_X64)
+#define TB_CPU_X86_64
+#elif defined(__i386__) || defined(_M_IX86)
+#define TB_CPU_X86_32
+#elif defined(__aarch64__) || defined(_M_ARM64)
+#define TB_CPU_ARM64
+#elif defined(__arm__) || defined(_M_ARM)
+#define TB_CPU_ARM32
+#elif defined(__EMSCRIPTEN__)
+#define TB_CPU_WASM
+#else
+#error Unknown CPU architexture
+#endif

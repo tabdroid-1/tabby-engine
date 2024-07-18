@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../vendor/SDL2/include/SDL_keycode.h"
+#include <SDL2/SDL_keycode.h>
 
 namespace Tabby {
 using KeyCode = uint32_t;

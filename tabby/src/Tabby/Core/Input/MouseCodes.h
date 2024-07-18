@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../vendor/SDL2/include/SDL_mouse.h"
+#include <SDL2/SDL_mouse.h>
 
 namespace Tabby {
 using MouseCode = uint32_t;

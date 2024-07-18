@@ -3,7 +3,7 @@
 #include "Platforms/Windows/WindowsWindow.h"
 #include "tbpch.h"
 
-#include "Tabby/Input/Input.h"
+#include "Tabby/Core/Input/Input.h"
 #include "backends/imgui_impl_sdl2.h"
 
 #include "Tabby/Core/Events/ApplicationEvent.h"
@@ -45,7 +45,7 @@ void WindowsWindow::Init(const WindowProps& props)
     if (s_SDLWindowCount == 0) {
         TB_PROFILE_SCOPE_NAME("SDL Init");
         int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
-        TB_CORE_ASSERT(success, "Could not initialize SDL!");
+        TB_CORE_ASSERT_TAGGED(success, "Could not initialize SDL!");
     }
 
     {

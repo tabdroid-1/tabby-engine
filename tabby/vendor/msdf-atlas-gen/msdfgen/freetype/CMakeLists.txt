@@ -679,3 +679,8 @@ set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
 set(CPACK_COMPONENT_HEADERS_GROUP "Development")
 
 include(CPack)
+
+if (EMSCRIPTEN)
+    target_link_options(freetype PRIVATE -pthread)
+    target_compile_options(freetype PRIVATE -pthread)
+endif()

@@ -317,3 +317,8 @@ if(SPDLOG_INSTALL)
     # ---------------------------------------------------------------------------------------
     include(cmake/spdlogCPack.cmake)
 endif()
+
+if (EMSCRIPTEN)
+    target_link_options(spdlog PRIVATE -pthread)
+    target_compile_options(spdlog PRIVATE -pthread)
+endif()

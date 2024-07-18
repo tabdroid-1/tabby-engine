@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Tabby/Core/PlatformDetection.h>
+#include "Tabby/Core/PlatformDetection.h"
 
 #ifdef TB_PLATFORM_WINDOWS
 #ifndef NOMINMAX
@@ -24,11 +24,14 @@
 #include <optional>
 #include <queue>
 #include <random>
+#include <atomic>
 #include <shared_mutex>
+#include <mutex>
 #include <sstream>
 #include <string>
 #include <thread>
 #include <tuple>
+#include <filesystem>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -44,5 +47,5 @@
 #include "Config.h"
 
 #ifdef TB_PLATFORM_WINDOWS
-#include <Windows.h>
+#include <windows.h>
 #endif

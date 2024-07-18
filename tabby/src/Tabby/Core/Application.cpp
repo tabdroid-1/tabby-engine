@@ -18,15 +18,19 @@ Application::Application(const ApplicationSpecification& specification)
     TB_CORE_ASSERT_TAGGED(!s_Instance, "Application already exists!");
     s_Instance = this;
 
+#ifndef TB_PLATFORM_WEB
     if (!m_Specification.WorkingDirectory.empty()) {
         FileSystem::SetWorkingDirectory(m_Specification.WorkingDirectory);
     }
+#endif
 
     m_Window = Window::Create(WindowProps(m_Specification.Name));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
     AssetManager::Init();
+    TB_CORE_INFO("1");
     Audio::Engine::Init();
+    TB_CORE_INFO("2");
     Renderer::Init();
     Input::Init();
 

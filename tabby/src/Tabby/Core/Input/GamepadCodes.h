@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../vendor/SDL2/include/SDL.h"
+#include <SDL2/SDL.h>
 
 namespace Tabby {
 using GamepadAxis = int32_t;

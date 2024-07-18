@@ -1,6 +1,7 @@
 #include <Tabby/World/Components.h>
 #include <Tabby/Physics/2D/Physics2D.h>
 #include <Tabby/Physics/2D/Physics2DTypes.h>
+#include <Tabby/Physics/2D/Physics2DUtil.h>
 #include <Tabby/Math/Math.h>
 #include <Tabby/Renderer/GLTF.h>
 
@@ -173,7 +174,7 @@ float Rigidbody2DComponent::GetAngle() const
 
 void BoxCollider2DComponent::SetCollisionLayer(uint32_t layer)
 {
-    collisionLayer = layer;
+    CollisionLayer = layer;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
         filter.categoryBits = layer;
@@ -182,12 +183,12 @@ void BoxCollider2DComponent::SetCollisionLayer(uint32_t layer)
 }
 uint32_t BoxCollider2DComponent::GetCollisionLayer() const
 {
-    return collisionLayer;
+    return CollisionLayer;
 }
 
 void BoxCollider2DComponent::SetCollisionMask(uint32_t mask)
 {
-    collisionMask = mask;
+    CollisionMask = mask;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
         filter.maskBits = mask;
@@ -196,7 +197,7 @@ void BoxCollider2DComponent::SetCollisionMask(uint32_t mask)
 }
 uint32_t BoxCollider2DComponent::GetCollisionMask() const
 {
-    return collisionMask;
+    return CollisionMask;
 }
 
 void BoxCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
@@ -204,14 +205,14 @@ void BoxCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
-        collisionLayer |= 1 << (layerNumber - 1);
+        CollisionLayer |= 1 << (layerNumber - 1);
     } else {
-        collisionLayer &= ~(1 << (layerNumber - 1));
+        CollisionLayer &= ~(1 << (layerNumber - 1));
     }
 
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
-        filter.categoryBits = collisionLayer;
+        filter.categoryBits = CollisionLayer;
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
@@ -219,7 +220,7 @@ bool BoxCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
-    return collisionLayer & (1 << (layerNumber - 1));
+    return CollisionLayer & (1 << (layerNumber - 1));
 }
 
 void BoxCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
@@ -227,14 +228,14 @@ void BoxCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
-        collisionMask |= 1 << (layerNumber - 1);
+        CollisionMask |= 1 << (layerNumber - 1);
     } else {
-        collisionMask &= ~(1 << (layerNumber - 1));
+        CollisionMask &= ~(1 << (layerNumber - 1));
     }
 
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
-        filter.maskBits = collisionMask;
+        filter.maskBits = CollisionMask;
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
@@ -242,7 +243,7 @@ bool BoxCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
-    return collisionMask & (1 << (layerNumber - 1));
+    return CollisionMask & (1 << (layerNumber - 1));
 }
 
 void BoxCollider2DComponent::RefreshShape()
@@ -263,7 +264,7 @@ void BoxCollider2DComponent::RefreshShape()
 
 void CircleCollider2DComponent::SetCollisionLayer(uint32_t layer)
 {
-    collisionLayer = layer;
+    CollisionLayer = layer;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
         filter.categoryBits = layer;
@@ -272,12 +273,12 @@ void CircleCollider2DComponent::SetCollisionLayer(uint32_t layer)
 }
 uint32_t CircleCollider2DComponent::GetCollisionLayer() const
 {
-    return collisionLayer;
+    return CollisionLayer;
 }
 
 void CircleCollider2DComponent::SetCollisionMask(uint32_t mask)
 {
-    collisionMask = mask;
+    CollisionMask = mask;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
         filter.maskBits = mask;
@@ -286,7 +287,7 @@ void CircleCollider2DComponent::SetCollisionMask(uint32_t mask)
 }
 uint32_t CircleCollider2DComponent::GetCollisionMask() const
 {
-    return collisionMask;
+    return CollisionMask;
 }
 
 void CircleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
@@ -294,14 +295,14 @@ void CircleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool val
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
-        collisionLayer |= 1 << (layerNumber - 1);
+        CollisionLayer |= 1 << (layerNumber - 1);
     } else {
-        collisionLayer &= ~(1 << (layerNumber - 1));
+        CollisionLayer &= ~(1 << (layerNumber - 1));
     }
 
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
-        filter.categoryBits = collisionLayer;
+        filter.categoryBits = CollisionLayer;
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
@@ -309,7 +310,7 @@ bool CircleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
-    return collisionLayer & (1 << (layerNumber - 1));
+    return CollisionLayer & (1 << (layerNumber - 1));
 }
 
 void CircleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
@@ -317,14 +318,14 @@ void CircleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool valu
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
-        collisionMask |= 1 << (layerNumber - 1);
+        CollisionMask |= 1 << (layerNumber - 1);
     } else {
-        collisionMask &= ~(1 << (layerNumber - 1));
+        CollisionMask &= ~(1 << (layerNumber - 1));
     }
 
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
-        filter.maskBits = collisionMask;
+        filter.maskBits = CollisionMask;
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
@@ -332,7 +333,7 @@ bool CircleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
-    return collisionMask & (1 << (layerNumber - 1));
+    return CollisionMask & (1 << (layerNumber - 1));
 }
 
 void CircleCollider2DComponent::RefreshShape()
@@ -353,7 +354,7 @@ void CircleCollider2DComponent::RefreshShape()
 
 void CapsuleCollider2DComponent::SetCollisionLayer(uint32_t layer)
 {
-    collisionLayer = layer;
+    CollisionLayer = layer;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
         filter.categoryBits = layer;
@@ -362,12 +363,12 @@ void CapsuleCollider2DComponent::SetCollisionLayer(uint32_t layer)
 }
 uint32_t CapsuleCollider2DComponent::GetCollisionLayer() const
 {
-    return collisionLayer;
+    return CollisionLayer;
 }
 
 void CapsuleCollider2DComponent::SetCollisionMask(uint32_t mask)
 {
-    collisionMask = mask;
+    CollisionMask = mask;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
         filter.maskBits = mask;
@@ -376,7 +377,7 @@ void CapsuleCollider2DComponent::SetCollisionMask(uint32_t mask)
 }
 uint32_t CapsuleCollider2DComponent::GetCollisionMask() const
 {
-    return collisionMask;
+    return CollisionMask;
 }
 
 void CapsuleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
@@ -384,14 +385,14 @@ void CapsuleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool va
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
-        collisionLayer |= 1 << (layerNumber - 1);
+        CollisionLayer |= 1 << (layerNumber - 1);
     } else {
-        collisionLayer &= ~(1 << (layerNumber - 1));
+        CollisionLayer &= ~(1 << (layerNumber - 1));
     }
 
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
-        filter.categoryBits = collisionLayer;
+        filter.categoryBits = CollisionLayer;
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
@@ -399,7 +400,7 @@ bool CapsuleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
-    return collisionLayer & (1 << (layerNumber - 1));
+    return CollisionLayer & (1 << (layerNumber - 1));
 }
 
 void CapsuleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
@@ -407,14 +408,14 @@ void CapsuleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool val
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
-        collisionMask |= 1 << (layerNumber - 1);
+        CollisionMask |= 1 << (layerNumber - 1);
     } else {
-        collisionMask &= ~(1 << (layerNumber - 1));
+        CollisionMask &= ~(1 << (layerNumber - 1));
     }
 
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
-        filter.maskBits = collisionMask;
+        filter.maskBits = CollisionMask;
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
@@ -422,7 +423,7 @@ bool CapsuleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
-    return collisionMask & (1 << (layerNumber - 1));
+    return CollisionMask & (1 << (layerNumber - 1));
 }
 void CapsuleCollider2DComponent::RefreshShape()
 {
@@ -442,7 +443,7 @@ void CapsuleCollider2DComponent::RefreshShape()
 
 void SegmentCollider2DComponent::SetCollisionLayer(uint32_t layer)
 {
-    collisionLayer = layer;
+    CollisionLayer = layer;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
         filter.categoryBits = layer;
@@ -451,12 +452,12 @@ void SegmentCollider2DComponent::SetCollisionLayer(uint32_t layer)
 }
 uint32_t SegmentCollider2DComponent::GetCollisionLayer() const
 {
-    return collisionLayer;
+    return CollisionLayer;
 }
 
 void SegmentCollider2DComponent::SetCollisionMask(uint32_t mask)
 {
-    collisionMask = mask;
+    CollisionMask = mask;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
         filter.maskBits = mask;
@@ -465,7 +466,7 @@ void SegmentCollider2DComponent::SetCollisionMask(uint32_t mask)
 }
 uint32_t SegmentCollider2DComponent::GetCollisionMask() const
 {
-    return collisionMask;
+    return CollisionMask;
 }
 
 void SegmentCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
@@ -473,14 +474,14 @@ void SegmentCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool va
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
-        collisionLayer |= 1 << (layerNumber - 1);
+        CollisionLayer |= 1 << (layerNumber - 1);
     } else {
-        collisionLayer &= ~(1 << (layerNumber - 1));
+        CollisionLayer &= ~(1 << (layerNumber - 1));
     }
 
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
-        filter.categoryBits = collisionLayer;
+        filter.categoryBits = CollisionLayer;
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
@@ -488,7 +489,7 @@ bool SegmentCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
-    return collisionLayer & (1 << (layerNumber - 1));
+    return CollisionLayer & (1 << (layerNumber - 1));
 }
 
 void SegmentCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
@@ -496,14 +497,14 @@ void SegmentCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool val
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
-        collisionMask |= 1 << (layerNumber - 1);
+        CollisionMask |= 1 << (layerNumber - 1);
     } else {
-        collisionMask &= ~(1 << (layerNumber - 1));
+        CollisionMask &= ~(1 << (layerNumber - 1));
     }
 
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
-        filter.maskBits = collisionMask;
+        filter.maskBits = CollisionMask;
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
@@ -511,7 +512,7 @@ bool SegmentCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
-    return collisionMask & (1 << (layerNumber - 1));
+    return CollisionMask & (1 << (layerNumber - 1));
 }
 
 void SegmentCollider2DComponent::RefreshShape()

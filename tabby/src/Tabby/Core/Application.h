@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tbpch.h>
 #include "Tabby/Core/Base.h"
 
 #include "Tabby/Core/Events/ApplicationEvent.h"

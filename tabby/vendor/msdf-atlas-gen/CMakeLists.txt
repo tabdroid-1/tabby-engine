@@ -205,3 +205,8 @@ if(MSDF_ATLAS_INSTALL)
         DESTINATION ${MSDF_ATLAS_CONFIG_PATH}
     )
 endif()
+
+if (EMSCRIPTEN)
+    target_link_options(msdf-atlas-gen PRIVATE -pthread)
+    target_compile_options(msdf-atlas-gen PRIVATE -pthread)
+endif()

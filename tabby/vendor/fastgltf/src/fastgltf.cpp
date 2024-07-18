@@ -725,19 +725,19 @@ fg::Expected<fg::DataSource> fg::Parser::decodeDataUri(URIView& uri) const noexc
         }
     }
 
-    // Decode the base64 data into a traditional vector
-    auto padding = base64::getPadding(encodedData);
-    fg::StaticVector<std::uint8_t> uriData(base64::getOutputSize(encodedData.size(), padding));
-    if (config.decodeCallback != nullptr) {
-        config.decodeCallback(encodedData, uriData.data(), padding, uriData.size(), config.userPointer);
-    } else {
-        base64::decode_inplace(encodedData, uriData.data(), padding);
-    }
+	// Decode the base64 data into a traditional vector
+	auto padding = base64::getPadding(encodedData);
+	fg::StaticVector<std::byte> uriData(base64::getOutputSize(encodedData.size(), padding));
+	if (config.decodeCallback != nullptr) {
+		config.decodeCallback(encodedData, reinterpret_cast<std::uint8_t*>(uriData.data()), padding, uriData.size(), config.userPointer);
+	} else {
+		base64::decode_inplace(encodedData, reinterpret_cast<std::uint8_t*>(uriData.data()), padding);
+	}
 
-    sources::Array source {
+	sources::Array source {
 		std::move(uriData),
 		getMimeTypeFromString(mime),
-    };
+	};
 	return { std::move(source) };
 }
 
@@ -807,12 +807,14 @@ template <typename T> fg::Error fg::Parser::parseAttributes(simdjson::dom::objec
 	for (const auto& field : object) {
 		const auto key = field.key;
 
-		std::uint64_t attributeIndex;
-		if (field.value.get_uint64().get(attributeIndex) != SUCCESS) FASTGLTF_UNLIKELY {
+		std::uint64_t accessorIndex;
+		if (field.value.get_uint64().get(accessorIndex) != SUCCESS) FASTGLTF_UNLIKELY {
 			return Error::InvalidGltf;
 		}
-		attributes.emplace_back(
-			std::make_pair(FASTGLTF_CONSTRUCT_PMR_RESOURCE(FASTGLTF_STD_PMR_NS::string, resourceAllocator.get(), key), static_cast<std::size_t>(attributeIndex)));
+		attributes.emplace_back(Attribute {
+			FASTGLTF_CONSTRUCT_PMR_RESOURCE(FASTGLTF_STD_PMR_NS::string, resourceAllocator.get(), key),
+			static_cast<std::size_t>(accessorIndex),
+		});
 	}
 	return Error::None;
 }
@@ -820,7 +822,7 @@ template <typename T> fg::Error fg::Parser::parseAttributes(simdjson::dom::objec
 // TODO: Is there some nicer way of declaring a templated version parseAttributes?
 //       Currently, this exists because resourceAllocator is a optional field of Parser, which we can't unconditionally
 //       pass as a parameter to a function, so parseAttributes needs to be a member function of Parser.
-template fg::Error fg::Parser::parseAttributes(simdjson::dom::object&, FASTGLTF_STD_PMR_NS::vector<attribute_type>&);
+template fg::Error fg::Parser::parseAttributes(simdjson::dom::object&, FASTGLTF_STD_PMR_NS::vector<Attribute>&);
 template fg::Error fg::Parser::parseAttributes(simdjson::dom::object&, decltype(fastgltf::Primitive::attributes)&);
 
 namespace fastgltf {
@@ -856,19 +858,19 @@ namespace fastgltf {
 		}
 	}
 
-	std::pair<StaticVector<std::uint8_t>, ComponentType> writeIndices(PrimitiveType type, std::size_t indexCount, std::size_t primitiveCount) {
+	std::pair<StaticVector<std::byte>, ComponentType> writeIndices(PrimitiveType type, std::size_t indexCount, std::size_t primitiveCount) {
 		if (indexCount < 255) {
-			StaticVector<std::uint8_t> generatedIndices(indexCount);
-			span<std::uint8_t> indices(generatedIndices.data(), generatedIndices.size());
+			StaticVector<std::byte> generatedIndices(indexCount * sizeof(std::uint8_t));
+			span<std::uint8_t> indices(reinterpret_cast<std::uint8_t*>(generatedIndices.data()), generatedIndices.size() / sizeof(std::uint8_t));
 			writeIndices(type, indices, primitiveCount);
 			return std::make_pair(generatedIndices, ComponentType::UnsignedByte);
 		} else if (indexCount < 65535) {
-			StaticVector<std::uint8_t> generatedIndices(indexCount * sizeof(std::uint16_t));
+			StaticVector<std::byte> generatedIndices(indexCount * sizeof(std::uint16_t));
 			span<std::uint16_t> indices(reinterpret_cast<std::uint16_t*>(generatedIndices.data()), generatedIndices.size() / sizeof(std::uint16_t));
 			writeIndices(type, indices, primitiveCount);
 			return std::make_pair(generatedIndices, ComponentType::UnsignedShort);
 		} else {
-			StaticVector<std::uint8_t> generatedIndices(indexCount * sizeof(std::uint32_t));
+			StaticVector<std::byte> generatedIndices(indexCount * sizeof(std::uint32_t));
 			span<std::uint32_t> indices(reinterpret_cast<std::uint32_t*>(generatedIndices.data()), generatedIndices.size() / sizeof(std::uint32_t));
 			writeIndices(type, indices, primitiveCount);
 			return std::make_pair(generatedIndices, ComponentType::UnsignedInt);
@@ -886,7 +888,7 @@ fg::Error fg::Parser::generateMeshIndices(fastgltf::Asset& asset) const {
 			if (positionAttribute == primitive.attributes.end()) {
 				return Error::InvalidGltf;
 			}
-			auto positionCount = asset.accessors[positionAttribute->second].count;
+			auto positionCount = asset.accessors[positionAttribute->accessorIndex].count;
 
 			auto primitiveCount = [&]() -> std::size_t {
 				switch (primitive.type) {
@@ -1006,13 +1008,68 @@ fg::Error fg::validate(const fastgltf::Asset& asset) {
 			    && !std::holds_alternative<FASTGLTF_STD_PMR_NS::vector<double>>(accessor.min))
 				return Error::InvalidGltf;
 		}
+
+		if (accessor.sparse) {
+			const auto& indicesView = asset.bufferViews[accessor.sparse->indicesBufferView];
+			if (indicesView.byteStride || indicesView.target)
+				return Error::InvalidGltf;
+
+			const auto& valueView = asset.bufferViews[accessor.sparse->valuesBufferView];
+			if (valueView.byteStride || valueView.target)
+				return Error::InvalidGltf;
+		}
 	}
 
 	for (const auto& animation : asset.animations) {
 		if (animation.channels.empty())
 			return Error::InvalidGltf;
+		for (const auto& channel1 : animation.channels) {
+			for (const auto& channel2 : animation.channels) {
+				if (&channel1 == &channel2)
+					continue;
+				if (channel1.nodeIndex == channel2.nodeIndex && channel1.path == channel2.path)
+					return Error::InvalidGltf;
+			}
+		}
+
 		if (animation.samplers.empty())
 			return Error::InvalidGltf;
+		for (const auto& channel : animation.channels) {
+			const auto& sampler = animation.samplers[channel.samplerIndex];
+
+			const auto& inputAccessor = asset.accessors[sampler.inputAccessor];
+			// The accessor MUST be of scalar type with floating-point components
+			if (inputAccessor.type != AccessorType::Scalar)
+				return Error::InvalidGltf;
+			if (inputAccessor.componentType != ComponentType::Float && inputAccessor.componentType != ComponentType::Double)
+				return Error::InvalidGltf;
+			if (inputAccessor.bufferViewIndex && asset.bufferViews[*inputAccessor.bufferViewIndex].meshoptCompression)
+				continue;
+
+			if (inputAccessor.count == 0)
+				continue;
+
+			if (channel.path == AnimationPath::Weights)
+				continue; // TODO: For weights, the input count needs to be multiplied by the morph target count.
+
+			const auto& outputAccessor = asset.accessors[sampler.outputAccessor];
+			if (outputAccessor.bufferViewIndex && asset.bufferViews[*outputAccessor.bufferViewIndex].meshoptCompression)
+				continue;
+
+			switch (sampler.interpolation) {
+				case AnimationInterpolation::Linear:
+				case AnimationInterpolation::Step:
+					if (inputAccessor.count != outputAccessor.count)
+						return Error::InvalidGltf;
+					break;
+				case AnimationInterpolation::CubicSpline:
+					if (inputAccessor.count < 2)
+						return Error::InvalidGltf;
+					if (inputAccessor.count * 3 != outputAccessor.count)
+						return Error::InvalidGltf;
+					break;
+			}
+		}
 	}
 
 	for (const auto& buffer : asset.buffers) {
@@ -3891,12 +3948,12 @@ fg::Expected<fg::Asset> fg::Parser::loadGltfBinary(GltfDataGetter& data, fs::pat
 					glbBuffer = sources::CustomBuffer{info.customId, MimeType::None};
 				}
 			} else {
-				StaticVector<std::uint8_t> binaryData(binaryChunk.chunkLength);
+				StaticVector<std::byte> binaryData(binaryChunk.chunkLength);
 				data.read(binaryData.data(), binaryChunk.chunkLength);
 
 				sources::Array vectorData = {
-						std::move(binaryData),
-						MimeType::GltfBuffer,
+					std::move(binaryData),
+					MimeType::GltfBuffer,
 				};
 				glbBuffer = std::move(vectorData);
 			}
@@ -4093,6 +4150,86 @@ void fg::Exporter::writeAccessors(const Asset& asset, std::string& json) {
 	json += ']';
 }
 
+void fg::Exporter::writeAnimations(const Asset& asset, std::string& json)
+{
+	if (asset.animations.empty())
+		return;
+	if (json.back() == ']' || json.back() == '}')
+		json += ',';
+
+	json += R"("animations":[)";
+	for (auto it = asset.animations.begin(); it != asset.animations.end(); ++it) {
+		json += '{';
+
+		json += R"("channels":[)";
+		for (auto ci = it->channels.begin(); ci != it->channels.end(); ++ci) {
+			json += "{";
+			json += R"("sampler":)" + std::to_string(ci->samplerIndex) + ",";
+			json += R"("target":{)";
+			if (ci->nodeIndex.has_value()) {
+				json += R"("node":)" + std::to_string(ci->nodeIndex.value()) + ",";
+			}
+			json += R"("path":")";
+			switch (ci->path) {
+			case fg::AnimationPath::Translation:
+				json += "translation";
+				break;
+			case fg::AnimationPath::Rotation:
+				json += "rotation";
+				break;
+			case fg::AnimationPath::Scale:
+				json += "scale";
+				break;
+			case fg::AnimationPath::Weights:
+				json += "weights";
+				break;
+			}
+			json += "\"}}";
+
+			if (uabs(std::distance(it->channels.begin(), ci)) + 1 < it->channels.size())
+				json += ',';
+		}
+		json += "],";
+
+		json += R"("samplers":[)";
+		for (auto si = it->samplers.begin(); si != it->samplers.end(); ++si) {
+			json += '{';
+			json += R"("input":)" + std::to_string(si->inputAccessor) + ',';
+
+			if (si->interpolation != fg::AnimationInterpolation::Linear) {
+				json += R"("interpolation":")";
+				if (si->interpolation == fg::AnimationInterpolation::Step) {
+					json += "STEP\",";
+				} else {
+					json += "CUBICSPLINE\",";
+				}
+			}
+
+			json += R"("output":)" + std::to_string(si->outputAccessor);
+			json += '}';
+
+			if (uabs(std::distance(it->samplers.begin(), si)) + 1 < it->samplers.size())
+				json += ',';
+		}
+		json += ']';
+
+		if (extrasWriteCallback != nullptr) {
+			auto extras = extrasWriteCallback(uabs(std::distance(asset.animations.begin(), it)), fastgltf::Category::Animations, userPointer);
+			if (extras.has_value()) {
+				json += std::string(",\"extras\":") + *extras;
+			}
+		}
+
+		if (!it->name.empty())
+			json += R"(,"name":")" + fg::escapeString(it->name) + '"';
+
+		json += '}';
+		if (uabs(std::distance(asset.animations.begin(), it)) + 1 < asset.animations.size())
+			json += ',';
+	}
+	json += ']';
+}
+
 void fg::Exporter::writeBuffers(const Asset& asset, std::string& json) {
 	if (asset.buffers.empty())
 		return;
@@ -4192,11 +4329,11 @@ void fg::Exporter::writeBufferViews(const Asset& asset, std::string& json) {
         if (it->meshoptCompression != nullptr) {
             json += R"(,"extensions":{"EXT_meshopt_compression":{)";
             const auto& meshopt = *it->meshoptCompression;
-            json += "\"buffer\":" + std::to_string(meshopt.bufferIndex) + ',';
+            json += "\"buffer\":" + std::to_string(meshopt.bufferIndex);
             if (meshopt.byteOffset != 0) {
                 json += ",\"byteOffset\":" + std::to_string(meshopt.byteOffset);
             }
-            json += "\"byteLength\":" + std::to_string(meshopt.byteLength);
+            json += ",\"byteLength\":" + std::to_string(meshopt.byteLength);
             json += ",\"byteStride\":" + std::to_string(meshopt.byteStride);
             json += ",\"count\":" + std::to_string(meshopt.count);
 
@@ -4754,7 +4891,7 @@ void fg::Exporter::writeMeshes(const Asset& asset, std::string& json) {
                 {
                     json += R"("attributes":{)";
                     for (auto ita = itp->attributes.begin(); ita != itp->attributes.end(); ++ita) {
-                        json += '"' + std::string(ita->first) + "\":" + std::to_string(ita->second);
+                        json += '"' + std::string(ita->name) + "\":" + std::to_string(ita->accessorIndex);
                         if (uabs(std::distance(itp->attributes.begin(), ita)) + 1 <itp->attributes.size())
                             json += ',';
                     }
@@ -4929,7 +5066,7 @@ void fg::Exporter::writeNodes(const Asset& asset, std::string& json) {
 			if (!it->instancingAttributes.empty()) {
 				json += R"("EXT_mesh_gpu_instancing":{"attributes":{)";
 				for (auto ait = it->instancingAttributes.begin(); ait != it->instancingAttributes.end(); ++ait) {
-					json += '"' + std::string(ait->first) + "\":" + std::to_string(ait->second);
+					json += '"' + std::string(ait->name) + "\":" + std::to_string(ait->accessorIndex);
 					if (uabs(std::distance(it->instancingAttributes.begin(), ait)) + 1 <
 						it->instancingAttributes.size())
 						json += ',';
@@ -5252,6 +5389,7 @@ std::string fg::Exporter::writeJson(const fastgltf::Asset &asset) {
 	}
 
     writeAccessors(asset, outputString);
+    writeAnimations(asset, outputString);
     writeBuffers(asset, outputString);
     writeBufferViews(asset, outputString);
     writeCameras(asset, outputString);
@@ -5320,7 +5458,7 @@ fg::Expected<fg::ExportResult<std::vector<std::byte>>> fg::Exporter::writeGltfBi
 	// TODO: Add ExportOption enumeration for disabling this?
     const bool withEmbeddedBuffer = !asset.buffers.empty()
 			// We only support writing Vectors and ByteViews as embedded buffers
-			&& (std::holds_alternative<sources::Array>(asset.buffers.front().data) || std::holds_alternative<sources::ByteView>(asset.buffers.front().data))
+			&& (std::holds_alternative<sources::Array>(asset.buffers.front().data) || std::holds_alternative<sources::ByteView>(asset.buffers.front().data) || std::holds_alternative<sources::Vector>(asset.buffers.front().data))
 			&& asset.buffers.front().byteLength < std::numeric_limits<decltype(BinaryGltfChunk::chunkLength)>::max();
 
     std::size_t binarySize = 0;

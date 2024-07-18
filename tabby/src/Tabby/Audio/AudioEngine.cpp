@@ -109,17 +109,21 @@ namespace Audio {
         TB_CORE_ASSERT_TAGGED(!s_Instance, "Audio Engine instance already created!");
         s_Instance = this;
 
+        TB_CORE_INFO("Engine1");
         m_AlcDevice = alcOpenDevice(nullptr);
         CHECK_ALC_ERRORS(m_AlcDevice);
         TB_CORE_ASSERT_TAGGED(m_AlcDevice, "alcOpenDevice: Unable to create OpenAL device");
 
+        TB_CORE_INFO("Engine2");
         m_AlcContext = alcCreateContext(m_AlcDevice, nullptr);
         CHECK_ALC_ERRORS(m_AlcDevice);
         TB_CORE_ASSERT_TAGGED(m_AlcContext, "alcCreateContext: Unable to create OpenAL context");
 
+        TB_CORE_INFO("Engine3");
         if (!alcMakeContextCurrent(m_AlcContext))
             TB_CORE_ASSERT_TAGGED(false, "alcMakeCurrentContext: Could not set OpenAL context to current context");
         CHECK_ALC_ERRORS(m_AlcDevice);
+        TB_CORE_INFO("Engine4");
 
         alListenerf(AL_GAIN, 0.50f);
         CHECK_AL_ERRORS();
@@ -146,9 +150,11 @@ namespace Audio {
             alGenBuffers(4, player.buffers);
         }
         s_Instance->m_MusicMixerLock.unlock();
+        TB_CORE_INFO("Engine5");
 
         m_ShouldThreadClose = false;
         m_PollingThread = std::thread(&Engine::EnginePollingThread, this);
+        TB_CORE_INFO("Engine6");
     }
 
     Engine::~Engine()

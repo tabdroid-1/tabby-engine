@@ -2,11 +2,11 @@
 #include "Drivers/gl33/GL33.h"
 #include "tbpch.h"
 
-#include <tracy/tracy/TracyOpenGL.hpp>
+#include <tracy/TracyOpenGL.hpp>
 
 // #if !defined(TB_PLATFORM_WEB) && !defined(TB_PLATFORM_ANDROID)
 #define GLAD_GL_IMPLEMENTATION
-#include <glad/gl33.h>
+#include <gl33.h>
 
 #include <SDL.h>
 
