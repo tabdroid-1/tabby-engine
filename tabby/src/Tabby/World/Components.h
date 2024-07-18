@@ -4,7 +4,7 @@
 #include <Tabby/Renderer/Font.h>
 
 #include <box2d/box2d.h>
-#include "entt/entt.hpp"
+#include <entt.hpp>
 
 namespace Tabby {
 
@@ -93,7 +93,7 @@ struct CircleRendererComponent {
 };
 
 struct CameraComponent {
-    Camera Camera;
+    Tabby::Camera Camera;
     bool Primary = true; // TODO: think about moving to Scene
     bool FixedAspectRatio = false;
 
@@ -142,11 +142,11 @@ struct Rigidbody2DComponent {
         Dynamic,
         Kinematic };
     BodyType Type = BodyType::Dynamic;
-    bool FixedRotation = false;
 
-    // Storage for runtime
     b2BodyId RuntimeBodyId = b2_nullBodyId;
-    bool queuedForInitialization;
+
+    bool FixedRotation;
+    bool QueuedForInitialization;
 
     Rigidbody2DComponent() = default;
     Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
@@ -164,13 +164,12 @@ struct Rigidbody2DComponent {
 };
 
 struct BoxCollider2DComponent {
-
     glm::vec2 Offset = { 0.0f, 0.0f };
     glm::vec2 Size = { 0.5f, 0.5f };
-    float angle = 0.0f;
+    float Angle = 0.0f;
 
-    uint32_t collisionLayer = 1;
-    uint32_t collisionMask = 1;
+    uint32_t CollisionLayer = 1;
+    uint32_t CollisionMask = 1;
 
     // TODO(Yan): move into physics material in the future maybe
     float Density = 1.0f;
@@ -180,26 +179,26 @@ struct BoxCollider2DComponent {
 
     /// A sensor shape collects contact information but never generates a
     /// collision response.
-    bool isSensor = false;
+    bool IsSensor = false;
 
     /// Enable sensor events for this shape. Only applies to kinematic and dynamic
     /// bodies. Ignored for sensors.
-    bool enableSensorEvents = false;
+    bool EnableSensorEvents = false;
 
     /// Enable contact events for this shape. Only applies to kinematic and
     /// dynamic bodies. Ignored for sensors.
-    bool enableContactEvents = false;
+    bool EnableContactEvents = false;
 
     /// Enable pre-solve contact events for this shape. Only applies to dynamic
     /// bodies. These are expensive
     ///    and must be carefully handled due to multi-threading. Ignored for
     ///    sensors.
-    bool enablePreSolveEvents = false;
+    bool EnablePreSolveEvents = false;
 
     // Storage for runtime
     b2ShapeId RuntimeShapeId = b2_nullShapeId;
     b2WorldId worldId = b2_nullWorldId;
-    bool queuedForInitialization;
+    bool QueuedForInitialization;
 
     BoxCollider2DComponent() = default;
     BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
@@ -223,8 +222,8 @@ struct CircleCollider2DComponent {
     glm::vec2 Offset = { 0.0f, 0.0f };
     float Radius = 0.5f;
 
-    uint32_t collisionLayer = 1;
-    uint32_t collisionMask = 1;
+    uint32_t CollisionLayer = 1;
+    uint32_t CollisionMask = 1;
 
     // TODO(Yan): move into physics material in the future maybe
     float Density = 1.0f;
@@ -234,26 +233,26 @@ struct CircleCollider2DComponent {
 
     /// A sensor shape collects contact information but never generates a
     /// collision response.
-    bool isSensor = false;
+    bool IsSensor = false;
 
     /// Enable sensor events for this shape. Only applies to kinematic and dynamic
     /// bodies. Ignored for sensors.
-    bool enableSensorEvents = false;
+    bool EnableSensorEvents = false;
 
     /// Enable contact events for this shape. Only applies to kinematic and
     /// dynamic bodies. Ignored for sensors.
-    bool enableContactEvents = false;
+    bool EnableContactEvents = false;
 
     /// Enable pre-solve contact events for this shape. Only applies to dynamic
     /// bodies. These are expensive
     ///    and must be carefully handled due to multi-threading. Ignored for
     ///    sensors.
-    bool enablePreSolveEvents = false;
+    bool EnablePreSolveEvents = false;
 
     // Storage for runtime
     b2ShapeId RuntimeShapeId = b2_nullShapeId;
-    b2WorldId worldId = b2_nullWorldId;
-    bool queuedForInitialization;
+    b2WorldId WorldId = b2_nullWorldId;
+    bool QueuedForInitialization;
 
     CircleCollider2DComponent() = default;
     CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
@@ -278,8 +277,8 @@ struct CapsuleCollider2DComponent {
     glm::vec2 center1, center2;
     float Radius = 0.5f;
 
-    uint32_t collisionLayer = 1;
-    uint32_t collisionMask = 1;
+    uint32_t CollisionLayer = 1;
+    uint32_t CollisionMask = 1;
 
     // TODO(Yan): move into physics material in the future maybe
     float Density = 1.0f;
@@ -289,26 +288,26 @@ struct CapsuleCollider2DComponent {
 
     /// A sensor shape collects contact information but never generates a
     /// collision response.
-    bool isSensor = false;
+    bool IsSensor = false;
 
     /// Enable sensor events for this shape. Only applies to kinematic and dynamic
     /// bodies. Ignored for sensors.
-    bool enableSensorEvents = false;
+    bool EnableSensorEvents = false;
 
     /// Enable contact events for this shape. Only applies to kinematic and
     /// dynamic bodies. Ignored for sensors.
-    bool enableContactEvents = false;
+    bool EnableContactEvents = false;
 
     /// Enable pre-solve contact events for this shape. Only applies to dynamic
     /// bodies. These are expensive
     ///    and must be carefully handled due to multi-threading. Ignored for
     ///    sensors.
-    bool enablePreSolveEvents = false;
+    bool EnablePreSolveEvents = false;
 
     // Storage for runtime
     b2ShapeId RuntimeShapeId = b2_nullShapeId;
-    b2WorldId worldId = b2_nullWorldId;
-    bool queuedForInitialization;
+    b2WorldId WorldId = b2_nullWorldId;
+    bool QueuedForInitialization;
 
     CapsuleCollider2DComponent() = default;
     CapsuleCollider2DComponent(const CapsuleCollider2DComponent&) = default;
@@ -332,8 +331,8 @@ struct SegmentCollider2DComponent {
     glm::vec2 Offset = { 0.0f, 0.0f };
     glm::vec2 point1, point2;
 
-    uint32_t collisionLayer = 1;
-    uint32_t collisionMask = 1;
+    uint32_t CollisionLayer = 1;
+    uint32_t CollisionMask = 1;
 
     // TODO(Yan): move into physics material in the future maybe
     float Density = 1.0f;
@@ -343,26 +342,26 @@ struct SegmentCollider2DComponent {
 
     /// A sensor shape collects contact information but never generates a
     /// collision response.
-    bool isSensor = false;
+    bool IsSensor = false;
 
     /// Enable sensor events for this shape. Only applies to kinematic and dynamic
     /// bodies. Ignored for sensors.
-    bool enableSensorEvents = false;
+    bool EnableSensorEvents = false;
 
     /// Enable contact events for this shape. Only applies to kinematic and
     /// dynamic bodies. Ignored for sensors.
-    bool enableContactEvents = false;
+    bool EnableContactEvents = false;
 
     /// Enable pre-solve contact events for this shape. Only applies to dynamic
     /// bodies. These are expensive
     ///    and must be carefully handled due to multi-threading. Ignored for
     ///    sensors.
-    bool enablePreSolveEvents = false;
+    bool EnablePreSolveEvents = false;
 
     // Storage for runtime
     b2ShapeId RuntimeShapeId = b2_nullShapeId;
-    b2WorldId worldId = b2_nullWorldId;
-    bool queuedForInitialization;
+    b2WorldId WorldId = b2_nullWorldId;
+    bool QueuedForInitialization;
 
     SegmentCollider2DComponent() = default;
     SegmentCollider2DComponent(const SegmentCollider2DComponent&) = default;

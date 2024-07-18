@@ -3,7 +3,7 @@
 #include "Platforms/Web/WebWindow.h"
 #include "tbpch.h"
 
-#include "Tabby/Input/Input.h"
+#include "Tabby/Core/Input/Input.h"
 #include "backends/imgui_impl_sdl2.h"
 
 #include "Tabby/Core/Events/ApplicationEvent.h"
@@ -13,10 +13,10 @@
 #include "Drivers/gl33/OpenGL33Context.h"
 #include "Tabby/Renderer/Renderer.h"
 
-#include <SDL.h>
-
 #include <emscripten.h>
 #include <emscripten/html5.h>
+
+#include <SDL2/SDL.h>
 
 namespace Tabby {
 
@@ -48,21 +48,14 @@ void WebWindow::Init(const WindowProps& props)
 
     if (s_SDLWindowCount == 0) {
         TB_PROFILE_SCOPE_NAME("SDL Init");
-        int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
-        TB_CORE_ASSERT(success, "Could not initialize GLFW!");
+        int success = SDL_Init(SDL_INIT_VIDEO);
+        TB_CORE_ASSERT_TAGGED(success, "Could not initialize SDL!");
     }
 
     {
         TB_PROFILE_SCOPE_NAME("glfwCreateWindow");
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
-
-            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-#if defined(TB_DEBUG)
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-#endif
+            TB_CORE_ASSERT_TAGGED(false, "OpenGL33 is not supported by EMSCRIPTEN.");
         } else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3) {
 
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);

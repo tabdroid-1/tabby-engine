@@ -1,3 +1,18 @@
 [submodule "tabby/vendor/box2d"]
 	path = tabby/vendor/box2d
 	url = https://github.com/erincatto/box2d.git
+[submodule "tabby/vendor/box2c"]
+	path = tabby/vendor/box2c
+	url = https://github.com/erincatto/box2c.git
+[submodule "tabby/vendor/fastgltf"]
+	path = tabby/vendor/fastgltf
+	url = https://github.com/spnda/fastgltf.git
+[submodule "tabby/vendor/glm"]
+	path = tabby/vendor/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "tabby/vendor/libsndfile"]
+	path = tabby/vendor/libsndfile
+	url = https://github.com/libsndfile/libsndfile.git
+[submodule "tabby/vendor/openal-soft"]
+	path = tabby/vendor/openal-soft
+	url = https://github.com/kcat/openal-soft.git

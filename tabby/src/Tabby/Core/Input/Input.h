@@ -52,4 +52,5 @@ private:
 
     friend class Application;
 };
+
 }

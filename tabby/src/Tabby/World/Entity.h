@@ -3,7 +3,7 @@
 #include <Tabby/World/Components.h>
 #include <Tabby/World/World.h>
 
-#include "entt/entt.hpp"
+#include <entt.hpp>
 
 namespace Tabby {
 

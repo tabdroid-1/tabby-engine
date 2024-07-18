@@ -10,7 +10,11 @@ if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
 endif ()
 
-# add_definitions(-w) # disables warnings
+# this runs when its now WIN32 because -w breaks windres build
+if (NOT TB_DIST AND NOT WIN32)
+    add_definitions(-w) # disables warnings
+endif()
+
 
 add_subdirectory(tabby)
 add_subdirectory(app)

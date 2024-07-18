@@ -1,4 +1,4 @@
-#include "SDL2/include/SDL_rwops.h"
+#include "SDL_rwops.h"
 #include <Tabby/Asset/AssetFile.h>
 #include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Renderer/Font.h>

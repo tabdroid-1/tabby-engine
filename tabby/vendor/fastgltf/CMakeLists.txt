@@ -31,9 +31,11 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/add_source_directory.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 
 # Create the library target
+set(FASTGLTF_HEADERS "include/fastgltf/base64.hpp" "include/fastgltf/core.hpp"
+        "include/fastgltf/dxmath_element_traits.hpp" "include/fastgltf/glm_element_traits.hpp"
+        "include/fastgltf/tools.hpp" "include/fastgltf/types.hpp" "include/fastgltf/util.hpp" "include/fastgltf/math.hpp")
 add_library(fastgltf
-    "src/fastgltf.cpp" "src/base64.cpp" "src/io.cpp"
-    "include/fastgltf/base64.hpp" "include/fastgltf/glm_element_traits.hpp" "include/fastgltf/core.hpp" "include/fastgltf/tools.hpp" "include/fastgltf/types.hpp" "include/fastgltf/util.hpp" "include/fastgltf/math.hpp")
+    "src/fastgltf.cpp" "src/base64.cpp" "src/io.cpp" ${FASTGLTF_HEADERS})
 add_library(fastgltf::fastgltf ALIAS fastgltf)
 
 fastgltf_compiler_flags(fastgltf)
@@ -48,6 +50,11 @@ if (ANDROID)
     target_link_libraries(fastgltf PRIVATE android)
 endif()
 
+if (EMSCRIPTEN)
+    target_link_options(fastgltf PRIVATE -pthread)
+    target_compile_options(fastgltf PRIVATE -pthread)
+endif()
+
 # If the target already exists due to the parent script already including it as a dependency, just directly link it.
 if (TARGET simdjson::simdjson)
     target_link_libraries(fastgltf PRIVATE simdjson::simdjson)
@@ -59,7 +66,7 @@ else()
         target_link_libraries(fastgltf PUBLIC simdjson::simdjson)
     else()
         # Download and configure simdjson
-        set(SIMDJSON_TARGET_VERSION "3.9.2")
+        set(SIMDJSON_TARGET_VERSION "3.9.4")
         set(SIMDJSON_DL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/deps/simdjson")
         file(MAKE_DIRECTORY ${SIMDJSON_DL_DIR})
 
@@ -138,7 +145,7 @@ elseif(FASTGLTF_ENABLE_CPP_MODULES)
 endif()
 
 install(
-    FILES "include/fastgltf/base64.hpp" "include/fastgltf/glm_element_traits.hpp" "include/fastgltf/core.hpp" "include/fastgltf/tools.hpp" "include/fastgltf/types.hpp" "include/fastgltf/util.hpp"
+    FILES ${FASTGLTF_HEADERS}
     DESTINATION include/fastgltf
 )
 

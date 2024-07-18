@@ -15,7 +15,9 @@
 #elif defined(TB_PLATFORM_ANDROID)
 #define TB_DEBUGBREAK() __builtin_trap()
 #elif defined(TB_PLATFORM_WEB)
-#define TB_DEBUGBREAK() EM_ASM({ debugger; });
+#include <emscripten.h>
+#define TB_DEBUGBREAK() emscripten_force_exit(1)
+// #define TB_DEBUGBREAK() emscripten_debugger()
 #else
 #error "Platform doesn't support debugbreak yet!"
 #endif

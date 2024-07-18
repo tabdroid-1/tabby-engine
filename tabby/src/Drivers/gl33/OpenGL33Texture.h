@@ -2,7 +2,7 @@
 
 #include "Tabby/Renderer/Texture.h"
 
-#include <glad/gl33.h>
+#include <gl33.h>
 
 namespace Tabby {
 
