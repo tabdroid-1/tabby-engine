@@ -1,3 +1,9 @@
+Version: 19-07-2024_1 Alpha
+Changes:
+- "Fixed" OpenGL 3.0 ES Framebuffer. i'll clean it up later.  
+
+--------------------------------------------------------------------------------------
+
 Version: 06-07-2024_3 Alpha
 Changes:
 - Removed FileSystemData  

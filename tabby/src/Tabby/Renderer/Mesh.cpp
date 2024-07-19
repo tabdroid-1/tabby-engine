@@ -16,7 +16,7 @@ Mesh::Mesh()
     m_Transform = glm::mat4(1.0f);
     m_Transform = glm::translate(m_Transform, glm::vec3(0.0f, 0.0f, 0.0f));
     m_Transform = glm::scale(m_Transform, glm::vec3(1.0f, 1.0f, 1.0f));
-    m_Material = CreateShared<Material>("UnlitMaterial", "shaders/gl33/Renderer3D_MeshUnlit.glsl");
+    // m_Material = CreateShared<Material>("UnlitMaterial", "shaders/gl33/Renderer3D_MeshUnlit.glsl");
 }
 
 Mesh::~Mesh()
@@ -94,8 +94,11 @@ void Mesh::Create(DrawMode drawMode /* = DrawMode::TRIANGLE */)
 void Mesh::Render()
 {
     // To Fragment Shader
-    m_Material->SetMatrix(m_Transform);
-    m_Material->Render();
+    if (m_Material) {
+        m_Material->SetMatrix(m_Transform);
+        m_Material->Render();
+    } else
+        TB_CORE_WARN("Mesh named \'{0}\' does not have an material!", GetName());
 
     if (m_DrawMode == DrawMode::TRIANGLE)
         RenderCommand::DrawIndexed(m_VertexArray, (uint32_t)m_Indices.size());

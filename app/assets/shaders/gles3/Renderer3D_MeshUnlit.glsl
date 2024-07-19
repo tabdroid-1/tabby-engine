@@ -4,16 +4,14 @@
 // --------------------------
 
 #type vertex
-#version 330 core
+#version 300 es
 
 layout (location = 0) in vec3 a_Position;
 layout (location = 1) in vec2 a_TexCoord;
 layout (location = 2) in vec3 a_Normal;
 
-out VertexOutput {
-    vec2 TexCoord;
-    vec3 Normal;
-} Output;
+out vec2 v_TexCoord;
+out vec3 v_Normal;
 
 uniform mat4 u_Model;
 uniform Camera {
@@ -25,19 +23,19 @@ void main()
     // v_FragPos = vec3(u_Model * a_Position);// World space
     // v_TexCoord = a_TexCoord;
 
-    Output.TexCoord = a_TexCoord;
-    Output.Normal = a_Normal;
+    v_TexCoord = a_TexCoord;
+    v_Normal = a_Normal;
 
     gl_Position = u_ViewProjection * u_Model * vec4(a_Position, 1.0);
 }
 
-#type fragment
-#version 330 core
 
-in VertexOutput {
-    vec2 TexCoord;
-    vec3 Normal;
-} Input;
+#type fragment
+#version 300 es
+precision mediump float;
+
+in vec2 v_TexCoord;
+in vec3 v_Normal;
 
 // uniform sampler2D u_Texture;
 
@@ -58,7 +56,7 @@ void main()
 	// Diffuse
     if(u_HasAlbedoTexture == 1)
     {
-		vec2 tiledAndOffsetTexCoords = (Input.TexCoord * u_AlbedoMapTiling) + (u_AlbedoMapOffset * 0.01f);
+		vec2 tiledAndOffsetTexCoords = (v_TexCoord * u_AlbedoMapTiling) + (u_AlbedoMapOffset * 0.01f);
         result *= texture(u_AlbedoSampler, tiledAndOffsetTexCoords);
 
     }

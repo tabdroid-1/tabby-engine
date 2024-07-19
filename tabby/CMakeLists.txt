@@ -136,6 +136,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${STB})
 add_subdirectory(${GLM})
 add_subdirectory(${SDL2})
 add_subdirectory(${IMGUI})
+add_subdirectory(${BOX2C})
 add_subdirectory(${TRACY})
 add_subdirectory(${SPDLOG})
 add_subdirectory(${IMGUIZMO})
@@ -143,17 +144,10 @@ add_subdirectory(${FASTGLTF})
 add_subdirectory(${LIBSNDFILE})
 add_subdirectory(${MSDF-ATLAS-GEN})
 
-add_subdirectory(${BOX2C})
 
 if(NOT EMSCRIPTEN)
     add_subdirectory(${OPENAL})
 endif()
-
-# box2c only supports 64bit, hence there is going to be 2 verions of Box2d
-# if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-# else()
-#     add_subdirectory(${BOX2D})
-# endif()
 
 if (WIN32)
 

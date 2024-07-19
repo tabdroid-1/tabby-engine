@@ -43,25 +43,25 @@ void Base::OnAttach()
         cc.Camera.SetPerspectiveFarClip(10000);
     }
 
-    {
-        auto GroundEntity = Tabby::World::CreateEntity("GroundEntity");
-        // GroundEntity.AddComponent<Tabby::SpriteRendererComponent>();
-        auto& rb = GroundEntity.AddComponent<Tabby::Rigidbody2DComponent>();
-        rb.Type = Tabby::Rigidbody2DComponent::BodyType::Static;
-        auto& bc = GroundEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-        bc.Size = { 3.0f, 0.5f };
-    }
-
-    {
-        auto DynamicEntity = Tabby::World::CreateEntity("DynamicEntity");
-        DynamicEntity.AddComponent<Tabby::SpriteRendererComponent>();
-        auto& rb = DynamicEntity.AddComponent<Tabby::Rigidbody2DComponent>();
-        rb.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
-        auto& bc = DynamicEntity.AddComponent<Tabby::BoxCollider2DComponent>();
-        bc.Size = { 2.0f, 0.5f };
-
-        DynamicEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3;
-    }
+    // {
+    //     auto GroundEntity = Tabby::World::CreateEntity("GroundEntity");
+    //     // GroundEntity.AddComponent<Tabby::SpriteRendererComponent>();
+    //     auto& rb = GroundEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+    //     rb.Type = Tabby::Rigidbody2DComponent::BodyType::Static;
+    //     auto& bc = GroundEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+    //     bc.Size = { 3.0f, 0.5f };
+    // }
+    //
+    // {
+    //     auto DynamicEntity = Tabby::World::CreateEntity("DynamicEntity");
+    //     DynamicEntity.AddComponent<Tabby::SpriteRendererComponent>();
+    //     auto& rb = DynamicEntity.AddComponent<Tabby::Rigidbody2DComponent>();
+    //     rb.Type = Tabby::Rigidbody2DComponent::BodyType::Dynamic;
+    //     auto& bc = DynamicEntity.AddComponent<Tabby::BoxCollider2DComponent>();
+    //     bc.Size = { 2.0f, 0.5f };
+    //
+    //     DynamicEntity.GetComponent<Tabby::TransformComponent>().Translation.y = 3;
+    // }
 
     {
         auto GLTFEntity = Tabby::World::CreateEntity("GLTFEntity");
@@ -79,14 +79,14 @@ void Base::OnAttach()
     // Tabby::Shared<Tabby::Prefab> deserializedPrefab = Tabby::Prefab::DeserializePrefab(data);
     // deserializedPrefab->Instantiate();
 
-    // Export Prefab
-    Tabby::Shared<Tabby::Prefab> createdPrefab = Tabby::CreateShared<Tabby::ExamplePrefab>(Tabby::UUID());
-    Tabby::Prefab::SerializePrefabToFile(createdPrefab, "prefabs/ExamplePrefab.tbpf");
-
-    // Import Prefab
-    Tabby::AssetHandle exportedPrefabHande = Tabby::AssetManager::Get()->LoadAssetSource("prefabs/ExamplePrefab.tbpf", exportedPrefabHande);
-    Tabby::Shared<Tabby::Prefab> exportedPrefab = Tabby::AssetManager::Get()->GetAsset<Tabby::Prefab>(exportedPrefabHande);
-    exportedPrefab->Instantiate();
+    // // Export Prefab
+    // Tabby::Shared<Tabby::Prefab> createdPrefab = Tabby::CreateShared<Tabby::ExamplePrefab>(Tabby::UUID());
+    // Tabby::Prefab::SerializePrefabToFile(createdPrefab, "prefabs/ExamplePrefab.tbpf");
+    //
+    // // Import Prefab
+    // Tabby::AssetHandle exportedPrefabHande = Tabby::AssetManager::Get()->LoadAssetSource("prefabs/ExamplePrefab.tbpf", exportedPrefabHande);
+    // Tabby::Shared<Tabby::Prefab> exportedPrefab = Tabby::AssetManager::Get()->GetAsset<Tabby::Prefab>(exportedPrefabHande);
+    // exportedPrefab->Instantiate();
 }
 
 void Base::OnDetach()
@@ -99,6 +99,7 @@ void Base::OnDetach()
 void Base::OnUpdate(Tabby::Timestep ts)
 {
 
+    // TB_INFO("{0}", fps);
     Tabby::World::OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
 
     if (Tabby::FramebufferSpecification spec = m_Framebuffer->GetSpecification();

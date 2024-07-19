@@ -18,19 +18,15 @@ Application::Application(const ApplicationSpecification& specification)
     TB_CORE_ASSERT_TAGGED(!s_Instance, "Application already exists!");
     s_Instance = this;
 
-#ifndef TB_PLATFORM_WEB
     if (!m_Specification.WorkingDirectory.empty()) {
         FileSystem::SetWorkingDirectory(m_Specification.WorkingDirectory);
     }
-#endif
 
     m_Window = Window::Create(WindowProps(m_Specification.Name));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
     AssetManager::Init();
-    TB_CORE_INFO("1");
     Audio::Engine::Init();
-    TB_CORE_INFO("2");
     Renderer::Init();
     Input::Init();
 
@@ -94,7 +90,11 @@ void Application::OnEvent(Event& e)
 void Application::Run()
 {
 
+#ifdef TB_PLATFORM_WEB
+    if (m_Running) {
+#else
     while (m_Running) {
+#endif
         TB_PROFILE_FRAME("Application");
 
         double time = Time::GetTime();
@@ -104,8 +104,8 @@ void Application::Run()
         ExecuteMainThreadQueue();
 
         if (!m_Minimized && Time::GetDeltaTime() < 200.0f) { // ts < 200  because ts is really high number in first frame
-            // and that breaks the phyiscs and some other stuff.
-            // this happens because m_LastFrameTime is 0 in first frame.
+                                                             // and that breaks the phyiscs and some other stuff.
+                                                             // this happens because m_LastFrameTime is 0 in first frame.
             {
                 TB_PROFILE_SCOPE_NAME("LayerStack OnUpdate");
 
