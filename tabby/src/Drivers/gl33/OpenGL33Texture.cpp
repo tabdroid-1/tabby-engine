@@ -45,9 +45,9 @@ OpenGL33Texture::OpenGL33Texture(const TextureSpecification& specification, Asse
     , m_Width(m_Specification.Width)
     , m_Height(m_Specification.Height)
 {
-    Handle = handle;
     TB_PROFILE_SCOPE_NAME("(Texture) Constructor");
 
+    Handle = handle;
     m_InternalFormat = Utils::TabbyImageFormatToGLInternalFormat(m_Specification.Format);
     m_DataFormat = Utils::TabbyImageFormatToGLDataFormat(m_Specification.Format);
 

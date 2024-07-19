@@ -8,6 +8,7 @@
 #include <Tabby/Renderer/Buffer.h>
 #include <Tabby/Renderer/VertexArray.h>
 #include <Tabby/Renderer/RenderCommand.h>
+#include <Tabby/Renderer/Renderer.h>
 
 #include <fastgltf/core.hpp>
 #include <fastgltf/types.hpp>
@@ -269,7 +270,12 @@ void GLTF::LoadMeshes()
 
             std::size_t materialUniformsIndex;
             std::size_t baseColorTexcoordIndex;
-            Shared<Material> tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gl33/Renderer3D_MeshUnlit.glsl");
+
+            Shared<Material> tabbyMaterial;
+            if (Renderer::GetAPI() == RendererAPI::API::OpenGL33)
+                tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gl33/Renderer3D_MeshUnlit.glsl");
+            else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3)
+                tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gles3/Renderer3D_MeshUnlit.glsl");
 
             if (it->materialIndex.has_value()) {
                 materialUniformsIndex = it->materialIndex.value() + 1; // Adjust for default material

@@ -64,9 +64,10 @@ int main(int argc, char** argv)
 
 #include <emscripten.h>
 
-void run()
+void run(void* data)
 {
-    Tabby::Application::Get().Run();
+    auto app = (Tabby::Application*)data;
+    app->Run();
 }
 
 int main(int argc, char** argv)
@@ -75,8 +76,9 @@ int main(int argc, char** argv)
 
     auto app = Tabby::CreateApplication({ argc, argv });
 
-    emscripten_set_main_loop((em_callback_func)run, 0, 1);
+    emscripten_set_main_loop_arg((em_arg_callback_func)run, (void*)app, 0, 1);
 
     delete app;
 }
+
 #endif

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.20)
 project(app)
 set(CMAKE_CXX_STANDARD 17)
 
+# TODO: Fix this shitty ass cmake file
+
 ###################################################################
 # Local variables
 ###################################################################
@@ -96,15 +98,21 @@ if (EMSCRIPTEN)
     append_linker_flags("-lopenal")
     append_linker_flags("-sFORCE_FILESYSTEM=1")
     append_linker_flags("-sFETCH=1")
+    append_linker_flags("-sASYNCIFY")
     append_linker_flags("-sASSERTIONS=1")
     append_linker_flags("--preload-file assets")
 	append_linker_flags("--use-port=sdl2")
+	append_linker_flags("-sPROXY_TO_PTHREAD")
+	append_linker_flags("-sALLOW_MEMORY_GROWTH")
+	# append_linker_flags("-sPTHREAD_POOL_SIZE_STRICT=0")
+	append_linker_flags("-sPTHREAD_POOL_SIZE=1")
+
 	# append_linker_flags("-sWASM_WORKERS")
     
     target_link_options(${PROJECT_NAME} PUBLIC -pthread)
     target_compile_options(${PROJECT_NAME} PUBLIC -pthread)
  
-	append_linker_flags("-Oz")
+	append_linker_flags("-O3")
 	append_linker_flags("-sMIN_FIREFOX_VERSION=79")
 	append_linker_flags("-sMIN_SAFARI_VERSION=150000")
 	append_linker_flags("-sMIN_IE_VERSION=0x7FFFFFFF") # Do not support Internet Explorer at all (this is the Emscripten default, shown here for posterity)

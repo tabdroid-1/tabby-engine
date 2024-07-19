@@ -43,7 +43,7 @@ OpenGLES3Texture::OpenGLES3Texture(const TextureSpecification& specification, As
     , m_Width(m_Specification.Width)
     , m_Height(m_Specification.Height)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("(Texture) Constructor");
 
     Handle = handle;
     m_InternalFormat = Utils::TabbyImageFormatToGLInternalFormat(m_Specification.Format);
@@ -82,26 +82,32 @@ OpenGLES3Texture::~OpenGLES3Texture()
 
 void OpenGLES3Texture::SetData(Buffer data)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("(Texture) Set data");
 
-    uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-    TB_CORE_ASSERT_TAGGED(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
+    // uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
+    // TB_CORE_ASSERT_TAGGED(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
 
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
     GLES3::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);
+
+    if (m_Specification.GenerateMips)
+        GLES3::GL()->GenerateMipmap(GL_TEXTURE_2D);
 }
 
 void OpenGLES3Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("(Texture) Set sub data");
 
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
     GLES3::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+
+    if (m_Specification.GenerateMips)
+        GLES3::GL()->GenerateMipmap(GL_TEXTURE_2D);
 }
 
 void OpenGLES3Texture::Bind(uint32_t slot) const
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("(Texture) bind");
 
     GLES3::GL()->ActiveTexture(GL_TEXTURE0 + slot);
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);

@@ -3731,3 +3731,8 @@ set(CMAKE_OBJC_FLAGS "${CMAKE_OBJC_FLAGS} ${CMAKE_C_FLAGS}")
 if(TARGET SDL2::SDL2-static AND NOT TARGET SDL2::SDL2)
   add_library(SDL2::SDL2 ALIAS SDL2-static)
 endif()
+
+if (EMSCRIPTEN)
+    target_link_options(SDL2-static PRIVATE -pthread)
+    target_compile_options(SDL2-static PRIVATE -pthread)
+endif()
