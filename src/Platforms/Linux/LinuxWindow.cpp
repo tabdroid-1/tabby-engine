@@ -49,7 +49,10 @@ void LinuxWindow::Init(const WindowProps& props)
     if (s_SDLWindowCount == 0) {
         TB_PROFILE_SCOPE_NAME("SDL Init");
         int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
-        TB_CORE_ASSERT_TAGGED(success, "Could not initialize SDL2!");
+        if (success != 0) {
+            TB_CORE_INFO("{}", SDL_GetError());
+        }
+        TB_CORE_ASSERT_TAGGED(success == 0, "Could not initialize SDL2!");
     }
 
     {
