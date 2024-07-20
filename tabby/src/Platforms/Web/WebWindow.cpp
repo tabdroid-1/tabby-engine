@@ -53,7 +53,7 @@ void WebWindow::Init(const WindowProps& props)
     }
 
     {
-        TB_PROFILE_SCOPE_NAME("glfwCreateWindow");
+        TB_PROFILE_SCOPE_NAME("SDLCreateWindow");
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
             TB_CORE_ASSERT_TAGGED(false, "OpenGL33 is not supported by EMSCRIPTEN.");
         } else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3) {
