@@ -1,3 +1,9 @@
+Version: 20-07-2024_4 Alpha
+Changes:
+- Fixed typos.
+
+--------------------------------------------------------------------------------------
+
 Version: 20-07-2024_3 Alpha
 Changes:
 - Added resizeable, vsync minwidth and minheight flag to application specs.

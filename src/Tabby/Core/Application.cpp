@@ -22,7 +22,7 @@ Application::Application(const ApplicationSpecification& specification)
         FileSystem::SetWorkingDirectory(m_Specification.WorkingDirectory);
     }
 
-    m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Resiseable, m_Specification.VSync, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight));
+    m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight, m_Specification.Resizeable, m_Specification.VSync));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
     AssetManager::Init();

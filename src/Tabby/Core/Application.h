@@ -29,7 +29,7 @@ struct ApplicationCommandLineArgs {
 struct ApplicationSpecification {
     std::string Name = "Tabby Application";
     std::string WorkingDirectory = "assets";
-    bool Resiseable = true;
+    bool Resizeable = true;
     bool VSync = true;
     uint32_t Width = 1600;
     uint32_t Height = 900;
