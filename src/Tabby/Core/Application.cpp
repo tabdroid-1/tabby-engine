@@ -22,7 +22,7 @@ Application::Application(const ApplicationSpecification& specification)
         FileSystem::SetWorkingDirectory(m_Specification.WorkingDirectory);
     }
 
-    m_Window = Window::Create(WindowProps(m_Specification.Name));
+    m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Resiseable, m_Specification.VSync, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
     AssetManager::Init();
@@ -127,10 +127,10 @@ void Application::Run()
         m_Window->OnUpdate();
 
         // Framerate limiter. this will do nothing if maxFPS is 0.
-        if (m_Specification.maxFPS > 0.0) {
+        if (m_Specification.MaxFPS > 0.0) {
             double frameTime = Time::GetTime() - time;
 
-            double frameTimeLimit = 1.0 / m_Specification.maxFPS;
+            double frameTimeLimit = 1.0 / m_Specification.MaxFPS;
             if (frameTime < frameTimeLimit) {
                 double sleepTime = frameTimeLimit - frameTime;
                 std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));

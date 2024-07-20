@@ -21,8 +21,14 @@ public:
 
     // Window attributes
     void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+
     void SetVSync(bool enabled) override;
     bool IsVSync() const override;
+
+    void SetResizable(bool enabled) override;
+    bool GetResizable() const override;
+
+    void SetMinSize(uint32_t minWidth, uint32_t minHeight) override;
 
     virtual void* GetNativeWindow() const { return m_Window; }
 
@@ -36,7 +42,9 @@ private:
 
     struct WindowData {
         std::string Title;
+        bool Resizeable;
         unsigned int Width, Height;
+        unsigned int MinWidth, MinHeight;
         bool VSync;
 
         EventCallbackFn EventCallback;

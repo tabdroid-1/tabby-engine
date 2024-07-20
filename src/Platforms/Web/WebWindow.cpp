@@ -43,6 +43,10 @@ void WebWindow::Init(const WindowProps& props)
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
     m_Data.Height = props.Height;
+    m_Data.MinWidth = props.MinWidth;
+    m_Data.MinHeight = props.MinHeight;
+    m_Data.Resizeable = props.Resizeable;
+    m_Data.VSync = props.VSync;
 
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
@@ -92,7 +96,9 @@ void WebWindow::Init(const WindowProps& props)
     m_Context->Init();
 
     SDL_SetWindowData(m_Window, "WindowData", &m_Data);
-    SetVSync(false);
+    SetVSync(props.VSync);
+    SetResizable(props.Resizeable);
+    SetMinSize(props.MinWidth, props.MinHeight);
 
     Input::Init();
 }
@@ -202,6 +208,28 @@ void WebWindow::SetVSync(bool enabled)
 bool WebWindow::IsVSync() const
 {
     return m_Data.VSync;
+}
+
+void WebWindow::SetResizable(bool enabled)
+{
+
+    if (enabled)
+        SDL_SetWindowResizable(m_Window, SDL_TRUE);
+    else
+        SDL_SetWindowResizable(m_Window, SDL_FALSE);
+    m_Data.Resizeable = enabled;
+}
+
+bool WebWindow::GetResizable() const
+{
+    return m_Data.Resizeable;
+}
+
+void WebWindow::SetMinSize(uint32_t minWidth, uint32_t minHeight)
+{
+    SDL_SetWindowMinimumSize(m_Window, minWidth, minHeight);
+    m_Data.MinWidth = minWidth;
+    m_Data.MinHeight = minHeight;
 }
 }
 

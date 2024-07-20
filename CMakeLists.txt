@@ -5,6 +5,7 @@ project(tabby
 	HOMEPAGE_URL "https://github.com/tabdroid-1/TabbyEngine"
     LANGUAGES CXX
 )
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(APPLE)
     message(STATUS "Including Objective-C++ for APPLE")
