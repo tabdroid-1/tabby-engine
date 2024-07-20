@@ -28,9 +28,15 @@ struct ApplicationCommandLineArgs {
 
 struct ApplicationSpecification {
     std::string Name = "Tabby Application";
-    std::string WorkingDirectory;
+    std::string WorkingDirectory = "assets";
+    bool Resiseable = true;
+    bool VSync = true;
+    uint32_t Width = 1600;
+    uint32_t Height = 900;
+    uint32_t MinWidth = 160;
+    uint32_t MinHeight = 90;
+    float MaxFPS = 0.0f;
     ApplicationCommandLineArgs CommandLineArgs;
-    float maxFPS = 0.0f;
 };
 
 class Application {

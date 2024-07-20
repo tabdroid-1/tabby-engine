@@ -1,6 +1,13 @@
+Version: 20-07-2024_3 Alpha
+Changes:
+- Added resizeable, vsync minwidth and minheight flag to application specs.
+- By default working directory is in assets folder.
+
+--------------------------------------------------------------------------------------
+
 Version: 20-07-2024_2 Alpha
 Changes:
-- Moxed examples to different repo.  
+- Moved examples to different repo.  
 
 --------------------------------------------------------------------------------------
 
