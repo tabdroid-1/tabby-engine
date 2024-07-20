@@ -1,6 +1,13 @@
+Version: 20-07-2024_1 Alpha
+Changes:
+- "Fixed" an oversight.  
+
+--------------------------------------------------------------------------------------
+
 Version: 19-07-2024_1 Alpha
 Changes:
 - "Fixed" OpenGL 3.0 ES Framebuffer. i'll clean it up later.  
+- Tried to fix web builds. Framebuffer is broken specifically on web builds and no mesh/quad is visible.
 
 --------------------------------------------------------------------------------------
 

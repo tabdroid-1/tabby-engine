@@ -106,6 +106,7 @@ if (EMSCRIPTEN)
 	append_linker_flags("-sALLOW_MEMORY_GROWTH")
 	# append_linker_flags("-sPTHREAD_POOL_SIZE_STRICT=0")
 	append_linker_flags("-sPTHREAD_POOL_SIZE=1")
+	target_link_options(${PROJECT_NAME} PUBLIC -sNO_DISABLE_EXCEPTION_CATCHING)
 
 	# append_linker_flags("-sWASM_WORKERS")
     

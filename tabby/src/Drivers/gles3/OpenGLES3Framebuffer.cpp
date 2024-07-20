@@ -334,9 +334,9 @@ int OpenGLES3Framebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 {
     TB_PROFILE_SCOPE_NAME("(Framebuffer) Read Pixel");
 
-    TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
+    // TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
-    GLES3::GL()->ReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+    GLES3::GL()->ReadBuffer(GL_COLOR_ATTACHMENT0);
     int pixelData;
     GLES3::GL()->ReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
     return pixelData;
@@ -346,9 +346,9 @@ void OpenGLES3Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 {
     TB_PROFILE_SCOPE_NAME("(Framebuffer) Clear Attachment");
 
-    TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
+    // TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
-    auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
+    auto& spec = m_ColorAttachmentSpecifications[0];
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_ColorAttachment);
     GLES3::GL()->TexImage2D(GL_TEXTURE_2D, 0, Utils::TabbyFBTextureFormatToGL(spec.TextureFormat), m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_INT, &value);
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, 0);
