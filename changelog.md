@@ -1,3 +1,9 @@
+Version: 20-07-2024_2 Alpha
+Changes:
+- Moxed examples to different repo.  
+
+--------------------------------------------------------------------------------------
+
 Version: 20-07-2024_1 Alpha
 Changes:
 - "Fixed" an oversight.  
