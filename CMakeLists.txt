@@ -200,6 +200,7 @@ if (WIN32)
 elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
 
     find_package(OpenAL)
+    target_link_options(${PROJECT_NAME} PUBLIC -ludev)
 
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GTK4 REQUIRED IMPORTED_TARGET gtk4)
