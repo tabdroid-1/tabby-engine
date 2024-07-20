@@ -1,6 +1,6 @@
-Version: 20-07-2024_4 Alpha
+Version: 20-07-2024_5 Alpha
 Changes:
-- Fixed window initializing error check.
+- Print error when window initialization fails.
 
 --------------------------------------------------------------------------------------
 
