@@ -272,7 +272,9 @@ void GLTF::LoadMeshes()
             std::size_t baseColorTexcoordIndex;
 
             Shared<Material> tabbyMaterial;
-            if (Renderer::GetAPI() == RendererAPI::API::OpenGL33)
+            if (Renderer::GetAPI() == RendererAPI::API::OpenGL46)
+                tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gl46/Renderer3D_MeshUnlit.glsl");
+            else if (Renderer::GetAPI() == RendererAPI::API::OpenGL33)
                 tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gl33/Renderer3D_MeshUnlit.glsl");
             else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3)
                 tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gles3/Renderer3D_MeshUnlit.glsl");
@@ -287,6 +289,8 @@ void GLTF::LoadMeshes()
                     if (!texture.imageIndex.has_value())
                         return; // Huh?
 
+                    auto test = m_Images[texture.imageIndex.value()];
+                    TB_INFO("{}", test->Handle);
                     tabbyMaterial->SetAlbedoMap(m_Images[texture.imageIndex.value()]);
 
                     if (baseColorTexture->transform && baseColorTexture->transform->texCoordIndex.has_value()) {

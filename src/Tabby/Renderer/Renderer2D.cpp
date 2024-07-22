@@ -197,6 +197,20 @@ void Renderer2D::Init()
         samplers[i] = i;
 
     switch (RendererAPI::GetAPI()) {
+    case RendererAPI::API::OpenGL46:
+        s_Data.QuadShader = Shader::Create("shaders/gl46/Renderer2D_Quad.glsl");
+        s_Data.QuadShader->Bind();
+        s_Data.QuadShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
+        s_Data.QuadShader->Unbind();
+
+        s_Data.TextShader = Shader::Create("shaders/gl46/Renderer2D_Text.glsl");
+        s_Data.TextShader->Bind();
+        s_Data.TextShader->SetIntArray("u_FontAtlases", samplers, s_Data.MaxTextureSlots);
+        s_Data.TextShader->Unbind();
+
+        s_Data.CircleShader = Shader::Create("shaders/gl46/Renderer2D_Circle.glsl");
+        s_Data.LineShader = Shader::Create("shaders/gl46/Renderer2D_Line.glsl");
+        break;
     case RendererAPI::API::OpenGL33:
         s_Data.QuadShader = Shader::Create("shaders/gl33/Renderer2D_Quad.glsl");
         s_Data.QuadShader->Bind();

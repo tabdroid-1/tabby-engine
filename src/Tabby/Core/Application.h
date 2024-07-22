@@ -27,6 +27,12 @@ struct ApplicationCommandLineArgs {
 };
 
 struct ApplicationSpecification {
+    enum class RendererAPI {
+        None = 0,
+        OpenGL46 = 1,
+        OpenGL33 = 2,
+        OpenGLES3 = 3
+    };
     std::string Name = "Tabby Application";
     std::string WorkingDirectory = "assets";
     bool Resizeable = true;
@@ -36,6 +42,7 @@ struct ApplicationSpecification {
     uint32_t MinWidth = 160;
     uint32_t MinHeight = 90;
     float MaxFPS = 0.0f;
+    RendererAPI RendererAPI = RendererAPI::OpenGL33;
     ApplicationCommandLineArgs CommandLineArgs;
 };
 
@@ -89,5 +96,4 @@ private:
 
 // To be defined in CLIENT
 Application* CreateApplication(ApplicationCommandLineArgs args);
-
 }

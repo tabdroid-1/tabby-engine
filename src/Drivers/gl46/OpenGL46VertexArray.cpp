@@ -1,4 +1,4 @@
-#include "Drivers/gl33/OpenGL33VertexArray.h"
+#include "Drivers/gl46/OpenGL46VertexArray.h"
 #include "tbpch.h"
 
 #include <gl.h>
@@ -36,35 +36,35 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
     return 0;
 }
 
-OpenGL33VertexArray::OpenGL33VertexArray()
+OpenGL46VertexArray::OpenGL46VertexArray()
 {
     TB_PROFILE_SCOPE();
 
-    glGenVertexArrays(1, &m_RendererID);
+    glCreateVertexArrays(1, &m_RendererID);
 }
 
-OpenGL33VertexArray::~OpenGL33VertexArray()
+OpenGL46VertexArray::~OpenGL46VertexArray()
 {
     TB_PROFILE_SCOPE();
 
     glDeleteVertexArrays(1, &m_RendererID);
 }
 
-void OpenGL33VertexArray::Bind() const
+void OpenGL46VertexArray::Bind() const
 {
     TB_PROFILE_SCOPE();
 
     glBindVertexArray(m_RendererID);
 }
 
-void OpenGL33VertexArray::Unbind() const
+void OpenGL46VertexArray::Unbind() const
 {
     TB_PROFILE_SCOPE();
 
     glBindVertexArray(0);
 }
 
-void OpenGL33VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuffer)
+void OpenGL46VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuffer)
 {
     TB_PROFILE_SCOPE();
 
@@ -128,7 +128,7 @@ void OpenGL33VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuff
     m_VertexBuffers.push_back(vertexBuffer);
 }
 
-void OpenGL33VertexArray::SetIndexBuffer(const Shared<IndexBuffer>& indexBuffer)
+void OpenGL46VertexArray::SetIndexBuffer(const Shared<IndexBuffer>& indexBuffer)
 {
     TB_PROFILE_SCOPE();
 

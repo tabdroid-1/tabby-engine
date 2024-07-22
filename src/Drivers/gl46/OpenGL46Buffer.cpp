@@ -1,4 +1,5 @@
-#include "Drivers/gl33/OpenGL33Buffer.h"
+#include "Drivers/gl46/OpenGL46Buffer.h"
+
 #include "tbpch.h"
 
 #include <gl.h>
@@ -9,49 +10,47 @@ namespace Tabby {
 // VertexBuffer /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-OpenGL33VertexBuffer::OpenGL33VertexBuffer(uint32_t size)
+OpenGL46VertexBuffer::OpenGL46VertexBuffer(uint32_t size)
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Generate");
+    TB_PROFILE_SCOPE();
 
-    glGenBuffers(1, &m_RendererID);
+    glCreateBuffers(1, &m_RendererID);
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 }
 
-OpenGL33VertexBuffer::OpenGL33VertexBuffer(float* vertices, uint32_t size)
+OpenGL46VertexBuffer::OpenGL46VertexBuffer(float* vertices, uint32_t size)
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Generate");
+    TB_PROFILE_SCOPE();
 
-    glGenBuffers(1, &m_RendererID);
+    glCreateBuffers(1, &m_RendererID);
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 }
 
-OpenGL33VertexBuffer::~OpenGL33VertexBuffer()
+OpenGL46VertexBuffer::~OpenGL46VertexBuffer()
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Delete");
+    TB_PROFILE_SCOPE();
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
-void OpenGL33VertexBuffer::Bind() const
+void OpenGL46VertexBuffer::Bind() const
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Bind");
+    TB_PROFILE_SCOPE();
 
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 }
 
-void OpenGL33VertexBuffer::Unbind() const
+void OpenGL46VertexBuffer::Unbind() const
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Unbind");
+    TB_PROFILE_SCOPE();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void OpenGL33VertexBuffer::SetData(const void* data, uint32_t size)
+void OpenGL46VertexBuffer::SetData(const void* data, uint32_t size)
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Set Data");
-
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
@@ -60,35 +59,36 @@ void OpenGL33VertexBuffer::SetData(const void* data, uint32_t size)
 // IndexBuffer //////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-OpenGL33IndexBuffer::OpenGL33IndexBuffer(uint32_t* indices, uint32_t count)
+OpenGL46IndexBuffer::OpenGL46IndexBuffer(uint32_t* indices, uint32_t count)
     : m_Count(count)
 {
-    TB_PROFILE_SCOPE_NAME("(Index Buffer) Generate");
+    TB_PROFILE_SCOPE();
 
-    glGenBuffers(1, &m_RendererID);
+    glCreateBuffers(1, &m_RendererID);
+
     // GL_ELEMENT_ARRAY_BUFFER is not valid without an actively bound VAO
     // Binding with GL_ARRAY_BUFFER allows the data to be loaded regardless of VAO state.
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     glBufferData(GL_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 }
 
-OpenGL33IndexBuffer::~OpenGL33IndexBuffer()
+OpenGL46IndexBuffer::~OpenGL46IndexBuffer()
 {
-    TB_PROFILE_SCOPE_NAME("(Index Buffer) Delete");
+    TB_PROFILE_SCOPE();
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
-void OpenGL33IndexBuffer::Bind() const
+void OpenGL46IndexBuffer::Bind() const
 {
-    TB_PROFILE_SCOPE_NAME("(Index Buffer) Bind");
+    TB_PROFILE_SCOPE();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 }
 
-void OpenGL33IndexBuffer::Unbind() const
+void OpenGL46IndexBuffer::Unbind() const
 {
-    TB_PROFILE_SCOPE_NAME("(Index Buffer) Unbind");
+    TB_PROFILE_SCOPE();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

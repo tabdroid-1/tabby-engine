@@ -1,5 +1,5 @@
 #include "Drivers/gl33/OpenGL33Texture.h"
-#include "Drivers/gl33/GL33.h"
+
 #include "tbpch.h"
 #include <stb_image.h>
 
@@ -51,27 +51,27 @@ OpenGL33Texture::OpenGL33Texture(const TextureSpecification& specification, Asse
     m_InternalFormat = Utils::TabbyImageFormatToGLInternalFormat(m_Specification.Format);
     m_DataFormat = Utils::TabbyImageFormatToGLDataFormat(m_Specification.Format);
 
-    GL33::GL()->PixelStorei(GL_UNPACK_ALIGNMENT, m_Specification.UnpackAlignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, m_Specification.UnpackAlignment);
 
-    GL33::GL()->GenTextures(1, &m_RendererID);
-    GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
+    glGenTextures(1, &m_RendererID);
+    glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-    GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
     if (m_Specification.GenerateMips) {
 
-        GL33::GL()->GenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     } else {
 
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     }
 
     if (data)
@@ -90,36 +90,36 @@ void OpenGL33Texture::SetData(Buffer data)
     // uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
     // TB_CORE_ASSERT_TAGGED(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
 
-    GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
-    GL33::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);
+    glBindTexture(GL_TEXTURE_2D, m_RendererID);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);
 
     if (m_Specification.GenerateMips)
-        GL33::GL()->GenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void OpenGL33Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 {
     TB_PROFILE_SCOPE_NAME("(Texture) Set sub data");
 
-    GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
-    GL33::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+    glBindTexture(GL_TEXTURE_2D, m_RendererID);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 
     if (m_Specification.GenerateMips)
-        GL33::GL()->GenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void OpenGL33Texture::Bind(uint32_t slot) const
 {
     TB_PROFILE_SCOPE_NAME("(Texture) bind");
 
-    GL33::GL()->ActiveTexture(GL_TEXTURE0 + slot);
-    GL33::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_2D, m_RendererID);
 }
 
 void OpenGL33Texture::Destroy()
 {
     TB_PROFILE_SCOPE_NAME("(Textures) Delete");
 
-    GL33::GL()->DeleteTextures(1, &m_RendererID);
+    glDeleteTextures(1, &m_RendererID);
 }
 }

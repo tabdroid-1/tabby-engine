@@ -3,6 +3,7 @@
 
 #include "Tabby/Renderer/Renderer.h"
 
+#include "Drivers/gl46/OpenGL46Framebuffer.h"
 #include "Drivers/gl33/OpenGL33Framebuffer.h"
 #include "Drivers/gles3/OpenGLES3Framebuffer.h"
 
@@ -14,6 +15,8 @@ Shared<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
+    case RendererAPI::API::OpenGL46:
+        return CreateShared<OpenGL46Framebuffer>(spec);
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33Framebuffer>(spec);
     case RendererAPI::API::OpenGLES3:

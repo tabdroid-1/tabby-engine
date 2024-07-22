@@ -1,8 +1,7 @@
 #include "Drivers/gl33/OpenGL33Framebuffer.h"
-#include "Drivers/gl33/GL33.h"
 #include "tbpch.h"
 
-#include <gl33.h>
+#include <gl.h>
 
 namespace Tabby {
 
@@ -19,15 +18,15 @@ namespace Utils {
     {
         TB_PROFILE_SCOPE_NAME("(Framebuffer) Generate Texture");
 
-        GL33::GL()->GenTextures(count, outID);
-        GL33::GL()->BindTexture(TextureTarget(multisampled), *outID);
+        glGenTextures(count, outID);
+        glBindTexture(TextureTarget(multisampled), *outID);
     }
 
     static void BindTexture(bool multisampled, uint32_t id)
     {
         TB_PROFILE_SCOPE_NAME("(Framebuffer) Bind Texture");
 
-        GL33::GL()->BindTexture(TextureTarget(multisampled), id);
+        glBindTexture(TextureTarget(multisampled), id);
     }
 
     static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index)
@@ -36,18 +35,18 @@ namespace Utils {
 
         bool multisampled = samples > 1;
         if (multisampled) {
-            GL33::GL()->TexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
+            glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
         } else {
-            GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
+            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
 
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         }
 
-        GL33::GL()->FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), id, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), id, 0);
     }
 
     static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, uint32_t width, uint32_t height)
@@ -55,31 +54,31 @@ namespace Utils {
         TB_PROFILE_SCOPE_NAME("(Framebuffer) Attch Depth Texture");
 
         // uint32_t rbo;
-        // GL33::GL()->GenRenderbuffers(1, &rbo);
-        // GL33::GL()->BindRenderbuffer(GL_RENDERBUFFER, rbo);
-        // GL33::GL()->RenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); // use a single renderbuffer object for both a depth AND stencil buffer.
-        // GL33::GL()->FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
+        // glGenRenderbuffers(1, &rbo);
+        // glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+        // glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); // use a single renderbuffer object for both a depth AND stencil buffer.
+        // glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
 
         // bool multisampled = samples > 1;
         // if (multisampled) {
-        //     GL33::GL()->TexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
+        //     glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
         // } else {
-        // GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
 
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        // GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-        // GL33::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
         // }
 
-        GL33::GL()->FramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, id, 0);
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, id, 0);
 
-        // GL33::GL()->FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, id, 0);
+        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, id, 0);
     }
 
     static bool IsDepthFormat(FramebufferTextureFormat format)
@@ -122,24 +121,24 @@ OpenGL33Framebuffer::OpenGL33Framebuffer(const FramebufferSpecification& spec)
 
 OpenGL33Framebuffer::~OpenGL33Framebuffer()
 {
-    GL33::GL()->DeleteFramebuffers(1, &m_RendererID);
-    GL33::GL()->DeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
-    GL33::GL()->DeleteTextures(1, &m_DepthAttachment);
+    glDeleteFramebuffers(1, &m_RendererID);
+    glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
+    glDeleteTextures(1, &m_DepthAttachment);
 }
 
 void OpenGL33Framebuffer::Invalidate()
 {
     if (m_RendererID) {
-        GL33::GL()->DeleteFramebuffers(1, &m_RendererID);
-        GL33::GL()->DeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
-        GL33::GL()->DeleteTextures(1, &m_DepthAttachment);
+        glDeleteFramebuffers(1, &m_RendererID);
+        glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
+        glDeleteTextures(1, &m_DepthAttachment);
 
         m_ColorAttachments.clear();
         m_DepthAttachment = 0;
     }
 
-    GL33::GL()->GenFramebuffers(1, &m_RendererID);
-    GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+    glGenFramebuffers(1, &m_RendererID);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
     bool multisample = m_Specification.Samples > 1;
 
@@ -175,27 +174,27 @@ void OpenGL33Framebuffer::Invalidate()
     if (m_ColorAttachments.size() > 1) {
         TB_CORE_ASSERT(m_ColorAttachments.size() <= 4);
         GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-        GL33::GL()->DrawBuffers(m_ColorAttachments.size(), buffers);
+        glDrawBuffers(m_ColorAttachments.size(), buffers);
     } else if (m_ColorAttachments.empty()) {
         // Only depth-pass
-        GL33::GL()->DrawBuffers(0, GL_NONE);
+        glDrawBuffers(0, GL_NONE);
     }
 
-    TB_CORE_ASSERT_TAGGED(GL33::GL()->CheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
-    GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
+    TB_CORE_ASSERT_TAGGED(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // TB_PROFILE_SCOPE_NAME("(Framebuffer) Invalidate");
     //
     // if (m_RendererID) {
-    //     GL33::GL()->DeleteFramebuffers(1, &m_RendererID);
-    //     GL33::GL()->DeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
-    //     GL33::GL()->DeleteTextures(1, &m_DepthAttachment);
+    //     glDeleteFramebuffers(1, &m_RendererID);
+    //     glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
+    //     glDeleteTextures(1, &m_DepthAttachment);
     //
     //     m_ColorAttachments.clear();
     //     m_DepthAttachment = 0;
     // }
     //
-    // GL33::GL()->GenFramebuffers(1, &m_RendererID);
-    // GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+    // glGenFramebuffers(1, &m_RendererID);
+    // glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
     //
     // bool multisample = m_Specification.Samples > 1;
     //
@@ -230,30 +229,30 @@ void OpenGL33Framebuffer::Invalidate()
     // if (m_ColorAttachments.size() > 1) {
     //     TB_CORE_ASSERT(m_ColorAttachments.size() <= 4);
     //     GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-    //     GL33::GL()->DrawBuffers(m_ColorAttachments.size(), buffers);
+    //     glDrawBuffers(m_ColorAttachments.size(), buffers);
     // } else if (m_ColorAttachments.empty()) {
     //     // Only depth-pass
-    //     GL33::GL()->DrawBuffer(GL_NONE);
+    //     glDrawBuffer(GL_NONE);
     // }
     //
-    // TB_CORE_ASSERT_TAGGED(GL33::GL()->CheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+    // TB_CORE_ASSERT_TAGGED(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
     //
-    // GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
+    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OpenGL33Framebuffer::Bind()
 {
     TB_PROFILE_SCOPE_NAME("(Framebuffer) Bind");
 
-    GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-    GL33::GL()->Viewport(0, 0, m_Specification.Width, m_Specification.Height);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+    glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 }
 
 void OpenGL33Framebuffer::Unbind()
 {
     TB_PROFILE_SCOPE_NAME("(Framebuffer) Unbind");
 
-    GL33::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OpenGL33Framebuffer::Resize(uint32_t width, uint32_t height)
@@ -274,9 +273,9 @@ int OpenGL33Framebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 
     TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
-    GL33::GL()->ReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+    glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
     int pixelData;
-    GL33::GL()->ReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+    glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
     return pixelData;
 }
 
@@ -287,9 +286,9 @@ void OpenGL33Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
     TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
     auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
-    GL33::GL()->BindTexture(GL_TEXTURE_2D, m_ColorAttachments[attachmentIndex]);
-    GL33::GL()->TexImage2D(GL_TEXTURE_2D, 0, Utils::TabbyFBTextureFormatToGL(spec.TextureFormat), m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_INT, &value);
-    GL33::GL()->BindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, m_ColorAttachments[attachmentIndex]);
+    glTexImage2D(GL_TEXTURE_2D, 0, Utils::TabbyFBTextureFormatToGL(spec.TextureFormat), m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_INT, &value);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 }

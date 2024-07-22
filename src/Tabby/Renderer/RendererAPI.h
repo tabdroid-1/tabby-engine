@@ -10,8 +10,9 @@ class RendererAPI {
 public:
     enum class API {
         None = 0,
-        OpenGL33 = 1,
-        OpenGLES3 = 2
+        OpenGL46 = 1,
+        OpenGL33 = 2,
+        OpenGLES3 = 3
     };
 
 public:
@@ -35,6 +36,8 @@ public:
 
 private:
     static API s_API;
+
+    friend class Application;
 };
 
 }

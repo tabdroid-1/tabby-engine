@@ -1,3 +1,9 @@
+Version: 22-07-2024_1 Alpha
+Changes:
+- OpenGL 4.6 support.
+
+--------------------------------------------------------------------------------------
+
 Version: 20-07-2024_5 Alpha
 Changes:
 - Print error when window initialization fails.

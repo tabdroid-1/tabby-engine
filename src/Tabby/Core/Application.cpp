@@ -18,6 +18,18 @@ Application::Application(const ApplicationSpecification& specification)
     TB_CORE_ASSERT_TAGGED(!s_Instance, "Application already exists!");
     s_Instance = this;
 
+    switch (specification.RendererAPI) {
+    case ApplicationSpecification::RendererAPI::OpenGL46:
+        RendererAPI::s_API = RendererAPI::API::OpenGL46;
+        break;
+    case ApplicationSpecification::RendererAPI::OpenGL33:
+        RendererAPI::s_API = RendererAPI::API::OpenGL33;
+        break;
+    case ApplicationSpecification::RendererAPI::OpenGLES3:
+        RendererAPI::s_API = RendererAPI::API::OpenGLES3;
+        break;
+    }
+
     if (!m_Specification.WorkingDirectory.empty()) {
         FileSystem::SetWorkingDirectory(m_Specification.WorkingDirectory);
     }
@@ -25,9 +37,9 @@ Application::Application(const ApplicationSpecification& specification)
     m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight, m_Specification.Resizeable, m_Specification.VSync));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
+    Renderer::Init();
     AssetManager::Init();
     Audio::Engine::Init();
-    Renderer::Init();
     Input::Init();
 
     m_ImGuiLayer = new ImGuiLayer();
@@ -169,5 +181,4 @@ void Application::ExecuteMainThreadQueue()
 
     m_MainThreadQueue.clear();
 }
-
 }

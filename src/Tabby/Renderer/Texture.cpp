@@ -1,6 +1,7 @@
 #include "Tabby/Renderer/Texture.h"
 #include "tbpch.h"
 
+#include "Drivers/gl46/OpenGL46Texture.h"
 #include "Drivers/gl33/OpenGL33Texture.h"
 #include "Drivers/gles3/OpenGLES3Texture.h"
 #include "Tabby/Renderer/Renderer.h"
@@ -14,6 +15,8 @@ Shared<Texture> Texture::Create(const TextureSpecification& specification, Asset
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
+    case RendererAPI::API::OpenGL46:
+        return CreateShared<OpenGL46Texture>(specification, handle, data);
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33Texture>(specification, handle, data);
     case RendererAPI::API::OpenGLES3:

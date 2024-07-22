@@ -4,6 +4,8 @@
 #include <Tabby/Renderer/Texture.h>
 #include <Tabby/Renderer/Shader.h>
 
+// TODO: use asset handle instead of Texture.
+
 namespace Tabby {
 
 class Material {
