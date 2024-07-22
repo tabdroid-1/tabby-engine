@@ -1,15 +1,14 @@
 #pragma once
 
 #include "Tabby/Renderer/Texture.h"
-
 #include <gl.h>
 
 namespace Tabby {
 
-class OpenGL33Texture : public Texture {
+class OpenGL46Texture : public Texture {
 public:
-    OpenGL33Texture(const TextureSpecification& specification, AssetHandle handle, Buffer Data = Buffer());
-    virtual ~OpenGL33Texture();
+    OpenGL46Texture(const TextureSpecification& specification, AssetHandle handle, Buffer Data = Buffer());
+    virtual ~OpenGL46Texture();
 
     virtual const TextureSpecification& GetSpecification() const override { return m_Specification; }
 

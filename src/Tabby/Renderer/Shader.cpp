@@ -1,6 +1,7 @@
 #include "Tabby/Renderer/Shader.h"
 #include "tbpch.h"
 
+#include "Drivers/gl46/OpenGL46Shader.h"
 #include "Drivers/gl33/OpenGL33Shader.h"
 #include "Drivers/gles3/OpenGLES3Shader.h"
 #include "Tabby/Renderer/Renderer.h"
@@ -13,6 +14,8 @@ Shared<Shader> Shader::Create(const std::string& filepath)
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
+    case RendererAPI::API::OpenGL46:
+        return CreateShared<OpenGL46Shader>(filepath);
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33Shader>(filepath);
     case RendererAPI::API::OpenGLES3:
@@ -29,6 +32,8 @@ Shared<Shader> Shader::Create(const std::string& name, const std::string& vertex
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
         return nullptr;
+    case RendererAPI::API::OpenGL46:
+        return CreateShared<OpenGL46Shader>(name, vertexSrc, fragmentSrc);
     case RendererAPI::API::OpenGL33:
         return CreateShared<OpenGL33Shader>(name, vertexSrc, fragmentSrc);
     case RendererAPI::API::OpenGLES3:

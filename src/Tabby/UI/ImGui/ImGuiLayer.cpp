@@ -13,7 +13,7 @@
 
 #include <SDL.h>
 
-#include <gl33.h>
+#include <gl.h>
 
 #include "ImGuizmo.h"
 
@@ -62,7 +62,9 @@ void ImGuiLayer::OnAttach()
 
     // Setup Platform/Renderer bindings
     ImGui_ImplSDL2_InitForOpenGL(window, SDL_GL_GetCurrentContext());
-    if (RendererAPI::GetAPI() == RendererAPI::API::OpenGL33)
+    if (RendererAPI::GetAPI() == RendererAPI::API::OpenGL46)
+        ImGui_ImplOpenGL3_Init("#version 460 core");
+    else if (RendererAPI::GetAPI() == RendererAPI::API::OpenGL33)
         ImGui_ImplOpenGL3_Init("#version 330 core");
     else if (RendererAPI::GetAPI() == RendererAPI::API::OpenGLES3)
         ImGui_ImplOpenGL3_Init("#version 300 es");

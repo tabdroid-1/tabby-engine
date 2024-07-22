@@ -1,24 +1,23 @@
-#include "Drivers/gl33/OpenGL33Context.h"
-
+#include "Drivers/gl46/OpenGL46Context.h"
 #include "tbpch.h"
 
 #include <tracy/TracyOpenGL.hpp>
 
 // #if !defined(TB_PLATFORM_WEB) && !defined(TB_PLATFORM_ANDROID)
-// #define GLAD_GL_IMPLEMENTATION only one is enough (in OpenGL46Context)
+#define GLAD_GL_IMPLEMENTATION
 #include <gl.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 namespace Tabby {
 
-OpenGL33Context::OpenGL33Context(SDL_Window* windowHandle)
+OpenGL46Context::OpenGL46Context(SDL_Window* windowHandle)
     : m_WindowHandle(windowHandle)
 {
     TB_CORE_ASSERT_TAGGED(windowHandle, "Window handle is null!");
 }
 
-void OpenGL33Context::Init()
+void OpenGL46Context::Init()
 {
     TB_PROFILE_SCOPE();
 
@@ -41,10 +40,11 @@ void OpenGL33Context::Init()
     int major = std::stoi(version.substr(0, dotPosition));
     int minor = std::stoi(version.substr(dotPosition + 1));
 
-    TB_CORE_ASSERT_TAGGED(major > 3 || (major == 3 && minor >= 3), "Tabby requires at least OpenGL version 3.3!");
+    TB_CORE_INFO("OpenGL 4.6");
+    TB_CORE_ASSERT_TAGGED(major > 4 || (major == 4 && minor >= 6), "This device does not support OpenGL 4.6!");
 }
 
-void OpenGL33Context::SwapBuffers()
+void OpenGL46Context::SwapBuffers()
 {
     TB_PROFILE_SCOPE();
 
