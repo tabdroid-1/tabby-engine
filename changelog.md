@@ -1,3 +1,10 @@
+Version: 26-07-2024_1 Alpha
+Changes:
+- Created Random class.
+- Subdata editing for vertex buffer.
+
+--------------------------------------------------------------------------------------
+
 Version: 22-07-2024_1 Alpha
 Changes:
 - OpenGL 4.6 support.

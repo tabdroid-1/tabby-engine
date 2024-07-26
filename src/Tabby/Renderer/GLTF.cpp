@@ -287,10 +287,9 @@ void GLTF::LoadMeshes()
                 if (baseColorTexture.has_value()) {
                     auto& texture = m_Asset.textures[baseColorTexture->textureIndex];
                     if (!texture.imageIndex.has_value())
-                        return; // Huh?
+                        return;
 
                     auto test = m_Images[texture.imageIndex.value()];
-                    TB_INFO("{}", test->Handle);
                     tabbyMaterial->SetAlbedoMap(m_Images[texture.imageIndex.value()]);
 
                     if (baseColorTexture->transform && baseColorTexture->transform->texCoordIndex.has_value()) {

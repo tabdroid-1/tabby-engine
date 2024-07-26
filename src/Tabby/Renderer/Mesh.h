@@ -23,13 +23,6 @@ public:
     };
 
     enum class PrimitiveType {
-        // LINE,
-        // QUAD,
-        // CUBE,
-        // SPHERE,
-        // CYLINDER,
-        // CONE,
-        // MODEL
         Points = 0,
         Lines = 1,
         LineLoop = 2,
@@ -45,6 +38,8 @@ public:
     void SetMaterial(Shared<Material> material);
     void SetVertices(std::vector<Vertex> vertices);
     void SetIndices(std::vector<uint32_t> indices);
+    void SetVertex(Vertex vertices);
+    void SetIndex(uint32_t indices);
 
     void AddVertex(Vertex vertex);
     void AddIndex(uint32_t index);
@@ -65,8 +60,6 @@ public:
 
     void Destroy();
 
-    // void ApplyTransform(const glm::mat4& matrix);
-    // void ApplyTransform(Vector3 position = Vector3(0, 0, 0), Vector3 eulerAngles = Vector3(0, 0, 0), Vector3 scale = Vector3(1, 1, 1));
     const std::string GetName() const { return m_Name; }
     std::vector<Vertex> GetVertices() { return m_Vertices; }
     std::vector<Vertex> GetWorldSpaceVertices(const glm::mat4& matrix);
