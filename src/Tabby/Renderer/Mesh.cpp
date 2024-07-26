@@ -59,13 +59,26 @@ void Mesh::SetIndices(std::vector<uint32_t> indices)
     m_Indices = indices;
 }
 
+void Mesh::SetVertex(Vertex vertices)
+{
+    // TODO:
+}
+
+void Mesh::SetIndex(uint32_t indices)
+{
+    // TODO:
+}
+
 void Mesh::AddVertex(Vertex vertex)
 {
     m_Vertices.push_back(vertex);
+    // auto buffers = m_VertexArray->GetVertexBuffers();
+    // buffers[0]->SetSubData((float*)&vertex, sizeof(vertex), (m_Vertices.size() - 1) * sizeof(Vertex));
 }
 
 void Mesh::AddIndex(uint32_t index)
 {
+    // TODO:
     m_Indices.push_back(index);
 }
 
@@ -106,9 +119,9 @@ void Mesh::Render()
         RenderCommand::DrawLines(m_VertexArray, (uint32_t)m_Vertices.size());
 
 #pragma region STATS
-        // TS_ENGINE::Application::Get().AddDrawCalls(1);
-        // TS_ENGINE::Application::Get().AddVertices((uint32_t)m_Vertices.size());
-        // TS_ENGINE::Application::Get().AddIndices((uint32_t)m_Indices.size());
+        // AddDrawCalls(1);
+        // AddVertices((uint32_t)m_Vertices.size());
+        // AddIndices((uint32_t)m_Indices.size());
 #pragma endregion
 }
 

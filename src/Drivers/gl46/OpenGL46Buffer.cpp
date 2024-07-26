@@ -55,6 +55,14 @@ void OpenGL46VertexBuffer::SetData(const void* data, uint32_t size)
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 
+void OpenGL46VertexBuffer::SetSubData(const void* data, uint32_t size, uint32_t offset)
+{
+    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Add Data");
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+    glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // IndexBuffer //////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
