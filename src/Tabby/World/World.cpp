@@ -1,11 +1,11 @@
 #include <Tabby.h>
-#include <Tabby/World/Prefab.h>
-#include <Tabby/Renderer/GLTF.h>
 #include <Tabby/Renderer/Mesh.h>
 
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
+
+#include <box2d/box2d.h>
 
 namespace Tabby {
 
@@ -20,12 +20,39 @@ void World::Init()
     if (!s_Instance)
         s_Instance = new World();
 
-    Prefab::InitializeStandardTypes();
+    AddSystem(Schedule::PreUpdate, [](entt::registry&) {
+        // Apply transform to children
+        TB_PROFILE_SCOPE_NAME("World::PreUpdate::TransformUpdate");
+        auto view = World::GetRegistry().view<TransformComponent>();
+
+        for (auto entity : view) {
+            auto& hierarchy_node_component = World::GetRegistry().get<HierarchyNodeComponent>(entity);
+            auto& transform = World::GetRegistry().get<TransformComponent>(entity);
+
+            Matrix4 rotation = glm::toMat4(glm::quat(glm::radians((Vector3&)transform.Rotation)));
+            transform.TransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.Translation) * rotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.Scale);
+
+            Matrix4 localRotation = glm::toMat4(glm::quat(glm::radians((Vector3&)transform.LocalRotation)));
+            transform.LocalTransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.LocalTranslation) * localRotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.LocalScale);
+
+            for (auto& child : hierarchy_node_component.Children) {
+                auto& childTransform = World::GetRegistry().get<TransformComponent>(child.second);
+                childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
+            }
+
+            if (World::GetRegistry().any_of<Rigidbody2DComponent>(entity)) {
+                auto& rb2d = World::GetRegistry().get<Rigidbody2DComponent>(entity);
+
+                if (B2_IS_NON_NULL(rb2d.RuntimeBodyId))
+                    b2Body_SetTransform(rb2d.RuntimeBodyId, { transform.Translation.x, transform.Translation.y }, b2MakeRot(Math::DEG2RAD * transform.Rotation.z));
+            }
+        };
+    });
 
     AddSystem(Schedule::PreUpdate, [](entt::registry&) {
         TB_PROFILE_SCOPE_NAME("World::PreUpdate::UpdatePhysics2DWorld");
         const int32_t subStepCount = 6;
-        Physisc2D::UpdateWorld(Time::GetDeltaTime(), subStepCount);
+        Physisc2D::UpdateWorld();
 
         // Retrieve transform from Box2D
         auto view = World::GetRegistry().view<Rigidbody2DComponent>();
@@ -37,30 +64,8 @@ void World::Init()
             const auto& position = b2Body_GetPosition(rb2d.RuntimeBodyId);
             transform.Translation.x = position.x;
             transform.Translation.y = position.y;
-            transform.Rotation.z = Math::RAD2DEG * b2Body_GetAngle(rb2d.RuntimeBodyId);
+            transform.Rotation.z = Math::RAD2DEG * b2Rot_GetAngle(b2Body_GetRotation(rb2d.RuntimeBodyId));
         }
-    });
-
-    AddSystem(Schedule::PreUpdate, [](entt::registry&) {
-        // Apply transform to children
-        TB_PROFILE_SCOPE_NAME("World::PreUpdate::TransformUpdate");
-        auto view = World::GetRegistry().view<TransformComponent>();
-
-        for (auto entity : view) {
-            auto& hierarchy_node_component = World::GetRegistry().get<HierarchyNodeComponent>(entity);
-            auto& transform = World::GetRegistry().get<TransformComponent>(entity);
-
-            glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians((glm::vec3&)transform.Rotation)));
-            transform.TransformMatrix = glm::translate(glm::mat4(1.0f), (glm::vec3&)transform.Translation) * rotation * glm::scale(glm::mat4(1.0f), (glm::vec3&)transform.Scale);
-
-            glm::mat4 localRotation = glm::toMat4(glm::quat(glm::radians((glm::vec3&)transform.LocalRotation)));
-            transform.LocalTransformMatrix = glm::translate(glm::mat4(1.0f), (glm::vec3&)transform.LocalTranslation) * localRotation * glm::scale(glm::mat4(1.0f), (glm::vec3&)transform.LocalScale);
-
-            for (auto& child : hierarchy_node_component.Children) {
-                auto& childTransform = World::GetRegistry().get<TransformComponent>(child.second);
-                childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
-            }
-        };
     });
 
     AddSystem(Schedule::PostUpdate, [](entt::registry&) {
@@ -115,14 +120,14 @@ void World::Init()
 
     AddSystem(Schedule::Draw, [](entt::registry&) {
         TB_PROFILE_SCOPE_NAME("World::Draw::RenderGLTF");
-        auto view = World::GetRegistry().view<TransformComponent, GLTFComponent>();
+        auto view = World::GetRegistry().view<TransformComponent, MeshComponent>();
         for (auto entity : view) {
-            auto [transform, gltf] = view.get<TransformComponent, GLTFComponent>(entity);
+            auto [transform, mC] = view.get<TransformComponent, MeshComponent>(entity);
 
-            for (auto mesh : gltf.m_GLTF->m_Meshes) {
-                mesh->SetTransform(transform.GetTransform());
+            if (mC.m_Mesh) {
+                mC.m_Mesh->SetTransform(transform.GetTransform());
+                mC.m_Mesh->Render();
             }
-            gltf.m_GLTF->Draw();
         }
     });
 
@@ -358,7 +363,7 @@ void World::OnStart()
 
     s_Instance->m_IsRunning = true;
 
-    glm::vec2 gravity(0.0f, -20.8f);
+    Vector2 gravity(0.0f, -20.8f);
     Physisc2D::InitWorld(gravity);
 
     for (const auto& preStartup : s_Instance->m_PreStartupSystems)
@@ -389,9 +394,8 @@ void World::OnStop()
     }
 }
 
-void World::Update(Timestep ts)
+void World::Update()
 {
-
     if (!s_Instance->m_IsPaused || s_Instance->m_StepFrames-- > 0) {
 
         for (const auto& preUpdate : s_Instance->m_PreUpdateSystems)
@@ -405,7 +409,7 @@ void World::Update(Timestep ts)
 
         constexpr double fixedTimeStep = 1.0 / FIXED_UPDATE_RATE;
 
-        s_Instance->m_FixedUpdateAccumulator += ts;
+        s_Instance->m_FixedUpdateAccumulator += Time::GetDeltaTime();
 
         while (s_Instance->m_FixedUpdateAccumulator >= fixedTimeStep) {
 
@@ -462,7 +466,7 @@ void World::Step(int frames)
     s_Instance->m_StepFrames = frames;
 }
 
-void World::SetCurrentCamera(Camera* currentCamera, glm::mat4* currentCameraTransform)
+void World::SetCurrentCamera(Camera* currentCamera, Matrix4* currentCameraTransform)
 {
     s_Instance->m_CurrentCamera = currentCamera;
     s_Instance->m_CurrentCameraTransform = currentCameraTransform;
@@ -618,8 +622,7 @@ void World::OnComponentAdded<TextComponent>(Entity entity, TextComponent& compon
 }
 
 template <>
-void World::OnComponentAdded<GLTFComponent>(Entity entity, GLTFComponent& component)
+void World::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component)
 {
 }
-
 }

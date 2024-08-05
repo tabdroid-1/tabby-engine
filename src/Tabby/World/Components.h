@@ -43,27 +43,28 @@ struct TransformComponent {
     Vector3 LocalRotation = { 0.0f, 0.0f, 0.0f };
     Vector3 LocalScale = { 1.0f, 1.0f, 1.0f };
 
-    glm::mat4 TransformMatrix = glm::mat4(1);
-    glm::mat4 LocalTransformMatrix = glm::mat4(1);
+    Matrix4 TransformMatrix = Matrix4(1);
+    Matrix4 LocalTransformMatrix = Matrix4(1);
 
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
-    TransformComponent(const glm::vec3& translation)
+    TransformComponent(const Vector3& translation)
         : Translation(translation)
     {
     }
 
-    glm::mat4& GetTransform() { return TransformMatrix; }
-    const glm::mat4& GetTransform() const { return TransformMatrix; }
-    glm::mat4& GetLocalTransform() { return LocalTransformMatrix; }
-    const glm::mat4& GetLocalTransform() const { return LocalTransformMatrix; }
-    void ApplyTransform(const glm::mat4& transform);
+    Matrix4& GetTransform() { return TransformMatrix; }
+    const Matrix4& GetTransform() const { return TransformMatrix; }
+    Matrix4& GetLocalTransform() { return LocalTransformMatrix; }
+    const Matrix4& GetLocalTransform() const { return LocalTransformMatrix; }
+    void ApplyTransform(const Matrix4& transform);
+    void ApplyTransformToLocal(const Matrix4& transform);
 
-    operator glm::mat4&() { return TransformMatrix; }
+    operator Matrix4&() { return TransformMatrix; }
 };
 
 struct SpriteRendererComponent {
-    glm::vec4 Color { 1.0f, 1.0f, 1.0f, 1.0f };
+    Vector4 Color { 1.0f, 1.0f, 1.0f, 1.0f };
     AssetHandle Texture;
     int renderOrder = 0;
 
@@ -75,14 +76,14 @@ struct SpriteRendererComponent {
 
     SpriteRendererComponent() = default;
     SpriteRendererComponent(const SpriteRendererComponent&) = default;
-    SpriteRendererComponent(const glm::vec4& color)
+    SpriteRendererComponent(const Vector4& color)
         : Color(color)
     {
     }
 };
 
 struct CircleRendererComponent {
-    glm::vec4 Color { 1.0f, 1.0f, 1.0f, 1.0f };
+    Vector4 Color { 1.0f, 1.0f, 1.0f, 1.0f };
     float Thickness = 1.0f;
     float Fade = 0.005f;
 
@@ -153,19 +154,19 @@ struct Rigidbody2DComponent {
 
     void SetBodyType(BodyType type);
     void SetFixedRotation(bool enable);
-    void SetVelocity(glm::vec2 velocity);
+    void SetVelocity(Vector2 velocity);
     void SetAngularVelocity(float velocity);
 
     BodyType GetType() const;
-    glm::vec2 GetVelocity() const;
-    glm::vec2 GetPosition() const;
+    Vector2 GetVelocity() const;
+    Vector2 GetPosition() const;
     float GetAngularVelocity() const;
     float GetAngle() const;
 };
 
 struct BoxCollider2DComponent {
-    glm::vec2 Offset = { 0.0f, 0.0f };
-    glm::vec2 Size = { 0.5f, 0.5f };
+    Vector2 Offset = { 0.0f, 0.0f };
+    Vector2 Size = { 0.5f, 0.5f };
     float Angle = 0.0f;
 
     uint32_t CollisionLayer = 1;
@@ -219,7 +220,7 @@ struct BoxCollider2DComponent {
 };
 
 struct CircleCollider2DComponent {
-    glm::vec2 Offset = { 0.0f, 0.0f };
+    Vector2 Offset = { 0.0f, 0.0f };
     float Radius = 0.5f;
 
     uint32_t CollisionLayer = 1;
@@ -273,8 +274,8 @@ struct CircleCollider2DComponent {
 };
 
 struct CapsuleCollider2DComponent {
-    glm::vec2 Offset = { 0.0f, 0.0f };
-    glm::vec2 center1, center2;
+    Vector2 Offset = { 0.0f, 0.0f };
+    Vector2 center1, center2;
     float Radius = 0.5f;
 
     uint32_t CollisionLayer = 1;
@@ -328,8 +329,8 @@ struct CapsuleCollider2DComponent {
 };
 
 struct SegmentCollider2DComponent {
-    glm::vec2 Offset = { 0.0f, 0.0f };
-    glm::vec2 point1, point2;
+    Vector2 Offset = { 0.0f, 0.0f };
+    Vector2 point1, point2;
 
     uint32_t CollisionLayer = 1;
     uint32_t CollisionMask = 1;
@@ -386,17 +387,17 @@ struct TextComponent {
 
     Shared<Font> font = Font::GetDefault();
     // AssetHandle Font;
-    glm::vec4 Color { 1.0f };
+    Vector4 Color { 1.0f };
     float Kerning = 0.0f;
     float LineSpacing = 0.0f;
 
     int renderOrder = 0;
 };
 
-class GLTF;
+class Mesh;
 
-struct GLTFComponent {
-    Shared<GLTF> m_GLTF;
+struct MeshComponent {
+    Shared<Mesh> m_Mesh;
 };
 
 template <typename... Component>

@@ -13,7 +13,7 @@ Mesh::Mesh()
 {
     m_PrimitiveType = PrimitiveType::Triangles;
 
-    m_Transform = glm::mat4(1.0f);
+    m_Transform = Matrix4(1.0f);
     m_Transform = glm::translate(m_Transform, glm::vec3(0.0f, 0.0f, 0.0f));
     m_Transform = glm::scale(m_Transform, glm::vec3(1.0f, 1.0f, 1.0f));
     // m_Material = CreateShared<Material>("UnlitMaterial", "shaders/gl33/Renderer3D_MeshUnlit.glsl");
@@ -34,7 +34,7 @@ void Mesh::SetName(const std::string& name)
     m_Name = name;
 }
 
-void Mesh::SetTransform(const glm::mat4& transform)
+void Mesh::SetTransform(const Matrix4& transform)
 {
     m_Transform = transform;
 }
@@ -159,10 +159,10 @@ void Mesh::CloneMesh(Shared<Mesh> mesh)
 
 std::vector<Mesh::Vertex> Mesh::GetWorldSpaceVertices(Vector3 position = Vector3(0, 0, 0), Vector3 eulerAngles = Vector3(0, 0, 0), Vector3 scale = Vector3(1, 1, 1))
 {
-    // glm::mat4 modelMatrix = glm::translate(glm::mat4(1), position) * glm::rotate(glm::mat4(1), glm::radians(eulerAngles.x), Vector3(1, 0, 0)) * glm::rotate(glm::mat4(1), glm::radians(-eulerAngles.y), Vector3(0, 1, 0)) * glm::rotate(glm::mat4(1), glm::radians(eulerAngles.z), Vector3(0, 0, 1)) * glm::scale(glm::mat4(1), scale);
+    // Matrix4 modelMatrix = glm::translate(Matrix4(1), position) * glm::rotate(Matrix4(1), glm::radians(eulerAngles.x), Vector3(1, 0, 0)) * glm::rotate(Matrix4(1), glm::radians(-eulerAngles.y), Vector3(0, 1, 0)) * glm::rotate(Matrix4(1), glm::radians(eulerAngles.z), Vector3(0, 0, 1)) * glm::scale(Matrix4(1), scale);
 
-    glm::mat4 rotation = glm::toMat4(glm::quat(glm::radians((glm::vec3)eulerAngles)));
-    glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), (glm::vec3)position) * rotation * glm::scale(glm::mat4(1.0f), (glm::vec3)scale);
+    Matrix4 rotation = glm::toMat4(glm::quat(glm::radians((glm::vec3)eulerAngles)));
+    Matrix4 modelMatrix = glm::translate(Matrix4(1.0f), (glm::vec3)position) * rotation * glm::scale(Matrix4(1.0f), (glm::vec3)scale);
 
     std::vector<Vertex> worldSpaceVertices;
 

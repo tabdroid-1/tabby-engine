@@ -8,15 +8,12 @@ namespace Tabby {
 
 class Mesh;
 class Texture;
-// class Material;
 
 class GLTF {
 public:
     GLTF(const std::filesystem::path& filePath);
 
     void Draw();
-
-    std::vector<Shared<Mesh>> m_Meshes;
 
 private:
     void LoadImages();
@@ -44,7 +41,6 @@ private:
     fastgltf::Asset m_Asset;
     std::vector<Shared<Texture>> m_Images;
     std::vector<MaterialUniforms> m_Materials;
-    // std::vector<Shared<Material>> m_Materials;
 };
 
 }

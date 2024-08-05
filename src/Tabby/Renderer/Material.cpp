@@ -20,9 +20,9 @@ Material::Material()
     , m_DepthTestEnabled(true)
     , m_AlphaBlendingEnabled(true)
 {
-    m_ModelMatrix = glm::mat4(1.0f);
-    m_ModelMatrix = glm::translate(m_ModelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-    m_ModelMatrix = glm::scale(m_ModelMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
+    m_ModelMatrix = Matrix4(1.0f);
+    m_ModelMatrix = glm::translate(m_ModelMatrix, Vector3(0.0f, 0.0f, 0.0f));
+    m_ModelMatrix = glm::scale(m_ModelMatrix, Vector3(1.0f, 1.0f, 1.0f));
 }
 
 Material::Material(const std::string& name, Shared<Shader> shader)
@@ -41,9 +41,9 @@ Material::Material(const std::string& name, Shared<Shader> shader)
     , m_DepthTestEnabled(true)
     , m_AlphaBlendingEnabled(true)
 {
-    m_ModelMatrix = glm::mat4(1.0f);
-    m_ModelMatrix = glm::translate(m_ModelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-    m_ModelMatrix = glm::scale(m_ModelMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
+    m_ModelMatrix = Matrix4(1.0f);
+    m_ModelMatrix = glm::translate(m_ModelMatrix, Vector3(0.0f, 0.0f, 0.0f));
+    m_ModelMatrix = glm::scale(m_ModelMatrix, Vector3(1.0f, 1.0f, 1.0f));
 }
 
 Material::Material(const std::string& name, const std::string& shaderPath)
@@ -63,9 +63,9 @@ Material::Material(const std::string& name, const std::string& shaderPath)
 {
     m_Shader = Shader::Create(shaderPath);
 
-    m_ModelMatrix = glm::mat4(1.0f);
-    m_ModelMatrix = glm::translate(m_ModelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-    m_ModelMatrix = glm::scale(m_ModelMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
+    m_ModelMatrix = Matrix4(1.0f);
+    m_ModelMatrix = glm::translate(m_ModelMatrix, Vector3(0.0f, 0.0f, 0.0f));
+    m_ModelMatrix = glm::scale(m_ModelMatrix, Vector3(1.0f, 1.0f, 1.0f));
 }
 
 Material::Material(const Shared<Material>& material)
@@ -126,6 +126,7 @@ void Material::Render()
     RenderCommand::EnableAlphaBlending(m_AlphaBlendingEnabled);
 
     if (m_Shader) {
+        m_Shader->Bind();
         m_Shader->SetMat4("u_Model", m_ModelMatrix);
         m_Shader->SetFloat4("u_AmbientColor", m_AmbientColor);
         m_Shader->SetFloat4("u_AlbedoColor", m_AlbedoColor);
@@ -139,8 +140,6 @@ void Material::Render()
         } else {
             m_Shader->SetBool("u_HasAlbedoTexture", false);
         }
-
-        m_Shader->Bind();
     }
 }
 }

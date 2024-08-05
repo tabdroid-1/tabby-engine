@@ -185,10 +185,10 @@ class BodyType : public Sample
 
 	void UpdateUI() override
 	{
-		float height = 150.0f;
+		float height = 140.0f;
 		ImGui::SetNextWindowPos(ImVec2(10.0f, g_camera.m_height - height - 50.0f), ImGuiCond_Once);
-		ImGui::SetNextWindowSize(ImVec2(240.0f, height));
-		ImGui::Begin("Controls", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+		ImGui::SetNextWindowSize(ImVec2(180.0f, height));
+		ImGui::Begin("Body Type", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 		if (ImGui::RadioButton("Static", m_type == b2_staticBody))
 		{
@@ -334,7 +334,7 @@ public:
 		// Chain shape
 		{
 			b2BodyDef bodyDef = b2DefaultBodyDef();
-			bodyDef.angle = 0.25f * b2_pi;
+			bodyDef.rotation = b2MakeRot(0.25f * b2_pi);
 			b2BodyId groundId = b2CreateBody(m_worldId, &bodyDef);
 
 			b2Vec2 points[4] = {{8.0f, 7.0f}, {7.0f, 8.0f}, {6.0f, 8.0f}, {5.0f, 7.0f}};
@@ -498,7 +498,7 @@ public:
 			b2BodyDef bodyDef = b2DefaultBodyDef();
 			bodyDef.type = b2_dynamicBody;
 			bodyDef.position = {0.0f, 3.0f};
-			bodyDef.angle = 0.25f * b2_pi;
+			bodyDef.rotation = b2MakeRot(0.25f * b2_pi);
 			m_weebleId = b2CreateBody(m_worldId, &bodyDef);
 
 			b2Capsule capsule = {{0.0f, -1.0f}, {0.0f, 1.0f}, 1.0f};
@@ -507,14 +507,14 @@ public:
 			b2CreateCapsuleShape(m_weebleId, &shapeDef, &capsule);
 
 			float mass = b2Body_GetMass(m_weebleId);
-			float I = b2Body_GetInertiaTensor(m_weebleId);
+			float inertiaTensor = b2Body_GetInertiaTensor(m_weebleId);
 			
 			float offset = 1.5f;
 
 			// See: https://en.wikipedia.org/wiki/Parallel_axis_theorem
-			I += mass * offset * offset;
+			inertiaTensor += mass * offset * offset;
 
-			b2MassData massData = {mass, {0.0f, -offset}, I};
+			b2MassData massData = {mass, {0.0f, -offset}, inertiaTensor};
 			b2Body_SetMassData(m_weebleId, massData);
 		}
 
@@ -525,23 +525,24 @@ public:
 
 	void UpdateUI() override
 	{
-		float height = 160.0f;
+		float height = 120.0f;
 		ImGui::SetNextWindowPos(ImVec2(10.0f, g_camera.m_height - height - 50.0f), ImGuiCond_Once);
-		ImGui::SetNextWindowSize(ImVec2(240.0f, height));
+		ImGui::SetNextWindowSize(ImVec2(200.0f, height));
 		ImGui::Begin("Weeble", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-
 		if (ImGui::Button("Teleport"))
 		{
-			b2Body_SetTransform(m_weebleId, {0.0f, 5.0f}, 0.95 * b2_pi);
+			b2Body_SetTransform(m_weebleId, {0.0f, 5.0f}, b2MakeRot(0.95 * b2_pi));
 		}
 
 		if (ImGui::Button("Explode"))
 		{
 			b2World_Explode(m_worldId, m_explosionPosition, m_explosionRadius, m_explosionMagnitude);
 		}
+		ImGui::PushItemWidth(100.0f);
 
 		ImGui::SliderFloat("Magnitude", &m_explosionMagnitude, -100.0f, 100.0f, "%.1f");
 
+		ImGui::PopItemWidth();
 		ImGui::End();
 	}
 
@@ -679,7 +680,7 @@ public:
 		ImGui::SetNextWindowSize(ImVec2(240.0f, height));
 		ImGui::Begin("Sleep", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
-		ImGui::PushItemWidth(140.0f);
+		ImGui::PushItemWidth(120.0f);
 
 		ImGui::Text("Pendulum Tuning");
 
@@ -759,3 +760,83 @@ public:
 };
 
 static int sampleSleep = RegisterSample("Bodies", "Sleep", Sleep::Create);
+
+class BadBody : public Sample
+{
+public:
+	explicit BadBody(Settings& settings)
+		: Sample(settings)
+	{
+		if (settings.restart == false)
+		{
+			g_camera.m_center = {2.3f, 10.0f};
+			g_camera.m_zoom = 25.0f * 0.5f;
+		}
+
+		b2BodyId groundId = b2_nullBodyId;
+		{
+			b2BodyDef bodyDef = b2DefaultBodyDef();
+			groundId = b2CreateBody(m_worldId, &bodyDef);
+
+			b2Segment segment = {{-20.0f, 0.0f}, {20.0f, 0.0f}};
+			b2ShapeDef shapeDef = b2DefaultShapeDef();
+			b2CreateSegmentShape(groundId, &shapeDef, &segment);
+		}
+
+		// Build a bad body
+		{
+			b2BodyDef bodyDef = b2DefaultBodyDef();
+			bodyDef.type = b2_dynamicBody;
+			bodyDef.position = {0.0f, 3.0f};
+			bodyDef.angularVelocity = 0.2f;
+			bodyDef.rotation = b2MakeRot(0.25f * b2_pi);
+
+			m_badBodyId = b2CreateBody(m_worldId, &bodyDef);
+
+			b2Capsule capsule = {{0.0f, -1.0f}, {0.0f, 1.0f}, 1.0f};
+			b2ShapeDef shapeDef = b2DefaultShapeDef();
+
+			// density set to zero intentionally to create a bad body
+			shapeDef.density = 0.0f;
+			b2CreateCapsuleShape(m_badBodyId, &shapeDef, &capsule);
+		}
+
+		// Build a normal body
+		{
+			b2BodyDef bodyDef = b2DefaultBodyDef();
+			bodyDef.type = b2_dynamicBody;
+			bodyDef.position = {2.0f, 3.0f};
+			bodyDef.rotation = b2MakeRot(0.25f * b2_pi);
+
+			b2BodyId bodyId = b2CreateBody(m_worldId, &bodyDef);
+
+			b2Capsule capsule = {{0.0f, -1.0f}, {0.0f, 1.0f}, 1.0f};
+			b2ShapeDef shapeDef = b2DefaultShapeDef();
+
+			b2CreateCapsuleShape(bodyId, &shapeDef, &capsule);
+		}
+	}
+
+	void Step(Settings& settings) override
+	{
+		Sample::Step(settings);
+
+		g_draw.DrawString(5, m_textLine, "A bad body is a dynamic body with no mass and behaves like a kinematic body.");
+		m_textLine += m_textIncrement;
+
+		g_draw.DrawString(5, m_textLine, "Bad bodies are considered invalid and a user bug. Behavior is not guaranteed.");
+		m_textLine += m_textIncrement;
+
+		// For science
+		b2Body_ApplyForceToCenter(m_badBodyId, {0.0f, 10.0f}, true);
+	}
+
+	static Sample* Create(Settings& settings)
+	{
+		return new BadBody(settings);
+	}
+
+	b2BodyId m_badBodyId;
+};
+
+static int sampleBadBody = RegisterSample("Bodies", "Bad", BadBody::Create);

@@ -25,13 +25,10 @@ Todo
         - <s>Play SFX and delete when not needed. </s> Done 
         - <s>Audio streaming for long audios. </s> Done 
     - <s>Asset manager. </s> Done
-    - <s>Go balls deep in to ECS (ECS like in Bevy Engine)</s> idk. 
-    - <s>Initial Prefab class which serializes in to Tabby Prefab Format. </s> Done Since 25-05-2024_1 Alpha
-    - Try vulkan
-    - Initial Level Editor work.
+    - <s>Go balls deep in to ECS (ECS like in Bevy Engine)</s> kinda done since 20-06-2024_1 Alpha. 
     - <s>Implement File Dialog to linux.</s> Done Since 02-07-2024_1 Alpha
     - Add font support to asset manager.
-    - Fix OpenGL ES Text Shader and fix framebuffer. 
+    - Fix OpenGL ES Text Shader. 
     - Clean up the code, add comments etc.
     - Multithreading
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
@@ -54,4 +51,4 @@ Bugs
 ----
 - CurrentYFrame picks seamingly random coordinates from texture.
 - GLES 3.0 text shader not working.
-- Textures, Controllers, Sounds and Texts are not visible/working on web builds.
+- Controllers, Sounds and Texts are not visible/working on web builds.

@@ -13,7 +13,10 @@ public:
     ~Physisc2D();
 
     static void InitWorld(glm::vec2& gravity);
-    static void UpdateWorld(float ts, int32_t subStepCount);
+    static void UpdateWorld();
+
+    static uint8_t GetSubstepCount();
+    static void SetSubstepCount(uint8_t substepCount);
 
     static RaycastHit2D RayCast(const glm::vec2& origin, const glm::vec2& direction, float distance, RaycastFilter2D raycastFilter, int minDepth, int maxDepth);
     static RaycastHit2D RayCast(const glm::vec2& origin, const glm::vec2& direction, float distance, RaycastFilter2D raycastFilter);
@@ -54,6 +57,7 @@ private:
 
 private:
     b2WorldId m_PhysicsWorld;
+    uint8_t m_SubstepCount = 6;
     std::queue<BodyInfo2D> bodyInitQueue;
     std::queue<ShapeInfo2D> shapeInitQueue;
     std::queue<ShapeInfo2D> shapeUpdateQueue;

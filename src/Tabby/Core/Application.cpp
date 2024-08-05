@@ -3,6 +3,7 @@
 
 #include "Tabby/Utils/PlatformUtils.h"
 #include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Core/Time/Time.h>
 #include <Tabby/Audio/AudioEngine.h>
 #include <Tabby/Core/Filesystem/Filesystem.h>
 
@@ -123,7 +124,7 @@ void Application::Run()
 
                 // TODO: Remove TimeStep
                 for (Layer* layer : m_LayerStack)
-                    layer->OnUpdate(Time::GetDeltaTime());
+                    layer->OnUpdate();
             }
 
             m_ImGuiLayer->Begin();

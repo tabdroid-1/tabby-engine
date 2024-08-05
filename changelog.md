@@ -1,3 +1,30 @@
+Version: 06-08-2024_1 Alpha
+Changes:
+- Updated box2d which fixed body stopping to move after velocity becomes 0
+- Made so transform position changes rigidbody position 
+- Updated GLTF loader and moved to assets since its not really related to rendering
+- Removed timestep.
+- Removed prefab.
+- Removed scriptable entity.
+- Created  
+    - IntVector2 
+    - IntVector3 
+    - IntVector4 
+    - UIntVector2
+    - UIntVector3
+    - UIntVector4
+    - Vector2    
+    - Vector3    
+    - Vector4    
+    - Matrix2    
+    - Matrix3    
+    - Matrix4    
+    - Quaternion 
+        - Which are alias of glm types
+
+
+--------------------------------------------------------------------------------------
+
 Version: 26-07-2024_1 Alpha
 Changes:
 - Created Random class.

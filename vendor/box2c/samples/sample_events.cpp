@@ -221,9 +221,9 @@ public:
 
 	void UpdateUI() override
 	{
-		float height = 100.0f;
+		float height = 90.0f;
 		ImGui::SetNextWindowPos(ImVec2(10.0f, g_camera.m_height - height - 50.0f), ImGuiCond_Once);
-		ImGui::SetNextWindowSize(ImVec2(240.0f, height));
+		ImGui::SetNextWindowSize(ImVec2(140.0f, height));
 
 		ImGui::Begin("Sensor Event", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
@@ -409,7 +409,7 @@ public:
 		b2BodyDef bodyDef = b2DefaultBodyDef();
 		bodyDef.type = b2_dynamicBody;
 		bodyDef.position = {RandomFloat(-38.0f, 38.0f), RandomFloat(-38.0f, 38.0f)};
-		bodyDef.angle = RandomFloat(-b2_pi, b2_pi);
+		bodyDef.rotation = b2MakeRot(RandomFloat(-b2_pi, b2_pi));
 		bodyDef.linearVelocity = {RandomFloat(-5.0f, 5.0f), RandomFloat(-5.0f, 5.0f)};
 		bodyDef.angularVelocity = RandomFloat(-1.0f, 1.0f);
 		bodyDef.gravityScale = 0.0f;
@@ -445,7 +445,7 @@ public:
 		ImGui::SetNextWindowPos(ImVec2(10.0f, g_camera.m_height - height - 50.0f), ImGuiCond_Once);
 		ImGui::SetNextWindowSize(ImVec2(240.0f, height));
 
-		ImGui::Begin("Sample Controls", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+		ImGui::Begin("Contact Event", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 		ImGui::SliderFloat("force", &m_force, 100.0f, 500.0f, "%.1f");
 

@@ -1,7 +1,8 @@
 #include <Tabby/Physics/2D/Physics2D.h>
 #include <Tabby/Physics/2D/Physics2DTypes.h>
 #include <Tabby/Physics/2D/Physics2DUtil.h>
-#include <Tabby/World/ScriptableEntity.h>
+#include <Tabby/Core/Time/Time.h>
+#include <Tabby/Math/Math.h>
 
 #include <box2d/box2d.h>
 #include "box2d/math_functions.h"
@@ -41,16 +42,30 @@ void Physisc2D::InitWorld(glm::vec2& gravity)
     }
 }
 
-void Physisc2D::UpdateWorld(float ts, int32_t subStepCount)
+void Physisc2D::UpdateWorld()
 {
     ProcessBodyInitQueue();
     ProcessShapeInitQueue();
     ProcessShapeUpdateQueue();
 
     TB_CORE_ASSERT_TAGGED(s_Instance, "Physisc2D have to be initialized first!");
-    b2World_Step(s_Instance->m_PhysicsWorld, ts, 4);
+    b2World_Step(s_Instance->m_PhysicsWorld, Time::GetDeltaTime(), s_Instance->m_SubstepCount);
 
     ProcessEvents();
+}
+
+uint8_t Physisc2D::GetSubstepCount()
+{
+    return s_Instance->m_SubstepCount;
+}
+
+void Physisc2D::SetSubstepCount(uint8_t substepCount)
+{
+    if (substepCount < 1) {
+        TB_CORE_ERROR("Physics2D substepCount can not be lower than 1!");
+        return;
+    }
+    s_Instance->m_SubstepCount = substepCount;
 }
 
 b2WorldId Physisc2D::GetPhysicsWorld()
@@ -227,7 +242,7 @@ void Physisc2D::ProcessBodyInitQueue()
         b2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
         bodyDef.position = { transform.Translation.x, transform.Translation.y };
-        bodyDef.angle = transform.Rotation.z;
+        bodyDef.rotation = b2MakeRot(transform.Rotation.z * Math::DEG2RAD);
         bodyDef.userData = static_cast<void*>(bodyUserData);
 
         // --------- Create Body ---------
@@ -489,39 +504,39 @@ void Physisc2D::ProcessEvents()
         BodyUserData2D* userDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
         BodyUserData2D* userDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
 
-        if (userDataA->bodyEntity.HasComponent<NativeScriptComponent>()) {
-            auto& nsc = userDataA->bodyEntity.GetComponent<NativeScriptComponent>();
-
-            // If entity has NativeScriptComponent it will call its OnCollisionEnter
-            ContactCallback callbackA;
-            callbackA.entity = userDataB->bodyEntity;
-            callbackA.transform = &userDataB->bodyEntity.GetComponent<TransformComponent>();
-            callbackA.rigidbody = &userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
-
-            if (!nsc.Instance) {
-                nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = userDataA->bodyEntity;
-                nsc.Instance->OnCreate();
-            }
-            nsc.Instance->OnCollisionEnter(callbackA);
-        }
-
-        if (userDataB->bodyEntity.HasComponent<NativeScriptComponent>()) {
-            auto& nsc = userDataB->bodyEntity.GetComponent<NativeScriptComponent>();
-
-            // If entity has NativeScriptComponent it will call its OnCollisionEnter
-            ContactCallback callbackB;
-            callbackB.entity = userDataA->bodyEntity;
-            callbackB.transform = &userDataA->bodyEntity.GetComponent<TransformComponent>();
-            callbackB.rigidbody = &userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
-
-            if (!nsc.Instance) {
-                nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = userDataB->bodyEntity;
-                nsc.Instance->OnCreate();
-            }
-            nsc.Instance->OnCollisionEnter(callbackB);
-        }
+        // if (userDataA->bodyEntity.HasComponent<NativeScriptComponent>()) {
+        //     auto& nsc = userDataA->bodyEntity.GetComponent<NativeScriptComponent>();
+        //
+        //     // If entity has NativeScriptComponent it will call its OnCollisionEnter
+        //     ContactCallback callbackA;
+        //     callbackA.entity = userDataB->bodyEntity;
+        //     callbackA.transform = &userDataB->bodyEntity.GetComponent<TransformComponent>();
+        //     callbackA.rigidbody = &userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        //
+        //     if (!nsc.Instance) {
+        //         nsc.Instance = nsc.InstantiateScript();
+        //         nsc.Instance->m_Entity = userDataA->bodyEntity;
+        //         nsc.Instance->OnCreate();
+        //     }
+        //     nsc.Instance->OnCollisionEnter(callbackA);
+        // }
+        //
+        // if (userDataB->bodyEntity.HasComponent<NativeScriptComponent>()) {
+        //     auto& nsc = userDataB->bodyEntity.GetComponent<NativeScriptComponent>();
+        //
+        //     // If entity has NativeScriptComponent it will call its OnCollisionEnter
+        //     ContactCallback callbackB;
+        //     callbackB.entity = userDataA->bodyEntity;
+        //     callbackB.transform = &userDataA->bodyEntity.GetComponent<TransformComponent>();
+        //     callbackB.rigidbody = &userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        //
+        //     if (!nsc.Instance) {
+        //         nsc.Instance = nsc.InstantiateScript();
+        //         nsc.Instance->m_Entity = userDataB->bodyEntity;
+        //         nsc.Instance->OnCreate();
+        //     }
+        //     nsc.Instance->OnCollisionEnter(callbackB);
+        // }
 
         // ----------------------------------------------
     }
@@ -536,39 +551,39 @@ void Physisc2D::ProcessEvents()
         BodyUserData2D* userDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
         BodyUserData2D* userDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
 
-        if (userDataA->bodyEntity.HasComponent<NativeScriptComponent>()) {
-            auto& nsc = userDataA->bodyEntity.GetComponent<NativeScriptComponent>();
-
-            // If entity has NativeScriptComponent it will call its OnCollisionExit
-            ContactCallback callbackA;
-            callbackA.entity = userDataB->bodyEntity;
-            callbackA.transform = &userDataB->bodyEntity.GetComponent<TransformComponent>();
-            callbackA.rigidbody = &userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
-
-            if (!nsc.Instance) {
-                nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = userDataA->bodyEntity;
-                nsc.Instance->OnCreate();
-            }
-            nsc.Instance->OnCollisionExit(callbackA);
-        }
-
-        if (userDataB->bodyEntity.HasComponent<NativeScriptComponent>()) {
-            auto& nsc = userDataB->bodyEntity.GetComponent<NativeScriptComponent>();
-
-            // If entity has NativeScriptComponent it will call its OnCollisionExit
-            ContactCallback callbackB;
-            callbackB.entity = userDataA->bodyEntity;
-            callbackB.transform = &userDataA->bodyEntity.GetComponent<TransformComponent>();
-            callbackB.rigidbody = &userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
-
-            if (!nsc.Instance) {
-                nsc.Instance = nsc.InstantiateScript();
-                nsc.Instance->m_Entity = userDataB->bodyEntity;
-                nsc.Instance->OnCreate();
-            }
-            nsc.Instance->OnCollisionExit(callbackB);
-        }
+        // if (userDataA->bodyEntity.HasComponent<NativeScriptComponent>()) {
+        //     auto& nsc = userDataA->bodyEntity.GetComponent<NativeScriptComponent>();
+        //
+        //     // If entity has NativeScriptComponent it will call its OnCollisionExit
+        //     ContactCallback callbackA;
+        //     callbackA.entity = userDataB->bodyEntity;
+        //     callbackA.transform = &userDataB->bodyEntity.GetComponent<TransformComponent>();
+        //     callbackA.rigidbody = &userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        //
+        //     if (!nsc.Instance) {
+        //         nsc.Instance = nsc.InstantiateScript();
+        //         nsc.Instance->m_Entity = userDataA->bodyEntity;
+        //         nsc.Instance->OnCreate();
+        //     }
+        //     nsc.Instance->OnCollisionExit(callbackA);
+        // }
+        //
+        // if (userDataB->bodyEntity.HasComponent<NativeScriptComponent>()) {
+        //     auto& nsc = userDataB->bodyEntity.GetComponent<NativeScriptComponent>();
+        //
+        //     // If entity has NativeScriptComponent it will call its OnCollisionExit
+        //     ContactCallback callbackB;
+        //     callbackB.entity = userDataA->bodyEntity;
+        //     callbackB.transform = &userDataA->bodyEntity.GetComponent<TransformComponent>();
+        //     callbackB.rigidbody = &userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        //
+        //     if (!nsc.Instance) {
+        //         nsc.Instance = nsc.InstantiateScript();
+        //         nsc.Instance->m_Entity = userDataB->bodyEntity;
+        //         nsc.Instance->OnCreate();
+        //     }
+        //     nsc.Instance->OnCollisionExit(callbackB);
+        // }
 
         // ----------------------------------------------
     }

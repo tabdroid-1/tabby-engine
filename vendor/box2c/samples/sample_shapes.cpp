@@ -153,11 +153,11 @@ public:
 
 	void UpdateUI() override
 	{
-		float height = 125.0f;
+		float height = 135.0f;
 		ImGui::SetNextWindowPos(ImVec2(10.0f, g_camera.m_height - height - 50.0f), ImGuiCond_Once);
 		ImGui::SetNextWindowSize(ImVec2(240.0f, height));
 
-		ImGui::Begin("Options", nullptr, ImGuiWindowFlags_NoResize);
+		ImGui::Begin("Chain Shape", nullptr, ImGuiWindowFlags_NoResize);
 
 		const char* shapeTypes[] = {"Circle", "Capsule", "Box"};
 		int shapeType = int(m_shapeType);
@@ -329,7 +329,7 @@ public:
 			b2BodyDef bodyDef = b2DefaultBodyDef();
 			bodyDef.type = b2_dynamicBody;
 			bodyDef.position = b2Body_GetPosition(m_table1Id);
-			bodyDef.angle = b2Body_GetAngle(m_table1Id);
+			bodyDef.rotation = b2Body_GetRotation(m_table1Id);
 			b2BodyId bodyId = b2CreateBody(m_worldId, &bodyDef);
 
 			b2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -342,7 +342,7 @@ public:
 			b2BodyDef bodyDef = b2DefaultBodyDef();
 			bodyDef.type = b2_dynamicBody;
 			bodyDef.position = b2Body_GetPosition(m_table2Id);
-			bodyDef.angle = b2Body_GetAngle(m_table2Id);
+			bodyDef.rotation = b2Body_GetRotation(m_table2Id);
 			b2BodyId bodyId = b2CreateBody(m_worldId, &bodyDef);
 
 			b2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -355,7 +355,7 @@ public:
 			b2BodyDef bodyDef = b2DefaultBodyDef();
 			bodyDef.type = b2_dynamicBody;
 			bodyDef.position = b2Body_GetPosition(m_ship1Id);
-			bodyDef.angle = b2Body_GetAngle(m_ship1Id);
+			bodyDef.rotation = b2Body_GetRotation(m_ship1Id);
 			// bodyDef.gravityScale = 0.0f;
 			b2BodyId bodyId = b2CreateBody(m_worldId, &bodyDef);
 
@@ -369,7 +369,7 @@ public:
 			b2BodyDef bodyDef = b2DefaultBodyDef();
 			bodyDef.type = b2_dynamicBody;
 			bodyDef.position = b2Body_GetPosition(m_ship2Id);
-			bodyDef.angle = b2Body_GetAngle(m_ship2Id);
+			bodyDef.rotation = b2Body_GetRotation(m_ship2Id);
 			// bodyDef.gravityScale = 0.0f;
 			b2BodyId bodyId = b2CreateBody(m_worldId, &bodyDef);
 
@@ -383,7 +383,7 @@ public:
 	{
 		float height = 100.0f;
 		ImGui::SetNextWindowPos(ImVec2(10.0f, g_camera.m_height - height - 50.0f), ImGuiCond_Once);
-		ImGui::SetNextWindowSize(ImVec2(240.0f, height));
+		ImGui::SetNextWindowSize(ImVec2(180.0f, height));
 
 		ImGui::Begin("Compound Shapes", nullptr, ImGuiWindowFlags_NoResize);
 
@@ -715,8 +715,8 @@ public:
 			return true;
 		}
 
-		int indexA = reinterpret_cast<intptr_t>(userDataA);
-		int indexB = reinterpret_cast<intptr_t>(userDataB);
+		int indexA = static_cast<int>(reinterpret_cast<intptr_t>(userDataA));
+		int indexB = static_cast<int>(reinterpret_cast<intptr_t>(userDataB));
 
 		return ((indexA & 1) + (indexB & 1)) != 1;
 	}
