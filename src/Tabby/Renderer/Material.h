@@ -31,8 +31,8 @@ public:
     // Name
     void SetName(std::string name) { m_Name = name; }
 
-    void SetMatrix(const glm::mat4& matrix) { m_ModelMatrix = matrix; }
-    glm::mat4 GetMatrix() const { return m_ModelMatrix; }
+    void SetMatrix(const Matrix4& matrix) { m_ModelMatrix = matrix; }
+    Matrix4 GetMatrix() const { return m_ModelMatrix; }
 
     // Ambient
     void SetAmbientColor(const Vector4& ambientColor) { m_AmbientColor = ambientColor; }
@@ -93,7 +93,7 @@ private:
     std::string m_Name;
     Shared<Shader> m_Shader = nullptr;
 
-    glm::mat4 m_ModelMatrix;
+    Matrix4 m_ModelMatrix;
 
     // Ambient
     Vector4 m_AmbientColor = Vector4(0.8f, 0.8f, 0.8f, 1);

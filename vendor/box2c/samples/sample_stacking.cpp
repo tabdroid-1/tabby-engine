@@ -323,7 +323,7 @@ public:
 		ImGui::SetNextWindowPos(ImVec2(10.0f, g_camera.m_height - height - 50.0f), ImGuiCond_Once);
 		ImGui::SetNextWindowSize(ImVec2(240.0f, height));
 
-		ImGui::Begin("Stacks", nullptr, ImGuiWindowFlags_NoResize);
+		ImGui::Begin("Vertical Stack", nullptr, ImGuiWindowFlags_NoResize);
 
 		ImGui::PushItemWidth(120.0f);
 
@@ -382,6 +382,60 @@ public:
 };
 
 static int sampleVerticalStack = RegisterSample("Stacking", "Vertical Stack", VerticalStack::Create);
+
+// This shows how to handle high gravity and small shapes using a small time step
+class CircleStack : public Sample
+{
+public:
+	explicit CircleStack(Settings& settings)
+		: Sample(settings)
+	{
+		if (settings.restart == false)
+		{
+			g_camera.m_center = {0.0f, 2.0f};
+			g_camera.m_zoom = 3.0f;
+		}
+
+		{
+			b2BodyDef bodyDef = b2DefaultBodyDef();
+			b2BodyId groundId = b2CreateBody(m_worldId, &bodyDef);
+
+			b2ShapeDef shapeDef = b2DefaultShapeDef();
+			b2Segment segment = {{-10.0f, 0.0f}, {10.0f, 0.0f}};
+			b2CreateSegmentShape(groundId, &shapeDef, &segment);
+		}
+
+		b2World_SetGravity(m_worldId, {0.0f, -20.0f});
+		b2World_SetContactTuning(m_worldId, 0.25f * 360.0f, 10.0f, 3.0f);
+
+		b2Circle circle = {};
+		circle.radius = 0.1f;
+
+		b2ShapeDef shapeDef = b2DefaultShapeDef();
+		b2BodyDef bodyDef = b2DefaultBodyDef();
+		bodyDef.type = b2_dynamicBody;
+
+		float y = 0.5f;
+
+		for (int i = 0; i < 20; ++i)
+		{
+			bodyDef.position.y = y;
+
+			b2BodyId bodyId = b2CreateBody(m_worldId, &bodyDef);
+			b2CreateCircleShape(bodyId, &shapeDef, &circle);
+
+			y += 1.0f;
+		}
+	}
+
+	static Sample* Create(Settings& settings)
+	{
+		return new CircleStack(settings);
+	}
+};
+
+static int sampleCircleStack = RegisterSample("Stacking", "Circle Stack", CircleStack::Create);
+
 
 class Cliff : public Sample
 {
@@ -800,20 +854,20 @@ public:
 				if (i != Nb - 1)
 				{
 					bodyDef.position = {z + 0.25f, y + cardHeight - 0.015f};
-					bodyDef.angle = angle2;
+					bodyDef.rotation = b2MakeRot(angle2);
 					b2BodyId bodyId = b2CreateBody(m_worldId, &bodyDef);
 					b2CreatePolygonShape(bodyId, &shapeDef, &cardBox);
 				}
 
 				bodyDef.position = {z, y};
-				bodyDef.angle = angle1;
+				bodyDef.rotation = b2MakeRot(angle1);
 				b2BodyId bodyId = b2CreateBody(m_worldId, &bodyDef);
 				b2CreatePolygonShape(bodyId, &shapeDef, &cardBox);
 
 				z += 0.175f;
 
 				bodyDef.position = {z, y};
-				bodyDef.angle = angle0;
+				bodyDef.rotation = b2MakeRot(angle0);
 				bodyId = b2CreateBody(m_worldId, &bodyDef);
 				b2CreatePolygonShape(bodyId, &shapeDef, &cardBox);
 

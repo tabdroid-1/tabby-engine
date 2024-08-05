@@ -89,6 +89,7 @@ set(IMGUIZMO "${PROJECT_VENDOR_DIR}/imguizmo")
 set(OPENAL "${PROJECT_VENDOR_DIR}/openal-soft")
 set(LIBSNDFILE "${PROJECT_VENDOR_DIR}/libsndfile")
 set(MSDF-ATLAS-GEN "${PROJECT_VENDOR_DIR}/msdf-atlas-gen")
+set(TINY-OBJ-LOADER "${PROJECT_VENDOR_DIR}/tinyobjloader")
 
 # ##############################################################################
 # Project executable setup
@@ -104,14 +105,13 @@ list(APPEND PROJECT_SOURCES
         "${ENTT}/entt.hpp"
         "${STB}/stb_image.h"
         "${STB}/stb_image.cpp"
-        # "${SDL2}/include/SDL.h"
+        "${TINY-OBJ-LOADER}/tinyobjloader.cpp"
         )
 
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}) 
-# target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_VENDOR_DIR}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${LIBSNDFILE}/include) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${FASTGLTF}/include) 
@@ -125,19 +125,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${ENTT})
 target_include_directories(${PROJECT_NAME} PUBLIC ${STB}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${GLM}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${MSDF-ATLAS-GEN}/msdf-atlas-gen) 
+target_include_directories(${PROJECT_NAME} PRIVATE ${TINY-OBJ-LOADER}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLAD}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${STB}) 
-
-
-# if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-# else()
-#     target_include_directories(${PROJECT_NAME} PRIVATE ${BOX2D}/include) 
-# endif()
 
 # ####################
 # Add Subdirectories
 # ####################
-
 
 add_subdirectory(${GLM})
 add_subdirectory(${SDL2})

@@ -250,7 +250,7 @@ void OpenGL46Shader::SetFloat4(const std::string& name, const glm::vec4& value)
     UploadUniformFloat4(name, value);
 }
 
-void OpenGL46Shader::SetMat4(const std::string& name, const glm::mat4& value)
+void OpenGL46Shader::SetMat4(const std::string& name, const Matrix4& value)
 {
     TB_PROFILE_SCOPE_NAME("Set mat 4");
 

@@ -1,8 +1,9 @@
-#include <Tabby/Renderer/GLTF.h>
+#include <Tabby/Asset/GLTFLoader.h>
 #include <Tabby/Renderer/Texture.h>
 #include <Tabby/Renderer/Mesh.h>
 #include <Tabby/Renderer/Material.h>
-
+#include <Tabby/World/Entity.h>
+#include <Tabby/World/World.h>
 #include <Tabby/Asset/AssetFile.h>
 #include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Renderer/Buffer.h>
@@ -19,6 +20,10 @@
 #include <fastgltf/types.hpp>
 #include <fastgltf/tools.hpp>
 
+#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 namespace Tabby {
 
 GLTF::GLTF(const std::filesystem::path& filePath)
@@ -34,11 +39,14 @@ GLTF::GLTF(const std::filesystem::path& filePath)
     auto asset = parser.loadFileFromApk(filePath);
 #else
     auto gltfFile = fastgltf::MappedGltfFile::FromPath(filePath);
-    TB_CORE_ASSERT_TAGGED(bool(gltfFile), "Failed to open glTF file: {0}", fastgltf::getErrorMessage(gltfFile.error()));
+
+    std::string message = "Failed to load glTF file: " + std::string(fastgltf::getErrorMessage(gltfFile.error()));
+    TB_CORE_ASSERT_TAGGED(bool(gltfFile), message);
     auto asset = parser.loadGltf(gltfFile.get(), filePath.parent_path(), gltfOptions);
 #endif // DEBUG
 
-    TB_CORE_ASSERT_TAGGED(asset.error() == fastgltf::Error::None, "Failed to load glTF file: {0}", fastgltf::getErrorMessage(asset.error()));
+    message = "Failed to load glTF file: " + std::string(fastgltf::getErrorMessage(asset.error()));
+    TB_CORE_ASSERT_TAGGED(asset.error() == fastgltf::Error::None, message);
 
     m_Asset = std::move(asset.get());
     // TB_CORE_ASSERT_TAGGED(false, "Unknown File Format");
@@ -215,7 +223,7 @@ void GLTF::LoadMaterials()
         auto uniforms = m_Materials.emplace_back();
         uniforms.alphaCutoff = material.alphaCutoff;
 
-        uniforms.baseColorFactor = glm::vec4(material.pbrData.baseColorFactor.x(), material.pbrData.baseColorFactor.y(), material.pbrData.baseColorFactor.z(), material.pbrData.baseColorFactor.w());
+        uniforms.baseColorFactor = Vector4(material.pbrData.baseColorFactor.x(), material.pbrData.baseColorFactor.y(), material.pbrData.baseColorFactor.z(), material.pbrData.baseColorFactor.w());
         if (material.pbrData.baseColorTexture.has_value())
             uniforms.flags |= MaterialUniformFlags::HasAlbedoMap;
 
@@ -253,8 +261,10 @@ void GLTF::LoadMaterials()
 
 void GLTF::LoadMeshes()
 {
+
+    std::vector<Shared<Tabby::Mesh>> tabbyMeshes;
+
     for (auto& mesh : m_Asset.meshes) {
-        // auto tabbyMesh = m_Meshes.p;
 
         for (auto it = mesh.primitives.begin(); it != mesh.primitives.end(); ++it) {
 
@@ -312,8 +322,7 @@ void GLTF::LoadMeshes()
                 meshVertices.resize(positionAccessor.count);
 
                 fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec3>(m_Asset, positionAccessor, [&](fastgltf::math::fvec3 pos, std::size_t idx) {
-                    meshVertices[idx].Position = glm::vec4(pos.x(), pos.y(), pos.z(), 0.0f);
-                    meshVertices[idx].TexCoords = glm::vec2();
+                    meshVertices[idx].Position = Vector4(pos.x(), pos.y(), pos.z(), 0.0f);
                 });
             }
 
@@ -325,7 +334,7 @@ void GLTF::LoadMeshes()
                     continue;
 
                 fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec2>(m_Asset, texCoordAccessor, [&](fastgltf::math::fvec2 uv, std::size_t idx) {
-                    meshVertices[idx].TexCoords = glm::vec2(uv.x(), uv.y());
+                    meshVertices[idx].TexCoords = Vector2(uv.x(), uv.y());
                 });
             }
 
@@ -341,15 +350,41 @@ void GLTF::LoadMeshes()
             tabbyMesh->SetIndices(meshIndices);
 
             tabbyMesh->Create();
-            m_Meshes.push_back(tabbyMesh);
+            tabbyMeshes.push_back(tabbyMesh);
         }
     }
-}
 
-void GLTF::Draw()
-{
-    for (auto mesh : m_Meshes) {
-        mesh->Render();
+    auto SceneEntity = Tabby::World::CreateEntity("Scene");
+
+    for (auto& node : m_Asset.nodes) {
+
+        auto ent = Tabby::World::CreateEntity(node.name.c_str());
+        auto& mC = ent.AddComponent<MeshComponent>();
+        mC.m_Mesh = tabbyMeshes[node.meshIndex.value()];
+
+        auto& tc = ent.GetComponent<TransformComponent>();
+        std::visit(fastgltf::visitor { [&](const fastgltf::math::fmat4x4& matrix) {
+                                          fastgltf::math::fvec3 scale;
+                                          fastgltf::math::fquat rotation;
+                                          fastgltf::math::fvec3 translation;
+                                          fastgltf::math::decomposeTransformMatrix(matrix, scale, rotation, translation);
+
+                                          Vector3 Gscale = { scale.x(), scale.y(), scale.z() };
+                                          Quaternion Grotation = { rotation.w(), rotation.x(), rotation.y(), rotation.z() };
+                                          Vector3 Gtranslation = { translation.x(), translation.y(), translation.z() };
+                                          Matrix4 rotMat = glm::toMat4(Grotation);
+                                          tc.ApplyTransformToLocal(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
+                                      },
+                       [&](const fastgltf::TRS& trs) {
+                           Vector3 Gscale = { trs.scale.x(), trs.scale.y(), trs.scale.z() };
+                           Quaternion Grotation = { trs.rotation.w(), trs.rotation.x(), trs.rotation.y(), trs.rotation.z() };
+                           Vector3 Gtranslation = { trs.translation.x(), trs.translation.y(), trs.translation.z() };
+                           Matrix4 rotMat = glm::toMat4(Grotation);
+                           tc.ApplyTransformToLocal(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
+                       } },
+            node.transform);
+
+        SceneEntity.AddChild(ent);
     }
 }
 }

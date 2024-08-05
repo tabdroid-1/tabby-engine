@@ -122,7 +122,7 @@ the origin.
 ```c
 b2BodyDef bodyDef = b2DefaultBodyDef();
 bodyDef.type = b2_dynamicBody;
-bodyDef.position.Set(0.0f, 4.0f);
+bodyDef.position = (b2Vec2){0.0f, 4.0f};
 b2BodyId bodyId = b2CreateBody(worldId, &bodyDef);
 ```
 
@@ -226,8 +226,8 @@ for (int i = 0; i < 90; ++i)
 {
 	b2World_Step(worldId, timeStep, subStepCount);
     b2Vec2 position = b2Body_GetPosition(bodyId);
-    float angle = b2Body_GetAngle(bodyId);
-    printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+    b2Rot rotation = b2Body_GetRot(bodyId);
+    printf("%4.2f %4.2f %4.2f\n", position.x, position.y, b2Rot_GetAngle(rotation));
 }
 ```
 

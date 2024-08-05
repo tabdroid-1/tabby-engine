@@ -77,9 +77,9 @@ struct RaycastHit2D {
     Entity entity;
     TransformComponent* transform;
     Rigidbody2DComponent* rigidbody;
-    glm::vec2 origin = { 0.0f, 0.0f };
-    glm::vec2 point = { 0.0f, 0.0f };
-    glm::vec2 normal = { 0.0f, 0.0f };
+    Vector2 origin = { 0.0f, 0.0f };
+    Vector2 point = { 0.0f, 0.0f };
+    Vector2 normal = { 0.0f, 0.0f };
     float distance;
     float fraction;
 

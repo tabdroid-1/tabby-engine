@@ -60,7 +60,7 @@ namespace Utils {
             return fmt::format("{}(B)", size);
     }
 
-    // inline void DecomposeMatrix(const glm::mat4& source, glm::vec3* translation, glm::quat* rotation, glm::vec3* scale)
+    // inline void DecomposeMatrix(const Matrix4& source, glm::vec3* translation, glm::quat* rotation, glm::vec3* scale)
     // {
     //     glm::vec3 skew;
     //     glm::vec4 perpective;
@@ -68,9 +68,9 @@ namespace Utils {
     //     glm::decompose(source, *scale, *rotation, *translation, skew, perpective);
     // };
 
-    // inline glm::mat4 ComposeMatrix(const glm::vec3& translation, const glm::quat& rotation, const glm::vec3& scale)
+    // inline Matrix4 ComposeMatrix(const glm::vec3& translation, const glm::quat& rotation, const glm::vec3& scale)
     // {
-    //     return glm::translate(glm::mat4(1.0f), translation) * glm::mat4_cast(rotation) * glm::scale(glm::mat4(1.0f), scale);
+    //     return glm::translate(Matrix4(1.0f), translation) * Matrix4_cast(rotation) * glm::scale(Matrix4(1.0f), scale);
     // }
 
     // NOTE: returns amount of mip levels excluding mip #0

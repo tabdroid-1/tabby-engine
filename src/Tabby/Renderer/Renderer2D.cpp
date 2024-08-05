@@ -107,7 +107,7 @@ struct Renderer2DData {
     Renderer2D::Statistics Stats;
 
     struct CameraData {
-        glm::mat4 ViewProjection;
+        Matrix4 ViewProjection;
     };
     CameraData CameraBuffer;
     Shared<UniformBuffer> CameraUniformBuffer;
@@ -262,7 +262,7 @@ void Renderer2D::Shutdown()
     delete[] s_Data.QuadVertexBufferBase;
 }
 
-void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
+void Renderer2D::BeginScene(const Camera& camera, const Matrix4& transform)
 {
     TB_PROFILE_SCOPE();
 
@@ -362,8 +362,8 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
 {
     TB_PROFILE_SCOPE();
 
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-        * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+    Matrix4 transform = glm::translate(Matrix4(1.0f), position)
+        * glm::scale(Matrix4(1.0f), { size.x, size.y, 1.0f });
 
     DrawQuad(transform, color);
 }
@@ -377,13 +377,13 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
 {
     TB_PROFILE_SCOPE();
 
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-        * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+    Matrix4 transform = glm::translate(Matrix4(1.0f), position)
+        * glm::scale(Matrix4(1.0f), { size.x, size.y, 1.0f });
 
     DrawQuad(transform, texture, tilingFactor, tintColor);
 }
 
-void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
+void Renderer2D::DrawQuad(const Matrix4& transform, const glm::vec4& color, int entityID)
 {
     TB_PROFILE_SCOPE();
 
@@ -410,7 +410,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, in
     s_Data.Stats.QuadCount++;
 }
 
-void Renderer2D::DrawQuad(const glm::mat4& transform, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
+void Renderer2D::DrawQuad(const Matrix4& transform, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
 {
     TB_PROFILE_SCOPE();
 
@@ -452,7 +452,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const Shared<Texture>& tex
     s_Data.Stats.QuadCount++;
 }
 
-void Renderer2D::DrawQuad(const glm::mat4& transform, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor, int horizontalFrames, int verticalFrames, int currentXFrame, int currentYFrame, int entityID)
+void Renderer2D::DrawQuad(const Matrix4& transform, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor, int horizontalFrames, int verticalFrames, int currentXFrame, int currentYFrame, int entityID)
 
 {
     TB_PROFILE_SCOPE();
@@ -510,9 +510,9 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
 {
     TB_PROFILE_SCOPE();
 
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-        * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-        * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+    Matrix4 transform = glm::translate(Matrix4(1.0f), position)
+        * glm::rotate(Matrix4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+        * glm::scale(Matrix4(1.0f), { size.x, size.y, 1.0f });
 
     DrawQuad(transform, color);
 }
@@ -526,23 +526,23 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
 {
     TB_PROFILE_SCOPE();
 
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-        * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-        * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+    Matrix4 transform = glm::translate(Matrix4(1.0f), position)
+        * glm::rotate(Matrix4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+        * glm::scale(Matrix4(1.0f), { size.x, size.y, 1.0f });
 
     DrawQuad(transform, texture, tilingFactor, tintColor);
 }
 
 void Renderer2D::DrawCircle(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color, float thickness /*= 1.0f*/, float fade /*= 0.005f*/)
 {
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-        * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-        * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+    Matrix4 transform = glm::translate(Matrix4(1.0f), position)
+        * glm::rotate(Matrix4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+        * glm::scale(Matrix4(1.0f), { size.x, size.y, 1.0f });
 
     DrawCircle(transform, color, thickness, fade, -1);
 }
 
-void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness /*= 1.0f*/, float fade /*= 0.005f*/, int entityID /*= -1*/)
+void Renderer2D::DrawCircle(const Matrix4& transform, const glm::vec4& color, float thickness /*= 1.0f*/, float fade /*= 0.005f*/, int entityID /*= -1*/)
 {
     TB_PROFILE_SCOPE();
 
@@ -596,7 +596,7 @@ void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, cons
     DrawLine(p3, p0, color, entityID);
 }
 
-void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID)
+void Renderer2D::DrawRect(const Matrix4& transform, const glm::vec4& color, int entityID)
 {
     glm::vec3 lineVertices[4];
     for (size_t i = 0; i < 4; i++)
@@ -608,7 +608,7 @@ void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, in
     DrawLine(lineVertices[3], lineVertices[0], color, entityID);
 }
 
-void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
+void Renderer2D::DrawSprite(const Matrix4& transform, SpriteRendererComponent& src, int entityID)
 {
     if (AssetManager::Get()->HasAsset(src.Texture)) {
         // DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
@@ -618,7 +618,7 @@ void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent&
         DrawQuad(transform, src.Color, entityID);
 }
 
-void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID)
+void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const Matrix4& transform, const TextParams& textParams, int entityID)
 {
     const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
     const auto& metrics = fontGeometry.getMetrics();
@@ -744,12 +744,12 @@ void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const 
     }
 }
 
-void Renderer2D::DrawString(const std::string& string, const glm::mat4& transform, const TextComponent& component, int entityID)
+void Renderer2D::DrawString(const std::string& string, const Matrix4& transform, const TextComponent& component, int entityID)
 {
     DrawString(string, component.font, transform, { component.Color, component.Kerning, component.LineSpacing }, entityID);
 }
 
-// void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const glm::mat4& transform, const TextParams& textParams, int entityID)
+// void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const Matrix4& transform, const TextParams& textParams, int entityID)
 // {
 //
 //     s_Data.FontAtlasTexture = fontAtlas;
@@ -957,7 +957,7 @@ void Renderer2D::DrawString(const std::string& string, const glm::mat4& transfor
 //     // }
 // }
 //
-// void Renderer2D::DrawString(const std::string& string, const glm::mat4& transform, const TextComponent& component, int entityID)
+// void Renderer2D::DrawString(const std::string& string, const Matrix4& transform, const TextComponent& component, int entityID)
 // {
 //
 //     if (AssetManager::Get()->HasAsset(component.Font)) {

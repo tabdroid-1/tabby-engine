@@ -2,6 +2,7 @@
 
 #include "Tabby/Core/Application.h"
 #include "Tabby/Utils/PlatformUtils.h"
+#include "Tabby/Core/Time/Time.h"
 #include "tbpch.h"
 
 #include <SDL.h>

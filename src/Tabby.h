@@ -11,7 +11,8 @@
 #include <Tabby/Core/Log/Log.h>
 #include <Tabby/Core/Layer/Layer.h>
 #include <Tabby/Core/Application.h>
-#include <Tabby/Core/Time/Timestep.h>
+#include <Tabby/Core/Time/Time.h>
+#include <Tabby/Core/Time/Timer.h>
 // -----------------------------------
 //
 // --- Scene -------------------------
@@ -19,7 +20,6 @@
 #include <Tabby/World/Plugin.h>
 #include <Tabby/World/Entity.h>
 #include <Tabby/World/Components.h>
-#include <Tabby/World/ScriptableEntity.h>
 // -----------------------------------
 //
 // --- Physics -----------------------
@@ -35,6 +35,7 @@
 //
 // --- Asset -------------------------
 #include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Asset/GLTFLoader.h>
 // -----------------------------------
 //
 // --- Renderer ----------------------

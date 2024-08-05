@@ -1,7 +1,7 @@
 #pragma once
 
 #include <tbpch.h>
-#include <Tabby/Core/Time/Timestep.h>
+#include <Tabby/Foundation/Types.h>
 
 #include <entt.hpp>
 
@@ -65,7 +65,7 @@ public:
     static void OnStart();
     static void OnStop();
 
-    static void Update(Timestep ts);
+    static void Update();
     static void DrawImGui();
 
     static void OnViewportResize(uint32_t width, uint32_t height);
@@ -85,7 +85,7 @@ public:
 
     static entt::registry& GetRegistry();
 
-    static void SetCurrentCamera(Camera* currentCamera, glm::mat4* currentCameraTransform);
+    static void SetCurrentCamera(Camera* currentCamera, Matrix4* currentCameraTransform);
 
 private:
     template <typename T>
@@ -105,7 +105,7 @@ private:
     float m_FixedUpdateAccumulator = 0;
 
     Camera* m_CurrentCamera;
-    const glm::mat4* m_CurrentCameraTransform;
+    const Matrix4* m_CurrentCameraTransform;
 
     inline static entt::registry m_EntityRegistry;
     std::unordered_map<UUID, entt::entity> m_EntityMap;

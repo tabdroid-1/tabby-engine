@@ -33,7 +33,7 @@ public:
     };
 
     void SetName(const std::string& name);
-    void SetTransform(const glm::mat4& transform);
+    void SetTransform(const Matrix4& transform);
     void SetPrimitiveType(PrimitiveType primitiveType);
     void SetMaterial(Shared<Material> material);
     void SetVertices(std::vector<Vertex> vertices);
@@ -62,7 +62,7 @@ public:
 
     const std::string GetName() const { return m_Name; }
     std::vector<Vertex> GetVertices() { return m_Vertices; }
-    std::vector<Vertex> GetWorldSpaceVertices(const glm::mat4& matrix);
+    std::vector<Vertex> GetWorldSpaceVertices(const Matrix4& matrix);
     std::vector<Vertex> GetWorldSpaceVertices(Vector3 position, Vector3 eulerAngles, Vector3 scale);
     std::vector<uint32_t> GetIndices() { return m_Indices; }
     Shared<Material> GetMaterial() const { return m_Material; }
@@ -70,7 +70,7 @@ public:
 
 private:
     std::string m_Name;
-    glm::mat4 m_Transform;
+    Matrix4 m_Transform;
     PrimitiveType m_PrimitiveType;
     std::vector<Vertex> m_Vertices;
     std::vector<uint32_t> m_Indices;

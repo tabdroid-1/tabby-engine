@@ -3,7 +3,6 @@
 #include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Renderer/Font.h>
 #include <Tabby/Renderer/Texture.h>
-#include <Tabby/World/Prefab.h>
 
 #include <Tabby/Utils/Utils.h>
 #include <stb_image.h>
@@ -56,8 +55,6 @@ AssetHandle AssetManager::LoadAssetSource(std::filesystem::path path, const Asse
         return ImportImageSource(path, id);
     case AssetType::FONT_SRC:
         return ImportFontSource(path, id);
-    case AssetType::TABBY_PREFAB:
-        return ImportPrefabSource(path, id);
     case AssetType::UNKNOWN:
         return AssetHandle(0);
     default:
@@ -225,68 +222,6 @@ AssetHandle AssetManager::ImportFontSource(std::filesystem::path path, AssetHand
     //     m_UUIDs.emplace(path.string(), font->Handle);
     //
     //     return font->Handle;
-}
-
-AssetHandle AssetManager::ImportPrefabSource(std::filesystem::path path, AssetHandle handle)
-{
-    if (m_UUIDs.find(path.string()) != m_UUIDs.end())
-        return m_UUIDs.at(path.string());
-
-    std::vector<uint8_t> data;
-
-    {
-
-        TB_PROFILE_SCOPE_NAME("stbi_load - AssetManager::ImportTexture");
-#if defined(TB_PLATFORM_ANDROID)
-
-        // TODO:
-        std::vector<unsigned char> imageData;
-
-        SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
-        if (rw != nullptr) {
-            Sint64 size = SDL_RWsize(rw);
-
-            if (size > 0) {
-                imageData.resize(size);
-                Sint64 bytesRead = SDL_RWread(rw, imageData.data(), 1, size);
-                if (bytesRead != size) {
-                    // Handle read error
-                    TB_CORE_ERROR("Error reading file {0}", path);
-                    imageData.clear(); // Clear the imageData to indicate an error
-                }
-            }
-
-            SDL_RWclose(rw);
-        } else {
-            // Handle file open error
-            TB_CORE_ERROR("Could not open file {0}", path);
-            TB_CORE_INFO("Current working dir: {0}", std::filesystem::current_path());
-        }
-
-        data.Data = stbi_load_from_memory(imageData.data(), static_cast<int>(imageData.size()), &width, &height, &channels, 4);
-        channels = 4;
-#else
-        std::ifstream inFile(path.string(), std::ios::binary | std::ios::ate);
-        if (!inFile) {
-            throw std::runtime_error("Failed to open file for reading: " + path.string());
-        }
-
-        std::streamsize size = inFile.tellg();
-        inFile.seekg(0, std::ios::beg);
-
-        data = std::vector<uint8_t>(size);
-        if (!inFile.read(reinterpret_cast<char*>(data.data()), size)) {
-            throw std::runtime_error("Failed to read file: " + path.string());
-        }
-#endif
-    }
-
-    Shared<Prefab> prefab = Prefab::DeserializePrefab(handle, data);
-
-    m_AssetRegistry.emplace(prefab->Handle, prefab);
-    m_UUIDs.emplace(path.string(), prefab->Handle);
-
-    return prefab->Handle;
 }
 
 }

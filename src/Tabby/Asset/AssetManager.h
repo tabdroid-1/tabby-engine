@@ -32,7 +32,6 @@ private:
     AssetHandle ImportMeshSource(std::filesystem::path path, AssetHandle handle);
     AssetHandle ImportImageSource(std::filesystem::path path, AssetHandle handle);
     AssetHandle ImportFontSource(std::filesystem::path path, AssetHandle handle);
-    AssetHandle ImportPrefabSource(std::filesystem::path path, AssetHandle handle);
 
 private:
     inline static AssetManager* s_Instance;

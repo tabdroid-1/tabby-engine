@@ -157,8 +157,6 @@ elseif (EMSCRIPTEN)
 	# see SIMDE_DIAGNOSTIC_DISABLE_PSABI_
 	message(STATUS "Box2D disabling ABI warning")
 	target_compile_options(box2d PRIVATE -Wno-psabi)
-    target_link_options(box2d PRIVATE -pthread)
-    target_compile_options(box2d PRIVATE -pthread)
 elseif (UNIX)
 	message(STATUS "Box2D using Unix")
 	if ("${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "aarch64")
