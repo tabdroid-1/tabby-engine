@@ -1,3 +1,9 @@
+Version: 06-08-2024_2 Alpha
+Changes:
+- Fixed GLTFLoader not loading texture correctly from .glb files.
+
+--------------------------------------------------------------------------------------
+
 Version: 06-08-2024_1 Alpha
 Changes:
 - Updated box2d which fixed body stopping to move after velocity becomes 0
