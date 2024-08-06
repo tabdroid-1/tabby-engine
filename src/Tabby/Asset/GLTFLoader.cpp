@@ -75,7 +75,7 @@ void GLTFLoader::LoadImages(fastgltf::Asset& asset, std::vector<Shared<Texture>>
                            TB_CORE_ASSERT_TAGGED(filePath.fileByteOffset == 0, "File offsets not supported");
                            TB_CORE_ASSERT_TAGGED(filePath.uri.isLocalPath(), "Only local files allowed"); // We're only capable of loading local files.
 
-                           const std::string path(filePath.uri.path().begin(), filePath.uri.path().end()); // Thanks C++.
+                           const std::string path(filePath.uri.path());
 
                            AssetHandle handle = AssetManager::Get()->LoadAssetSource(path, handle);
                            imageptr = AssetManager::Get()->GetAsset<Texture>(handle);

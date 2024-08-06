@@ -40,7 +40,6 @@ void OpenGL46Context::Init()
     int major = std::stoi(version.substr(0, dotPosition));
     int minor = std::stoi(version.substr(dotPosition + 1));
 
-    TB_CORE_INFO("OpenGL 4.6");
     TB_CORE_ASSERT_TAGGED(major > 4 || (major == 4 && minor >= 6), "This device does not support OpenGL 4.6!");
 }
 

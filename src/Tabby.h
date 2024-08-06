@@ -17,7 +17,6 @@
 //
 // --- Scene -------------------------
 #include <Tabby/World/World.h>
-#include <Tabby/World/Plugin.h>
 #include <Tabby/World/Entity.h>
 #include <Tabby/World/Components.h>
 // -----------------------------------

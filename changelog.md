@@ -1,3 +1,9 @@
+Version: 06-08-2024_3 Alpha
+Changes:
+- Removed Plugin. 
+
+--------------------------------------------------------------------------------------
+
 Version: 06-08-2024_2 Alpha
 Changes:
 - GLTFLoader is now just a buncha functions. 
