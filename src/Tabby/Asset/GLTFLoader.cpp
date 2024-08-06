@@ -75,76 +75,63 @@ void GLTF::LoadImages()
 
                            const std::string path(filePath.uri.path().begin(), filePath.uri.path().end()); // Thanks C++.
 
-                           stbi_set_flip_vertically_on_load(false);
-                           Buffer data;
-                           int image_width, image_height, channels;
-                           data.Data = stbi_load(path.c_str(), &image_width, &image_height, &channels, STBI_rgb_alpha);
-                           data.Size = image_width * image_height * channels;
-                           if (data.Data == nullptr) {
-                               TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from filepath: {0}", path);
-                           }
+                           AssetHandle handle = AssetManager::Get()->LoadAssetSource(path, handle);
+                           imageptr = AssetManager::Get()->GetAsset<Texture>(handle);
 
-                           AssetFileHeader file_header = {};
-                           file_header.header_size = sizeof(AssetFileHeader);
-                           file_header.asset_type = AssetType::IMAGE_SRC;
-                           file_header.subresources_size = 0;
-                           file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
-
-                           TextureSpecification texture_spec = {};
-                           texture_spec.Format = ImageFormat::RGBA32_UNORM;
-                           texture_spec.Width = image_width;
-                           texture_spec.Height = image_height;
-                           texture_spec.type = ImageType::TYPE_2D;
-                           texture_spec.usage = ImageUsage::TEXTURE;
-                           texture_spec.array_layers = 1;
-                           texture_spec.path = path;
-                           texture_spec.GenerateMips = true;
-
-                           AssetHandle handle;
-                           imageptr = Texture::Create(texture_spec, handle, data);
-                           data.Release();
+                           // stbi_set_flip_vertically_on_load(false);
+                           // Buffer data;
+                           // int image_width, image_height, channels;
+                           // data.Data = stbi_load(path.c_str(), &image_width, &image_height, &channels, STBI_rgb_alpha);
+                           // data.Size = image_width * image_height * channels;
+                           // if (data.Data == nullptr) {
+                           //     TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from filepath: {0}", path);
+                           // }
+                           //
+                           // AssetFileHeader file_header = {};
+                           // file_header.header_size = sizeof(AssetFileHeader);
+                           // file_header.asset_type = AssetType::IMAGE_SRC;
+                           // file_header.subresources_size = 0;
+                           // file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
+                           //
+                           // TextureSpecification texture_spec = {};
+                           // texture_spec.Format = ImageFormat::RGBA32_UNORM;
+                           // texture_spec.Width = image_width;
+                           // texture_spec.Height = image_height;
+                           // texture_spec.type = ImageType::TYPE_2D;
+                           // texture_spec.usage = ImageUsage::TEXTURE;
+                           // texture_spec.array_layers = 1;
+                           // texture_spec.path = path;
+                           // texture_spec.GenerateMips = true;
+                           //
+                           // AssetHandle handle;
+                           // imageptr = Texture::Create(texture_spec, handle, data);
+                           // data.Release();
                        },
                        [&](fastgltf::sources::Array& vector) {
                            Buffer data;
                            int image_width, image_height, channels;
 
                            stbi_set_flip_vertically_on_load(false);
-                           // data.Data = stbi_load_from_memory(vector.bytes.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, STBI_rgb_alpha);
-
-                           std::vector<uint8_t> imageData;
-                           imageData.resize(vector.bytes.size());
-                           std::transform(vector.bytes.begin(), vector.bytes.end(), imageData.begin(), [](std::byte b) {
-                               return static_cast<uint8_t>(b);
-                           });
-
-                           data.Data = stbi_load_from_memory(imageData.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, STBI_rgb_alpha);
+                           data.Data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data()), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, 4);
 
                            data.Size = image_width * image_height * channels;
                            if (data.Data == nullptr) {
                                TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from data");
                            }
 
-                           AssetFileHeader file_header = {};
-                           file_header.header_size = sizeof(AssetFileHeader);
-                           file_header.asset_type = AssetType::IMAGE_SRC;
-                           file_header.subresources_size = 0;
-                           file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
+                           // AssetFileHeader file_header = {};
+                           // file_header.header_size = sizeof(AssetFileHeader);
+                           // file_header.asset_type = AssetType::IMAGE_SRC;
+                           // file_header.subresources_size = 0;
+                           // file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
 
                            TextureSpecification texture_spec = {};
-                           // switch (channels) {
-                           // case 3:
-                           //     texture_spec.Format = ImageFormat::RGB8;
-                           //     break;
-                           // case 4:
                            texture_spec.Format = ImageFormat::RGBA8;
-                           //     break;
-                           // }
                            texture_spec.Width = image_width;
                            texture_spec.Height = image_height;
                            texture_spec.type = ImageType::TYPE_2D;
                            texture_spec.usage = ImageUsage::TEXTURE;
                            texture_spec.array_layers = 1;
-                           // texture_spec.path = path;
                            texture_spec.GenerateMips = true;
 
                            AssetHandle handle;
@@ -165,14 +152,9 @@ void GLTF::LoadImages()
                                               int image_width, image_height, channels;
 
                                               stbi_set_flip_vertically_on_load(false);
+                                              data.Data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(vector.bytes.data() + bufferView.byteOffset),
+                                                  static_cast<int>(bufferView.byteLength), &image_width, &image_height, &channels, 4);
 
-                                              std::vector<uint8_t> imageData;
-                                              imageData.resize(vector.bytes.size());
-                                              std::transform(vector.bytes.begin(), vector.bytes.end(), imageData.begin(), [](std::byte b) {
-                                                  return static_cast<uint8_t>(b);
-                                              });
-
-                                              data.Data = stbi_load_from_memory(imageData.data(), static_cast<int>(vector.bytes.size()), &image_width, &image_height, &channels, 4);
                                               data.Size = image_width * image_height * channels;
                                               if (data.Data == nullptr) {
                                                   TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from data");

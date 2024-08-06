@@ -35,13 +35,11 @@ Todo
 
 
 - Low priority
-    - Plugins
     - Angel Script
     - Animation
     - Basic networking
     - Create pop-up showing error on release builds instead of just crashing without any info. 
     - Vulkan.
-    - C++ reflection
 
 - Misc.
     - Create Documentation
