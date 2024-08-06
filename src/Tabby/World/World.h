@@ -37,17 +37,6 @@ public:
 
     static void Init();
 
-    template <typename... PluginTypes>
-    static void AddPlugins()
-    {
-
-        ([&]() {
-            auto var = new PluginTypes();
-            var->Build();
-            delete var;
-        }(),
-            ...);
-    }
     static void AddSystem(Schedule schedule, const std::function<void(entt::registry&)>& function);
 
     static Entity CreateEntity(const std::string& name = std::string());
@@ -90,11 +79,6 @@ public:
 private:
     template <typename T>
     static void OnComponentAdded(Entity entity, T& component);
-
-    template <typename T>
-    void ProcessPlugin()
-    {
-    }
 
 private:
     uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
