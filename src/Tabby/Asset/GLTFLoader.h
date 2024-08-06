@@ -9,17 +9,12 @@ namespace Tabby {
 class Mesh;
 class Texture;
 
-class GLTF {
+class GLTFLoader {
 public:
-    GLTF(const std::filesystem::path& filePath);
-
-    void Draw();
+    static void Parse(const std::filesystem::path& filePath);
 
 private:
-    void LoadImages();
-    void LoadMaterials();
-    void LoadMeshes();
-    void LoadCamera();
+    GLTFLoader() { }
 
     enum MaterialUniformFlags : std::uint32_t {
         None = 0 << 0,
@@ -37,10 +32,9 @@ private:
         Vector2 padding;
     };
 
-private:
-    fastgltf::Asset m_Asset;
-    std::vector<Shared<Texture>> m_Images;
-    std::vector<MaterialUniforms> m_Materials;
+    static void LoadImages(fastgltf::Asset& asset, std::vector<Shared<Texture>>& images);
+    static void LoadMaterials(fastgltf::Asset& asset, std::vector<MaterialUniforms>& materials);
+    static void LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>& images, std::vector<MaterialUniforms>& materials);
 };
 
 }

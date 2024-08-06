@@ -1,5 +1,11 @@
 Version: 06-08-2024_2 Alpha
 Changes:
+- GLTFLoader is now just a buncha functions. 
+
+--------------------------------------------------------------------------------------
+
+Version: 06-08-2024_2 Alpha
+Changes:
 - Fixed GLTFLoader not loading texture correctly from .glb files.
 
 --------------------------------------------------------------------------------------

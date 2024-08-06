@@ -26,8 +26,13 @@
 
 namespace Tabby {
 
-GLTF::GLTF(const std::filesystem::path& filePath)
+void GLTFLoader::Parse(const std::filesystem::path& filePath)
 {
+
+    fastgltf::Asset m_Asset;
+    std::vector<Shared<Texture>> m_Images;
+    std::vector<MaterialUniforms> m_Materials;
+
     std::string err;
     std::string warn;
 
@@ -43,29 +48,26 @@ GLTF::GLTF(const std::filesystem::path& filePath)
     std::string message = "Failed to load glTF file: " + std::string(fastgltf::getErrorMessage(gltfFile.error()));
     TB_CORE_ASSERT_TAGGED(bool(gltfFile), message);
     auto asset = parser.loadGltf(gltfFile.get(), filePath.parent_path(), gltfOptions);
-#endif // DEBUG
+#endif
 
     message = "Failed to load glTF file: " + std::string(fastgltf::getErrorMessage(asset.error()));
     TB_CORE_ASSERT_TAGGED(asset.error() == fastgltf::Error::None, message);
 
     m_Asset = std::move(asset.get());
-    // TB_CORE_ASSERT_TAGGED(false, "Unknown File Format");
-
-    // Add a default material
     auto& defaultMaterial = m_Materials.emplace_back();
 
-    LoadImages();
-    LoadMaterials();
-    LoadMeshes();
+    LoadImages(m_Asset, m_Images);
+    LoadMaterials(m_Asset, m_Materials);
+    LoadMeshes(m_Asset, m_Images, m_Materials);
 }
 
-void GLTF::LoadImages()
+void GLTFLoader::LoadImages(fastgltf::Asset& asset, std::vector<Shared<Texture>>& images)
 {
     auto getLevelCount = [](int width, int height) -> int {
         return static_cast<int>(1 + floor(log2(width > height ? width : height)));
     };
 
-    for (auto& image : m_Asset.images) {
+    for (auto& image : asset.images) {
         Shared<Texture> imageptr;
         std::visit(fastgltf::visitor {
                        [](auto& arg) {},
@@ -77,35 +79,6 @@ void GLTF::LoadImages()
 
                            AssetHandle handle = AssetManager::Get()->LoadAssetSource(path, handle);
                            imageptr = AssetManager::Get()->GetAsset<Texture>(handle);
-
-                           // stbi_set_flip_vertically_on_load(false);
-                           // Buffer data;
-                           // int image_width, image_height, channels;
-                           // data.Data = stbi_load(path.c_str(), &image_width, &image_height, &channels, STBI_rgb_alpha);
-                           // data.Size = image_width * image_height * channels;
-                           // if (data.Data == nullptr) {
-                           //     TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from filepath: {0}", path);
-                           // }
-                           //
-                           // AssetFileHeader file_header = {};
-                           // file_header.header_size = sizeof(AssetFileHeader);
-                           // file_header.asset_type = AssetType::IMAGE_SRC;
-                           // file_header.subresources_size = 0;
-                           // file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
-                           //
-                           // TextureSpecification texture_spec = {};
-                           // texture_spec.Format = ImageFormat::RGBA32_UNORM;
-                           // texture_spec.Width = image_width;
-                           // texture_spec.Height = image_height;
-                           // texture_spec.type = ImageType::TYPE_2D;
-                           // texture_spec.usage = ImageUsage::TEXTURE;
-                           // texture_spec.array_layers = 1;
-                           // texture_spec.path = path;
-                           // texture_spec.GenerateMips = true;
-                           //
-                           // AssetHandle handle;
-                           // imageptr = Texture::Create(texture_spec, handle, data);
-                           // data.Release();
                        },
                        [&](fastgltf::sources::Array& vector) {
                            Buffer data;
@@ -118,12 +91,6 @@ void GLTF::LoadImages()
                            if (data.Data == nullptr) {
                                TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from data");
                            }
-
-                           // AssetFileHeader file_header = {};
-                           // file_header.header_size = sizeof(AssetFileHeader);
-                           // file_header.asset_type = AssetType::IMAGE_SRC;
-                           // file_header.subresources_size = 0;
-                           // file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
 
                            TextureSpecification texture_spec = {};
                            texture_spec.Format = ImageFormat::RGBA8;
@@ -139,13 +106,9 @@ void GLTF::LoadImages()
                            data.Release();
                        },
                        [&](fastgltf::sources::BufferView& view) {
-                           auto& bufferView = m_Asset.bufferViews[view.bufferViewIndex];
-                           auto& buffer = m_Asset.buffers[bufferView.bufferIndex];
-                           // Yes, we've already loaded every buffer into some GL buffer. However, with GL it's simpler
-                           // to just copy the buffer data again for the texture. Besides, this is just an example.
+                           auto& bufferView = asset.bufferViews[view.bufferViewIndex];
+                           auto& buffer = asset.buffers[bufferView.bufferIndex];
                            std::visit(fastgltf::visitor {
-                                          // We only care about VectorWithMime here, because we specify LoadExternalBuffers, meaning
-                                          // all buffers are already loaded into a vector.
                                           [](auto& arg) {},
                                           [&](fastgltf::sources::Array& vector) {
                                               Buffer data;
@@ -160,27 +123,13 @@ void GLTF::LoadImages()
                                                   TB_CORE_ERROR("TextureImporter::ImportTexture - Could not load texture from data");
                                               }
 
-                                              AssetFileHeader file_header = {};
-                                              file_header.header_size = sizeof(AssetFileHeader);
-                                              file_header.asset_type = AssetType::IMAGE_SRC;
-                                              file_header.subresources_size = 0;
-                                              file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
-
                                               TextureSpecification texture_spec = {};
-                                              // switch (channels) {
-                                              // case 3:
-                                              //     texture_spec.Format = ImageFormat::RGB8;
-                                              //     break;
-                                              // case 4:
                                               texture_spec.Format = ImageFormat::RGBA8;
-                                              //     break;
-                                              // }
                                               texture_spec.Width = image_width;
                                               texture_spec.Height = image_height;
                                               texture_spec.type = ImageType::TYPE_2D;
                                               texture_spec.usage = ImageUsage::TEXTURE;
                                               texture_spec.array_layers = 1;
-                                              // texture_spec.path = path;
                                               texture_spec.GenerateMips = true;
 
                                               AssetHandle handle;
@@ -192,15 +141,13 @@ void GLTF::LoadImages()
                    },
             image.data);
 
-        m_Images.emplace_back(imageptr);
-        // viewer->textures.emplace_back(Texture { texture });
-        // return true;
+        images.emplace_back(imageptr);
     }
 }
 
-void GLTF::LoadMaterials()
+void GLTFLoader::LoadMaterials(fastgltf::Asset& asset, std::vector<MaterialUniforms>& m_Materials)
 {
-    for (auto& material : m_Asset.materials) {
+    for (auto& material : asset.materials) {
 
         auto uniforms = m_Materials.emplace_back();
         uniforms.alphaCutoff = material.alphaCutoff;
@@ -219,34 +166,15 @@ void GLTF::LoadMaterials()
             uniforms.flags |= MaterialUniformFlags::HasOcclusionMap;
 
         m_Materials.emplace_back(uniforms);
-
-        // auto tabbyMaterial = m_Materials.emplace_back();
-        // tabbyMaterial->SetAlbedoColor({ material.pbrData.baseColorFactor.x(), material.pbrData.baseColorFactor.y(), material.pbrData.baseColorFactor.z(), material.pbrData.baseColorFactor.w() });
-        // if (material.pbrData.baseColorTexture.has_value()) {
-        //     auto& albedoMap = material.pbrData.baseColorTexture;
-        //     tabbyMaterial->SetAlbedoMap(m_Images[albedoMap->texCoordIndex]);
-        //     tabbyMaterial->SetAlbedoMapOffset({ albedoMap->transform->uvOffset.x(), albedoMap->transform->uvOffset.y() });
-        //     tabbyMaterial->SetAlbedoMapTiling({ albedoMap->transform->uvScale.x(), albedoMap->transform->uvScale.y() });
-        //     // albedoMap->transform->texCoordIndex
-        // }
-        //
-        // if (material.normalTexture.has_value())
-        //     tabbyMaterial->SetNormalMap(m_Images[material.normalTexture->textureIndex]);
-        //
-        // if (material.pbrData.metallicRoughnessTexture.has_value())
-        //     tabbyMaterial->SetMetallicMap(m_Images[material.pbrData.metallicRoughnessTexture->textureIndex]);
-        //
-        // if (material.occlusionTexture.has_value())
-        //     tabbyMaterial->SetAmbientOcclusionMap(m_Images[material.occlusionTexture->textureIndex]);
     }
 }
 
-void GLTF::LoadMeshes()
+void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>& images, std::vector<MaterialUniforms>& materials)
 {
 
     std::vector<Shared<Tabby::Mesh>> tabbyMeshes;
 
-    for (auto& mesh : m_Asset.meshes) {
+    for (auto& mesh : asset.meshes) {
 
         for (auto it = mesh.primitives.begin(); it != mesh.primitives.end(); ++it) {
 
@@ -273,16 +201,16 @@ void GLTF::LoadMeshes()
 
             if (it->materialIndex.has_value()) {
                 materialUniformsIndex = it->materialIndex.value() + 1; // Adjust for default material
-                auto& material = m_Asset.materials[it->materialIndex.value()];
+                auto& material = asset.materials[it->materialIndex.value()];
 
                 auto& baseColorTexture = material.pbrData.baseColorTexture;
                 if (baseColorTexture.has_value()) {
-                    auto& texture = m_Asset.textures[baseColorTexture->textureIndex];
+                    auto& texture = asset.textures[baseColorTexture->textureIndex];
                     if (!texture.imageIndex.has_value())
                         return;
 
-                    auto test = m_Images[texture.imageIndex.value()];
-                    tabbyMaterial->SetAlbedoMap(m_Images[texture.imageIndex.value()]);
+                    auto test = images[texture.imageIndex.value()];
+                    tabbyMaterial->SetAlbedoMap(images[texture.imageIndex.value()]);
 
                     if (baseColorTexture->transform && baseColorTexture->transform->texCoordIndex.has_value()) {
                         baseColorTexcoordIndex = baseColorTexture->transform->texCoordIndex.value();
@@ -297,13 +225,13 @@ void GLTF::LoadMeshes()
             std::vector<Mesh::Vertex> meshVertices;
             {
                 // Position
-                auto& positionAccessor = m_Asset.accessors[positionIt->accessorIndex];
+                auto& positionAccessor = asset.accessors[positionIt->accessorIndex];
                 if (!positionAccessor.bufferViewIndex.has_value())
                     continue;
 
                 meshVertices.resize(positionAccessor.count);
 
-                fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec3>(m_Asset, positionAccessor, [&](fastgltf::math::fvec3 pos, std::size_t idx) {
+                fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec3>(asset, positionAccessor, [&](fastgltf::math::fvec3 pos, std::size_t idx) {
                     meshVertices[idx].Position = Vector4(pos.x(), pos.y(), pos.z(), 0.0f);
                 });
             }
@@ -311,21 +239,21 @@ void GLTF::LoadMeshes()
             auto texcoordAttribute = std::string("TEXCOORD_") + std::to_string(baseColorTexcoordIndex);
             if (const auto* texcoord = it->findAttribute(texcoordAttribute); texcoord != it->attributes.end()) {
                 // Tex coord
-                auto& texCoordAccessor = m_Asset.accessors[texcoord->accessorIndex];
+                auto& texCoordAccessor = asset.accessors[texcoord->accessorIndex];
                 if (!texCoordAccessor.bufferViewIndex.has_value())
                     continue;
 
-                fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec2>(m_Asset, texCoordAccessor, [&](fastgltf::math::fvec2 uv, std::size_t idx) {
+                fastgltf::iterateAccessorWithIndex<fastgltf::math::fvec2>(asset, texCoordAccessor, [&](fastgltf::math::fvec2 uv, std::size_t idx) {
                     meshVertices[idx].TexCoords = Vector2(uv.x(), uv.y());
                 });
             }
 
-            auto& indexAccessor = m_Asset.accessors[it->indicesAccessor.value()];
+            auto& indexAccessor = asset.accessors[it->indicesAccessor.value()];
             if (!indexAccessor.bufferViewIndex.has_value())
                 return;
             std::vector<uint32_t> meshIndices(indexAccessor.count);
 
-            fastgltf::copyFromAccessor<std::uint32_t>(m_Asset, indexAccessor, (std::uint32_t*)meshIndices.data());
+            fastgltf::copyFromAccessor<std::uint32_t>(asset, indexAccessor, (std::uint32_t*)meshIndices.data());
 
             tabbyMesh->SetMaterial(tabbyMaterial);
             tabbyMesh->SetVertices(meshVertices);
@@ -338,7 +266,7 @@ void GLTF::LoadMeshes()
 
     auto SceneEntity = Tabby::World::CreateEntity("Scene");
 
-    for (auto& node : m_Asset.nodes) {
+    for (auto& node : asset.nodes) {
 
         auto ent = Tabby::World::CreateEntity(node.name.c_str());
         auto& mC = ent.AddComponent<MeshComponent>();
