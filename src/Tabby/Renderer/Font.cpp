@@ -1,14 +1,16 @@
 
+#include "SDL_rwops.h"
 #include "Font.h"
 #include "tbpch.h"
 #include <Tabby/Core/Base.h>
+#include <Tabby/Asset/AssetManager.h>
 
 #include <Tabby/Renderer/MSDFData.h>
 
 namespace Tabby {
 
 template <typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
-static Shared<Texture> CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
+static AssetHandle CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
     const msdf_atlas::FontGeometry& fontGeometry, uint32_t width, uint32_t height)
 {
     msdf_atlas::GeneratorAttributes attributes;
@@ -28,23 +30,25 @@ static Shared<Texture> CreateAndCacheAtlas(const std::string& fontName, float fo
     spec.Format = ImageFormat::RGB8;
     spec.GenerateMips = false;
 
-    Shared<Texture> texture = Texture::Create(spec, 0);
+    AssetHandle handle;
+    Shared<Texture> texture = Texture::Create(spec, handle);
     texture->SetData(Buffer((void*)bitmap.pixels, bitmap.width * bitmap.height * 3));
-    return texture;
+    handle = AssetManager::RegisterAsset(texture, handle);
+    return handle;
 }
 
-Font::Font(const std::filesystem::path& filepath)
-    : m_Data(new MSDFData())
+Font::Font(const std::string name, AssetHandle handle, Buffer data)
+    : m_Data(CreateShared<MSDFData>())
 {
+    Handle = handle;
+    Type = AssetType::TABBY_FONT;
+
     msdfgen::FreetypeHandle* ft = msdfgen::initializeFreetype();
     TB_CORE_ASSERT(ft);
 
-    std::string fileString = filepath.string();
-
-    // TODO(Yan): msdfgen::loadFontData loads from memory buffer which we'll need
-    msdfgen::FontHandle* font = msdfgen::loadFont(ft, fileString.c_str());
+    msdfgen::FontHandle* font = msdfgen::loadFontData(ft, data.Data, data.Size);
     if (!font) {
-        TB_CORE_ERROR("Failed to load font: {}", fileString);
+        TB_CORE_ERROR("Failed to load font: {}", name);
         return;
     }
 
@@ -131,78 +135,10 @@ Font::Font(const std::filesystem::path& filepath)
 
 Font::~Font()
 {
-    delete m_Data;
-}
-
-Shared<Font> Font::GetDefault()
-{
-    static Shared<Font> DefaultFont;
-    if (!DefaultFont)
-        DefaultFont = CreateShared<Font>("fonts/opensans/OpenSans-Regular.ttf");
-
-    return DefaultFont;
+    Destroy();
 }
 
 void Font::Destroy()
 {
-    if (m_Data)
-        delete m_Data;
-
-    m_AtlasTexture->Destroy();
 }
-
-// Font::Font(const FontSpecification& specification, AssetHandle handle, Buffer data)
-//     : m_Specification(specification)
-//     , m_Face(*data.As<FT_Face>())
-// {
-//     TB_PROFILE_SCOPE_NAME("(Font) Constructor");
-//     Handle = handle;
-//
-//     FT_Set_Pixel_Sizes(m_Face, 0, m_Specification.glyphSize);
-//     for (unsigned char c = 0; c < 128; c++) {
-//         // Load character glyph
-//         if (FT_Load_Char(m_Face, c, FT_LOAD_RENDER)) {
-//             TB_CORE_ERROR("Font: Failed to load Glyph! \"{0}\'", m_Specification.path.string());
-//             continue;
-//         }
-//
-//         TextureSpecification spec;
-//         spec.Width = m_Face->glyph->bitmap.width;
-//         spec.Height = m_Face->glyph->bitmap.rows;
-//         spec.Format = ImageFormat::RGB8;
-//         spec.GenerateMips = false;
-//
-//         Shared<Texture> texture = Texture::Create(spec, 0);
-//         texture->SetData(Buffer((void*)m_Face->glyph->bitmap.buffer, m_Face->glyph->bitmap.width * m_Face->glyph->bitmap.rows * 3));
-//
-//         Shared<Character> character = CreateShared<Character>(texture,
-//             glm::ivec2(m_Face->glyph->bitmap.width, m_Face->glyph->bitmap.rows),
-//             glm::ivec2(m_Face->glyph->bitmap_left, m_Face->glyph->bitmap_top),
-//             static_cast<unsigned int>(m_Face->glyph->advance.x));
-//
-//         m_Characters.insert(std::pair(c, character));
-//     }
-// }
-//
-// Font::~Font()
-// {
-//     FT_Done_Face(m_Face);
-//
-//     for (auto& character : m_Characters) {
-//         character.second->Destroy();
-//     }
-// }
-//
-// Shared<Character> Font::GetCharacter(char character)
-// {
-//     auto val = m_Characters.find(character);
-//
-//     if (val != m_Characters.end()) {
-//         return val->second;
-//     } else {
-//         return nullptr;
-//     }
-// }
-//
-
 }

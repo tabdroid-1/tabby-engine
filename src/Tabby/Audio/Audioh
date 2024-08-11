@@ -1,0 +1,40 @@
+#pragma once
+
+#include <Tabby/Asset/AssetBase.h>
+#include <Tabby/Audio/AudioEngine.h>
+
+namespace Tabby {
+
+class Audio : public AssetBase {
+public:
+    Audio(const std::string& musicFileName, AssetHandle handle, Buffer data);
+    ~Audio();
+
+    void Destroy() override
+    {
+        if (sndFile)
+            sf_close(sndFile);
+
+        if (membuf)
+            delete membuf;
+    }
+
+private:
+    SNDFILE* sndFile;
+    SF_INFO sfinfo;
+    void* membuf;
+
+    AudioSampleType sampleType = Int16;
+    int byteblockalign;
+    int sampleblockalign;
+    int blockCount;
+
+    ALenum format;
+
+private:
+    static constexpr int BufferMillisec = 200;
+
+    friend class AudioEngine;
+};
+
+}

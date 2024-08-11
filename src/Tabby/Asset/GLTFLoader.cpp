@@ -77,8 +77,8 @@ void GLTFLoader::LoadImages(fastgltf::Asset& asset, std::vector<Shared<Texture>>
 
                            const std::string path(filePath.uri.path());
 
-                           AssetHandle handle = AssetManager::Get()->LoadAssetSource(path, handle);
-                           imageptr = AssetManager::Get()->GetAsset<Texture>(handle);
+                           AssetHandle handle = AssetManager::LoadAssetSource(path, handle);
+                           imageptr = AssetManager::GetAsset<Texture>(handle);
                        },
                        [&](fastgltf::sources::Array& vector) {
                            Buffer data;

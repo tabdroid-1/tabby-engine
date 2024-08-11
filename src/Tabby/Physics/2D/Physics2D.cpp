@@ -114,7 +114,7 @@ RaycastHit2D Physisc2D::RayCast(const Vector2& origin, const Vector2& direction,
 {
     RaycastHit2D tempRayCastHit;
     tempRayCastHit.RaycastFilter = raycastFilter;
-    tempRayCastHit.origin = origin;
+    tempRayCastHit.Origin = origin;
 
     b2CastResultFcn* fcn = Physics2DRaycastCallback;
     b2Vec2 box2DOrigin = { origin.x, origin.y };
@@ -144,7 +144,7 @@ RaycastHit2D Physisc2D::BoxCast(const Vector2& boxSize, const Vector2& origin, c
 {
     RaycastHit2D tempRayCastHit;
 
-    tempRayCastHit.origin = origin;
+    tempRayCastHit.Origin = origin;
 
     b2Polygon box = b2MakeBox(boxSize.x, boxSize.y);
 
@@ -177,7 +177,7 @@ RaycastHit2D Physisc2D::CapsuleCast(const Vector2& point1, const Vector2& point2
 {
     RaycastHit2D tempRayCastHit;
 
-    tempRayCastHit.origin = origin;
+    tempRayCastHit.Origin = origin;
 
     b2Capsule capsule = { { point1.x, point1.y }, { point2.x, point2.y }, radius };
 
@@ -210,7 +210,7 @@ RaycastHit2D Physisc2D::CircleCast(float radius, const Vector2& origin, const Ve
 {
     RaycastHit2D tempRayCastHit;
 
-    tempRayCastHit.origin = origin;
+    tempRayCastHit.Origin = origin;
 
     b2Circle circle = { { 0.0f, 0.0f }, radius };
 
@@ -261,11 +261,11 @@ void Physisc2D::ProcessBodyInitQueue()
         s_Instance->queueEmpty = false;
 
         BodyInfo2D bodyInfo = s_Instance->bodyInitQueue.front();
-        auto& transform = bodyInfo.entity.GetComponent<TransformComponent>();
-        auto& rb2d = bodyInfo.entity.GetComponent<Rigidbody2DComponent>();
+        auto& transform = bodyInfo.BodyEntity.GetComponent<TransformComponent>();
+        auto& rb2d = bodyInfo.BodyEntity.GetComponent<Rigidbody2DComponent>();
 
         // --------- Create Body def ---------
-        BodyUserData2D* bodyUserData = new BodyUserData2D { bodyInfo.entity };
+        BodyUserData2D* bodyUserData = new BodyUserData2D { bodyInfo.BodyEntity };
 
         b2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
@@ -290,14 +290,14 @@ void Physisc2D::ProcessShapeInitQueue()
         s_Instance->queueEmpty = false;
 
         ShapeInfo2D shapeInfo = s_Instance->shapeInitQueue.front();
-        auto& transform = shapeInfo.entity.GetComponent<TransformComponent>();
+        auto& transform = shapeInfo.ShapeEntity.GetComponent<TransformComponent>();
 
         // Check if entity it self has Rigidbody2DComponent. If there is, collider will be added to Rigidbody2DComponent of same entity.
         // If there is not, function will check its parent if it has Rigidbody2DComponent. And this will go on untill it finds an entity Rigidbody2DComponent;
         // This is is because an entity can have one component of same type. User can create More colliders by creating child entities.
         entt::entity rb2dEntity { entt::null };
-        if (shapeInfo.entity.HasComponent<Rigidbody2DComponent>()) {
-            rb2dEntity = shapeInfo.entity;
+        if (shapeInfo.ShapeEntity.HasComponent<Rigidbody2DComponent>()) {
+            rb2dEntity = shapeInfo.ShapeEntity;
         } else {
 
             auto FindParentRigidbody = [](auto&& self, entt::entity parentEntity) -> entt::entity {
@@ -313,7 +313,7 @@ void Physisc2D::ProcessShapeInitQueue()
                 }
             };
 
-            rb2dEntity = FindParentRigidbody(FindParentRigidbody, shapeInfo.entity);
+            rb2dEntity = FindParentRigidbody(FindParentRigidbody, shapeInfo.ShapeEntity);
         }
 
         if (rb2dEntity == entt::null) {
@@ -321,9 +321,9 @@ void Physisc2D::ProcessShapeInitQueue()
             continue;
         }
 
-        if (shapeInfo.colliderType == ColliderType2D::Box) {
-            auto& bc2d = shapeInfo.entity.GetComponent<BoxCollider2DComponent>();
-            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity, ColliderType2D::Box };
+        if (shapeInfo.ColliderType == ColliderType2D::Box) {
+            auto& bc2d = shapeInfo.ShapeEntity.GetComponent<BoxCollider2DComponent>();
+            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.ShapeEntity, rb2dEntity, ColliderType2D::Box };
 
             // --------- Create box collider def ---------
             b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.Angle);
@@ -344,9 +344,9 @@ void Physisc2D::ProcessShapeInitQueue()
             bc2d.RuntimeShapeId = b2CreatePolygonShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &box);
             bc2d.QueuedForInitialization = false;
 
-        } else if (shapeInfo.colliderType == ColliderType2D::Circle) {
-            auto& cc2d = shapeInfo.entity.GetComponent<CircleCollider2DComponent>();
-            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity, ColliderType2D::Circle };
+        } else if (shapeInfo.ColliderType == ColliderType2D::Circle) {
+            auto& cc2d = shapeInfo.ShapeEntity.GetComponent<CircleCollider2DComponent>();
+            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.ShapeEntity, rb2dEntity, ColliderType2D::Circle };
 
             // --------- Create circle collider def ---------
             b2Circle circleShape = { { transform.LocalTranslation.x + cc2d.Offset.x, transform.LocalTranslation.y + cc2d.Offset.y }, cc2d.Radius };
@@ -366,9 +366,9 @@ void Physisc2D::ProcessShapeInitQueue()
             // --------- Create circle collider in body ---------
             cc2d.RuntimeShapeId = b2CreateCircleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &circleShape);
             cc2d.QueuedForInitialization = false;
-        } else if (shapeInfo.colliderType == ColliderType2D::Capsule) {
-            auto& cc2d = shapeInfo.entity.GetComponent<CapsuleCollider2DComponent>();
-            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity, ColliderType2D::Capsule };
+        } else if (shapeInfo.ColliderType == ColliderType2D::Capsule) {
+            auto& cc2d = shapeInfo.ShapeEntity.GetComponent<CapsuleCollider2DComponent>();
+            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.ShapeEntity, rb2dEntity, ColliderType2D::Capsule };
 
             // --------- Create circle collider def ---------
 
@@ -391,9 +391,9 @@ void Physisc2D::ProcessShapeInitQueue()
             // --------- Create circle collider in body ---------
             cc2d.RuntimeShapeId = b2CreateCapsuleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &capsuleShape);
             cc2d.QueuedForInitialization = false;
-        } else if (shapeInfo.colliderType == ColliderType2D::Segment) {
-            auto& sc2d = shapeInfo.entity.GetComponent<SegmentCollider2DComponent>();
-            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.entity, rb2dEntity, ColliderType2D::Segment };
+        } else if (shapeInfo.ColliderType == ColliderType2D::Segment) {
+            auto& sc2d = shapeInfo.ShapeEntity.GetComponent<SegmentCollider2DComponent>();
+            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.ShapeEntity, rb2dEntity, ColliderType2D::Segment };
 
             // --------- Create circle collider def ---------
 
@@ -431,10 +431,10 @@ void Physisc2D::ProcessShapeUpdateQueue()
         s_Instance->queueEmpty = false;
 
         ShapeInfo2D shapeInfo = s_Instance->shapeUpdateQueue.front();
-        auto& transform = shapeInfo.entity.GetComponent<TransformComponent>();
+        auto& transform = shapeInfo.ShapeEntity.GetComponent<TransformComponent>();
 
-        if (shapeInfo.colliderType == ColliderType2D::Box) {
-            auto& bc2d = shapeInfo.entity.GetComponent<BoxCollider2DComponent>();
+        if (shapeInfo.ColliderType == ColliderType2D::Box) {
+            auto& bc2d = shapeInfo.ShapeEntity.GetComponent<BoxCollider2DComponent>();
 
             // --------- Create box collider def ---------
             b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.Angle);
@@ -448,8 +448,8 @@ void Physisc2D::ProcessShapeUpdateQueue()
 
             bc2d.QueuedForInitialization = false;
 
-        } else if (shapeInfo.colliderType == ColliderType2D::Circle) {
-            auto& cc2d = shapeInfo.entity.GetComponent<CircleCollider2DComponent>();
+        } else if (shapeInfo.ColliderType == ColliderType2D::Circle) {
+            auto& cc2d = shapeInfo.ShapeEntity.GetComponent<CircleCollider2DComponent>();
             b2Circle circleShape = { { transform.LocalTranslation.x + cc2d.Offset.x, transform.LocalTranslation.y + cc2d.Offset.y }, cc2d.Radius };
 
             b2Shape_SetCircle(cc2d.RuntimeShapeId, &circleShape);
@@ -461,8 +461,8 @@ void Physisc2D::ProcessShapeUpdateQueue()
 
             cc2d.QueuedForInitialization = false;
 
-        } else if (shapeInfo.colliderType == ColliderType2D::Capsule) {
-            auto& cc2d = shapeInfo.entity.GetComponent<CapsuleCollider2DComponent>();
+        } else if (shapeInfo.ColliderType == ColliderType2D::Capsule) {
+            auto& cc2d = shapeInfo.ShapeEntity.GetComponent<CapsuleCollider2DComponent>();
 
             b2Vec2 center1 = { cc2d.center1.x + transform.LocalTranslation.x, cc2d.center1.y + transform.LocalTranslation.y };
             b2Vec2 center2 = { cc2d.center2.x + transform.LocalTranslation.x, cc2d.center2.y + transform.LocalTranslation.y };
@@ -477,8 +477,8 @@ void Physisc2D::ProcessShapeUpdateQueue()
             b2Shape_SetFilter(cc2d.RuntimeShapeId, filter);
 
             cc2d.QueuedForInitialization = false;
-        } else if (shapeInfo.colliderType == ColliderType2D::Segment) {
-            auto& sc2d = shapeInfo.entity.GetComponent<SegmentCollider2DComponent>();
+        } else if (shapeInfo.ColliderType == ColliderType2D::Segment) {
+            auto& sc2d = shapeInfo.ShapeEntity.GetComponent<SegmentCollider2DComponent>();
 
             b2Vec2 point1 = { sc2d.point1.x + transform.LocalTranslation.x, sc2d.point1.y + transform.LocalTranslation.y };
             b2Vec2 point2 = { sc2d.point2.x + transform.LocalTranslation.x, sc2d.point2.y + transform.LocalTranslation.y };
@@ -507,14 +507,14 @@ float Physisc2D::Physics2DRaycastCallback(b2ShapeId shapeId, b2Vec2 point, b2Vec
 
     ShapeUserData2D* userData = static_cast<ShapeUserData2D*>(b2Shape_GetUserData(shapeId));
 
-    static_cast<RaycastHit2D*>(context)->point = { point.x, point.y };
-    static_cast<RaycastHit2D*>(context)->normal = { normal.x, normal.y };
-    static_cast<RaycastHit2D*>(context)->fraction = fraction;
+    static_cast<RaycastHit2D*>(context)->Point = { point.x, point.y };
+    static_cast<RaycastHit2D*>(context)->Normal = { normal.x, normal.y };
+    static_cast<RaycastHit2D*>(context)->Fraction = fraction;
 
-    static_cast<RaycastHit2D*>(context)->entity = userData->bodyEntity;
-    static_cast<RaycastHit2D*>(context)->transform = &userData->bodyEntity.GetComponent<TransformComponent>();
-    static_cast<RaycastHit2D*>(context)->rigidbody = &userData->bodyEntity.GetComponent<Rigidbody2DComponent>();
-    static_cast<RaycastHit2D*>(context)->distance = glm::distance(static_cast<RaycastHit2D*>(context)->origin, { point.x, point.y });
+    static_cast<RaycastHit2D*>(context)->HitEntity = userData->BodyEntity;
+    static_cast<RaycastHit2D*>(context)->Transform = &userData->BodyEntity.GetComponent<TransformComponent>();
+    static_cast<RaycastHit2D*>(context)->Rigidbody = &userData->BodyEntity.GetComponent<Rigidbody2DComponent>();
+    static_cast<RaycastHit2D*>(context)->Distance = glm::distance(static_cast<RaycastHit2D*>(context)->Origin, { point.x, point.y });
 
     return fraction;
 }
@@ -525,35 +525,39 @@ void Physisc2D::ProcessEvents()
     for (int i = 0; i < contactEvents.beginCount; ++i) {
         b2ContactBeginTouchEvent event = contactEvents.beginEvents[i];
 
-        // TODO: A way to recieve/process callbacks
-
         // --- Process Begin Touch Event -----------------
+
         b2BodyId bodyIdA = b2Shape_GetBody(event.shapeIdA);
         b2BodyId bodyIdB = b2Shape_GetBody(event.shapeIdB);
 
-        BodyUserData2D* userDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
-        BodyUserData2D* userDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
+        ShapeUserData2D* shapeDataA = static_cast<ShapeUserData2D*>(b2Shape_GetUserData(event.shapeIdA));
+        ShapeUserData2D* shapeDataB = static_cast<ShapeUserData2D*>(b2Shape_GetUserData(event.shapeIdB));
 
-        if (userDataA->bodyEntity.HasComponent<Rigidbody2DComponent>()) {
-            auto& rb = userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        BodyUserData2D* bodyDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
+        BodyUserData2D* bodyDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
 
-            ContactCallback callbackA;
-            callbackA.entity = userDataB->bodyEntity;
-            callbackA.transform = &userDataB->bodyEntity.GetComponent<TransformComponent>();
-            callbackA.rigidbody = &userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        if (bodyDataA->BodyEntity.HasComponent<Rigidbody2DComponent>()) {
+            auto& rb = bodyDataA->BodyEntity.GetComponent<Rigidbody2DComponent>();
+
+            Collision callbackA;
+            callbackA.CollidedEntity = bodyDataB->BodyEntity;
+            callbackA.CollidedEntityTransform = &bodyDataB->BodyEntity.GetComponent<TransformComponent>();
+            callbackA.CollidedEntityRigidbody = &bodyDataB->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackA.HostColliderData = *shapeDataA;
 
             if (rb.OnCollisionEnterCallback) {
                 rb.OnCollisionEnterCallback(callbackA);
             }
         }
 
-        if (userDataB->bodyEntity.HasComponent<Rigidbody2DComponent>()) {
-            auto& rb = userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        if (bodyDataB->BodyEntity.HasComponent<Rigidbody2DComponent>()) {
+            auto& rb = bodyDataB->BodyEntity.GetComponent<Rigidbody2DComponent>();
 
-            ContactCallback callbackB;
-            callbackB.entity = userDataA->bodyEntity;
-            callbackB.transform = &userDataA->bodyEntity.GetComponent<TransformComponent>();
-            callbackB.rigidbody = &userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
+            Collision callbackB;
+            callbackB.CollidedEntity = bodyDataA->BodyEntity;
+            callbackB.CollidedEntityTransform = &bodyDataA->BodyEntity.GetComponent<TransformComponent>();
+            callbackB.CollidedEntityRigidbody = &bodyDataA->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackB.HostColliderData = *shapeDataB;
 
             if (rb.OnCollisionEnterCallback) {
                 rb.OnCollisionEnterCallback(callbackB);
@@ -568,29 +572,36 @@ void Physisc2D::ProcessEvents()
         b2BodyId bodyIdA = b2Shape_GetBody(event.shapeIdA);
         b2BodyId bodyIdB = b2Shape_GetBody(event.shapeIdB);
 
-        BodyUserData2D* userDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
-        BodyUserData2D* userDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
+        ShapeUserData2D* shapeDataA = static_cast<ShapeUserData2D*>(b2Shape_GetUserData(event.shapeIdA));
+        ShapeUserData2D* shapeDataB = static_cast<ShapeUserData2D*>(b2Shape_GetUserData(event.shapeIdB));
 
-        if (userDataA->bodyEntity.HasComponent<Rigidbody2DComponent>()) {
-            auto& rb = userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        BodyUserData2D* bodyDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
+        BodyUserData2D* bodyDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
 
-            ContactCallback callbackA;
-            callbackA.entity = userDataB->bodyEntity;
-            callbackA.transform = &userDataB->bodyEntity.GetComponent<TransformComponent>();
-            callbackA.rigidbody = &userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        if (bodyDataA->BodyEntity.HasComponent<Rigidbody2DComponent>()) {
+            auto& rb = bodyDataA->BodyEntity.GetComponent<Rigidbody2DComponent>();
+
+            Collision callbackA;
+            callbackA.CollidedEntity = bodyDataB->BodyEntity;
+            callbackA.CollidedEntityTransform = &bodyDataB->BodyEntity.GetComponent<TransformComponent>();
+            callbackA.CollidedEntityRigidbody = &bodyDataB->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackA.HostColliderData = *shapeDataA;
+            callbackA.CollidedEntitysColliderData = *shapeDataB;
 
             if (rb.OnCollisionExitCallback) {
                 rb.OnCollisionExitCallback(callbackA);
             }
         }
 
-        if (userDataB->bodyEntity.HasComponent<Rigidbody2DComponent>()) {
-            auto& rb = userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        if (bodyDataB->BodyEntity.HasComponent<Rigidbody2DComponent>()) {
+            auto& rb = bodyDataB->BodyEntity.GetComponent<Rigidbody2DComponent>();
 
-            ContactCallback callbackB;
-            callbackB.entity = userDataA->bodyEntity;
-            callbackB.transform = &userDataA->bodyEntity.GetComponent<TransformComponent>();
-            callbackB.rigidbody = &userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
+            Collision callbackB;
+            callbackB.CollidedEntity = bodyDataA->BodyEntity;
+            callbackB.CollidedEntityTransform = &bodyDataA->BodyEntity.GetComponent<TransformComponent>();
+            callbackB.CollidedEntityRigidbody = &bodyDataA->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackB.HostColliderData = *shapeDataB;
+            callbackB.CollidedEntitysColliderData = *shapeDataA;
 
             if (rb.OnCollisionExitCallback) {
                 rb.OnCollisionExitCallback(callbackB);
@@ -607,32 +618,120 @@ bool Physics2DPreSolve(b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Manifold* manif
     b2BodyId bodyIdA = b2Shape_GetBody(shapeIdA);
     b2BodyId bodyIdB = b2Shape_GetBody(shapeIdB);
 
-    BodyUserData2D* userDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
-    BodyUserData2D* userDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
+    ShapeUserData2D* shapeDataA = static_cast<ShapeUserData2D*>(b2Shape_GetUserData(shapeIdA));
+    ShapeUserData2D* shapeDataB = static_cast<ShapeUserData2D*>(b2Shape_GetUserData(shapeIdB));
 
-    if (userDataA->bodyEntity.HasComponent<Rigidbody2DComponent>()) {
-        auto& rb = userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
+    BodyUserData2D* bodyDataA = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdA));
+    BodyUserData2D* bodyDataB = static_cast<BodyUserData2D*>(b2Body_GetUserData(bodyIdB));
 
-        ContactCallback callbackA;
-        callbackA.entity = userDataB->bodyEntity;
-        callbackA.transform = &userDataB->bodyEntity.GetComponent<TransformComponent>();
-        callbackA.rigidbody = &userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
+    if (shapeDataA->BodyEntity.HasComponent<Rigidbody2DComponent>()) {
 
-        if (rb.OnPreSolve) {
-            return rb.OnPreSolve(callbackA);
+        Collision callbackA;
+
+        if (shapeDataA->ColliderType == ColliderType2D::Box) {
+            callbackA.CollidedEntity = bodyDataB->BodyEntity;
+            callbackA.CollidedEntityTransform = &bodyDataB->BodyEntity.GetComponent<TransformComponent>();
+            callbackA.CollidedEntityRigidbody = &bodyDataB->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackA.HostColliderData = *shapeDataA;
+            callbackA.CollidedEntitysColliderData = *shapeDataB;
+
+            auto& bc = shapeDataA->ShapeEntity.GetComponent<BoxCollider2DComponent>();
+
+            if (bc.OnPreSolve) {
+                return bc.OnPreSolve(callbackA);
+            }
+        } else if (shapeDataA->ColliderType == ColliderType2D::Circle) {
+            callbackA.CollidedEntity = bodyDataB->BodyEntity;
+            callbackA.CollidedEntityTransform = &bodyDataB->BodyEntity.GetComponent<TransformComponent>();
+            callbackA.CollidedEntityRigidbody = &bodyDataB->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackA.HostColliderData = *shapeDataA;
+            callbackA.CollidedEntitysColliderData = *shapeDataB;
+
+            auto& cc = shapeDataA->ShapeEntity.GetComponent<CircleCollider2DComponent>();
+
+            if (cc.OnPreSolve) {
+                return cc.OnPreSolve(callbackA);
+            }
+        } else if (shapeDataA->ColliderType == ColliderType2D::Capsule) {
+            callbackA.CollidedEntity = bodyDataB->BodyEntity;
+            callbackA.CollidedEntityTransform = &bodyDataB->BodyEntity.GetComponent<TransformComponent>();
+            callbackA.CollidedEntityRigidbody = &bodyDataB->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackA.HostColliderData = *shapeDataA;
+            callbackA.CollidedEntitysColliderData = *shapeDataB;
+
+            auto& cc = shapeDataA->ShapeEntity.GetComponent<CapsuleCollider2DComponent>();
+
+            if (cc.OnPreSolve) {
+                return cc.OnPreSolve(callbackA);
+            }
+        } else if (shapeDataA->ColliderType == ColliderType2D::Segment) {
+            callbackA.CollidedEntity = bodyDataB->BodyEntity;
+            callbackA.CollidedEntityTransform = &bodyDataB->BodyEntity.GetComponent<TransformComponent>();
+            callbackA.CollidedEntityRigidbody = &bodyDataB->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackA.HostColliderData = *shapeDataA;
+            callbackA.CollidedEntitysColliderData = *shapeDataB;
+
+            auto& sc = shapeDataA->ShapeEntity.GetComponent<SegmentCollider2DComponent>();
+
+            if (sc.OnPreSolve) {
+                return sc.OnPreSolve(callbackA);
+            }
         }
     }
 
-    if (userDataB->bodyEntity.HasComponent<Rigidbody2DComponent>()) {
-        auto& rb = userDataB->bodyEntity.GetComponent<Rigidbody2DComponent>();
+    if (bodyDataB->BodyEntity.HasComponent<Rigidbody2DComponent>()) {
+        auto& rb = bodyDataB->BodyEntity.GetComponent<Rigidbody2DComponent>();
 
-        ContactCallback callbackB;
-        callbackB.entity = userDataA->bodyEntity;
-        callbackB.transform = &userDataA->bodyEntity.GetComponent<TransformComponent>();
-        callbackB.rigidbody = &userDataA->bodyEntity.GetComponent<Rigidbody2DComponent>();
+        Collision callbackB;
 
-        if (rb.OnPreSolve) {
-            return rb.OnPreSolve(callbackB);
+        if (shapeDataA->ColliderType == ColliderType2D::Box) {
+            callbackB.CollidedEntity = bodyDataA->BodyEntity;
+            callbackB.CollidedEntityTransform = &bodyDataA->BodyEntity.GetComponent<TransformComponent>();
+            callbackB.CollidedEntityRigidbody = &bodyDataA->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackB.HostColliderData = *shapeDataB;
+            callbackB.CollidedEntitysColliderData = *shapeDataA;
+
+            auto& bc = shapeDataB->ShapeEntity.GetComponent<BoxCollider2DComponent>();
+
+            if (bc.OnPreSolve) {
+                return bc.OnPreSolve(callbackB);
+            }
+        } else if (shapeDataA->ColliderType == ColliderType2D::Circle) {
+            callbackB.CollidedEntity = bodyDataA->BodyEntity;
+            callbackB.CollidedEntityTransform = &bodyDataA->BodyEntity.GetComponent<TransformComponent>();
+            callbackB.CollidedEntityRigidbody = &bodyDataA->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackB.HostColliderData = *shapeDataB;
+            callbackB.CollidedEntitysColliderData = *shapeDataA;
+
+            auto& cc = shapeDataB->ShapeEntity.GetComponent<CircleCollider2DComponent>();
+
+            if (cc.OnPreSolve) {
+                return cc.OnPreSolve(callbackB);
+            }
+        } else if (shapeDataA->ColliderType == ColliderType2D::Capsule) {
+            callbackB.CollidedEntity = bodyDataA->BodyEntity;
+            callbackB.CollidedEntityTransform = &bodyDataA->BodyEntity.GetComponent<TransformComponent>();
+            callbackB.CollidedEntityRigidbody = &bodyDataA->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackB.HostColliderData = *shapeDataB;
+            callbackB.CollidedEntitysColliderData = *shapeDataA;
+
+            auto& cc = shapeDataB->ShapeEntity.GetComponent<CapsuleCollider2DComponent>();
+
+            if (cc.OnPreSolve) {
+                return cc.OnPreSolve(callbackB);
+            }
+        } else if (shapeDataA->ColliderType == ColliderType2D::Segment) {
+            callbackB.CollidedEntity = bodyDataA->BodyEntity;
+            callbackB.CollidedEntityTransform = &bodyDataA->BodyEntity.GetComponent<TransformComponent>();
+            callbackB.CollidedEntityRigidbody = &bodyDataA->BodyEntity.GetComponent<Rigidbody2DComponent>();
+            callbackB.HostColliderData = *shapeDataB;
+            callbackB.CollidedEntitysColliderData = *shapeDataA;
+
+            auto& sc = shapeDataB->ShapeEntity.GetComponent<SegmentCollider2DComponent>();
+
+            if (sc.OnPreSolve) {
+                return sc.OnPreSolve(callbackB);
+            }
         }
     }
 

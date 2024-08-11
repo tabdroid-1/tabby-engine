@@ -40,8 +40,7 @@ Application::Application(const ApplicationSpecification& specification)
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
     Renderer::Init();
-    AssetManager::Init();
-    Audio::Engine::Init();
+    AudioEngine::Init();
     Input::Init();
 
     m_ImGuiLayer = new ImGuiLayer();
@@ -51,11 +50,10 @@ Application::Application(const ApplicationSpecification& specification)
 Application::~Application()
 {
     TB_PROFILE_SCOPE();
-    Audio::Engine::Shutdown();
+    AudioEngine::Shutdown();
     Renderer::Shutdown();
 
-    AssetManager::Get()->FullUnload();
-    AssetManager::Shutdown();
+    AssetManager::FullUnload();
 }
 
 void Application::PushLayer(Layer* layer)

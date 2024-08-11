@@ -116,7 +116,7 @@ struct SoundComponent {
 
 // Physics
 
-struct ContactCallback;
+struct Collision;
 
 struct Rigidbody2DComponent {
     enum class BodyType { Static = 0,
@@ -128,9 +128,9 @@ struct Rigidbody2DComponent {
 
     bool FixedRotation;
     bool QueuedForInitialization;
-    std::function<void(ContactCallback contact)> OnCollisionEnterCallback;
-    std::function<void(ContactCallback contact)> OnCollisionExitCallback;
-    std::function<bool(ContactCallback contact)> OnPreSolve;
+
+    std::function<void(Collision contact)> OnCollisionEnterCallback;
+    std::function<void(Collision contact)> OnCollisionExitCallback;
 
     Rigidbody2DComponent() = default;
     Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
@@ -178,6 +178,8 @@ struct BoxCollider2DComponent {
     ///    and must be carefully handled due to multi-threading. Ignored for
     ///    sensors.
     bool EnablePreSolveEvents = false;
+
+    std::function<bool(Collision contact)> OnPreSolve;
 
     // Storage for runtime
     b2ShapeId RuntimeShapeId = b2_nullShapeId;
@@ -232,6 +234,8 @@ struct CircleCollider2DComponent {
     ///    and must be carefully handled due to multi-threading. Ignored for
     ///    sensors.
     bool EnablePreSolveEvents = false;
+
+    std::function<bool(Collision contact)> OnPreSolve;
 
     // Storage for runtime
     b2ShapeId RuntimeShapeId = b2_nullShapeId;
@@ -288,6 +292,8 @@ struct CapsuleCollider2DComponent {
     ///    sensors.
     bool EnablePreSolveEvents = false;
 
+    std::function<bool(Collision contact)> OnPreSolve;
+
     // Storage for runtime
     b2ShapeId RuntimeShapeId = b2_nullShapeId;
     b2WorldId WorldId = b2_nullWorldId;
@@ -342,6 +348,8 @@ struct SegmentCollider2DComponent {
     ///    sensors.
     bool EnablePreSolveEvents = false;
 
+    std::function<bool(Collision contact)> OnPreSolve;
+
     // Storage for runtime
     b2ShapeId RuntimeShapeId = b2_nullShapeId;
     b2WorldId WorldId = b2_nullWorldId;
@@ -368,8 +376,7 @@ struct SegmentCollider2DComponent {
 struct TextComponent {
     std::string TextString;
 
-    Shared<Font> font = Font::GetDefault();
-    // AssetHandle Font;
+    AssetHandle Font;
     Vector4 Color { 1.0f };
     float Kerning = 0.0f;
     float LineSpacing = 0.0f;

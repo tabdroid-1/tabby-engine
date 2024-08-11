@@ -47,43 +47,52 @@ enum ColliderType2D : uint8_t {
 };
 
 struct ShapeUserData2D {
-    Entity shapeEntity;
-    Entity bodyEntity;
-    ColliderType2D colliderType;
+    Entity ShapeEntity;
+    Entity BodyEntity;
+    ColliderType2D ColliderType;
 };
 
 struct BodyUserData2D {
-    Entity bodyEntity;
-    std::unordered_map<UUID, Entity> shapeEntities;
+    Entity BodyEntity;
+    std::unordered_map<UUID, Entity> ShapeEntities;
 };
 
-struct ContactCallback {
-    Entity entity;
-    TransformComponent* transform;
-    Rigidbody2DComponent* rigidbody;
+struct Collision {
+
+    // Entity collided with
+    Entity CollidedEntity;
+    // Entity transform collided with
+    TransformComponent* CollidedEntityTransform;
+    // Entity Rigidbody2DComponent collided with
+    Rigidbody2DComponent* CollidedEntityRigidbody;
+
+    // Collider data that collided which is part of this body (i hope you get it)
+    ShapeUserData2D HostColliderData;
+    // Collider data of the entiti we collided with
+    ShapeUserData2D CollidedEntitysColliderData;
 };
 
 struct BodyInfo2D {
-    Entity entity;
+    Entity BodyEntity;
 };
 
 struct ShapeInfo2D {
-    Entity entity;
-    ColliderType2D colliderType;
+    Entity ShapeEntity;
+    ColliderType2D ColliderType;
 };
 
 struct RaycastHit2D {
     RaycastFilter2D RaycastFilter;
-    Entity entity;
-    TransformComponent* transform;
-    Rigidbody2DComponent* rigidbody;
-    Vector2 origin = { 0.0f, 0.0f };
-    Vector2 point = { 0.0f, 0.0f };
-    Vector2 normal = { 0.0f, 0.0f };
-    float distance;
-    float fraction;
+    Entity HitEntity;
+    TransformComponent* Transform;
+    Rigidbody2DComponent* Rigidbody;
+    Vector2 Origin = { 0.0f, 0.0f };
+    Vector2 Point = { 0.0f, 0.0f };
+    Vector2 Normal = { 0.0f, 0.0f };
+    float Distance;
+    float Fraction;
 
-    operator bool() { return entity.Valid(); }
+    operator bool() { return HitEntity.Valid(); }
 };
 
 }

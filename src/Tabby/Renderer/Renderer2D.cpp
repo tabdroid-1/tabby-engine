@@ -610,9 +610,9 @@ void Renderer2D::DrawRect(const Matrix4& transform, const glm::vec4& color, int 
 
 void Renderer2D::DrawSprite(const Matrix4& transform, SpriteRendererComponent& src, int entityID)
 {
-    if (AssetManager::Get()->HasAsset(src.Texture)) {
+    if (AssetManager::HasAsset(src.Texture)) {
         // DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
-        Shared<Texture> texture = AssetManager::Get()->GetAsset<Texture>(src.Texture);
+        Shared<Texture> texture = AssetManager::GetAsset<Texture>(src.Texture);
         DrawQuad(transform, texture, src.TilingFactor, src.Color, src.hFrames, src.vFrames, src.xFrame, src.yFrame, entityID);
     } else
         DrawQuad(transform, src.Color, entityID);
@@ -622,7 +622,8 @@ void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const 
 {
     const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
     const auto& metrics = fontGeometry.getMetrics();
-    Shared<Texture> fontAtlas = font->GetAtlasTexture();
+    AssetHandle fontAtlasHandle = font->GetAtlasTexture();
+    auto fontAtlas = AssetManager::GetAsset<Texture>(fontAtlasHandle);
 
     float fontAtlasIndex = -1.0f;
     for (uint32_t i = 0; i < s_Data.FontAtlasTextureSlotIndex; i++) {
@@ -746,7 +747,10 @@ void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const 
 
 void Renderer2D::DrawString(const std::string& string, const Matrix4& transform, const TextComponent& component, int entityID)
 {
-    DrawString(string, component.font, transform, { component.Color, component.Kerning, component.LineSpacing }, entityID);
+    if (AssetManager::HasAsset(component.Font)) {
+        auto font = AssetManager::GetAsset<Font>(component.Font);
+        DrawString(string, font, transform, { component.Color, component.Kerning, component.LineSpacing }, entityID);
+    }
 }
 
 // void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const Matrix4& transform, const TextParams& textParams, int entityID)

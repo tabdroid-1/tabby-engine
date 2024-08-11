@@ -3,15 +3,16 @@
 namespace Tabby {
 
 enum class AssetType : uint8_t {
+    FONT_SRC,
     MESH_SRC,
     MATERIAL,
     AUDIO_SRC,
     IMAGE_SRC,
-    FONT_SRC,
     TABBY_FONT,
-    TABBY_IMAGE,
     TABBY_MESH,
     TABBY_MODEL,
+    TABBY_IMAGE,
+    TABBY_AUDIO,
     UNKNOWN
 };
 

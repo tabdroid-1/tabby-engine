@@ -311,7 +311,7 @@ bool BoxCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 void BoxCollider2DComponent::RefreshShape()
 {
     ShapeInfo2D shapeInfo {
-        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->shapeEntity,
+        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->ShapeEntity,
         ColliderType2D::Circle
     };
 
@@ -401,7 +401,7 @@ bool CircleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 void CircleCollider2DComponent::RefreshShape()
 {
     ShapeInfo2D shapeInfo {
-        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->shapeEntity,
+        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->ShapeEntity,
         ColliderType2D::Circle
     };
 
@@ -490,7 +490,7 @@ bool CapsuleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 void CapsuleCollider2DComponent::RefreshShape()
 {
     ShapeInfo2D shapeInfo {
-        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->shapeEntity,
+        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->ShapeEntity,
         ColliderType2D::Circle
     };
 
@@ -580,7 +580,7 @@ bool SegmentCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 void SegmentCollider2DComponent::RefreshShape()
 {
     ShapeInfo2D shapeInfo {
-        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->shapeEntity,
+        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->ShapeEntity,
         ColliderType2D::Segment
     };
 

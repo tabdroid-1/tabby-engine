@@ -1,3 +1,11 @@
+Version: 10-08-2024_1 Alpha
+Changes:
+- Done changes to naming and presolve and collision callbacks. 
+- Integrated Font to asset manager.
+- Asset manager is not proper singleton.
+
+--------------------------------------------------------------------------------------
+
 Version: 09-08-2024_1 Alpha
 Changes:
 - Added resources. It holds structs and there can be one of same type at a time. 

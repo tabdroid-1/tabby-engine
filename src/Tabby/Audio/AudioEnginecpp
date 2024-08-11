@@ -1,0 +1,568 @@
+#include <tbpch.h>
+
+#include <AL/al.h>
+#include <AL/alext.h>
+
+#include <Tabby/Audio/AudioEngine.h>
+#include <Tabby/Audio/Audio.h>
+
+#define CHECK_AL_ERRORS() \
+    FetchALErrors(__FILE__, __LINE__)
+
+#define CHECK_ALC_ERRORS(device) \
+    FetchALCErrors(device, __FILE__, __LINE__)
+
+namespace Tabby {
+
+void FetchALErrors(const std::filesystem::path& file, int line)
+{
+    bool error_found = false;
+    std::stringstream err_msg_stream;
+
+    ALenum error_flag = alGetError();
+    while (error_flag != AL_NO_ERROR) {
+        if (!error_found) {
+            error_found = true;
+            err_msg_stream << "OpenAL Flags: ";
+        }
+
+        switch (error_flag) {
+        case AL_INVALID_NAME:
+            err_msg_stream << "\"AL_INVALID_NAME\" ";
+            break;
+        case AL_INVALID_ENUM:
+            err_msg_stream << "\"AL_INVALID_ENUM\" ";
+            break;
+        case AL_INVALID_VALUE:
+            err_msg_stream << "\"AL_INVALID_VALUE\" ";
+            break;
+        case AL_INVALID_OPERATION:
+            err_msg_stream << "\"AL_INVALID_OPERATION\" ";
+            break;
+        case AL_OUT_OF_MEMORY:
+            err_msg_stream << "\"AL_OUT_OF_MEMORY\" ";
+            break;
+        default:
+            err_msg_stream << "\"Flag not deducable\" ";
+            break;
+        }
+
+        error_flag = alGetError();
+    }
+
+    if (error_found) {
+        err_msg_stream << "File " << file << " @ Line " << line;
+    }
+
+    TB_CORE_ASSERT_TAGGED(!error_found, err_msg_stream.str());
+}
+
+void FetchALCErrors(ALCdevice* device, const std::filesystem::path& file, int line)
+{
+    bool error_found = false;
+    std::stringstream err_msg_stream;
+
+    ALCenum error_flag = alcGetError(device);
+    while (error_flag != ALC_NO_ERROR) {
+        if (!error_found) {
+            error_found = true;
+            err_msg_stream << "OpenAL Flags: ";
+        }
+
+        switch (error_flag) {
+        case ALC_INVALID_DEVICE:
+            err_msg_stream << "\"ALC_INVALID_DEVICE\" ";
+            break;
+        case ALC_INVALID_CONTEXT:
+            err_msg_stream << "\"ALC_INVALID_CONTEXT\" ";
+            break;
+        case ALC_INVALID_ENUM:
+            err_msg_stream << "\"ALC_INVALID_ENUM\" ";
+            break;
+        case ALC_INVALID_VALUE:
+            err_msg_stream << "\"ALC_INVALID_VALUE\" ";
+            break;
+        case ALC_OUT_OF_MEMORY:
+            err_msg_stream << "\"ALC_OUT_OF_MEMORY\" ";
+            break;
+        default:
+            err_msg_stream << "\"Flag not deducable\" ";
+            break;
+        }
+
+        error_flag = alcGetError(device);
+    }
+
+    if (error_found) {
+        err_msg_stream << "File " << file << " @ Line " << line;
+    }
+
+    TB_CORE_ASSERT_TAGGED(!error_found, err_msg_stream.str());
+}
+
+AudioEngine::AudioEngine()
+{
+    TB_CORE_ASSERT_TAGGED(!s_Instance, "Audio Engine instance already created!");
+    s_Instance = this;
+
+    m_AlcDevice = alcOpenDevice(nullptr);
+    CHECK_ALC_ERRORS(m_AlcDevice);
+    TB_CORE_ASSERT_TAGGED(m_AlcDevice, "alcOpenDevice: Unable to create OpenAL device");
+
+    m_AlcContext = alcCreateContext(m_AlcDevice, nullptr);
+    CHECK_ALC_ERRORS(m_AlcDevice);
+    TB_CORE_ASSERT_TAGGED(m_AlcContext, "alcCreateContext: Unable to create OpenAL context");
+
+    if (!alcMakeContextCurrent(m_AlcContext))
+        TB_CORE_ASSERT_TAGGED(false, "alcMakeCurrentContext: Could not set OpenAL context to current context");
+    CHECK_ALC_ERRORS(m_AlcDevice);
+
+    alListenerf(AL_GAIN, 0.50f);
+    CHECK_AL_ERRORS();
+    alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+    CHECK_AL_ERRORS();
+
+    m_MusicMixerLock.lock();
+    for (auto& player : m_MusicMixer) {
+        alGenSources(1, &player.m_SourceID);
+        CHECK_AL_ERRORS();
+        alSourcef(player.m_SourceID, AL_PITCH, 1);
+        CHECK_AL_ERRORS();
+        alSourcef(player.m_SourceID, AL_GAIN, 1.0f);
+        CHECK_AL_ERRORS();
+        alSource3f(player.m_SourceID, AL_POSITION, 0.0f, 0.0f, -1.0f);
+        CHECK_AL_ERRORS();
+        alSourcei(player.m_SourceID, AL_LOOPING, AL_FALSE);
+        CHECK_AL_ERRORS();
+        alSourcei(player.m_SourceID, AL_SOURCE_RELATIVE, AL_TRUE);
+        CHECK_AL_ERRORS();
+        alSourcei(player.m_SourceID, AL_ROLLOFF_FACTOR, 0);
+        CHECK_AL_ERRORS();
+
+        alGenBuffers(4, player.m_Buffers);
+    }
+    m_MusicMixerLock.unlock();
+
+    m_ShouldThreadClose = false;
+    m_PollingThread = std::thread(&AudioEngine::EnginePollingThread, this);
+}
+
+AudioEngine::~AudioEngine()
+{
+    m_PollingThread.detach();
+
+    m_MusicMixerLock.lock();
+    for (auto& music : m_MusicMap) {
+        delete music.second;
+    }
+    m_MusicMixerLock.unlock();
+}
+
+void AudioEngine::Init()
+{
+    if (!s_Instance)
+        s_Instance = new AudioEngine();
+}
+
+void AudioEngine::Shutdown()
+{
+    delete s_Instance;
+}
+
+void AudioEngine::PlaySfx(const std::string& sfxFileName)
+{
+
+    Sfx sfx;
+
+    auto searchSfx = m_SfxMap.find(sfxFileName);
+    if (searchSfx == m_SfxMap.end()) {
+        sfx = Sfx(sfxFileName);
+        m_SfxMap.insert(std::make_pair(sfxFileName, sfx));
+    } else {
+        sfx = searchSfx->second;
+    }
+
+    ALuint source_id;
+    alGenSources(1, &source_id);
+    CHECK_AL_ERRORS();
+
+    alSourcef(source_id, AL_PITCH, 1);
+    CHECK_AL_ERRORS();
+    alSourcef(source_id, AL_GAIN, 1.0f);
+    CHECK_AL_ERRORS();
+    alSource3f(source_id, AL_POSITION, 0.0f, 0.0f, 0.0f);
+    CHECK_AL_ERRORS();
+    alSourcei(source_id, AL_LOOPING, AL_FALSE);
+    CHECK_AL_ERRORS();
+
+    ALuint buffer_id;
+    alGenBuffers(1, &buffer_id);
+    CHECK_AL_ERRORS();
+    alBufferData(buffer_id, sfx.format, sfx.membuf, sfx.num_bytes, sfx.sampleRate);
+    CHECK_AL_ERRORS();
+    alSourcei(source_id, AL_BUFFER, buffer_id);
+    CHECK_AL_ERRORS();
+
+    alSourcePlay(source_id);
+    CHECK_AL_ERRORS();
+
+    m_SfxMixerLock.lock();
+    m_SfxMixer.emplace_back(source_id, buffer_id);
+    m_SfxMixerLock.unlock();
+}
+
+void AudioEngine::PauseSfxMixer()
+{
+    m_SfxMixerLock.lock();
+    for (const SfxBuffers& sfx : m_SfxMixer)
+        alSourcePause(sfx.GetSourceID());
+    m_SfxMixerLock.unlock();
+    CHECK_AL_ERRORS();
+}
+
+void AudioEngine::UnpauseSfxMixer()
+{
+    m_SfxMixerLock.lock();
+    for (const SfxBuffers& sfx : m_SfxMixer)
+        alSourcePlay(sfx.GetSourceID());
+    m_SfxMixerLock.unlock();
+    CHECK_AL_ERRORS();
+}
+
+void AudioEngine::StopSfxMixer()
+{
+    m_SfxMixerLock.lock();
+    for (const SfxBuffers& sfx : m_SfxMixer)
+        alSourceStop(sfx.GetSourceID());
+    m_SfxMixerLock.unlock();
+    CHECK_AL_ERRORS();
+}
+
+void AudioEngine::PlayMusicPlayer(std::size_t index)
+{
+    m_MusicMixerLock.lock();
+    if (m_MusicMixer.at(index).m_Music)
+        throw std::logic_error("audio::engine::play_music_player: music player has no music set (use audio::engine::set_player_music)");
+
+    m_MusicMixer.at(index).m_Playing = true;
+    alSourcePlay(m_MusicMixer.at(index).m_SourceID);
+    CHECK_AL_ERRORS();
+    m_MusicMixerLock.unlock();
+}
+
+void AudioEngine::PauseMusicPlayer(std::size_t index)
+{
+    m_MusicMixerLock.lock();
+    if (m_MusicMixer.at(index).m_MusicFileName.empty())
+        throw std::logic_error("audio::engine::play_music_player: music player has no music set (use audio::engine::set_player_music)");
+    m_MusicMixer.at(index).m_Playing = false;
+    alSourcePause(m_MusicMixer.at(index).m_SourceID);
+    CHECK_AL_ERRORS();
+    m_MusicMixerLock.unlock();
+}
+
+void AudioEngine::SetPlayerMusic(Shared<Audio> audio, std::size_t index)
+{
+
+    m_MusicMixerLock.lock();
+    MusicPlayer& player = m_MusicMixer.at(index);
+
+    // player.musicFileName = musicFileName;
+    // player.musicFile = std::ifstream(musicFileName);
+    player.m_Cursor = 0;
+
+    // Audio* music = nullptr;
+    // auto searchMusic = m_MusicMap.find(musicFileName);
+
+    // if (searchMusic == m_MusicMap.end()) {
+    //     music = new Audio(musicFileName, );
+    //     m_MusicMap.insert(std::make_pair(musicFileName, music));
+    // } else {
+    //     music = searchMusic->second;
+    // }
+
+    player.SetMusic(audio);
+    m_MusicMixerLock.unlock();
+}
+
+void AudioEngine::EnginePollingThread()
+{
+    while (!m_ShouldThreadClose) {
+
+        TB_PROFILE_SCOPE_NAME("AudioAudioEngine::Update");
+        m_SfxMixerLock.lock();
+
+        auto isStopped = [](const SfxBuffers& sfx) {
+            ALint sourceState;
+            alGetSourcei(sfx.GetSourceID(), AL_SOURCE_STATE, &sourceState);
+            CHECK_AL_ERRORS();
+
+            if (sourceState == AL_STOPPED) {
+                alDeleteSources(1, sfx.GetSourceIDAddr());
+                CHECK_AL_ERRORS();
+                alDeleteBuffers(1, sfx.GetSourceIDAddr());
+                CHECK_AL_ERRORS();
+            }
+
+            return sourceState == AL_STOPPED;
+        };
+
+        m_SfxMixer.erase(
+            std::remove_if(m_SfxMixer.begin(), m_SfxMixer.end(), isStopped),
+            m_SfxMixer.end());
+
+        m_SfxMixerLock.unlock();
+
+        /* --------------------------------  */
+
+        m_MusicMixerLock.lock();
+
+        for (MusicPlayer& player : m_MusicMixer) {
+            if (player.m_Music)
+                player.UpdatePlayer();
+        }
+
+        m_MusicMixerLock.unlock();
+
+        static constexpr int UPDATES_PER_SECOND = 200;
+        static constexpr int UPDATE_FRAME_MS = 1000 / UPDATES_PER_SECOND;
+        std::this_thread::sleep_for(std::chrono::milliseconds(UPDATE_FRAME_MS));
+    }
+}
+
+AudioEngine::MusicPlayer::MusicPlayer()
+    : m_Music(nullptr)
+    , m_Playing(false)
+{
+}
+
+AudioEngine::MusicPlayer::~MusicPlayer()
+{
+    alDeleteSources(1, &m_SourceID);
+    alDeleteBuffers(NumBuffers, m_Buffers);
+    CHECK_AL_ERRORS();
+}
+
+int AudioEngine::MusicPlayer::SetMusic(Shared<Audio> music)
+{
+
+    m_Music = music;
+
+    ALsizei i;
+
+    /* Rewind the source position and clear the buffer queue */
+    alSourceRewind(m_SourceID);
+    alSourcei(m_SourceID, AL_BUFFER, 0);
+
+    /* Fill the buffer queue */
+    for (i = 0; i < NumBuffers; i++) {
+        sf_count_t slen;
+
+        /* Get some data to give it to the buffer */
+        if (music->sampleType == Int16) {
+            slen = sf_readf_short(music->sndFile, static_cast<short*>(music->membuf),
+                (sf_count_t)music->blockCount * music->sampleblockalign);
+            if (slen < 1)
+                break;
+            slen *= music->byteblockalign;
+        } else if (music->sampleType == Float) {
+            slen = sf_readf_float(music->sndFile, static_cast<float*>(music->membuf),
+                (sf_count_t)music->blockCount * music->sampleblockalign);
+            if (slen < 1)
+                break;
+            slen *= music->byteblockalign;
+        } else {
+            slen = sf_read_raw(music->sndFile, music->membuf,
+                (sf_count_t)music->blockCount * music->byteblockalign);
+            if (slen > 0)
+                slen -= slen % music->byteblockalign;
+            if (slen < 1)
+                break;
+        }
+
+        if (music->sampleblockalign > 1)
+            alBufferi(m_Buffers[i], AL_UNPACK_BLOCK_ALIGNMENT_SOFT,
+                music->sampleblockalign);
+
+        alBufferData(m_Buffers[i], music->format, music->membuf, (ALsizei)slen,
+            music->sfinfo.samplerate);
+    }
+    if (alGetError() != AL_NO_ERROR) {
+        fprintf(stderr, "Error buffering for playback\n");
+        return 0;
+    }
+
+    /* Now queue and start playback! */
+    alSourceQueueBuffers(m_SourceID, i, m_Buffers);
+    alSourcePlay(m_SourceID);
+    if (alGetError() != AL_NO_ERROR) {
+        fprintf(stderr, "Error starting playback\n");
+        return 0;
+    }
+
+    return 1;
+}
+
+int AudioEngine::MusicPlayer::UpdatePlayer()
+{
+    if (m_Playing) {
+
+        ALint processed, state;
+
+        /* Get relevant source info */
+        alGetSourcei(m_SourceID, AL_SOURCE_STATE, &state);
+        alGetSourcei(m_SourceID, AL_BUFFERS_PROCESSED, &processed);
+        if (alGetError() != AL_NO_ERROR) {
+
+            CHECK_AL_ERRORS();
+            fprintf(stderr, "Error checking source state\n");
+            return 0;
+        }
+
+        /* Unqueue and handle each processed buffer */
+        while (processed > 0) {
+            ALuint bufid;
+            sf_count_t slen;
+
+            alSourceUnqueueBuffers(m_SourceID, 1, &bufid);
+            processed--;
+
+            /* Read the next chunk of data, refill the buffer, and queue it
+             * back on the source */
+            if (m_Music->sampleType == Int16) {
+                slen = sf_readf_short(m_Music->sndFile, static_cast<short*>(m_Music->membuf),
+                    (sf_count_t)m_Music->blockCount * m_Music->sampleblockalign);
+                if (slen > 0)
+                    slen *= m_Music->byteblockalign;
+            } else if (m_Music->sampleType == Float) {
+                slen = sf_readf_float(m_Music->sndFile, static_cast<float*>(m_Music->membuf),
+                    (sf_count_t)m_Music->blockCount * m_Music->sampleblockalign);
+                if (slen > 0)
+                    slen *= m_Music->byteblockalign;
+            } else {
+                slen = sf_read_raw(m_Music->sndFile, m_Music->membuf,
+                    (sf_count_t)m_Music->blockCount * m_Music->byteblockalign);
+                if (slen > 0)
+                    slen -= slen % m_Music->byteblockalign;
+            }
+
+            if (slen > 0) {
+                alBufferData(bufid, m_Music->format, m_Music->membuf, (ALsizei)slen,
+                    m_Music->sfinfo.samplerate);
+                alSourceQueueBuffers(m_SourceID, 1, &bufid);
+            }
+            if (alGetError() != AL_NO_ERROR) {
+
+                CHECK_AL_ERRORS();
+                fprintf(stderr, "Error buffering data\n");
+                return 0;
+            }
+        }
+
+        /* Make sure the source hasn't underrun */
+        if (state != AL_PLAYING && state != AL_PAUSED) {
+            ALint queued;
+
+            /* If no buffers are queued, playback is finished */
+            alGetSourcei(m_SourceID, AL_BUFFERS_QUEUED, &queued);
+            if (queued == 0)
+                return 0;
+
+            alSourcePlay(m_SourceID);
+            if (alGetError() != AL_NO_ERROR) {
+
+                CHECK_AL_ERRORS();
+                fprintf(stderr, "Error restarting playback\n");
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+// ------------------------------------------------------------------- //
+// ENGINE::SFX
+
+AudioEngine::Sfx::Sfx() { }
+
+AudioEngine::Sfx::Sfx(const std::string& sfxFileName)
+{
+    SNDFILE* sndFile;
+    SF_INFO sfinfo;
+    sndFile = sf_open(sfxFileName.c_str(), SFM_READ, &sfinfo);
+    if (!sndFile) {
+
+        TB_CORE_ASSERT_TAGGED(false, "Could not open audio file");
+    }
+
+    // verify file has valid data
+    if (sfinfo.frames < 1 || sfinfo.frames > (sf_count_t)(INT_MAX / sizeof(short)) / sfinfo.channels) {
+        sf_close(sndFile);
+        TB_CORE_ASSERT_TAGGED(false, "Audio file produced invalid data");
+    }
+
+    duration = float((float)sfinfo.frames / (float)sfinfo.samplerate);
+    sampleRate = (float)sfinfo.samplerate;
+
+    // get sound format and configure openal format
+    format = AL_NONE;
+    if (sfinfo.channels == 1)
+        format = AL_FORMAT_MONO16;
+    else if (sfinfo.channels == 2)
+        format = AL_FORMAT_STEREO16;
+    else if (sfinfo.channels == 3) {
+        if (sf_command(sndFile, SFC_WAVEX_GET_AMBISONIC, nullptr, 0) == SF_AMBISONIC_B_FORMAT)
+            format = AL_FORMAT_BFORMAT2D_16; // 2d
+    } else if (sfinfo.channels == 4) {
+        if (sf_command(sndFile, SFC_WAVEX_GET_AMBISONIC, nullptr, 0) == SF_AMBISONIC_B_FORMAT)
+            format = AL_FORMAT_BFORMAT3D_16; // 3d
+    }
+
+    if (!format) {
+
+        sf_close(sndFile);
+        TB_CORE_ASSERT_TAGGED(false, "Unsuported channel count/format");
+    }
+
+    // decode the audio file into a buffer
+    membuf = static_cast<short*>(malloc((size_t)(sfinfo.frames * sfinfo.channels) * sizeof(short)));
+
+    num_frames = sf_readf_short(sndFile, membuf, sfinfo.frames);
+    if (num_frames < 1) {
+        free(membuf);
+        sf_close(sndFile);
+        TB_CORE_ASSERT_TAGGED(false, "Failed to read samples in audio file");
+    }
+
+    num_bytes = (ALsizei)(num_frames * sfinfo.channels) * (ALsizei)sizeof(short);
+
+    // clean up audio file now that we are done with it
+    // free(membuf);
+    sf_close(sndFile);
+}
+
+// ------------------------------------------------------------------- //
+// ENGINE::SFX_BUFFERS
+
+AudioEngine::SfxBuffers::SfxBuffers(ALuint _sourceID, ALuint _bufferID)
+    : sourceID(_sourceID)
+    , bufferID(_bufferID)
+{
+}
+
+ALuint AudioEngine::SfxBuffers::GetSourceID() const
+{
+    return sourceID;
+}
+
+const ALuint* AudioEngine::SfxBuffers::GetSourceIDAddr() const
+{
+    return &sourceID;
+}
+
+const ALuint* AudioEngine::SfxBuffers::GetBufferIDAddr() const
+{
+    return &bufferID;
+}
+
+}

@@ -50,6 +50,11 @@
 #include <Tabby/Renderer/RenderCommand.h>
 // -----------------------------------
 //
+// --- Audio -------------------------
+#include <Tabby/Audio/Audio.h>
+#include <Tabby/Audio/AudioEngine.h>
+// -----------------------------------
+//
 // --- Debug -------------------------
 #include <Tabby/Debug/Debug.h>
 #include <Tabby/Debug/Instrumentor.h>

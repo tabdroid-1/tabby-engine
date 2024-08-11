@@ -600,6 +600,7 @@ void World::OnComponentAdded<SegmentCollider2DComponent>(Entity entity, SegmentC
 template <>
 void World::OnComponentAdded<TextComponent>(Entity entity, TextComponent& component)
 {
+    component.Font = AssetManager::LoadAssetSource("fonts/opensans/OpenSans-Regular.ttf");
 }
 
 template <>
