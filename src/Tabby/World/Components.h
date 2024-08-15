@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tbpch.h>
 #include <Tabby/Renderer/Camera.h>
 #include <Tabby/Renderer/Font.h>
 
@@ -102,16 +103,42 @@ struct CameraComponent {
     CameraComponent(const CameraComponent&) = default;
 };
 
-// class AudioSource;
+class AudioSource;
 
-struct SoundComponent {
-    // Shared<AudioSource> Sound;
-    float Gain = 1.0f;
-    bool Playing = false;
-    bool Loop = false;
+struct AudioSourceComponent {
+    AudioSource* Source;
 
-    SoundComponent() = default;
-    SoundComponent(const SoundComponent&) = default;
+    void SetAudio(AssetHandle audioHandle);
+    void Play();
+    void Pause();
+    void TogglePlay();
+    bool IsPlaying();
+
+    void SetPitch(float pitch);
+    void SetGain(float gain);
+
+    void SetRolloffFactor(float rate);
+    void SetMaxDistance(float distance);
+    void SetReferenceDistance(float distance);
+
+    void SetRelative(bool relative);
+    void SetLooping(bool looping);
+    void SetMinGain(float gain);
+    void SetMaxGain(float gain);
+
+    void SetConeOuterGain(float gain);
+    void SetConeInnerAngle(float angle);
+    void SetConeOuterAngle(float angle);
+
+    AudioSourceComponent() = default;
+    AudioSourceComponent(const AudioSourceComponent&) = default;
+};
+
+struct AudioListenerComponent {
+    bool ignoreThisVariable;
+
+    AudioListenerComponent() = default;
+    AudioListenerComponent(const AudioListenerComponent&) = default;
 };
 
 // Physics
@@ -395,7 +422,7 @@ struct ComponentGroup {
 };
 
 using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
-    CircleRendererComponent, CameraComponent, SoundComponent, HierarchyNodeComponent,
+    CircleRendererComponent, CameraComponent, AudioSourceComponent, AudioListenerComponent, HierarchyNodeComponent,
     Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent, CapsuleCollider2DComponent, TextComponent>;
 
 } // namespace Tabby

@@ -2,7 +2,7 @@ Todo
 ----
 
 - High priority
-    - Physics stuff. (raycast triggers etc) 
+    - <s>Physics stuff. (raycast triggers etc) </s> Done since 15-08-2024_1 Alpha  
         - <s>every 2d physics related stuff to Physics2D</s> Done
         - <s>2D Raycast</s> Done
         - <s>Return Entity, Collision etc info on body enter callback.</s> Done
@@ -22,12 +22,10 @@ Todo
         - <s>maybe engine should have only one entity registy and use that instead of creating new one for each scene </s> Done
         - <s>Create queue for rigidbody initialization. Else application crashes </s> Done
     - <s>Use OpenAL instead of miniaudio. </s> Done
-        - <s>Play SFX and delete when not needed. </s> Done 
-        - <s>Audio streaming for long audios. </s> Done 
     - <s>Asset manager. </s> Done
     - <s>Go balls deep in to ECS (ECS like in Bevy Engine)</s> kinda done since 20-06-2024_1 Alpha. 
     - <s>Implement File Dialog to linux.</s> Done Since 02-07-2024_1 Alpha
-    - Add font support to asset manager.
+    - <s>Add font support to asset manager.</s> Done since 15-08-2024_1 Alpha 
     - Fix OpenGL ES Text Shader. 
     - Clean up the code, add comments etc.
     - Multithreading
@@ -37,7 +35,6 @@ Todo
 - Low priority
     - Angel Script
     - Animation
-    - Basic networking
     - Create pop-up showing error on release builds instead of just crashing without any info. 
     - Vulkan.
 

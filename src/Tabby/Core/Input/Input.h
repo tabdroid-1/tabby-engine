@@ -1,11 +1,9 @@
 #pragma once
 
 #include <tbpch.h>
-#include "Tabby/Core/Input/GamepadCodes.h"
-#include "Tabby/Core/Input/KeyCodes.h"
-#include "Tabby/Core/Input/MouseCodes.h"
 #include <Tabby/Core/Events/MouseEvent.h>
 #include <Tabby/Foundation/Types.h>
+#include <Tabby/Core/Input/KeyCode.h>
 
 struct _SDL_Joystick;
 typedef struct _SDL_Joystick SDL_Joystick;

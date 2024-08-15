@@ -1,8 +1,15 @@
-Version: 10-08-2024_1 Alpha
+Version: 15-08-2024_1 Alpha
 Changes:
-- Done changes to naming and presolve and collision callbacks. 
+- Done changes to naming, presolve and collision callbacks. 
 - Integrated Font to asset manager.
-- Asset manager is not proper singleton.
+- Integrated Audio(formerly known as Music) to asset manager.
+- Asset manager is now a proper singleton.
+- Fixed crash when program was closing which was caused by Audio Engine oversight.
+- Initial work for audio to properly handle streamin (basically compatible with assetpacks whenever it will be added to engine)
+- Removed libsndfile to preseve my sanity (no mp3 or any other sound format support for a looong time :3)
+- Added AudioSourceComponent (Note: openal does falloff only to mono audios)
+- Added AudioListenerComponent
+- Now audio source is PROPERLY streaming music from file.
 
 --------------------------------------------------------------------------------------
 

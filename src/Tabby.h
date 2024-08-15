@@ -28,8 +28,7 @@
 //
 // --- Input -------------------------
 #include <Tabby/Core/Input/Input.h>
-#include <Tabby/Core/Input/KeyCodes.h>
-#include <Tabby/Core/Input/MouseCodes.h>
+#include <Tabby/Core/Input/KeyCode.h>
 // -----------------------------------
 //
 // --- Asset -------------------------
@@ -52,6 +51,7 @@
 //
 // --- Audio -------------------------
 #include <Tabby/Audio/Audio.h>
+#include <Tabby/Audio/AudioSource.h>
 #include <Tabby/Audio/AudioEngine.h>
 // -----------------------------------
 //

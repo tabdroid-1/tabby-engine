@@ -1,3 +1,5 @@
+#include <Tabby/Audio/AudioSource.h>
+#include <Tabby/Audio/AudioEngine.h>
 #include <Tabby/World/Components.h>
 #include <Tabby/Physics/2D/Physics2D.h>
 #include <Tabby/Physics/2D/Physics2DTypes.h>
@@ -146,6 +148,142 @@ void TransformComponent::ApplyTransformToLocal(const Matrix4& transform)
     LocalRotation.x *= Math::RAD2DEG;
     LocalRotation.y *= Math::RAD2DEG;
     LocalRotation.z *= Math::RAD2DEG;
+}
+
+// --------------------------------------------------
+//
+//
+//
+// ----- AudioSourceComponent -----------------------
+
+void AudioSourceComponent::SetAudio(AssetHandle audioHandle)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetAudio(audioHandle);
+}
+void AudioSourceComponent::Play()
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->Play();
+}
+void AudioSourceComponent::Pause()
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->Pause();
+}
+void AudioSourceComponent::TogglePlay()
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->TogglePlay();
+}
+bool AudioSourceComponent::IsPlaying()
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    return Source->IsPlaying();
+}
+
+void AudioSourceComponent::SetPitch(float pitch)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetPitch(pitch);
+}
+void AudioSourceComponent::SetGain(float gain)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetGain(gain);
+}
+
+void AudioSourceComponent::SetRolloffFactor(float rate)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetRolloffFactor(rate);
+}
+void AudioSourceComponent::SetMaxDistance(float distance)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetMaxDistance(distance);
+}
+void AudioSourceComponent::SetReferenceDistance(float distance)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetReferenceDistance(distance);
+}
+
+void AudioSourceComponent::SetRelative(bool relative)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetRelative(relative);
+}
+void AudioSourceComponent::SetLooping(bool looping)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetLooping(looping);
+}
+void AudioSourceComponent::SetMinGain(float gain)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetMinGain(gain);
+}
+void AudioSourceComponent::SetMaxGain(float gain)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetMaxGain(gain);
+}
+
+// void AudioSourceComponent::SetDirection(const Vector3& direction)
+// {
+//     if (!Source)
+//         Source = AudioEngine::CreateAudioSource();
+// }
+
+void AudioSourceComponent::SetConeOuterGain(float gain)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetConeOuterGain(gain);
+}
+void AudioSourceComponent::SetConeInnerAngle(float angle)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetConeInnerAngle(angle);
+}
+void AudioSourceComponent::SetConeOuterAngle(float angle)
+{
+    if (!Source)
+        Source = AudioEngine::CreateAudioSource();
+
+    Source->SetConeOuterAngle(angle);
 }
 
 // --------------------------------------------------

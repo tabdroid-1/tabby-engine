@@ -29,7 +29,6 @@ inline static const std::unordered_map<std::string, AssetType> g_AssetTypesExten
     { ".glb", AssetType::MESH_SRC },
     { ".obj", AssetType::MESH_SRC },
 
-    { ".mp3", AssetType::AUDIO_SRC },
     { ".wav", AssetType::AUDIO_SRC },
 
 };

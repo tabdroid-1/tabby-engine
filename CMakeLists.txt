@@ -5,7 +5,7 @@ project(tabby
 	HOMEPAGE_URL "https://github.com/tabdroid-1/TabbyEngine"
     LANGUAGES CXX
 )
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 17)
 
 if(APPLE)
     message(STATUS "Including Objective-C++ for APPLE")
@@ -32,10 +32,10 @@ set(ALSOFT_INSTALL_CONFIG CACHE BOOL "Install alsoft.conf sample configuration f
 set(ALSOFT_INSTALL_HRTF_DATA CACHE BOOL "Install HRTF data files" FORCE)
 set(ALSOFT_INSTALL_AMBDEC_PRESETS CACHE BOOL "Install AmbDec preset files" FORCE)
 set(ALSOFT_INSTALL_EXAMPLES BOOL "Install example programs (alplay, alstream, ...)" FORCE)
-# set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
-set(BUILD_PROGRAMS OFF CACHE BOOL "Build programs (libsndfile)" FORCE)
-set(BUILD_EXAMPLES OFF CACHE BOOL "Build examples (libsndfile)" FORCE)
-set(BUILD_TESTING OFF CACHE BOOL "Build tests (libsndfile)" FORCE)
+# # set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
+# set(BUILD_PROGRAMS OFF CACHE BOOL "Build programs (libsndfile)" FORCE)
+# set(BUILD_EXAMPLES OFF CACHE BOOL "Build examples (libsndfile)" FORCE)
+# set(BUILD_TESTING OFF CACHE BOOL "Build tests (libsndfile)" FORCE)
 set(SDL_SHARED OFF CACHE BOOL "Build a shared version of the library" FORCE)
 set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
 set(SDL_TEST OFF CACHE BOOL "Build the SDL2_test library" FORCE)
@@ -74,22 +74,22 @@ set(PROJECT_VENDOR_DIR "vendor")
 # Add dependencies 
 # ##############################################################################
 
-set(GLM "${PROJECT_VENDOR_DIR}/glm")
-set(STB "${PROJECT_VENDOR_DIR}/stb")
-set(SDL2 "${PROJECT_VENDOR_DIR}/SDL2")
-set(GLAD "${PROJECT_VENDOR_DIR}/glad")
-set(ENTT "${PROJECT_VENDOR_DIR}/entt")
-set(BOX2C "${PROJECT_VENDOR_DIR}/box2c")
-set(BOX2D "${PROJECT_VENDOR_DIR}/box2d")
-set(TRACY "${PROJECT_VENDOR_DIR}/tracy")
-set(IMGUI "${PROJECT_VENDOR_DIR}/imgui")
-set(SPDLOG "${PROJECT_VENDOR_DIR}/spdlog")
-set(FASTGLTF "${PROJECT_VENDOR_DIR}/fastgltf")
-set(IMGUIZMO "${PROJECT_VENDOR_DIR}/imguizmo")
-set(OPENAL "${PROJECT_VENDOR_DIR}/openal-soft")
-set(LIBSNDFILE "${PROJECT_VENDOR_DIR}/libsndfile")
-set(MSDF-ATLAS-GEN "${PROJECT_VENDOR_DIR}/msdf-atlas-gen")
-set(TINY-OBJ-LOADER "${PROJECT_VENDOR_DIR}/tinyobjloader")
+set(GLM ${PROJECT_VENDOR_DIR}/glm)
+set(STB ${PROJECT_VENDOR_DIR}/stb)
+set(SDL2 ${PROJECT_VENDOR_DIR}/SDL2)
+set(GLAD ${PROJECT_VENDOR_DIR}/glad)
+set(ENTT ${PROJECT_VENDOR_DIR}/entt)
+set(BOX2C ${PROJECT_VENDOR_DIR}/box2c)
+set(BOX2D ${PROJECT_VENDOR_DIR}/box2d)
+set(TRACY ${PROJECT_VENDOR_DIR}/tracy)
+set(IMGUI ${PROJECT_VENDOR_DIR}/imgui)
+set(SPDLOG ${PROJECT_VENDOR_DIR}/spdlog)
+set(FASTGLTF ${PROJECT_VENDOR_DIR}/fastgltf)
+set(IMGUIZMO ${PROJECT_VENDOR_DIR}/imguizmo)
+set(OPENAL ${PROJECT_VENDOR_DIR}/openal-soft)
+# set(LIBSNDFILE ${PROJECT_VENDOR_DIR}/libsndfile)
+set(MSDF-ATLAS-GEN ${PROJECT_VENDOR_DIR}/msdf-atlas-gen)
+# set(TINY-OBJ-LOADER ${PROJECT_VENDOR_DIR}/tinyobjloader)
 
 # ##############################################################################
 # Project executable setup
@@ -105,14 +105,13 @@ list(APPEND PROJECT_SOURCES
         "${ENTT}/entt.hpp"
         "${STB}/stb_image.h"
         "${STB}/stb_image.cpp"
-        "${TINY-OBJ-LOADER}/tinyobjloader.cpp"
         )
 
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}) 
-target_include_directories(${PROJECT_NAME} PUBLIC ${LIBSNDFILE}/include) 
+# target_include_directories(${PROJECT_NAME} PUBLIC ${LIBSNDFILE}/include) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${FASTGLTF}/include) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SPDLOG}/include) 
@@ -125,7 +124,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${ENTT})
 target_include_directories(${PROJECT_NAME} PUBLIC ${STB}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${GLM}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${MSDF-ATLAS-GEN}/msdf-atlas-gen) 
-target_include_directories(${PROJECT_NAME} PRIVATE ${TINY-OBJ-LOADER}) 
+# target_include_directories(${PROJECT_NAME} PRIVATE ${TINY-OBJ-LOADER}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLAD}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${STB}) 
 
@@ -141,11 +140,11 @@ add_subdirectory(${TRACY})
 add_subdirectory(${SPDLOG})
 add_subdirectory(${IMGUIZMO})
 add_subdirectory(${FASTGLTF})
-add_subdirectory(${LIBSNDFILE})
+# add_subdirectory(${LIBSNDFILE})
 add_subdirectory(${MSDF-ATLAS-GEN})
 
 
-if(NOT EMSCRIPTEN)
+if(NOT EMSCRIPTEN AND NOT UNIX)
     add_subdirectory(${OPENAL})
 endif()
 
@@ -182,7 +181,6 @@ if (WIN32)
         imgui
         box2d
         tracy 
-        sndfile
         fastgltf
         imguizmo
         OpenAL::OpenAL
@@ -193,7 +191,7 @@ if (WIN32)
         )
 elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
 
-    find_package(OpenAL)
+    find_package(OpenAL REQUIRED STATIC)
     target_link_options(${PROJECT_NAME} PUBLIC -ludev)
 
     find_package(PkgConfig REQUIRED)
@@ -206,12 +204,11 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
         imgui
         box2d
         spdlog
-        sndfile
         imguizmo
         fastgltf
-        OpenAL::OpenAL
         msdf-atlas-gen 
         PkgConfig::GTK4
+        ${OPENAL_LIBRARY}
         SDL2::SDL2-static
         )
 elseif (APPLE)
@@ -262,7 +259,6 @@ elseif (EMSCRIPTEN)
         box2d
         tracy 
         spdlog
-        sndfile
         imguizmo
         fastgltf
         msdf-atlas-gen 

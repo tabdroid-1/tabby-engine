@@ -82,6 +82,56 @@ void World::Init()
             }
         });
 
+        AddSystem(Schedule::PostUpdate, [](entt::registry& registry) {
+            TB_PROFILE_SCOPE_NAME("World::PostUpdate::UpdateAudioSource");
+            auto view = World::GetRegistry().view<TransformComponent, AudioSourceComponent>();
+            for (auto entity : view) {
+                auto [transform, source] = view.get<TransformComponent, AudioSourceComponent>(entity);
+
+                source.Source->SetPosition(transform.Translation);
+                source.Source->SetDirection(transform.Rotation);
+
+                if (registry.any_of<Rigidbody2DComponent>(entity)) {
+                    auto& rb = registry.get<Rigidbody2DComponent>(entity);
+
+                    source.Source->SetVelocity({ rb.GetVelocity().x, rb.GetVelocity().y, 0 });
+                }
+            }
+        });
+
+        AddSystem(Schedule::PostUpdate, [](entt::registry& registry) {
+            TB_PROFILE_SCOPE_NAME("World::PostUpdate::UpdateAudioSource");
+
+            int numberOfListener = 0;
+
+            auto view = World::GetRegistry().view<TransformComponent, AudioListenerComponent>();
+            for (auto entity : view) {
+                auto [transform, listener] = view.get<TransformComponent, AudioListenerComponent>(entity);
+
+                if (numberOfListener == 0) {
+
+                    glm::vec3 lookVector = glm::normalize(glm::vec3(transform.GetTransform()[0][2], transform.GetTransform()[1][2], transform.GetTransform()[2][2]));
+                    glm::vec3 upVector = glm::normalize(glm::vec3(transform.GetTransform()[0][1], transform.GetTransform()[1][1], transform.GetTransform()[2][1]));
+                    AudioEngine::SetPosition(transform.Translation);
+                    AudioEngine::SetOrientation(lookVector, upVector);
+
+                    if (registry.any_of<Rigidbody2DComponent>(entity)) {
+                        auto& rb = registry.get<Rigidbody2DComponent>(entity);
+
+                        AudioEngine::SetVelocity({ rb.GetVelocity().x, rb.GetVelocity().y, 0 });
+                    }
+                }
+
+                numberOfListener++;
+            }
+
+            static bool warnOnce = false;
+            if (!warnOnce && numberOfListener > 1) {
+                TB_CORE_WARN("There is multiple listener in scene. Only one is allowed! (warn once)");
+                warnOnce = true;
+            }
+        });
+
         AddSystem(Schedule::Draw, [](entt::registry&) {
             TB_PROFILE_SCOPE_NAME("World::Draw::RenderCircle");
             auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
@@ -466,7 +516,7 @@ entt::registry& World::GetRegistry()
 template <typename T>
 void World::OnComponentAdded(Entity entity, T& component)
 {
-    static_assert(sizeof(T) == 0);
+    // static_assert(sizeof(T) == 0);
 }
 
 template <>
@@ -487,8 +537,10 @@ void World::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& co
 }
 
 template <>
-void World::OnComponentAdded<SoundComponent>(Entity entity, SoundComponent& component)
+void World::OnComponentAdded<AudioSourceComponent>(Entity entity, AudioSourceComponent& component)
 {
+    if (!component.Source)
+        component.Source = AudioEngine::CreateAudioSource();
 }
 
 template <>
