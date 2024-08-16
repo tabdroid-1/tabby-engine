@@ -17,6 +17,8 @@ Physisc2D* Physisc2D::s_Instance = nullptr;
 
 Physisc2D::Physisc2D()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::Constructor");
+
     if (!s_Instance)
         s_Instance = this;
 
@@ -25,12 +27,16 @@ Physisc2D::Physisc2D()
 
 Physisc2D::~Physisc2D()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::Destructor");
+
     b2DestroyWorld(m_PhysicsWorld);
     m_PhysicsWorld = b2_nullWorldId;
 }
 
 void Physisc2D::Init()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::Init");
+
     if (!s_Instance)
         s_Instance = new Physisc2D();
 
@@ -45,6 +51,8 @@ void Physisc2D::Init()
 
 void Physisc2D::Init(const Vector2& gravity)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::Init");
+
     if (!s_Instance)
         s_Instance = new Physisc2D();
 
@@ -58,6 +66,8 @@ void Physisc2D::Init(const Vector2& gravity)
 
 void Physisc2D::UpdateWorld()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::UpdateWorld");
+
     ProcessBodyInitQueue();
     ProcessShapeInitQueue();
     ProcessShapeUpdateQueue();
@@ -70,11 +80,15 @@ void Physisc2D::UpdateWorld()
 
 uint8_t Physisc2D::GetSubstepCount()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::GetSubstepCount");
+
     return s_Instance->m_SubstepCount;
 }
 
 void Physisc2D::SetSubstepCount(uint8_t substepCount)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::SetSubstepCount");
+
     if (substepCount < 1) {
         TB_CORE_ERROR("Physics2D: SubstepCount can not be lower than 1!");
         return;
@@ -84,6 +98,8 @@ void Physisc2D::SetSubstepCount(uint8_t substepCount)
 
 Vector2 Physisc2D::GetGravity()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::GetGravity");
+
     Vector2 gravity;
     if (B2_IS_NULL(s_Instance->m_PhysicsWorld)) {
 
@@ -92,8 +108,11 @@ Vector2 Physisc2D::GetGravity()
     }
     return gravity;
 }
+
 void Physisc2D::SetGravity(Vector2 gravity)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::SetGravity");
+
     if (B2_IS_NULL(s_Instance->m_PhysicsWorld))
         b2World_SetGravity(s_Instance->m_PhysicsWorld, { gravity.x, gravity.y });
     else
@@ -102,6 +121,8 @@ void Physisc2D::SetGravity(Vector2 gravity)
 
 b2WorldId Physisc2D::GetPhysicsWorld()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::GetPhysicsWorld");
+
     if (s_Instance && B2_IS_NON_NULL(s_Instance->m_PhysicsWorld))
         return s_Instance->m_PhysicsWorld;
     else {
@@ -112,6 +133,8 @@ b2WorldId Physisc2D::GetPhysicsWorld()
 
 RaycastHit2D Physisc2D::RayCast(const Vector2& origin, const Vector2& direction, float distance, RaycastFilter2D raycastFilter, int minDepth, int maxDepth)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::RayCast");
+
     RaycastHit2D tempRayCastHit;
     tempRayCastHit.RaycastFilter = raycastFilter;
     tempRayCastHit.Origin = origin;
@@ -142,6 +165,8 @@ RaycastHit2D Physisc2D::RayCast(const Vector2& origin, const Vector2& direction)
 
 RaycastHit2D Physisc2D::BoxCast(const Vector2& boxSize, const Vector2& origin, const Vector2& direction, float distance, RaycastFilter2D raycastFilter, int minDepth, int maxDepth)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::BoxCast");
+
     RaycastHit2D tempRayCastHit;
 
     tempRayCastHit.Origin = origin;
@@ -175,6 +200,8 @@ RaycastHit2D Physisc2D::BoxCast(const Vector2& boxSize, const Vector2& origin, c
 
 RaycastHit2D Physisc2D::CapsuleCast(const Vector2& point1, const Vector2& point2, float radius, const Vector2& origin, const Vector2& direction, float distance, RaycastFilter2D raycastFilter, int minDepth, int maxDepth)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::CapsuleCast");
+
     RaycastHit2D tempRayCastHit;
 
     tempRayCastHit.Origin = origin;
@@ -193,6 +220,7 @@ RaycastHit2D Physisc2D::CapsuleCast(const Vector2& point1, const Vector2& point2
 
 RaycastHit2D Physisc2D::CapsuleCast(const Vector2& point1, const Vector2& point2, float radius, const Vector2& origin, const Vector2& direction, float distance, RaycastFilter2D raycastFilter)
 {
+
     return CapsuleCast(point1, point2, radius, origin, direction, distance, RaycastFilter2D(), 0, std::numeric_limits<int>::max());
 }
 
@@ -208,6 +236,8 @@ RaycastHit2D Physisc2D::CapsuleCast(const Vector2& point1, const Vector2& point2
 
 RaycastHit2D Physisc2D::CircleCast(float radius, const Vector2& origin, const Vector2& direction, float distance, RaycastFilter2D raycastFilter, int minDepth, int maxDepth)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::CircleCast");
+
     RaycastHit2D tempRayCastHit;
 
     tempRayCastHit.Origin = origin;
@@ -241,21 +271,29 @@ RaycastHit2D Physisc2D::CircleCast(float radius, const Vector2& origin, const Ve
 
 void Physisc2D::EnqueueBodyInit(BodyInfo2D bodyInfo)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::EnqueueBodyInit");
+
     s_Instance->bodyInitQueue.push(bodyInfo);
 }
 
 void Physisc2D::EnqueueShapeInit(ShapeInfo2D shapeInfo)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::EnqueueShapeInit");
+
     s_Instance->shapeInitQueue.push(shapeInfo);
 }
 
 void Physisc2D::EnqueueShapeUpdate(ShapeInfo2D shapeInfo)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::EnqueueShapeUpdate");
+
     s_Instance->shapeUpdateQueue.push(shapeInfo);
 }
 
 void Physisc2D::ProcessBodyInitQueue()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::ProcessBodyInitQueue");
+
     while (!s_Instance->bodyInitQueue.empty()) {
 
         s_Instance->queueEmpty = false;
@@ -286,6 +324,8 @@ void Physisc2D::ProcessBodyInitQueue()
 
 void Physisc2D::ProcessShapeInitQueue()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::ProcessShapeInitQueue");
+
     while (!s_Instance->shapeInitQueue.empty()) {
         s_Instance->queueEmpty = false;
 
@@ -427,6 +467,8 @@ void Physisc2D::ProcessShapeInitQueue()
 
 void Physisc2D::ProcessShapeUpdateQueue()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::ProcessShapeUpdateQueue");
+
     while (!s_Instance->shapeUpdateQueue.empty()) {
         s_Instance->queueEmpty = false;
 
@@ -504,6 +546,7 @@ void Physisc2D::ProcessShapeUpdateQueue()
 
 float Physisc2D::Physics2DRaycastCallback(b2ShapeId shapeId, b2Vec2 point, b2Vec2 normal, float fraction, void* context)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::Physics2DRaycastCallback");
 
     ShapeUserData2D* userData = static_cast<ShapeUserData2D*>(b2Shape_GetUserData(shapeId));
 
@@ -521,6 +564,8 @@ float Physisc2D::Physics2DRaycastCallback(b2ShapeId shapeId, b2Vec2 point, b2Vec
 
 void Physisc2D::ProcessEvents()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physisc2D::ProcessEvents");
+
     b2ContactEvents contactEvents = b2World_GetContactEvents(s_Instance->m_PhysicsWorld);
     for (int i = 0; i < contactEvents.beginCount; ++i) {
         b2ContactBeginTouchEvent event = contactEvents.beginEvents[i];
@@ -612,6 +657,8 @@ void Physisc2D::ProcessEvents()
 }
 bool Physics2DPreSolve(b2ShapeId shapeIdA, b2ShapeId shapeIdB, b2Manifold* manifold, void* context)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Physics2DPreSolve");
+
     TB_CORE_ASSERT_TAGGED(b2Shape_IsValid(shapeIdA), "Shape is null!");
     TB_CORE_ASSERT_TAGGED(b2Shape_IsValid(shapeIdB), "Shape is null!");
 

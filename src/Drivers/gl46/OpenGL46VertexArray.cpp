@@ -1,5 +1,7 @@
-#include "Drivers/gl46/OpenGL46VertexArray.h"
 #include "tbpch.h"
+
+#include <Drivers/gl46/OpenGL46VertexArray.h>
+#include <Drivers/GPUProfiler.h>
 
 #include <gl.h>
 
@@ -38,35 +40,40 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 
 OpenGL46VertexArray::OpenGL46VertexArray()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46VertexArray::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL46VertexArray::Constructor");
 
     glCreateVertexArrays(1, &m_RendererID);
 }
 
 OpenGL46VertexArray::~OpenGL46VertexArray()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46VertexArray::Deconstructor");
+    TB_PROFILE_GPU("Tabby::OpenGL46VertexArray::Deconstructor");
 
     glDeleteVertexArrays(1, &m_RendererID);
 }
 
 void OpenGL46VertexArray::Bind() const
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46VertexArray::Bind");
+    TB_PROFILE_GPU("Tabby::OpenGL46VertexArray::Bind");
 
     glBindVertexArray(m_RendererID);
 }
 
 void OpenGL46VertexArray::Unbind() const
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46VertexArray::Unbind");
+    TB_PROFILE_GPU("Tabby::OpenGL46VertexArray::Unbind");
 
     glBindVertexArray(0);
 }
 
 void OpenGL46VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuffer)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46VertexArray::AddVertexBuffer");
+    TB_PROFILE_GPU("Tabby::OpenGL46VertexArray::AddVertexBuffer");
 
     TB_CORE_ASSERT_TAGGED(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
@@ -130,7 +137,8 @@ void OpenGL46VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuff
 
 void OpenGL46VertexArray::SetIndexBuffer(const Shared<IndexBuffer>& indexBuffer)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46VertexArray::SetIndexBuffer");
+    TB_PROFILE_GPU("Tabby::OpenGL46VertexArray::SetIndexBuffer");
 
     glBindVertexArray(m_RendererID);
     indexBuffer->Bind();

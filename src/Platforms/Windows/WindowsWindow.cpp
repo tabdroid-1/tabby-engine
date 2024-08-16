@@ -20,21 +20,21 @@ static uint8_t s_SDLWindowCount = 0;
 
 WindowsWindow::WindowsWindow(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::Constructor");
 
     Init(props);
 }
 
 WindowsWindow::~WindowsWindow()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::Destructor");
 
     Shutdown();
 }
 
 void WindowsWindow::Init(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::Init");
 
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
@@ -47,7 +47,7 @@ void WindowsWindow::Init(const WindowProps& props)
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
     if (s_SDLWindowCount == 0) {
-        TB_PROFILE_SCOPE_NAME("SDL Init");
+        TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::Init::SDL_Init");
         int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
         if (success != 0) {
             TB_CORE_INFO("{}", SDL_GetError());
@@ -56,7 +56,7 @@ void WindowsWindow::Init(const WindowProps& props)
     }
 
     {
-        TB_PROFILE_SCOPE_NAME("SDLCreateWindow");
+        TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::Init::SDL_CreateWindow");
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
 
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -98,7 +98,7 @@ void WindowsWindow::Init(const WindowProps& props)
 
 void WindowsWindow::Shutdown()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::Shutdown");
 
     SDL_DestroyWindow(m_Window);
     --s_SDLWindowCount;
@@ -110,7 +110,7 @@ void WindowsWindow::Shutdown()
 
 void WindowsWindow::OnUpdate()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::OnUpdate");
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -188,7 +188,7 @@ void WindowsWindow::OnUpdate()
 
 void WindowsWindow::SetVSync(bool enabled)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::SetVSync");
 
     if (enabled)
         SDL_GL_SetSwapInterval(1);
@@ -200,11 +200,14 @@ void WindowsWindow::SetVSync(bool enabled)
 
 bool WindowsWindow::IsVSync() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::IsVSync");
+
     return m_Data.VSync;
 }
 
 void WindowsWindow::SetResizable(bool enabled)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::SetResizable");
 
     if (enabled)
         SDL_SetWindowResizable(m_Window, SDL_TRUE);
@@ -213,13 +216,17 @@ void WindowsWindow::SetResizable(bool enabled)
     m_Data.Resizeable = enabled;
 }
 
-bool WindowsWindow::GetResizable() const
+bool WindowsWindow::IsResizable() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::GetResizable");
+
     return m_Data.Resizeable;
 }
 
 void WindowsWindow::SetMinSize(uint32_t minWidth, uint32_t minHeight)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::WindowsWindow::SetMinSize");
+
     SDL_SetWindowMinimumSize(m_Window, minWidth, minHeight);
     m_Data.MinWidth = minWidth;
     m_Data.MinHeight = minHeight;

@@ -7,12 +7,14 @@ Input* Input::s_Instance = nullptr;
 
 void Input::Init()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Input::Init");
     if (s_Instance == nullptr)
         s_Instance = new Input();
 }
 
 Input::Input()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Input::Constructor");
     s_Instance = this;
 
     for (int i = 0; (i < SDL_NumJoysticks()) && (i < MAX_GAMEPADS); i++) {
@@ -45,6 +47,8 @@ Input::Input()
 
 void Input::RefreshGamepads()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Input::RefreshGamepads");
+
     for (int i = 0; (i < SDL_NumJoysticks()) && (i < MAX_GAMEPADS); i++) {
         GamepadInfo tempCont;
 
@@ -75,6 +79,8 @@ void Input::RefreshGamepads()
 
 const GamepadInfo& Input::GetGamepadInfo(int index)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Input::GetGamepadInfo");
+
     return s_Instance->m_Gamepads[index];
 }
 }

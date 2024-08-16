@@ -1,6 +1,7 @@
-#include "Drivers/gl46/OpenGL46Texture.h"
 #include "tbpch.h"
-#include <stb_image.h>
+
+#include <Drivers/gl46/OpenGL46Texture.h>
+#include <Drivers/GPUProfiler.h>
 
 namespace Tabby {
 
@@ -44,7 +45,8 @@ OpenGL46Texture::OpenGL46Texture(const TextureSpecification& specification, Asse
     , m_Width(m_Specification.Width)
     , m_Height(m_Specification.Height)
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) Constructor");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Texture::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL46Texture::Constructor");
 
     Handle = handle;
     m_InternalFormat = Utils::TabbyImageFormatToGLInternalFormat(m_Specification.Format);
@@ -76,12 +78,16 @@ OpenGL46Texture::OpenGL46Texture(const TextureSpecification& specification, Asse
 
 OpenGL46Texture::~OpenGL46Texture()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Texture::Destructor");
+    TB_PROFILE_GPU("Tabby::OpenGL46Texture::Destructor");
+
     Destroy();
 }
 
 void OpenGL46Texture::SetData(Buffer data)
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) Set data");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Texture::SetData");
+    TB_PROFILE_GPU("Tabby::OpenGL46Texture::SetData");
 
     glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);
 
@@ -91,7 +97,8 @@ void OpenGL46Texture::SetData(Buffer data)
 
 void OpenGL46Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) Set sub data");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Texture::SetSubData");
+    TB_PROFILE_GPU("Tabby::OpenGL46Texture::SetSubData");
 
     glTextureSubImage2D(m_RendererID, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 
@@ -101,13 +108,16 @@ void OpenGL46Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 
 void OpenGL46Texture::Bind(uint32_t slot) const
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) bind");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Texture::Bind");
+    TB_PROFILE_GPU("Tabby::OpenGL46Texture::Bind");
+
     glBindTextureUnit(slot, m_RendererID);
 }
 
 void OpenGL46Texture::Destroy()
 {
-    TB_PROFILE_SCOPE_NAME("(Textures) Delete");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Texture::Destroy");
+    TB_PROFILE_GPU("Tabby::OpenGL46Texture::Destroy");
 
     glDeleteTextures(1, &m_RendererID);
 }

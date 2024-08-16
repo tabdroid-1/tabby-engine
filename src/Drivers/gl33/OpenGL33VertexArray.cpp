@@ -2,6 +2,7 @@
 #include "tbpch.h"
 
 #include <gl.h>
+#include <Drivers/GPUProfiler.h>
 
 namespace Tabby {
 
@@ -38,35 +39,40 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 
 OpenGL33VertexArray::OpenGL33VertexArray()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexArray::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexArray::Constructor");
 
     glGenVertexArrays(1, &m_RendererID);
 }
 
 OpenGL33VertexArray::~OpenGL33VertexArray()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexArray::Destructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexArray::Destructor");
 
     glDeleteVertexArrays(1, &m_RendererID);
 }
 
 void OpenGL33VertexArray::Bind() const
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexArray::Bind");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexArray::Bind");
 
     glBindVertexArray(m_RendererID);
 }
 
 void OpenGL33VertexArray::Unbind() const
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexArray::Unbind");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexArray::Unbind");
 
     glBindVertexArray(0);
 }
 
 void OpenGL33VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuffer)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexArray::AddVertexBuffer");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexArray::AddVertexBuffer");
 
     TB_CORE_ASSERT_TAGGED(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
@@ -130,7 +136,8 @@ void OpenGL33VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuff
 
 void OpenGL33VertexArray::SetIndexBuffer(const Shared<IndexBuffer>& indexBuffer)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexArray::SetIndexBuffer");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexArray::SetIndexBuffer");
 
     glBindVertexArray(m_RendererID);
     indexBuffer->Bind();

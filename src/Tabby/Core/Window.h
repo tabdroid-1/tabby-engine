@@ -52,7 +52,7 @@ public:
     virtual bool IsVSync() const = 0;
 
     virtual void SetResizable(bool enabled) = 0;
-    virtual bool GetResizable() const = 0;
+    virtual bool IsResizable() const = 0;
 
     virtual void SetMinSize(uint32_t minWidth, uint32_t minHeight) = 0;
 

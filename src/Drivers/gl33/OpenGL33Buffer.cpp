@@ -1,5 +1,6 @@
-#include "Drivers/gl33/OpenGL33Buffer.h"
 #include "tbpch.h"
+#include <Drivers/gl33/OpenGL33Buffer.h>
+#include <Drivers/GPUProfiler.h>
 
 #include <gl.h>
 
@@ -11,7 +12,8 @@ namespace Tabby {
 
 OpenGL33VertexBuffer::OpenGL33VertexBuffer(uint32_t size)
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Generate");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexBuffer::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexBuffer::Constructor");
 
     glGenBuffers(1, &m_RendererID);
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
@@ -20,7 +22,8 @@ OpenGL33VertexBuffer::OpenGL33VertexBuffer(uint32_t size)
 
 OpenGL33VertexBuffer::OpenGL33VertexBuffer(float* vertices, uint32_t size)
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Generate");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexBuffer::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexBuffer::Constructor");
 
     glGenBuffers(1, &m_RendererID);
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
@@ -29,28 +32,32 @@ OpenGL33VertexBuffer::OpenGL33VertexBuffer(float* vertices, uint32_t size)
 
 OpenGL33VertexBuffer::~OpenGL33VertexBuffer()
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Delete");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexBuffer::Destructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexBuffer::Destructor");
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
 void OpenGL33VertexBuffer::Bind() const
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Bind");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexBuffer::Bind");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexBuffer::Bind");
 
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 }
 
 void OpenGL33VertexBuffer::Unbind() const
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Unbind");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexBuffer::Unbind");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexBuffer::Unbind");
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void OpenGL33VertexBuffer::SetData(const void* data, uint32_t size)
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Set Data");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexBuffer::SetData");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexBuffer::SetData");
 
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
@@ -58,7 +65,8 @@ void OpenGL33VertexBuffer::SetData(const void* data, uint32_t size)
 
 void OpenGL33VertexBuffer::SetSubData(const void* data, uint32_t size, uint32_t offset)
 {
-    TB_PROFILE_SCOPE_NAME("(VertexBuffer) Add Data");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33VertexBuffer::SetSubData");
+    TB_PROFILE_GPU("Tabby::OpenGL33VertexBuffer::SetSubData");
 
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
@@ -71,7 +79,8 @@ void OpenGL33VertexBuffer::SetSubData(const void* data, uint32_t size, uint32_t 
 OpenGL33IndexBuffer::OpenGL33IndexBuffer(uint32_t* indices, uint32_t count)
     : m_Count(count)
 {
-    TB_PROFILE_SCOPE_NAME("(Index Buffer) Generate");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33IndexBuffer::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33IndexBuffer::Constructor");
 
     glGenBuffers(1, &m_RendererID);
     // GL_ELEMENT_ARRAY_BUFFER is not valid without an actively bound VAO
@@ -82,21 +91,24 @@ OpenGL33IndexBuffer::OpenGL33IndexBuffer(uint32_t* indices, uint32_t count)
 
 OpenGL33IndexBuffer::~OpenGL33IndexBuffer()
 {
-    TB_PROFILE_SCOPE_NAME("(Index Buffer) Delete");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33IndexBuffer::Destructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33IndexBuffer::Destructor");
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
 void OpenGL33IndexBuffer::Bind() const
 {
-    TB_PROFILE_SCOPE_NAME("(Index Buffer) Bind");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33IndexBuffer::Bind");
+    TB_PROFILE_GPU("Tabby::OpenGL33IndexBuffer::Bind");
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 }
 
 void OpenGL33IndexBuffer::Unbind() const
 {
-    TB_PROFILE_SCOPE_NAME("(Index Buffer) Unbind");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33IndexBuffer::Unbind");
+    TB_PROFILE_GPU("Tabby::OpenGL33IndexBuffer::Unbind");
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

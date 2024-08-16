@@ -1,16 +1,16 @@
 #ifdef TB_PLATFORM_ANDROID
 
-#include "Tabby/Core/Application.h"
-#include "Tabby/Utils/PlatformUtils.h"
-#include "Tabby/Core/Time/Time.h"
 #include "tbpch.h"
 
-#include <SDL.h>
+#include "Tabby/Utils/PlatformUtils.h"
+#include "Tabby/Core/Time/Time.h"
 
 namespace Tabby {
 
 double Time::GetTime()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Time::GetTime");
+
     using namespace std::chrono;
     system_clock::time_point currentTimePoint = system_clock::now();
     duration<double> timeSinceEpoch = currentTimePoint.time_since_epoch();
@@ -22,11 +22,14 @@ double Time::GetTime()
 
 std::string FileDialogs::OpenFile(const char* filter)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::FileDialogs::OpenFile");
+
     return std::string();
 }
 
 std::string FileDialogs::SaveFile(const char* filter)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::FileDialogs::SaveFile");
 
     return std::string();
 }

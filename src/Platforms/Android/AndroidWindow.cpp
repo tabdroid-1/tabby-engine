@@ -1,15 +1,14 @@
 #ifdef TB_PLATFORM_ANDROID
-#include "SDL_video.h"
-
-#include "Platforms/Android/AndroidWindow.h"
 #include "tbpch.h"
 
-#include "Tabby/Core/Input.h"
+#include "Platforms/Android/AndroidWindow.h"
+
+#include "Tabby/Core/Input/Input.h"
 #include "backends/imgui_impl_sdl2.h"
 
-#include "Tabby/Events/ApplicationEvent.h"
-#include "Tabby/Events/KeyEvent.h"
-#include "Tabby/Events/MouseEvent.h"
+#include "Tabby/Core/Events/ApplicationEvent.h"
+#include "Tabby/Core/Events/KeyEvent.h"
+#include "Tabby/Core/Events/MouseEvent.h"
 
 #include "Tabby/Renderer/Renderer.h"
 
@@ -22,21 +21,21 @@ static uint8_t s_SDLWindowCount = 0;
 
 AndroidWindow::AndroidWindow(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::Constructor");
 
     Init(props);
 }
 
 AndroidWindow::~AndroidWindow()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::Destructor");
 
     Shutdown();
 }
 
 void AndroidWindow::Init(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::Init");
 
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
@@ -49,13 +48,13 @@ void AndroidWindow::Init(const WindowProps& props)
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
     SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
     if (s_SDLWindowCount == 0) {
-        TB_PROFILE_SCOPE_NAME("SDL Init");
+        TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::Init::SDL_Init");
         int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
         TB_CORE_ASSERT_TAGGED(success == 0, "Could not initialize SDL2!");
     }
 
     {
-        TB_PROFILE_SCOPE_NAME("SDLCreateWindow");
+        TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::Init::SDL_CreateWindow");
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
 
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -99,7 +98,7 @@ void AndroidWindow::Init(const WindowProps& props)
 
 void AndroidWindow::Shutdown()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::Shutdown");
 
     SDL_DestroyWindow(m_Window);
     --s_SDLWindowCount;
@@ -111,7 +110,7 @@ void AndroidWindow::Shutdown()
 
 void AndroidWindow::OnUpdate()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::OnUpdate");
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -189,7 +188,7 @@ void AndroidWindow::OnUpdate()
 
 void AndroidWindow::SetVSync(bool enabled)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::SetVSync");
 
     if (enabled)
         SDL_GL_SetSwapInterval(1);
@@ -201,11 +200,14 @@ void AndroidWindow::SetVSync(bool enabled)
 
 bool AndroidWindow::IsVSync() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::IsVSync");
+
     return m_Data.VSync;
 }
 
 void AndroidWindow::SetResizable(bool enabled)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::SetResizable");
 
     if (enabled)
         SDL_SetWindowResizable(m_Window, SDL_TRUE);
@@ -214,13 +216,17 @@ void AndroidWindow::SetResizable(bool enabled)
     m_Data.Resizeable = enabled;
 }
 
-bool AndroidWindow::GetResizable() const
+bool AndroidWindow::IsResizable() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::GetResizable");
+
     return m_Data.Resizeable;
 }
 
 void AndroidWindow::SetMinSize(uint32_t minWidth, uint32_t minHeight)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::SetMinSize");
+
     SDL_SetWindowMinimumSize(m_Window, minWidth, minHeight);
     m_Data.MinWidth = minWidth;
     m_Data.MinHeight = minHeight;

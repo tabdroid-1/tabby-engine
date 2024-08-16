@@ -24,6 +24,7 @@
 
 #ifdef TB_DEBUG
 #define TB_ENABLE_ASSERTS
+#define TB_PROFILE
 #endif
 
 #ifndef TB_DIST

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tbpch.h>
+#include <Tabby/Debug/Instrumentor.h>
 #include <Tabby/Core/UUID.h>
 #include <glm/glm.hpp>
 

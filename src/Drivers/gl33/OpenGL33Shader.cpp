@@ -1,11 +1,10 @@
-#include "Drivers/gl33/OpenGL33Shader.h"
 #include "tbpch.h"
 
-#include <fstream>
+#include "Drivers/gl33/OpenGL33Shader.h"
+#include <Drivers/GPUProfiler.h>
 
 #include <gl.h>
 #include <glm/gtc/type_ptr.hpp>
-#include <string>
 
 namespace Tabby {
 
@@ -21,7 +20,8 @@ static GLenum ShaderTypeFromString(const std::string& type)
 
 OpenGL33Shader::OpenGL33Shader(const std::string& filepath)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::Constructor");
 
     auto source = ReadFile(filepath);
     auto shaderSources = PreProcess(source);
@@ -40,7 +40,8 @@ OpenGL33Shader::OpenGL33Shader(const std::string& filepath)
 OpenGL33Shader::OpenGL33Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
     : m_Name(name)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::Constructor");
 
     std::unordered_map<GLenum, std::string> sources;
     sources[GL_VERTEX_SHADER] = vertexSource;
@@ -50,13 +51,15 @@ OpenGL33Shader::OpenGL33Shader(const std::string& name, const std::string& verte
 
 OpenGL33Shader::~OpenGL33Shader()
 {
-    TB_PROFILE_SCOPE_NAME("Delete Shader");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::Destructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::Destructor");
 
     glDeleteProgram(m_RendererID);
 }
 
 std::unordered_map<GLenum, std::string> OpenGL33Shader::PreProcess(const std::string& source)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::PreProcess");
     std::unordered_map<GLenum, std::string> shaderSources;
 
     const char* typeToken = "#type";
@@ -78,6 +81,8 @@ std::unordered_map<GLenum, std::string> OpenGL33Shader::PreProcess(const std::st
 
 std::string OpenGL33Shader::ReadFile(const std::string& filepath)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::ReadFile");
+
     std::string result;
     std::ifstream in(filepath, std::ios::in | std::ios::binary);
 
@@ -97,7 +102,8 @@ std::string OpenGL33Shader::ReadFile(const std::string& filepath)
 // NOTE: ShaderInfo holds name or path of shader. this is to show path or name for the shader with error
 void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSource, const std::string& shaderInfo)
 {
-    TB_PROFILE_SCOPE_NAME("Compile Shader");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::Compile");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::Compile");
 
     GLuint program = glCreateProgram();
     TB_CORE_ASSERT_TAGGED(shaderSource.size() <= 2, "Only 3 shaders are supported");
@@ -166,21 +172,24 @@ void OpenGL33Shader::Compile(const std::unordered_map<GLenum, std::string>& shad
 
 void OpenGL33Shader::Bind() const
 {
-    TB_PROFILE_SCOPE_NAME("Bind");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::Bind");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::Bind");
 
     glUseProgram(m_RendererID);
 }
 
 void OpenGL33Shader::Unbind() const
 {
-    TB_PROFILE_SCOPE_NAME("Unbind");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::Unbind");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::Unbind");
 
     glUseProgram(0);
 }
 
 void OpenGL33Shader::SetBool(const std::string& name, bool value)
 {
-    TB_PROFILE_SCOPE_NAME("Set bool");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetBool");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetBool");
 
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform1i(location, (int)value);
@@ -188,21 +197,24 @@ void OpenGL33Shader::SetBool(const std::string& name, bool value)
 
 void OpenGL33Shader::SetInt(const std::string& name, int value)
 {
-    TB_PROFILE_SCOPE_NAME("Set int");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetInt");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetInt");
 
     UploadUniformInt(name, value);
 }
 
 void OpenGL33Shader::SetIntArray(const std::string& name, int* values, uint32_t count)
 {
-    TB_PROFILE_SCOPE_NAME("Set int array");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetIntArray");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetIntArray");
 
     UploadUniformIntArray(name, values, count);
 }
 
 void OpenGL33Shader::SetFloatArray(const std::string& name, float* values, uint32_t count)
 {
-    TB_PROFILE_SCOPE_NAME("Set int array");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetFloatArray");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetFloatArray");
 
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform1fv(location, count, values);
@@ -210,83 +222,120 @@ void OpenGL33Shader::SetFloatArray(const std::string& name, float* values, uint3
 
 void OpenGL33Shader::SetFloat(const std::string& name, float value)
 {
-    TB_PROFILE_SCOPE_NAME("Set float");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetFloat");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetFloat");
 
     UploadUniformFloat(name, value);
 }
 
 void OpenGL33Shader::SetFloat2(const std::string& name, const glm::vec2& value)
 {
-    TB_PROFILE_SCOPE_NAME("Set float 2");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetFloat2");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetFloat2");
 
     UploadUniformFloat2(name, value);
 }
 
 void OpenGL33Shader::SetFloat3(const std::string& name, const glm::vec3& value)
 {
-    TB_PROFILE_SCOPE_NAME("Set float 3");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetFloat3");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetFloat3");
 
     UploadUniformFloat3(name, value);
 }
 
 void OpenGL33Shader::SetFloat4(const std::string& name, const glm::vec4& value)
 {
-    TB_PROFILE_SCOPE_NAME("Set float 4");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetFloat4");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetFloat4");
 
     UploadUniformFloat4(name, value);
 }
 
+void OpenGL33Shader::SetMat3(const std::string& name, const glm::mat3& value)
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetMat3");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetMat3");
+
+    UploadUniformMat3(name, value);
+}
+
 void OpenGL33Shader::SetMat4(const std::string& name, const glm::mat4& value)
 {
-    TB_PROFILE_SCOPE_NAME("Set mat 4");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::SetMat4");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::SetMat4");
 
     UploadUniformMat4(name, value);
 }
 
 void OpenGL33Shader::UploadUniformInt(const std::string& name, int value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::UploadUniformInt");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::UploadUniformInt");
+
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform1i(location, value);
 }
 
 void OpenGL33Shader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::UploadUniformIntArray");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::UploadUniformIntArray");
+
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform1iv(location, count, values);
 }
 
 void OpenGL33Shader::UploadUniformFloat(const std::string& name, float value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::UploadUniformFloat");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::UploadUniformFloat");
+
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform1f(location, value);
 }
 
 void OpenGL33Shader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::UploadUniformFloat2");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::UploadUniformFloat2");
+
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform2f(location, value.x, value.y);
 }
 
 void OpenGL33Shader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::UploadUniformFloat3");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::UploadUniformFloat3");
+
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform3f(location, value.x, value.y, value.z);
 }
 
 void OpenGL33Shader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::UploadUniformFloat4");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::UploadUniformFloat4");
+
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform4f(location, value.x, value.y, value.z, value.w);
 }
 
 void OpenGL33Shader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::UploadUniformMat3");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::UploadUniformMat3");
+
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void OpenGL33Shader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::UploadUniformMat4");
+    TB_PROFILE_GPU("Tabby::OpenGL33Shader::UploadUniformMat4");
+
     GLint location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }

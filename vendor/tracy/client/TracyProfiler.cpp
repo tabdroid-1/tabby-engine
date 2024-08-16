@@ -271,8 +271,19 @@ static bool EnsureReadable( uintptr_t address )
     MappingInfo* mapping = LookUpMapping(address);
     return mapping && EnsureReadable( *mapping );
 }
-
-#endif  // defined __ANDROID__
+#elif defined WIN32
+static bool EnsureReadable( uintptr_t address )
+{
+    MEMORY_BASIC_INFORMATION memInfo;
+    VirtualQuery( reinterpret_cast<void*>( address ), &memInfo, sizeof( memInfo ) );
+    return memInfo.Protect != PAGE_NOACCESS;
+}
+#else
+static bool EnsureReadable( uintptr_t address )
+{
+    return true;
+}
+#endif
 
 #ifndef TRACY_DELAYED_INIT
 
@@ -297,7 +308,7 @@ struct ThreadHandleWrapper
 static inline void CpuId( uint32_t* regs, uint32_t leaf )
 {
     memset(regs, 0, sizeof(uint32_t) * 4);
-#if defined _WIN32
+#if defined _MSC_VER
     __cpuidex( (int*)regs, leaf, 0 );
 #else
     __get_cpuid( leaf, regs, regs+1, regs+2, regs+3 );
@@ -1421,6 +1432,11 @@ Profiler::Profiler()
     CalibrateDelay();
     ReportTopology();
 
+#ifdef __linux__
+    m_kcore = (KCore*)tracy_malloc( sizeof( KCore ) );
+    new(m_kcore) KCore();
+#endif
+
 #ifndef TRACY_NO_EXIT
     const char* noExitEnv = GetEnvVar( "TRACY_NO_EXIT" );
     if( noExitEnv && noExitEnv[0] == '1' )
@@ -1566,6 +1582,11 @@ Profiler::~Profiler()
 
 #ifdef TRACY_HAS_CALLSTACK
     EndCallstack();
+#endif
+
+#ifdef __linux__
+    m_kcore->~KCore();
+    tracy_free( m_kcore );
 #endif
 
     tracy_free( m_lz4Buf );
@@ -3357,6 +3378,17 @@ void Profiler::HandleSymbolQueueItem( const SymbolQueueItem& si )
                 }
             }
         }
+#elif defined __linux__
+        void* data = m_kcore->Retrieve( si.ptr, si.extra );
+        if( data )
+        {
+            TracyLfqPrepare( QueueType::SymbolCodeMetadata );
+            MemWrite( &item->symbolCodeMetadata.symbol, si.ptr );
+            MemWrite( &item->symbolCodeMetadata.ptr, (uint64_t)data );
+            MemWrite( &item->symbolCodeMetadata.size, (uint32_t)si.extra );
+            TracyLfqCommit;
+            break;
+        }
 #endif
         TracyLfqPrepare( QueueType::AckSymbolCodeNotAvailable );
         TracyLfqCommit;
@@ -3442,7 +3474,22 @@ bool Profiler::HandleServerQuery()
         }
         else
         {
-            SendString( ptr, GetThreadName( (uint32_t)ptr ), QueueType::ThreadName );
+            auto t = GetThreadNameData( (uint32_t)ptr );
+            if( t )
+            {
+                SendString( ptr, t->name, QueueType::ThreadName );
+                if( t->groupHint != 0 )
+                {
+                    TracyLfqPrepare( QueueType::ThreadGroupHint );
+                    MemWrite( &item->threadGroupHint.thread, (uint32_t)ptr );
+                    MemWrite( &item->threadGroupHint.groupHint, t->groupHint );
+                    TracyLfqCommit;
+                }
+            }
+            else
+            {
+                SendString( ptr, GetThreadName( (uint32_t)ptr ), QueueType::ThreadName );
+            }
         }
         break;
     case ServerQuerySourceLocation:
@@ -3892,15 +3939,12 @@ void Profiler::HandleSymbolCodeQuery( uint64_t symbol, uint32_t size )
     }
     else
     {
-#ifdef __ANDROID__
-        // On Android it's common for code to be in mappings that are only executable
-        // but not readable.
         if( !EnsureReadable( symbol ) )
         {
             AckSymbolCodeNotAvailable();
             return;
         }
-#endif
+
         SendLongString( symbol, (const char*)symbol, size, QueueType::SymbolCode );
     }
 }
@@ -4680,7 +4724,7 @@ TRACY_API int ___tracy_connected( void )
 }
 
 #ifdef TRACY_FIBERS
-TRACY_API void ___tracy_fiber_enter( const char* fiber ){ tracy::Profiler::EnterFiber( fiber ); }
+TRACY_API void ___tracy_fiber_enter( const char* fiber ){ tracy::Profiler::EnterFiber( fiber, 0 ); }
 TRACY_API void ___tracy_fiber_leave( void ){ tracy::Profiler::LeaveFiber(); }
 #endif
 

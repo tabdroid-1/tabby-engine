@@ -8,6 +8,8 @@ static std::uniform_int_distribution<uint64_t> s_UniformDistribution;
 
 double Random::Range(double start, double end)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Random::Range");
+
     std::uniform_real_distribution<double> dist(start, end);
     return dist(s_Engine);
 }

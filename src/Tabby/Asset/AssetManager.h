@@ -19,6 +19,7 @@ public:
     template <typename ResourceType> // where ResourceType is child of AssetType: Image, Mesh, Material etc.
     static Shared<ResourceType> GetAsset(AssetHandle id)
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::GetAsset");
         return std::static_pointer_cast<ResourceType>(m_AssetRegistry.at(id));
     }
     static const AssetHandle GetHandle(std::filesystem::path path) { return m_UUIDs.at(path.string()); }

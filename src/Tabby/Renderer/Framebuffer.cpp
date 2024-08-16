@@ -11,6 +11,8 @@ namespace Tabby {
 
 Shared<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Framebuffer::Create");
+
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");

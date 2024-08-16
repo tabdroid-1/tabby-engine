@@ -39,35 +39,35 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 
 OpenGLES3VertexArray::OpenGLES3VertexArray()
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3VertexArray::Constructor");
 
     GLES3::GL()->GenVertexArrays(1, &m_RendererID);
 }
 
 OpenGLES3VertexArray::~OpenGLES3VertexArray()
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3VertexArray::Destructor");
 
     GLES3::GL()->DeleteVertexArrays(1, &m_RendererID);
 }
 
 void OpenGLES3VertexArray::Bind() const
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3VertexArray::Bind");
 
     GLES3::GL()->BindVertexArray(m_RendererID);
 }
 
 void OpenGLES3VertexArray::Unbind() const
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3VertexArray::Unbind");
 
     GLES3::GL()->BindVertexArray(0);
 }
 
 void OpenGLES3VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuffer)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3VertexArray::AddVertexBuffer");
 
     TB_CORE_ASSERT_TAGGED(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
@@ -131,7 +131,7 @@ void OpenGLES3VertexArray::AddVertexBuffer(const Shared<VertexBuffer>& vertexBuf
 
 void OpenGLES3VertexArray::SetIndexBuffer(const Shared<IndexBuffer>& indexBuffer)
 {
-    // TB_PROFILE_FUNCTION();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3VertexArray::SetIndexBuffer");
 
     GLES3::GL()->BindVertexArray(m_RendererID);
     indexBuffer->Bind();

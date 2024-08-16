@@ -24,8 +24,8 @@ public:
     }
 
 private:
-    static Shared<spdlog::logger> s_CoreLogger;
-    static Shared<spdlog::logger> s_ClientLogger;
+    inline static Shared<spdlog::logger> s_CoreLogger;
+    inline static Shared<spdlog::logger> s_ClientLogger;
 };
 }
 

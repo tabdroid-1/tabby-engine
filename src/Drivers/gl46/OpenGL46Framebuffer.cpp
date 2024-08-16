@@ -1,5 +1,7 @@
-#include "Drivers/gl46/OpenGL46Framebuffer.h"
 #include "tbpch.h"
+
+#include <Drivers/gl46/OpenGL46Framebuffer.h>
+#include <Drivers/GPUProfiler.h>
 
 #include <gl.h>
 
@@ -15,16 +17,25 @@ namespace Utils {
 
     static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count)
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Utils::CreateTextures");
+        TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Utils::CreateTextures");
+
         glCreateTextures(TextureTarget(multisampled), count, outID);
     }
 
     static void BindTexture(bool multisampled, uint32_t id)
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Utils::BindTexture");
+        TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Utils::BindTexture");
+
         glBindTexture(TextureTarget(multisampled), id);
     }
 
     static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index)
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Utils::AttachColorTexture");
+        TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Utils::AttachColorTexture");
+
         bool multisampled = samples > 1;
         if (multisampled) {
             glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
@@ -43,6 +54,9 @@ namespace Utils {
 
     static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, uint32_t width, uint32_t height)
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Utils::AttachDepthTexture");
+        TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Utils::AttachDepthTexture");
+
         bool multisampled = samples > 1;
         if (multisampled) {
             glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
@@ -87,6 +101,9 @@ namespace Utils {
 OpenGL46Framebuffer::OpenGL46Framebuffer(const FramebufferSpecification& spec)
     : m_Specification(spec)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Constructor");
+
     for (auto spec : m_Specification.Attachments.Attachments) {
         if (!Utils::IsDepthFormat(spec.TextureFormat))
             m_ColorAttachmentSpecifications.emplace_back(spec);
@@ -99,6 +116,8 @@ OpenGL46Framebuffer::OpenGL46Framebuffer(const FramebufferSpecification& spec)
 
 OpenGL46Framebuffer::~OpenGL46Framebuffer()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Destructor");
+    TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Destructor");
     glDeleteFramebuffers(1, &m_RendererID);
     glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
     glDeleteTextures(1, &m_DepthAttachment);
@@ -106,6 +125,9 @@ OpenGL46Framebuffer::~OpenGL46Framebuffer()
 
 void OpenGL46Framebuffer::Invalidate()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Invalidate");
+    TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Invalidate");
+
     if (m_RendererID) {
         glDeleteFramebuffers(1, &m_RendererID);
         glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
@@ -164,17 +186,26 @@ void OpenGL46Framebuffer::Invalidate()
 
 void OpenGL46Framebuffer::Bind()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Bind");
+    TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Bind");
+
     glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
     glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 }
 
 void OpenGL46Framebuffer::Unbind()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Unbind");
+    TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Unbind");
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OpenGL46Framebuffer::Resize(uint32_t width, uint32_t height)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::Resize");
+    TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::Resize");
+
     if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize) {
         TB_CORE_WARN("Attempted to rezize framebuffer to {0}, {1}", width, height);
         return;
@@ -187,6 +218,9 @@ void OpenGL46Framebuffer::Resize(uint32_t width, uint32_t height)
 
 int OpenGL46Framebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::ReadPixel");
+    TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::ReadPixel");
+
     TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
     glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
@@ -197,6 +231,9 @@ int OpenGL46Framebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 
 void OpenGL46Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Framebuffer::ClearAttachment");
+    TB_PROFILE_GPU("Tabby::OpenGL46Framebuffer::ClearAttachment");
+
     TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
     auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];

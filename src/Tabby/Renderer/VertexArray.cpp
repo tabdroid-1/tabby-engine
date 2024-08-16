@@ -10,6 +10,8 @@ namespace Tabby {
 
 Shared<VertexArray> VertexArray::Create()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::VertexArray::Create");
+
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");

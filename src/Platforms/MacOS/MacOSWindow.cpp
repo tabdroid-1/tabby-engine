@@ -22,21 +22,21 @@ static uint8_t s_SDLWindowCount = 0;
 
 MacOSWindow::MacOSWindow(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::Constructor");
 
     Init(props);
 }
 
 MacOSWindow::~MacOSWindow()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::Destructor");
 
     Shutdown();
 }
 
 void MacOSWindow::Init(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::Init");
 
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
@@ -49,7 +49,7 @@ void MacOSWindow::Init(const WindowProps& props)
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
     if (s_SDLWindowCount == 0) {
-        TB_PROFILE_SCOPE_NAME("SDL Init");
+        TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::Init::SDL_Init");
         int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
         if (success != 0) {
             TB_CORE_INFO("{}", SDL_GetError());
@@ -58,7 +58,7 @@ void MacOSWindow::Init(const WindowProps& props)
     }
 
     {
-        TB_PROFILE_SCOPE_NAME("glfwCreateWindow");
+        TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::Init::SDL_CreateWindow");
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
 
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -102,7 +102,7 @@ void MacOSWindow::Init(const WindowProps& props)
 
 void MacOSWindow::Shutdown()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::Shutdown");
 
     SDL_DestroyWindow(m_Window);
     --s_SDLWindowCount;
@@ -114,7 +114,7 @@ void MacOSWindow::Shutdown()
 
 void MacOSWindow::OnUpdate()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::OnUpdate");
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -193,7 +193,7 @@ void MacOSWindow::OnUpdate()
 
 void MacOSWindow::SetVSync(bool enabled)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::SetVSync");
 
     if (enabled)
         SDL_GL_SetSwapInterval(1);
@@ -205,11 +205,14 @@ void MacOSWindow::SetVSync(bool enabled)
 
 bool MacOSWindow::IsVSync() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::IsVSync");
+
     return m_Data.VSync;
 }
 
 void MacOSWindow::SetResizable(bool enabled)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::SetResizable");
 
     if (enabled)
         SDL_SetWindowResizable(m_Window, SDL_TRUE);
@@ -218,13 +221,17 @@ void MacOSWindow::SetResizable(bool enabled)
     m_Data.Resizeable = enabled;
 }
 
-bool MacOSWindow::GetResizable() const
+bool MacOSWindow::IsResizable() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::GetResizable");
+
     return m_Data.Resizeable;
 }
 
 void MacOSWindow::SetMinSize(uint32_t minWidth, uint32_t minHeight)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::MacOSWindow::SetMinSize");
+
     SDL_SetWindowMinimumSize(m_Window, minWidth, minHeight);
     m_Data.MinWidth = minWidth;
     m_Data.MinHeight = minHeight;

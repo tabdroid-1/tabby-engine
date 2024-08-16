@@ -22,11 +22,12 @@ namespace Tabby {
 ImGuiLayer::ImGuiLayer()
     : Layer("ImGuiLayer")
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::ImGuiLayer::Constructor");
 }
 
 void ImGuiLayer::OnAttach()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::ImGuiLayer::OnAttach");
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -72,7 +73,7 @@ void ImGuiLayer::OnAttach()
 
 void ImGuiLayer::OnDetach()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::ImGuiLayer::OnDetach");
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
@@ -81,6 +82,8 @@ void ImGuiLayer::OnDetach()
 
 void ImGuiLayer::OnEvent(Event& e)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::ImGuiLayer::OnEvent");
+
     if (m_BlockEvents) {
         ImGuiIO& io = ImGui::GetIO();
         e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
@@ -90,7 +93,7 @@ void ImGuiLayer::OnEvent(Event& e)
 
 void ImGuiLayer::Begin()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::ImGuiLayer::Begin");
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
@@ -100,7 +103,7 @@ void ImGuiLayer::Begin()
 
 void ImGuiLayer::End()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::ImGuiLayer::End");
 
     ImGuiIO& io = ImGui::GetIO();
     Application& app = Application::Get();
@@ -121,6 +124,8 @@ void ImGuiLayer::End()
 
 void ImGuiLayer::SetDarkThemeColors()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::ImGuiLayer::SetDarkThemeColors");
+
     auto& colors = ImGui::GetStyle().Colors;
     colors[ImGuiCol_WindowBg] = ImVec4 { 0.1f, 0.105f, 0.11f, 1.0f };
 
@@ -154,6 +159,8 @@ void ImGuiLayer::SetDarkThemeColors()
 
 uint32_t ImGuiLayer::GetActiveWidgetID() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::ImGuiLayer::GetActiveWidgetID");
+
     return GImGui->ActiveId;
 }
 

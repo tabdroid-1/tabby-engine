@@ -11,6 +11,8 @@ RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL33;
 
 Scope<RendererAPI> RendererAPI::Create()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::RendererAPI::Create");
+
     switch (s_API) {
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "No renderer API selected.");

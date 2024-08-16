@@ -11,6 +11,8 @@ namespace Tabby {
 Mesh::Mesh()
     : m_StatsRegistered(false)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::Constructor");
+
     m_PrimitiveType = PrimitiveType::Triangles;
 
     m_Transform = Matrix4(1.0f);
@@ -21,6 +23,8 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::Destructor");
+
     m_Vertices.clear();
     m_Indices.clear();
     m_VertexArray = nullptr;
@@ -31,31 +35,43 @@ Mesh::~Mesh()
 
 void Mesh::SetName(const std::string& name)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::SetName");
+
     m_Name = name;
 }
 
 void Mesh::SetTransform(const Matrix4& transform)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::SetTransform");
+
     m_Transform = transform;
 }
 
 void Mesh::SetPrimitiveType(PrimitiveType primitiveType)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::SetPrimitiveType");
+
     m_PrimitiveType = primitiveType;
 }
 
 void Mesh::SetMaterial(Shared<Material> material)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::SetMaterial");
+
     m_Material = material;
 }
 
 void Mesh::SetVertices(std::vector<Vertex> vertices)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::SetVertices");
+
     m_Vertices = vertices;
 }
 
 void Mesh::SetIndices(std::vector<uint32_t> indices)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::SetIndices");
+
     m_Indices = indices;
 }
 
@@ -84,6 +100,8 @@ void Mesh::AddIndex(uint32_t index)
 
 void Mesh::Create(DrawMode drawMode /* = DrawMode::TRIANGLE */)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::Create");
+
     m_DrawMode = drawMode;
 
     m_VertexArray = VertexArray::Create();
@@ -106,6 +124,8 @@ void Mesh::Create(DrawMode drawMode /* = DrawMode::TRIANGLE */)
 
 void Mesh::Render()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::Render");
+
     // To Fragment Shader
     if (m_Material) {
         m_Material->SetMatrix(m_Transform);
@@ -127,6 +147,8 @@ void Mesh::Render()
 
 void Mesh::Destroy()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::Destroy");
+
     for (auto& vertexBuffer : m_VertexArray->GetVertexBuffers()) {
         vertexBuffer->Unbind();
         vertexBuffer->~VertexBuffer();
@@ -146,6 +168,8 @@ void Mesh::Destroy()
 
 void Mesh::CloneMesh(Shared<Mesh> mesh)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::CloneMesh");
+
     this->m_Name = mesh->m_Name;
     this->m_Vertices = mesh->GetVertices();
     this->m_Indices = mesh->GetIndices();
@@ -159,7 +183,7 @@ void Mesh::CloneMesh(Shared<Mesh> mesh)
 
 std::vector<Mesh::Vertex> Mesh::GetWorldSpaceVertices(Vector3 position = Vector3(0, 0, 0), Vector3 eulerAngles = Vector3(0, 0, 0), Vector3 scale = Vector3(1, 1, 1))
 {
-    // Matrix4 modelMatrix = glm::translate(Matrix4(1), position) * glm::rotate(Matrix4(1), glm::radians(eulerAngles.x), Vector3(1, 0, 0)) * glm::rotate(Matrix4(1), glm::radians(-eulerAngles.y), Vector3(0, 1, 0)) * glm::rotate(Matrix4(1), glm::radians(eulerAngles.z), Vector3(0, 0, 1)) * glm::scale(Matrix4(1), scale);
+    TB_PROFILE_SCOPE_NAME("Tabby::Mesh::GetWorldSpaceVertices");
 
     Matrix4 rotation = glm::toMat4(glm::quat(glm::radians((glm::vec3)eulerAngles)));
     Matrix4 modelMatrix = glm::translate(Matrix4(1.0f), (glm::vec3)position) * rotation * glm::scale(Matrix4(1.0f), (glm::vec3)scale);

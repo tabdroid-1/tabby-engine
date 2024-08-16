@@ -3,34 +3,35 @@
 
 namespace Tabby {
 
-std::vector<Debug::Line> Debug::m_Lines;
-std::vector<Debug::Rect> Debug::m_Rects;
-std::vector<Debug::Circle> Debug::m_Circles;
-
 void Debug::DrawRay(const glm::vec3& origin, const glm::vec3& direction, float length, const glm::vec4& color)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Debug::DrawRay");
+
     glm::vec3 dir = direction * length;
     m_Lines.push_back({ origin, dir, color });
 }
 void Debug::DrawLine(const glm::vec3& point1, const glm::vec3& point2, const glm::vec4& color)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Debug::DrawLine");
+
     m_Lines.push_back({ point1, point2, color });
 }
 void Debug::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Debug::DrawRect");
+
     m_Rects.push_back({ position, size, color });
 }
 void Debug::DrawCircle(const glm::vec3& position, const glm::vec2& size, float thickness, const glm::vec4& color)
 {
-    m_Circles.push_back({ position,
-        size,
-        thickness,
-        color });
+    TB_PROFILE_SCOPE_NAME("Tabby::Debug::DrawCircle");
+
+    m_Circles.push_back({ position, size, thickness, color });
 }
 
 void Debug::ProcessDrawCalls()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Debug::ProcessDrawCalls");
 
     for (auto& line : m_Lines) {
         TB_PROFILE_SCOPE_NAME("Debug::ProcessDrawCalls::DrawLines");

@@ -7,6 +7,7 @@ namespace Tabby {
 
 Audio::Audio(const std::string& path, AssetHandle handle, const Wav& wavData)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Audio::Constructor");
     Handle = handle;
     Type = AssetType::TABBY_AUDIO;
 
@@ -20,11 +21,13 @@ Audio::Audio(const std::string& path, AssetHandle handle, const Wav& wavData)
 
 Audio::~Audio()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Audio::Destructor");
     Destroy();
 }
 
 void Audio::Destroy()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Audio::Destroy");
     SDL_RWclose(m_RWops);
 }
 

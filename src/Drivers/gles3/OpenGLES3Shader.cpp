@@ -5,13 +5,8 @@
 #include <gles3.h>
 
 #include <glm/gtc/type_ptr.hpp>
-#ifdef TB_PLATFORM_WEB
-#include <emscripten.h>
-#include <emscripten/fetch.h>
-#elif defined(TB_PLATFORM_ANDROID)
 #include "SDL.h"
 #include "SDL_rwops.h"
-#endif
 namespace Tabby {
 
 static GLenum ShaderTypeFromString(const std::string& type)
@@ -26,7 +21,7 @@ static GLenum ShaderTypeFromString(const std::string& type)
 
 OpenGLES3Shader::OpenGLES3Shader(const std::string& filepath)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Constructor");
 
     auto source = ReadFile(filepath);
     auto shaderSources = PreProcess(source);
@@ -46,7 +41,7 @@ OpenGLES3Shader::OpenGLES3Shader(const std::string& filepath)
 OpenGLES3Shader::OpenGLES3Shader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
     : m_Name(name)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Constructor");
 
     std::unordered_map<GLenum, std::string> sources;
     sources[GL_VERTEX_SHADER] = vertexSource;
@@ -56,13 +51,15 @@ OpenGLES3Shader::OpenGLES3Shader(const std::string& name, const std::string& ver
 
 OpenGLES3Shader::~OpenGLES3Shader()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Destructor");
 
     GLES3::GL()->DeleteProgram(m_RendererID);
 }
 
 std::unordered_map<GLenum, std::string> OpenGLES3Shader::PreProcess(const std::string& source)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::PreProcess");
+
     std::unordered_map<GLenum, std::string> shaderSources;
 
     const char* typeToken = "#type";
@@ -84,9 +81,10 @@ std::unordered_map<GLenum, std::string> OpenGLES3Shader::PreProcess(const std::s
 
 std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::ReadFile");
+
     std::string result;
 
-#if defined(TB_PLATFORM_ANDROID)
     SDL_RWops* rw = SDL_RWFromFile(filepath.c_str(), "rb");
     if (rw != nullptr) {
         Sint64 size = SDL_RWsize(rw);
@@ -107,20 +105,6 @@ std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
         TB_CORE_ERROR("Could not open file {0}", filepath);
         TB_CORE_INFO("Current working dir: {0}", std::filesystem::current_path());
     }
-#else
-    std::ifstream in(filepath, std::ios::in | std::ios::binary);
-
-    if (in) {
-        in.seekg(0, std::ios::end);
-        result.resize(in.tellg());
-        in.seekg(0, std::ios::beg);
-        in.read(&result[0], result.size());
-    } else {
-
-        TB_CORE_ERROR("Could not open file {0}", filepath);
-        TB_CORE_INFO("Current working dir: {0}", std::filesystem::current_path());
-    }
-#endif
 
     return result;
 }
@@ -128,7 +112,7 @@ std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
 // NOTE: ShaderInfo holds name or path of shader. this is to show path or name for the shader with error
 void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSource, const std::string& shaderInfo)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Compile");
 
     GLuint program = GLES3::GL()->CreateProgram();
     TB_CORE_ASSERT_TAGGED(shaderSource.size() <= 2, "Only 3 shaders are supported");
@@ -197,21 +181,21 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
 
 void OpenGLES3Shader::Bind() const
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Bind");
 
     GLES3::GL()->UseProgram(m_RendererID);
 }
 
 void OpenGLES3Shader::Unbind() const
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Unbind");
 
     GLES3::GL()->UseProgram(0);
 }
 
 void OpenGLES3Shader::SetBool(const std::string& name, bool value)
 {
-    TB_PROFILE_SCOPE_NAME("Set bool");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetBool");
 
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->Uniform1i(location, (int)value);
@@ -219,19 +203,21 @@ void OpenGLES3Shader::SetBool(const std::string& name, bool value)
 
 void OpenGLES3Shader::SetInt(const std::string& name, int value)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetInt");
 
     UploadUniformInt(name, value);
 }
 
 void OpenGLES3Shader::SetIntArray(const std::string& name, int* values, uint32_t count)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetIntArray");
+
     UploadUniformIntArray(name, values, count);
 }
 
 void OpenGLES3Shader::SetFloatArray(const std::string& name, float* values, uint32_t count)
 {
-    TB_PROFILE_SCOPE_NAME("Set int array");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetFloatArray");
 
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->Uniform1fv(location, count, values);
@@ -239,83 +225,106 @@ void OpenGLES3Shader::SetFloatArray(const std::string& name, float* values, uint
 
 void OpenGLES3Shader::SetFloat(const std::string& name, float value)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetFloat");
 
     UploadUniformFloat(name, value);
 }
 
 void OpenGLES3Shader::SetFloat2(const std::string& name, const glm::vec2& value)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetFloat2");
 
     UploadUniformFloat2(name, value);
 }
 
 void OpenGLES3Shader::SetFloat3(const std::string& name, const glm::vec3& value)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetFloat3");
 
     UploadUniformFloat3(name, value);
 }
 
 void OpenGLES3Shader::SetFloat4(const std::string& name, const glm::vec4& value)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetFloat4");
 
     UploadUniformFloat4(name, value);
 }
 
+void OpenGLES3Shader::SetMat3(const std::string& name, const glm::mat3& value)
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetMat3");
+
+    UploadUniformMat3(name, value);
+}
+
 void OpenGLES3Shader::SetMat4(const std::string& name, const glm::mat4& value)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetMat4");
 
     UploadUniformMat4(name, value);
 }
 
 void OpenGLES3Shader::UploadUniformInt(const std::string& name, int value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformInt");
+
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->Uniform1i(location, value);
 }
 
 void OpenGLES3Shader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformIntArray");
+
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->Uniform1iv(location, count, values);
 }
 
 void OpenGLES3Shader::UploadUniformFloat(const std::string& name, float value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformFloat");
+
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->Uniform1f(location, value);
 }
 
 void OpenGLES3Shader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformFloat2");
+
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->Uniform2f(location, value.x, value.y);
 }
 
 void OpenGLES3Shader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformFloat3");
+
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->Uniform3f(location, value.x, value.y, value.z);
 }
 
 void OpenGLES3Shader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformFloat4");
+
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->Uniform4f(location, value.x, value.y, value.z, value.w);
 }
 
 void OpenGLES3Shader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformMat3");
+
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->UniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void OpenGLES3Shader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformMat4");
+
     GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
     GLES3::GL()->UniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }

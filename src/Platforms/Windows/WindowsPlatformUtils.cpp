@@ -13,6 +13,8 @@ namespace Tabby {
 
 double Time::GetTime()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Time::GetTime");
+
     using namespace std::chrono;
     system_clock::time_point currentTimePoint = system_clock::now();
     duration<double> timeSinceEpoch = currentTimePoint.time_since_epoch();
@@ -24,6 +26,8 @@ double Time::GetTime()
 
 std::string FileDialogs::OpenFile(const char* filter)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::FileDialogs::OpenFile");
+
     OPENFILENAMEA ofn;
     CHAR szFile[260] = { 0 };
     CHAR currentDir[256] = { 0 };
@@ -50,6 +54,8 @@ std::string FileDialogs::OpenFile(const char* filter)
 
 std::string FileDialogs::SaveFile(const char* filter)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::FileDialogs::SaveFile");
+
     OPENFILENAMEA ofn;
     CHAR szFile[260] = { 0 };
     CHAR currentDir[256] = { 0 };

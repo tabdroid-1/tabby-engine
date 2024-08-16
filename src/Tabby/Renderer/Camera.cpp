@@ -7,11 +7,15 @@ namespace Tabby {
 
 Camera::Camera()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Camera::Constructor");
+
     RecalculateProjection();
 }
 
 void Camera::SetPerspective(float verticalFOV, float nearClip, float farClip)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Camera::SetPerspective");
+
     m_ProjectionType = ProjectionType::Perspective;
     m_PerspectiveFOV = verticalFOV;
     m_PerspectiveNear = nearClip;
@@ -21,6 +25,8 @@ void Camera::SetPerspective(float verticalFOV, float nearClip, float farClip)
 
 void Camera::SetOrthographic(float size, float nearClip, float farClip)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Camera::SetOrthographic");
+
     m_ProjectionType = ProjectionType::Orthographic;
     m_OrthographicSize = size;
     m_OrthographicNear = nearClip;
@@ -30,6 +36,8 @@ void Camera::SetOrthographic(float size, float nearClip, float farClip)
 
 void Camera::SetViewportSize(uint32_t width, uint32_t height)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Camera::SetViewportSize");
+
     TB_CORE_ASSERT(width > 0 && height > 0);
     m_AspectRatio = (float)width / (float)height;
     RecalculateProjection();
@@ -37,6 +45,8 @@ void Camera::SetViewportSize(uint32_t width, uint32_t height)
 
 void Camera::RecalculateProjection()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Camera::RecalculateProjection");
+
     if (m_ProjectionType == ProjectionType::Perspective) {
         m_Projection = glm::perspective(m_PerspectiveFOV, m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar);
     } else {

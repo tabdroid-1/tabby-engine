@@ -1,8 +1,7 @@
 #ifndef __TRACYOPENGL_HPP__
 #define __TRACYOPENGL_HPP__
 
-// TODO: REMOVE LINUX DEFINE
-#if !defined TRACY_ENABLE || defined __APPLE__ || defined __linux__
+#if !defined TRACY_ENABLE || defined __APPLE__
 
 #define TracyGpuContext
 #define TracyGpuContextName(x, y)
@@ -39,6 +38,8 @@ public:
 #include "../client/TracyCallstack.hpp"
 #include "../common/TracyAlign.hpp"
 #include "../common/TracyAlloc.hpp"
+
+#include "../../glad/gl.h"
 
 #if !defined GL_TIMESTAMP && defined GL_TIMESTAMP_EXT
 #define GL_TIMESTAMP GL_TIMESTAMP_EXT

@@ -39,11 +39,11 @@
 #include <vector>
 #include <typeindex>
 
-#include "Tabby/Core/UUID.h"
-#include "Tabby/Core/Assert.h"
-#include "Tabby/Core/Base.h"
-#include "Tabby/Debug/Instrumentor.h"
-#include "Tabby/Core/Log/Log.h"
+#include <Tabby/Core/UUID.h>
+#include <Tabby/Core/Assert.h>
+#include <Tabby/Core/Base.h>
+#include <Tabby/Debug/Instrumentor.h>
+#include <Tabby/Core/Log/Log.h>
 
 #include "Config.h"
 

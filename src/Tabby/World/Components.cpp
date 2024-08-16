@@ -18,6 +18,7 @@ namespace Tabby {
 // ----- TransformComponent ---------------------
 void TransformComponent::ApplyTransform(const Matrix4& transform)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::TransformComponent::ApplyTransform");
 
     // using namespace glm;
     using T = float;
@@ -85,6 +86,7 @@ void TransformComponent::ApplyTransform(const Matrix4& transform)
 
 void TransformComponent::ApplyTransformToLocal(const Matrix4& transform)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::TransformComponent::ApplyTransformToLocal");
 
     // using namespace glm;
     using T = float;
@@ -158,6 +160,8 @@ void TransformComponent::ApplyTransformToLocal(const Matrix4& transform)
 
 void AudioSourceComponent::SetAudio(AssetHandle audioHandle)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetAudio");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -165,6 +169,8 @@ void AudioSourceComponent::SetAudio(AssetHandle audioHandle)
 }
 void AudioSourceComponent::Play()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::Play");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -172,6 +178,8 @@ void AudioSourceComponent::Play()
 }
 void AudioSourceComponent::Pause()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::Pause");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -179,6 +187,8 @@ void AudioSourceComponent::Pause()
 }
 void AudioSourceComponent::TogglePlay()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::TogglePlay");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -186,6 +196,8 @@ void AudioSourceComponent::TogglePlay()
 }
 bool AudioSourceComponent::IsPlaying()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::IsPlaying");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -194,13 +206,18 @@ bool AudioSourceComponent::IsPlaying()
 
 void AudioSourceComponent::SetPitch(float pitch)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetPitch");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
     Source->SetPitch(pitch);
 }
+
 void AudioSourceComponent::SetGain(float gain)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetGain");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -209,6 +226,8 @@ void AudioSourceComponent::SetGain(float gain)
 
 void AudioSourceComponent::SetRolloffFactor(float rate)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetRolloffFactor");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -216,6 +235,8 @@ void AudioSourceComponent::SetRolloffFactor(float rate)
 }
 void AudioSourceComponent::SetMaxDistance(float distance)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetMaxDistance");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -223,6 +244,8 @@ void AudioSourceComponent::SetMaxDistance(float distance)
 }
 void AudioSourceComponent::SetReferenceDistance(float distance)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetReferenceDistance");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -231,27 +254,38 @@ void AudioSourceComponent::SetReferenceDistance(float distance)
 
 void AudioSourceComponent::SetRelative(bool relative)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetRelative");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
     Source->SetRelative(relative);
 }
+
 void AudioSourceComponent::SetLooping(bool looping)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetLooping");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
     Source->SetLooping(looping);
 }
+
 void AudioSourceComponent::SetMinGain(float gain)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetMinGain");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
     Source->SetMinGain(gain);
 }
+
 void AudioSourceComponent::SetMaxGain(float gain)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetMaxGain");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -266,20 +300,28 @@ void AudioSourceComponent::SetMaxGain(float gain)
 
 void AudioSourceComponent::SetConeOuterGain(float gain)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetConeOuterGain");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
     Source->SetConeOuterGain(gain);
 }
+
 void AudioSourceComponent::SetConeInnerAngle(float angle)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetConeInnerAngle");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
     Source->SetConeInnerAngle(angle);
 }
+
 void AudioSourceComponent::SetConeOuterAngle(float angle)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSourceComponent::SetConeOuterAngle");
+
     if (!Source)
         Source = AudioEngine::CreateAudioSource();
 
@@ -294,6 +336,8 @@ void AudioSourceComponent::SetConeOuterAngle(float angle)
 
 void Rigidbody2DComponent::SetBodyType(BodyType type)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::SetBodyType");
+
     if (B2_IS_NON_NULL(RuntimeBodyId))
         b2Body_SetType(RuntimeBodyId, Utils::Rigidbody2DTypeToBox2DBody(type));
     Type = type;
@@ -301,6 +345,8 @@ void Rigidbody2DComponent::SetBodyType(BodyType type)
 
 void Rigidbody2DComponent::SetFixedRotation(bool enable)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::SetFixedRotation");
+
     if (B2_IS_NON_NULL(RuntimeBodyId))
         b2Body_SetFixedRotation(RuntimeBodyId, enable);
     FixedRotation = enable;
@@ -308,23 +354,31 @@ void Rigidbody2DComponent::SetFixedRotation(bool enable)
 
 void Rigidbody2DComponent::SetVelocity(Vector2 velocity)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::SetVelocity");
+
     if (B2_IS_NON_NULL(RuntimeBodyId))
         b2Body_SetLinearVelocity(RuntimeBodyId, { velocity.x, velocity.y });
 }
 
 void Rigidbody2DComponent::SetAngularVelocity(float velocity)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::SetAngularVelocity");
+
     if (B2_IS_NON_NULL(RuntimeBodyId))
         b2Body_SetAngularVelocity(RuntimeBodyId, velocity);
 }
 
 Rigidbody2DComponent::BodyType Rigidbody2DComponent::GetType() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::GetType");
+
     return Type;
 }
 
 Vector2 Rigidbody2DComponent::GetVelocity() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::GetVelocity");
+
     if (B2_IS_NON_NULL(RuntimeBodyId)) {
         b2Vec2 velocity = b2Body_GetLinearVelocity(RuntimeBodyId);
         return { velocity.x, velocity.y };
@@ -334,6 +388,8 @@ Vector2 Rigidbody2DComponent::GetVelocity() const
 
 float Rigidbody2DComponent::GetAngularVelocity() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::GetAngularVelocity");
+
     if (B2_IS_NON_NULL(RuntimeBodyId))
         return b2Body_GetAngularVelocity(RuntimeBodyId);
     else
@@ -342,6 +398,8 @@ float Rigidbody2DComponent::GetAngularVelocity() const
 
 Vector2 Rigidbody2DComponent::GetPosition() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::GetPosition");
+
     if (B2_IS_NON_NULL(RuntimeBodyId)) {
         b2Vec2 position = b2Body_GetPosition(RuntimeBodyId);
         return { position.x, position.y };
@@ -351,6 +409,8 @@ Vector2 Rigidbody2DComponent::GetPosition() const
 
 float Rigidbody2DComponent::GetAngle() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::GetAngle");
+
     float angleRadians;
 
     if (B2_IS_NON_NULL(RuntimeBodyId))
@@ -374,6 +434,8 @@ float Rigidbody2DComponent::GetAngle() const
 
 void BoxCollider2DComponent::SetCollisionLayer(uint32_t layer)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::BoxCollider2DComponent::SetCollisionLayer");
+
     CollisionLayer = layer;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
@@ -381,13 +443,18 @@ void BoxCollider2DComponent::SetCollisionLayer(uint32_t layer)
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 uint32_t BoxCollider2DComponent::GetCollisionLayer() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::BoxCollider2DComponent::GetCollisionLayer");
+
     return CollisionLayer;
 }
 
 void BoxCollider2DComponent::SetCollisionMask(uint32_t mask)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::BoxCollider2DComponent::SetCollisionMask");
+
     CollisionMask = mask;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
@@ -395,13 +462,18 @@ void BoxCollider2DComponent::SetCollisionMask(uint32_t mask)
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 uint32_t BoxCollider2DComponent::GetCollisionMask() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::BoxCollider2DComponent::GetCollisionMask");
+
     return CollisionMask;
 }
 
 void BoxCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::BoxCollider2DComponent::SetCollisionLayerValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
@@ -416,8 +488,11 @@ void BoxCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 bool BoxCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::BoxCollider2DComponent::GetCollisionLayerValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return CollisionLayer & (1 << (layerNumber - 1));
@@ -425,6 +500,8 @@ bool BoxCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 
 void BoxCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::BoxCollider2DComponent::SetCollisionMaskValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
@@ -439,8 +516,11 @@ void BoxCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 bool BoxCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::BoxCollider2DComponent::GetCollisionMaskValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return CollisionMask & (1 << (layerNumber - 1));
@@ -448,6 +528,8 @@ bool BoxCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 
 void BoxCollider2DComponent::RefreshShape()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::BoxCollider2DComponent::RefreshShape");
+
     ShapeInfo2D shapeInfo {
         static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->ShapeEntity,
         ColliderType2D::Circle
@@ -464,6 +546,8 @@ void BoxCollider2DComponent::RefreshShape()
 
 void CircleCollider2DComponent::SetCollisionLayer(uint32_t layer)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CircleCollider2DComponent::SetCollisionLayer");
+
     CollisionLayer = layer;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
@@ -473,11 +557,15 @@ void CircleCollider2DComponent::SetCollisionLayer(uint32_t layer)
 }
 uint32_t CircleCollider2DComponent::GetCollisionLayer() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CircleCollider2DComponent::GetCollisionLayer");
+
     return CollisionLayer;
 }
 
 void CircleCollider2DComponent::SetCollisionMask(uint32_t mask)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CircleCollider2DComponent::SetCollisionMask");
+
     CollisionMask = mask;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
@@ -487,11 +575,15 @@ void CircleCollider2DComponent::SetCollisionMask(uint32_t mask)
 }
 uint32_t CircleCollider2DComponent::GetCollisionMask() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CircleCollider2DComponent::GetCollisionMask");
+
     return CollisionMask;
 }
 
 void CircleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CircleCollider2DComponent::SetCollisionLayerValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
@@ -508,6 +600,8 @@ void CircleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool val
 }
 bool CircleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CircleCollider2DComponent::GetCollisionLayerValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return CollisionLayer & (1 << (layerNumber - 1));
@@ -515,6 +609,8 @@ bool CircleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 
 void CircleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CircleCollider2DComponent::SetCollisionMaskValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
@@ -531,6 +627,8 @@ void CircleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool valu
 }
 bool CircleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CircleCollider2DComponent::GetCollisionMaskValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return CollisionMask & (1 << (layerNumber - 1));
@@ -538,6 +636,8 @@ bool CircleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 
 void CircleCollider2DComponent::RefreshShape()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CircleCollider2DComponent::RefreshShape");
+
     ShapeInfo2D shapeInfo {
         static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->ShapeEntity,
         ColliderType2D::Circle
@@ -554,6 +654,8 @@ void CircleCollider2DComponent::RefreshShape()
 
 void CapsuleCollider2DComponent::SetCollisionLayer(uint32_t layer)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionLayer");
+
     CollisionLayer = layer;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
@@ -561,13 +663,18 @@ void CapsuleCollider2DComponent::SetCollisionLayer(uint32_t layer)
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 uint32_t CapsuleCollider2DComponent::GetCollisionLayer() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionLayer");
+
     return CollisionLayer;
 }
 
 void CapsuleCollider2DComponent::SetCollisionMask(uint32_t mask)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionMask");
+
     CollisionMask = mask;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
@@ -575,13 +682,18 @@ void CapsuleCollider2DComponent::SetCollisionMask(uint32_t mask)
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 uint32_t CapsuleCollider2DComponent::GetCollisionMask() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionMask");
+
     return CollisionMask;
 }
 
 void CapsuleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionLayerValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
@@ -596,8 +708,11 @@ void CapsuleCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool va
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 bool CapsuleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionLayerValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return CollisionLayer & (1 << (layerNumber - 1));
@@ -605,6 +720,8 @@ bool CapsuleCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 
 void CapsuleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionMaskValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
@@ -619,14 +736,20 @@ void CapsuleCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool val
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 bool CapsuleCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionMaskValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return CollisionMask & (1 << (layerNumber - 1));
 }
+
 void CapsuleCollider2DComponent::RefreshShape()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::RefreshShape");
+
     ShapeInfo2D shapeInfo {
         static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->ShapeEntity,
         ColliderType2D::Circle
@@ -643,6 +766,8 @@ void CapsuleCollider2DComponent::RefreshShape()
 
 void SegmentCollider2DComponent::SetCollisionLayer(uint32_t layer)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionLayer");
+
     CollisionLayer = layer;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
@@ -650,13 +775,18 @@ void SegmentCollider2DComponent::SetCollisionLayer(uint32_t layer)
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 uint32_t SegmentCollider2DComponent::GetCollisionLayer() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionLayer");
+
     return CollisionLayer;
 }
 
 void SegmentCollider2DComponent::SetCollisionMask(uint32_t mask)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionMask");
+
     CollisionMask = mask;
     if (B2_IS_NON_NULL(RuntimeShapeId)) {
         b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
@@ -664,13 +794,18 @@ void SegmentCollider2DComponent::SetCollisionMask(uint32_t mask)
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 uint32_t SegmentCollider2DComponent::GetCollisionMask() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionMask");
+
     return CollisionMask;
 }
 
 void SegmentCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionLayerValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
@@ -685,8 +820,11 @@ void SegmentCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool va
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 bool SegmentCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionLayerValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return CollisionLayer & (1 << (layerNumber - 1));
@@ -694,6 +832,8 @@ bool SegmentCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
 
 void SegmentCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionMaskValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     if (value) {
@@ -708,8 +848,11 @@ void SegmentCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool val
         b2Shape_SetFilter(RuntimeShapeId, filter);
     }
 }
+
 bool SegmentCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionMaskValue");
+
     TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
     TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
     return CollisionMask & (1 << (layerNumber - 1));
@@ -717,6 +860,8 @@ bool SegmentCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
 
 void SegmentCollider2DComponent::RefreshShape()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::RefreshShape");
+
     ShapeInfo2D shapeInfo {
         static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->ShapeEntity,
         ColliderType2D::Segment

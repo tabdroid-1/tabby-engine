@@ -8,29 +8,27 @@ namespace Tabby {
 
 OpenGLES3UniformBuffer::OpenGLES3UniformBuffer(uint32_t size, uint32_t binding)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3UniformBuffer::Constructor");
+
     GLES3::GL()->GenBuffers(1, &m_RendererID);
     GLES3::GL()->BindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
     GLES3::GL()->BufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
     GLES3::GL()->BindBufferBase(GL_UNIFORM_BUFFER, binding, m_RendererID);
-    // glGenBuffers(1, &m_RendererID);
-    // glNamedBufferData(m_RendererID, size, nullptr, GL_DYNAMIC_DRAW); // TODO: investigate usage hint
-    // glBindBufferBase(GL_UNIFORM_BUFFER, binding, m_RendererID);
 }
 
 OpenGLES3UniformBuffer::~OpenGLES3UniformBuffer()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3UniformBuffer::Destructor");
+
     GLES3::GL()->DeleteBuffers(1, &m_RendererID);
 }
 
 void OpenGLES3UniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
 {
-    // glBufferSubData(m_RendererID, offset, size, data);
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3UniformBuffer::SetData");
 
     GLES3::GL()->BindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
-
-    // Update the buffer data
     GLES3::GL()->BufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
-    // glNamedBufferSubData(m_RendererID, offset, size, data);
 }
 
 }

@@ -34,9 +34,9 @@ private:
         glm::vec4 color;
     };
 
-    static std::vector<Line> m_Lines;
-    static std::vector<Rect> m_Rects;
-    static std::vector<Circle> m_Circles;
+    inline static std::vector<Line> m_Lines;
+    inline static std::vector<Rect> m_Rects;
+    inline static std::vector<Circle> m_Circles;
 
 private:
     friend class World;

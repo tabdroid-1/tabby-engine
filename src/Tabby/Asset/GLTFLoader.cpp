@@ -28,6 +28,7 @@ namespace Tabby {
 
 void GLTFLoader::Parse(const std::filesystem::path& filePath)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::GLTFLoader::Parse");
 
     fastgltf::Asset m_Asset;
     std::vector<Shared<Texture>> m_Images;
@@ -63,6 +64,8 @@ void GLTFLoader::Parse(const std::filesystem::path& filePath)
 
 void GLTFLoader::LoadImages(fastgltf::Asset& asset, std::vector<Shared<Texture>>& images)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::GLTFLoader::LoadImages");
+
     auto getLevelCount = [](int width, int height) -> int {
         return static_cast<int>(1 + floor(log2(width > height ? width : height)));
     };
@@ -147,6 +150,8 @@ void GLTFLoader::LoadImages(fastgltf::Asset& asset, std::vector<Shared<Texture>>
 
 void GLTFLoader::LoadMaterials(fastgltf::Asset& asset, std::vector<MaterialUniforms>& m_Materials)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::GLTFLoader::LoadMaterials");
+
     for (auto& material : asset.materials) {
 
         auto uniforms = m_Materials.emplace_back();
@@ -171,6 +176,7 @@ void GLTFLoader::LoadMaterials(fastgltf::Asset& asset, std::vector<MaterialUnifo
 
 void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>& images, std::vector<MaterialUniforms>& materials)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::GLTFLoader::LoadMeshes");
 
     std::vector<Shared<Tabby::Mesh>> tabbyMeshes;
 

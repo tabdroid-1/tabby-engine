@@ -26,7 +26,7 @@ public:
     bool IsVSync() const override;
 
     void SetResizable(bool enabled) override;
-    bool GetResizable() const override;
+    bool IsResizable() const override;
 
     void SetMinSize(uint32_t minWidth, uint32_t minHeight) override;
 

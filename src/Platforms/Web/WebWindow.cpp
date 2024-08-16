@@ -24,21 +24,21 @@ static uint8_t s_SDLWindowCount = 0;
 
 WebWindow::WebWindow(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::Constructor");
 
     Init(props);
 }
 
 WebWindow::~WebWindow()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::Destructor");
 
     Shutdown();
 }
 
 void WebWindow::Init(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::Init");
 
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
@@ -51,7 +51,7 @@ void WebWindow::Init(const WindowProps& props)
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
     if (s_SDLWindowCount == 0) {
-        TB_PROFILE_SCOPE_NAME("SDL Init");
+        TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::Init::SDL_Init");
         int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
         if (success != 0) {
             TB_CORE_INFO("{}", SDL_GetError());
@@ -60,7 +60,7 @@ void WebWindow::Init(const WindowProps& props)
     }
 
     {
-        TB_PROFILE_SCOPE_NAME("SDLCreateWindow");
+        TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::Init::SDL_CreateWindow");
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
             TB_CORE_ASSERT_TAGGED(false, "OpenGL33 is not supported by EMSCRIPTEN.");
         } else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3) {
@@ -108,7 +108,7 @@ void WebWindow::Init(const WindowProps& props)
 
 void WebWindow::Shutdown()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::Shutdown");
 
     SDL_DestroyWindow(m_Window);
     --s_SDLWindowCount;
@@ -120,7 +120,7 @@ void WebWindow::Shutdown()
 
 void WebWindow::OnUpdate()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::OnUpdate");
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -198,7 +198,7 @@ void WebWindow::OnUpdate()
 
 void WebWindow::SetVSync(bool enabled)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::SetVSync");
 
     if (enabled)
         SDL_GL_SetSwapInterval(1);
@@ -210,11 +210,14 @@ void WebWindow::SetVSync(bool enabled)
 
 bool WebWindow::IsVSync() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::IsVSync");
+
     return m_Data.VSync;
 }
 
 void WebWindow::SetResizable(bool enabled)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::SetResizable");
 
     if (enabled)
         SDL_SetWindowResizable(m_Window, SDL_TRUE);
@@ -223,13 +226,17 @@ void WebWindow::SetResizable(bool enabled)
     m_Data.Resizeable = enabled;
 }
 
-bool WebWindow::GetResizable() const
+bool WebWindow::IsResizable() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::GetResizable");
+
     return m_Data.Resizeable;
 }
 
 void WebWindow::SetMinSize(uint32_t minWidth, uint32_t minHeight)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::SetMinSize");
+
     SDL_SetWindowMinimumSize(m_Window, minWidth, minHeight);
     m_Data.MinWidth = minWidth;
     m_Data.MinHeight = minHeight;

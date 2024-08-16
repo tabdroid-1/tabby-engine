@@ -16,5 +16,4 @@ public:
 private:
     SDL_Window* m_WindowHandle;
 };
-
 }

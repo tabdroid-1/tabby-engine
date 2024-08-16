@@ -1,9 +1,9 @@
 #ifdef TB_PLATFORM_LINUX
 
-#include "Tabby/Core/Application.h"
+#include "tbpch.h"
+
 #include "Tabby/Utils/PlatformUtils.h"
 #include "Tabby/Core/Time/Time.h"
-#include "tbpch.h"
 
 #include <gtk/gtk.h>
 
@@ -11,6 +11,8 @@ namespace Tabby {
 
 double Time::GetTime()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Time::GetTime");
+
     using namespace std::chrono;
     system_clock::time_point currentTimePoint = system_clock::now();
     duration<double> timeSinceEpoch = currentTimePoint.time_since_epoch();
@@ -142,6 +144,8 @@ static int cancel_dialog(gpointer data)
 
 std::string FileDialogs::OpenFile(const char* filter)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::FileDialogs::OpenFile");
+
     GTKDialogContext* dialogContext = new GTKDialogContext;
 
     GtkFileDialog* dialog;
@@ -221,6 +225,8 @@ std::string FileDialogs::OpenFile(const char* filter)
 
 std::string FileDialogs::SaveFile(const char* filter)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::FileDialogs::SaveFile");
+
     GTKDialogContext* dialogContext = new GTKDialogContext;
 
     GtkFileDialog* dialog;

@@ -11,22 +11,25 @@ namespace Tabby {
 
 World::World()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::Constructor");
     TB_CORE_ASSERT_TAGGED(!s_Instance, "World already exists!");
     s_Instance = this;
 }
 
 void World::Init()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::Init");
     if (!s_Instance) {
 
         s_Instance = new World();
 
         AddSystem(Schedule::PreUpdate, [](entt::registry&) {
             // Apply transform to children
-            TB_PROFILE_SCOPE_NAME("World::PreUpdate::TransformUpdate");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::TransformUpdate");
             auto view = World::GetRegistry().view<TransformComponent>();
 
             for (auto entity : view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::TransformUpdate::Iteration");
                 auto& hierarchy_node_component = World::GetRegistry().get<HierarchyNodeComponent>(entity);
                 auto& transform = World::GetRegistry().get<TransformComponent>(entity);
 
@@ -51,13 +54,14 @@ void World::Init()
         });
 
         AddSystem(Schedule::PreUpdate, [](entt::registry&) {
-            TB_PROFILE_SCOPE_NAME("World::PreUpdate::UpdatePhysics2DWorld");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::UpdatePhysics2DWorld");
             const int32_t subStepCount = 6;
             Physisc2D::UpdateWorld();
 
             // Retrieve transform from Box2D
             auto view = World::GetRegistry().view<Rigidbody2DComponent>();
             for (auto e : view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::UpdatePhysics2DWorld::UpdateRigidbodyEntity");
                 Entity entity = { e };
                 auto& transform = entity.GetComponent<TransformComponent>();
                 auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
@@ -70,9 +74,10 @@ void World::Init()
         });
 
         AddSystem(Schedule::PostUpdate, [](entt::registry&) {
-            TB_PROFILE_SCOPE_NAME("World::PostUpdate::SetCurrentCamera");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera");
             auto view = World::GetRegistry().view<TransformComponent, CameraComponent>();
             for (auto entity : view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera::Iteration");
                 auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 
                 if (camera.Primary) {
@@ -83,9 +88,10 @@ void World::Init()
         });
 
         AddSystem(Schedule::PostUpdate, [](entt::registry& registry) {
-            TB_PROFILE_SCOPE_NAME("World::PostUpdate::UpdateAudioSource");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::UpdateAudioSource");
             auto view = World::GetRegistry().view<TransformComponent, AudioSourceComponent>();
             for (auto entity : view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::Iteration");
                 auto [transform, source] = view.get<TransformComponent, AudioSourceComponent>(entity);
 
                 source.Source->SetPosition(transform.Translation);
@@ -100,12 +106,14 @@ void World::Init()
         });
 
         AddSystem(Schedule::PostUpdate, [](entt::registry& registry) {
-            TB_PROFILE_SCOPE_NAME("World::PostUpdate::UpdateAudioSource");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::UpdateAudioListener");
 
             int numberOfListener = 0;
 
             auto view = World::GetRegistry().view<TransformComponent, AudioListenerComponent>();
             for (auto entity : view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::UpdateAudioListener::Iteration");
+
                 auto [transform, listener] = view.get<TransformComponent, AudioListenerComponent>(entity);
 
                 if (numberOfListener == 0) {
@@ -133,9 +141,11 @@ void World::Init()
         });
 
         AddSystem(Schedule::Draw, [](entt::registry&) {
-            TB_PROFILE_SCOPE_NAME("World::Draw::RenderCircle");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle");
             auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
             for (auto entity : view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle::Iteration");
+
                 auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
 
                 Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
@@ -143,9 +153,11 @@ void World::Init()
         });
 
         AddSystem(Schedule::Draw, [](entt::registry&) {
-            TB_PROFILE_SCOPE_NAME("World::Draw::RenderCircle");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle");
             auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
             for (auto entity : view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle::Iteration");
+
                 auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
 
                 Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
@@ -153,15 +165,18 @@ void World::Init()
         });
 
         AddSystem(Schedule::Draw, [](entt::registry&) {
-            TB_PROFILE_SCOPE_NAME("World::Draw::RenderSprites");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites");
 
             World::GetRegistry().sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites::UpdateOrder");
                 return lhs.renderOrder < rhs.renderOrder;
             });
 
             auto sprite_view = World::GetRegistry().view<SpriteRendererComponent>();
 
             for (const entt::entity entity : sprite_view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites::Iteration");
+
                 auto transform = World::GetRegistry().get<TransformComponent>(entity);
                 auto sprite = World::GetRegistry().get<SpriteRendererComponent>(entity);
 
@@ -170,9 +185,11 @@ void World::Init()
         });
 
         AddSystem(Schedule::Draw, [](entt::registry&) {
-            TB_PROFILE_SCOPE_NAME("World::Draw::RenderGLTF");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF");
             auto view = World::GetRegistry().view<TransformComponent, MeshComponent>();
             for (auto entity : view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF::Iteration");
+
                 auto [transform, mC] = view.get<TransformComponent, MeshComponent>(entity);
 
                 if (mC.m_Mesh) {
@@ -183,10 +200,12 @@ void World::Init()
         });
 
         AddSystem(Schedule::Draw, [](entt::registry&) {
-            TB_PROFILE_SCOPE_NAME("World::Draw::RenderText");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderText");
 
             auto view = GetRegistry().view<TransformComponent, TextComponent>();
             for (auto entity : view) {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderText::Iteration");
+
                 auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
 
                 Renderer2D::DrawString(text.TextString, transform.GetTransform(), text, (int)entity);
@@ -194,7 +213,7 @@ void World::Init()
         });
 
         AddSystem(Schedule::Draw, [](entt::registry&) {
-            TB_PROFILE_SCOPE_NAME("World::OnUpdate::RenderScene::DebugDraw");
+            TB_PROFILE_SCOPE_NAME("Tabby::World::OnUpdate::RenderScene::DebugDraw");
 
             Debug::ProcessDrawCalls();
         });
@@ -204,6 +223,7 @@ void World::Init()
 template <typename... Component>
 static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::CopyComponent");
     ([&]() {
         auto view = src.view<Component>();
         for (auto srcEntity : view) {
@@ -225,6 +245,8 @@ static void CopyComponent(ComponentGroup<Component...>, entt::registry& dst, ent
 template <typename... Component>
 static void CopyComponentIfExists(Entity dst, Entity src)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::CopyComponentIfExists");
+
     ([&]() {
         if (src.HasComponent<Component>())
             dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
@@ -240,6 +262,8 @@ static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Enti
 
 void World::AddSystem(Schedule schedule, const std::function<void(entt::registry&)>& function)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::AddSystem");
+
     switch (schedule) {
     case Schedule::PreStartup:
         s_Instance->m_PreStartupSystems.push_back(function);
@@ -284,6 +308,8 @@ Entity World::CreateEntity(const std::string& name)
 
 Entity World::CreateEntityWithUUID(UUID uuid, const std::string& name)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::CreateEntityWithUUID");
+
     Entity entity = { s_Instance->GetRegistry().create() };
     entity.AddComponent<IDComponent>(uuid);
     entity.AddComponent<TransformComponent>();
@@ -298,6 +324,8 @@ Entity World::CreateEntityWithUUID(UUID uuid, const std::string& name)
 
 void World::DestroyEntity(Entity entity)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::DestroyEntity");
+
     if (entity.HasComponent<Rigidbody2DComponent>()) {
         auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
@@ -335,6 +363,8 @@ void World::DestroyEntity(Entity entity)
 
 void World::DestroyEntityWithChildren(Entity entity)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::DestroyEntityWithChildren");
+
     if (entity.HasComponent<Rigidbody2DComponent>()) {
         auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
@@ -354,6 +384,7 @@ void World::DestroyEntityWithChildren(Entity entity)
 
 Entity World::DuplicateEntity(Entity entity)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::DuplicateEntity");
     // Copy name because we're going to modify component data structure
     std::string name = entity.GetName();
     Entity newEntity = CreateEntity(name);
@@ -363,6 +394,8 @@ Entity World::DuplicateEntity(Entity entity)
 
 Entity World::FindEntityByName(std::string_view name)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::FindEntityByName");
+
     auto view = GetRegistry().view<TagComponent>();
     for (auto entity : view) {
         const TagComponent& tc = view.get<TagComponent>(entity);
@@ -374,15 +407,19 @@ Entity World::FindEntityByName(std::string_view name)
 
 Entity World::GetEntityByUUID(UUID uuid)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::FindEntityByName");
     // TODO(Yan): Maybe should be assert
     if (s_Instance->m_EntityMap.find(uuid) != s_Instance->m_EntityMap.end())
         return { s_Instance->m_EntityMap.at(uuid) };
 
+    TB_CORE_ASSERT_TAGGED(false, "Entity not found!");
     return {};
 }
 
 Entity World::GetPrimaryCameraEntity()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::GetPrimaryCameraEntity");
+
     auto view = GetRegistry().view<CameraComponent>();
     for (auto entity : view) {
         const auto& camera = view.get<CameraComponent>(entity);
@@ -394,7 +431,7 @@ Entity World::GetPrimaryCameraEntity()
 
 void World::OnStart()
 {
-    TB_PROFILE_SCOPE_NAME("World::OnStart");
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnStart");
 
     Init();
 
@@ -414,7 +451,7 @@ void World::OnStart()
 
 void World::OnStop()
 {
-    TB_PROFILE_SCOPE_NAME("World::OnStop");
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnStop");
     s_Instance->m_IsRunning = false;
 
     {
@@ -432,6 +469,8 @@ void World::OnStop()
 
 void World::Update()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::Update");
+
     if (!s_Instance->m_IsPaused || s_Instance->m_StepFrames-- > 0) {
 
         for (const auto& preUpdate : s_Instance->m_PreUpdateSystems)
@@ -475,12 +514,12 @@ void World::Update()
 
 void World::DrawImGui()
 {
-    TB_PROFILE_SCOPE_NAME("World::DrawImGui");
+    TB_PROFILE_SCOPE_NAME("Tabby::World::DrawImGui");
 }
 
 void World::OnViewportResize(uint32_t width, uint32_t height)
 {
-    TB_PROFILE_SCOPE_NAME("World::OnViewportResize");
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnViewportResize");
 
     if (s_Instance->m_ViewportWidth == width && s_Instance->m_ViewportHeight == height)
         return;
@@ -499,17 +538,23 @@ void World::OnViewportResize(uint32_t width, uint32_t height)
 
 void World::Step(int frames)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::Step");
+
     s_Instance->m_StepFrames = frames;
 }
 
 void World::SetCurrentCamera(Camera* currentCamera, Matrix4* currentCameraTransform)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::SetCurrentCamera");
+
     s_Instance->m_CurrentCamera = currentCamera;
     s_Instance->m_CurrentCameraTransform = currentCameraTransform;
 }
 
 entt::registry& World::GetRegistry()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::GetRegistry");
+
     return m_EntityRegistry;
 }
 
@@ -522,16 +567,20 @@ void World::OnComponentAdded(Entity entity, T& component)
 template <>
 void World::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<IDComponent>");
 }
 
 template <>
 void World::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<TransformComponent>");
 }
 
 template <>
 void World::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<CameraComponent>");
+
     if (s_Instance->m_ViewportWidth > 0 && s_Instance->m_ViewportHeight > 0)
         component.Camera.SetViewportSize(s_Instance->m_ViewportWidth, s_Instance->m_ViewportHeight);
 }
@@ -539,6 +588,8 @@ void World::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& co
 template <>
 void World::OnComponentAdded<AudioSourceComponent>(Entity entity, AudioSourceComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<AudioSourceComponent>");
+
     if (!component.Source)
         component.Source = AudioEngine::CreateAudioSource();
 }
@@ -546,26 +597,32 @@ void World::OnComponentAdded<AudioSourceComponent>(Entity entity, AudioSourceCom
 template <>
 void World::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<SpriteRendererComponent>");
 }
 
 template <>
 void World::OnComponentAdded<HierarchyNodeComponent>(Entity entity, HierarchyNodeComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<HierarchyNodeComponent>");
 }
 
 template <>
 void World::OnComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<CircleRendererComponent>");
 }
 
 template <>
 void World::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<TagComponent>");
 }
 
 template <>
 void World::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<Rigidbody2DComponent>");
+
     if (B2_IS_NULL(Physisc2D::GetPhysicsWorld()))
         return;
 
@@ -584,6 +641,8 @@ void World::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DCom
 template <>
 void World::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<BoxCollider2DComponent>");
+
     if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
@@ -601,6 +660,8 @@ void World::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2
 template <>
 void World::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<CircleCollider2DComponent>");
+
     if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
@@ -618,6 +679,8 @@ void World::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCol
 template <>
 void World::OnComponentAdded<CapsuleCollider2DComponent>(Entity entity, CapsuleCollider2DComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<CapsuleCollider2DComponent>");
+
     if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
@@ -635,6 +698,8 @@ void World::OnComponentAdded<CapsuleCollider2DComponent>(Entity entity, CapsuleC
 template <>
 void World::OnComponentAdded<SegmentCollider2DComponent>(Entity entity, SegmentCollider2DComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<SegmentCollider2DComponent>");
+
     if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
@@ -652,11 +717,14 @@ void World::OnComponentAdded<SegmentCollider2DComponent>(Entity entity, SegmentC
 template <>
 void World::OnComponentAdded<TextComponent>(Entity entity, TextComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<TextComponent>");
+
     component.Font = AssetManager::LoadAssetSource("fonts/opensans/OpenSans-Regular.ttf");
 }
 
 template <>
 void World::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<MeshComponent>");
 }
 }

@@ -117,7 +117,7 @@ static Renderer2DData s_Data;
 
 void Renderer2D::Init()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::Init");
 
     s_Data.QuadVertexArray = VertexArray::Create();
 
@@ -257,14 +257,14 @@ void Renderer2D::Init()
 
 void Renderer2D::Shutdown()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::Shutdown");
 
     delete[] s_Data.QuadVertexBufferBase;
 }
 
 void Renderer2D::BeginScene(const Camera& camera, const Matrix4& transform)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::BeginScene");
 
     s_Data.CameraBuffer.ViewProjection = camera.GetProjection() * glm::inverse(transform);
     s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
@@ -274,13 +274,15 @@ void Renderer2D::BeginScene(const Camera& camera, const Matrix4& transform)
 
 void Renderer2D::EndScene()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::EndScene");
 
     Flush();
 }
 
 void Renderer2D::StartBatch()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::StartBatch");
+
     s_Data.QuadIndexCount = 0;
     s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 
@@ -298,6 +300,8 @@ void Renderer2D::StartBatch()
 
 void Renderer2D::Flush()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::Flush");
+
     if (s_Data.QuadIndexCount) {
         uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
         s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
@@ -334,7 +338,7 @@ void Renderer2D::Flush()
         uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.TextVertexBufferPtr - (uint8_t*)s_Data.TextVertexBufferBase);
         s_Data.TextVertexBuffer->SetData(s_Data.TextVertexBufferBase, dataSize);
 
-        auto buf = s_Data.TextVertexBufferBase;
+        // auto buf = s_Data.TextVertexBufferBase;
 
         if (s_Data.FontAtlasTextureSlots[0]) {
             for (uint32_t i = 0; i < s_Data.FontAtlasTextureSlotIndex; i++)
@@ -349,18 +353,22 @@ void Renderer2D::Flush()
 
 void Renderer2D::NextBatch()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::NextBatch");
+
     Flush();
     StartBatch();
 }
 
 void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawQuad");
+
     DrawQuad({ position.x, position.y, 0.0f }, size, color);
 }
 
 void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawQuad");
 
     Matrix4 transform = glm::translate(Matrix4(1.0f), position)
         * glm::scale(Matrix4(1.0f), { size.x, size.y, 1.0f });
@@ -370,12 +378,13 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
 
 void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawQuad");
     DrawQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColor);
 }
 
 void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawQuad");
 
     Matrix4 transform = glm::translate(Matrix4(1.0f), position)
         * glm::scale(Matrix4(1.0f), { size.x, size.y, 1.0f });
@@ -385,7 +394,7 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
 
 void Renderer2D::DrawQuad(const Matrix4& transform, const glm::vec4& color, int entityID)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawQuad");
 
     constexpr size_t quadVertexCount = 4;
     const float textureIndex = 0.0f; // White Texture
@@ -412,7 +421,7 @@ void Renderer2D::DrawQuad(const Matrix4& transform, const glm::vec4& color, int 
 
 void Renderer2D::DrawQuad(const Matrix4& transform, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawQuad");
 
     constexpr size_t quadVertexCount = 4;
     constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
@@ -453,9 +462,8 @@ void Renderer2D::DrawQuad(const Matrix4& transform, const Shared<Texture>& textu
 }
 
 void Renderer2D::DrawQuad(const Matrix4& transform, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor, int horizontalFrames, int verticalFrames, int currentXFrame, int currentYFrame, int entityID)
-
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawQuad");
 
     constexpr size_t quadVertexCount = 4;
 
@@ -503,12 +511,13 @@ void Renderer2D::DrawQuad(const Matrix4& transform, const Shared<Texture>& textu
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawRotatedQuad");
     DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, color);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawRotatedQuad");
 
     Matrix4 transform = glm::translate(Matrix4(1.0f), position)
         * glm::rotate(Matrix4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
@@ -519,12 +528,14 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawRotatedQuad");
+
     DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColor);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Shared<Texture>& texture, float tilingFactor, const glm::vec4& tintColor)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawRotatedQuad");
 
     Matrix4 transform = glm::translate(Matrix4(1.0f), position)
         * glm::rotate(Matrix4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
@@ -535,6 +546,8 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
 
 void Renderer2D::DrawCircle(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color, float thickness /*= 1.0f*/, float fade /*= 0.005f*/)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawCircle");
+
     Matrix4 transform = glm::translate(Matrix4(1.0f), position)
         * glm::rotate(Matrix4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
         * glm::scale(Matrix4(1.0f), { size.x, size.y, 1.0f });
@@ -544,7 +557,7 @@ void Renderer2D::DrawCircle(const glm::vec3& position, const glm::vec2& size, fl
 
 void Renderer2D::DrawCircle(const Matrix4& transform, const glm::vec4& color, float thickness /*= 1.0f*/, float fade /*= 0.005f*/, int entityID /*= -1*/)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawCircle");
 
     // TODO: implement for circles
     // if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
@@ -567,6 +580,7 @@ void Renderer2D::DrawCircle(const Matrix4& transform, const glm::vec4& color, fl
 
 void Renderer2D::DrawLine(const glm::vec3& p0, glm::vec3& p1, const glm::vec4& color, int entityID)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawLine");
 
     if (s_Data.LineVertexCount >= Renderer2DData::MaxIndices)
         NextBatch();
@@ -585,6 +599,8 @@ void Renderer2D::DrawLine(const glm::vec3& p0, glm::vec3& p1, const glm::vec4& c
 
 void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int entityID)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawRect");
+
     glm::vec3 p0 = glm::vec3(position.x - size.x * 0.5f, position.y - size.y * 0.5f, position.z);
     glm::vec3 p1 = glm::vec3(position.x + size.x * 0.5f, position.y - size.y * 0.5f, position.z);
     glm::vec3 p2 = glm::vec3(position.x + size.x * 0.5f, position.y + size.y * 0.5f, position.z);
@@ -598,6 +614,8 @@ void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, cons
 
 void Renderer2D::DrawRect(const Matrix4& transform, const glm::vec4& color, int entityID)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawRect");
+
     glm::vec3 lineVertices[4];
     for (size_t i = 0; i < 4; i++)
         lineVertices[i] = transform * s_Data.QuadVertexPositions[i];
@@ -610,6 +628,8 @@ void Renderer2D::DrawRect(const Matrix4& transform, const glm::vec4& color, int 
 
 void Renderer2D::DrawSprite(const Matrix4& transform, SpriteRendererComponent& src, int entityID)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawSprite");
+
     if (AssetManager::HasAsset(src.Texture)) {
         // DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
         Shared<Texture> texture = AssetManager::GetAsset<Texture>(src.Texture);
@@ -620,6 +640,8 @@ void Renderer2D::DrawSprite(const Matrix4& transform, SpriteRendererComponent& s
 
 void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const Matrix4& transform, const TextParams& textParams, int entityID)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawString");
+
     const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
     const auto& metrics = fontGeometry.getMetrics();
     AssetHandle fontAtlasHandle = font->GetAtlasTexture();
@@ -747,247 +769,38 @@ void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const 
 
 void Renderer2D::DrawString(const std::string& string, const Matrix4& transform, const TextComponent& component, int entityID)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawString");
+
     if (AssetManager::HasAsset(component.Font)) {
         auto font = AssetManager::GetAsset<Font>(component.Font);
         DrawString(string, font, transform, { component.Color, component.Kerning, component.LineSpacing }, entityID);
     }
 }
 
-// void Renderer2D::DrawString(const std::string& string, Shared<Font> font, const Matrix4& transform, const TextParams& textParams, int entityID)
-// {
-//
-//     s_Data.FontAtlasTexture = fontAtlas;
-//
-//     double x = 0.0;
-//     double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY);
-//     double y = 0.0;
-//
-//     const float spaceGlyphAdvance = fontGeometry.getGlyph(' ')->getAdvance();
-//
-//     for (size_t i = 0; i < string.size(); i++) {
-//         char character = string[i];
-//         if (character == '\r')
-//             continue;
-//
-//         if (character == '\n') {
-//             x = 0;
-//             y -= fsScale * metrics.lineHeight + textParams.LineSpacing;
-//             continue;
-//         }
-//
-//         if (character == ' ') {
-//             float advance = spaceGlyphAdvance;
-//             if (i < string.size() - 1) {
-//                 char nextCharacter = string[i + 1];
-//                 double dAdvance;
-//                 fontGeometry.getAdvance(dAdvance, character, nextCharacter);
-//                 advance = (float)dAdvance;
-//             }
-//
-//             x += fsScale * advance + textParams.Kerning;
-//             continue;
-//         }
-//
-//         if (character == '\t') {
-//             // NOTE(Yan): is this right?
-//             x += 4.0f * (fsScale * spaceGlyphAdvance + textParams.Kerning);
-//             continue;
-//         }
-//
-//         auto glyph = fontGeometry.getGlyph(character);
-//         if (!glyph)
-//             glyph = fontGeometry.getGlyph('?');
-//         if (!glyph)
-//             return;
-//
-//         double al, ab, ar, at;
-//         glyph->getQuadAtlasBounds(al, ab, ar, at);
-//         glm::vec2 texCoordMin((float)al, (float)ab);
-//         glm::vec2 texCoordMax((float)ar, (float)at);
-//
-//         double pl, pb, pr, pt;
-//         glyph->getQuadPlaneBounds(pl, pb, pr, pt);
-//         glm::vec2 quadMin((float)pl, (float)pb);
-//         glm::vec2 quadMax((float)pr, (float)pt);
-//
-//         quadMin *= fsScale, quadMax *= fsScale;
-//         quadMin += glm::vec2(x, y);
-//         quadMax += glm::vec2(x, y);
-//
-//         float texelWidth = 1.0f / fontAtlas->GetWidth();
-//         float texelHeight = 1.0f / fontAtlas->GetHeight();
-//         texCoordMin *= glm::vec2(texelWidth, texelHeight);
-//         texCoordMax *= glm::vec2(texelWidth, texelHeight);
-//
-//         // render here
-//         s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
-//         s_Data.TextVertexBufferPtr->Color = textParams.Color;
-//         s_Data.TextVertexBufferPtr->TexCoord = texCoordMin;
-//         s_Data.TextVertexBufferPtr->EntityID = entityID;
-//         s_Data.TextVertexBufferPtr++;
-//
-//         s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
-//         s_Data.TextVertexBufferPtr->Color = textParams.Color;
-//         s_Data.TextVertexBufferPtr->TexCoord = { texCoordMin.x, texCoordMax.y };
-//         s_Data.TextVertexBufferPtr->EntityID = entityID;
-//         s_Data.TextVertexBufferPtr++;
-//
-//         s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
-//         s_Data.TextVertexBufferPtr->Color = textParams.Color;
-//         s_Data.TextVertexBufferPtr->TexCoord = texCoordMax;
-//         s_Data.TextVertexBufferPtr->EntityID = entityID;
-//         s_Data.TextVertexBufferPtr++;
-//
-//         s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
-//         s_Data.TextVertexBufferPtr->Color = textParams.Color;
-//         s_Data.TextVertexBufferPtr->TexCoord = { texCoordMax.x, texCoordMin.y };
-//         s_Data.TextVertexBufferPtr->EntityID = entityID;
-//         s_Data.TextVertexBufferPtr++;
-//
-//         s_Data.TextIndexCount += 6;
-//         s_Data.Stats.QuadCount++;
-//
-//         if (i < string.size() - 1) {
-//             double advance = glyph->getAdvance();
-//             char nextCharacter = string[i + 1];
-//             fontGeometry.getAdvance(advance, character, nextCharacter);
-//
-//             x += fsScale * advance + textParams.Kerning;
-//         }
-//     }
-//
-//     // const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
-//     // const auto& metrics = fontGeometry.getMetrics();
-//     // Shared<Texture> fontAtlas = font->GetAtlasTexture();
-//     //
-//     // s_Data.FontAtlasTexture = fontAtlas;
-//     //
-//     // double x = 0.0;
-//     // double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY);
-//     // double y = 0.0;
-//     //
-//     // const float spaceGlyphAdvance = fontGeometry.getGlyph(' ')->getAdvance();
-//     //
-//     // for (size_t i = 0; i < string.size(); i++) {
-//     //     char character = string[i];
-//     //     if (character == '\r')
-//     //         continue;
-//     //
-//     //     if (character == '\n') {
-//     //         x = 0;
-//     //         y -= fsScale * metrics.lineHeight + textParams.LineSpacing;
-//     //         continue;
-//     //     }
-//     //
-//     //     if (character == ' ') {
-//     //         float advance = spaceGlyphAdvance;
-//     //         if (i < string.size() - 1) {
-//     //             char nextCharacter = string[i + 1];
-//     //             double dAdvance;
-//     //             fontGeometry.getAdvance(dAdvance, character, nextCharacter);
-//     //             advance = (float)dAdvance;
-//     //         }
-//     //
-//     //         x += fsScale * advance + textParams.Kerning;
-//     //         continue;
-//     //     }
-//     //
-//     //     if (character == '\t') {
-//     //         // NOTE(Yan): is this right?
-//     //         x += 4.0f * (fsScale * spaceGlyphAdvance + textParams.Kerning);
-//     //         continue;
-//     //     }
-//     //
-//     //     auto glyph = fontGeometry.getGlyph(character);
-//     //     if (!glyph)
-//     //         glyph = fontGeometry.getGlyph('?');
-//     //     if (!glyph)
-//     //         return;
-//     //
-//     //     double al, ab, ar, at;
-//     //     glyph->getQuadAtlasBounds(al, ab, ar, at);
-//     //     glm::vec2 texCoordMin((float)al, (float)ab);
-//     //     glm::vec2 texCoordMax((float)ar, (float)at);
-//     //
-//     //     double pl, pb, pr, pt;
-//     //     glyph->getQuadPlaneBounds(pl, pb, pr, pt);
-//     //     glm::vec2 quadMin((float)pl, (float)pb);
-//     //     glm::vec2 quadMax((float)pr, (float)pt);
-//     //
-//     //     quadMin *= fsScale, quadMax *= fsScale;
-//     //     quadMin += glm::vec2(x, y);
-//     //     quadMax += glm::vec2(x, y);
-//     //
-//     //     float texelWidth = 1.0f / fontAtlas->GetWidth();
-//     //     float texelHeight = 1.0f / fontAtlas->GetHeight();
-//     //     texCoordMin *= glm::vec2(texelWidth, texelHeight);
-//     //     texCoordMax *= glm::vec2(texelWidth, texelHeight);
-//     //
-//     //     // render here
-//     //     s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
-//     //     s_Data.TextVertexBufferPtr->Color = textParams.Color;
-//     //     s_Data.TextVertexBufferPtr->TexCoord = texCoordMin;
-//     //     s_Data.TextVertexBufferPtr->EntityID = entityID;
-//     //     s_Data.TextVertexBufferPtr++;
-//     //
-//     //     s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
-//     //     s_Data.TextVertexBufferPtr->Color = textParams.Color;
-//     //     s_Data.TextVertexBufferPtr->TexCoord = { texCoordMin.x, texCoordMax.y };
-//     //     s_Data.TextVertexBufferPtr->EntityID = entityID;
-//     //     s_Data.TextVertexBufferPtr++;
-//     //
-//     //     s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
-//     //     s_Data.TextVertexBufferPtr->Color = textParams.Color;
-//     //     s_Data.TextVertexBufferPtr->TexCoord = texCoordMax;
-//     //     s_Data.TextVertexBufferPtr->EntityID = entityID;
-//     //     s_Data.TextVertexBufferPtr++;
-//     //
-//     //     s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
-//     //     s_Data.TextVertexBufferPtr->Color = textParams.Color;
-//     //     s_Data.TextVertexBufferPtr->TexCoord = { texCoordMax.x, texCoordMin.y };
-//     //     s_Data.TextVertexBufferPtr->EntityID = entityID;
-//     //     s_Data.TextVertexBufferPtr++;
-//     //
-//     //     s_Data.TextIndexCount += 6;
-//     //     s_Data.Stats.QuadCount++;
-//     //
-//     //     if (i < string.size() - 1) {
-//     //         double advance = glyph->getAdvance();
-//     //         char nextCharacter = string[i + 1];
-//     //         fontGeometry.getAdvance(advance, character, nextCharacter);
-//     //
-//     //         x += fsScale * advance + textParams.Kerning;
-//     //     }
-//     // }
-// }
-//
-// void Renderer2D::DrawString(const std::string& string, const Matrix4& transform, const TextComponent& component, int entityID)
-// {
-//
-//     if (AssetManager::Get()->HasAsset(component.Font)) {
-//         // DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
-//         Shared<Font> font = AssetManager::Get()->GetAsset<Font>(component.Font);
-//         DrawString(string, font, transform, { component.Color, component.Kerning, component.LineSpacing }, entityID);
-//     }
-// }
-
 float Renderer2D::GetLineWidth()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::GetLineWidth");
+
     return s_Data.LineWidth;
 }
 
 void Renderer2D::SetLineWidth(float width)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::SetLineWidth");
     s_Data.LineWidth = width;
 }
 
 void Renderer2D::ResetStats()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::ResetStats");
+
     memset(&s_Data.Stats, 0, sizeof(Statistics));
 }
 
 Renderer2D::Statistics Renderer2D::GetStats()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::GetStats");
+
     return s_Data.Stats;
 }
 }

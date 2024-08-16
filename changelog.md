@@ -1,3 +1,12 @@
+Version: 17-08-2024_1 Alpha
+Changes:
+- Font is now visible on opengl es 3.0. 
+- GPU profiling (not supported for GLES 3). And expanded tracy profiler coverage. I believe all code is being covered. 
+- FrameImage now visible in tracy
+- "Cleaned" some code
+
+--------------------------------------------------------------------------------------
+
 Version: 15-08-2024_1 Alpha
 Changes:
 - Done changes to naming, presolve and collision callbacks. 

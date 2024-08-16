@@ -16,6 +16,8 @@ public:
     template <typename T, typename... Args>
     T& AddComponent(Args&&... args)
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::AddComponent");
+
         TB_CORE_ASSERT_TAGGED(!HasComponent<T>(), "Entity already has component!");
         T& component = World::GetRegistry().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
         World::OnComponentAdded<T>(*this, component);
@@ -26,6 +28,8 @@ public:
     template <typename T, typename... Args>
     T& AddOrReplaceComponent(Args&&... args)
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::AddOrReplaceComponent");
+
         T& component = World::GetRegistry().emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
         World::OnComponentAdded<T>(*this, component);
         return component;
@@ -34,6 +38,8 @@ public:
     template <typename T>
     T& GetComponent()
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::GetComponent");
+
         TB_CORE_ASSERT_TAGGED(HasComponent<T>(), "Entity does not have component!");
         return World::GetRegistry().get<T>(m_EntityHandle);
     }
@@ -41,18 +47,24 @@ public:
     template <typename T>
     bool HasComponent()
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::HasComponent");
+
         return World::GetRegistry().any_of<T>(m_EntityHandle);
     }
 
     template <typename T>
     void RemoveComponent()
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::RemoveComponent");
+
         TB_CORE_ASSERT_TAGGED(HasComponent<T>(), "Entity does not have component!");
         World::GetRegistry().remove<T>(m_EntityHandle);
     }
 
     void AddChild(Entity& child)
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::AddChild");
+
         auto& hierarchy_node_component = GetComponent<HierarchyNodeComponent>();
         child.GetComponent<HierarchyNodeComponent>().Parent = std::make_pair(GetUUID(), this->m_EntityHandle);
         hierarchy_node_component.Children.emplace_back(std::make_pair(child.GetUUID(), child.m_EntityHandle));
@@ -65,8 +77,19 @@ public:
     operator entt::entity() const { return m_EntityHandle; }
     operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
-    UUID GetUUID() { return GetComponent<IDComponent>().ID; }
-    const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
+    UUID GetUUID()
+    {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::GetUUID");
+
+        return GetComponent<IDComponent>().ID;
+    }
+
+    const std::string& GetName()
+    {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::GetName");
+
+        return GetComponent<TagComponent>().Tag;
+    }
 
     bool operator==(const Entity& other) const
     {
@@ -83,6 +106,8 @@ public:
 private:
     void UpdateIsPersistent(bool enable)
     {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::UpdateIsPersistent");
+
         auto& hierarchy_node_component = GetComponent<HierarchyNodeComponent>();
         GetComponent<IDComponent>().IsPersistent = enable;
 

@@ -15,6 +15,7 @@ AudioSource::AudioSource()
     : m_Music(nullptr)
     , m_Playing(false)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::Constructor");
     alGenSources(1, &m_SourceID);
     CHECK_AL_ERRORS();
     alSourcef(m_SourceID, AL_PITCH, 1);
@@ -32,6 +33,8 @@ AudioSource::AudioSource()
 
 AudioSource::~AudioSource()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::Destructor");
+
     alSourceStop(m_SourceID);
     CHECK_AL_ERRORS();
     alSourcei(m_SourceID, AL_BUFFER, NULL);
@@ -43,6 +46,8 @@ AudioSource::~AudioSource()
 
 void AudioSource::Play()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::Play");
+
     AudioEngine::m_MusicMixerLock.lock();
     if (!m_Music) {
         TB_CORE_ERROR("AudioSource's music is null/not set!");
@@ -57,6 +62,8 @@ void AudioSource::Play()
 
 void AudioSource::Pause()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::Pause");
+
     AudioEngine::m_MusicMixerLock.lock();
     if (!m_Music) {
         TB_CORE_ERROR("AudioSource's music is null/not set!");
@@ -71,6 +78,8 @@ void AudioSource::Pause()
 
 void AudioSource::TogglePlay()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::TogglePlay");
+
     if (m_Playing)
         Pause();
     else
@@ -79,11 +88,15 @@ void AudioSource::TogglePlay()
 
 bool AudioSource::IsPlaying()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::IsPlaying");
+
     return m_Playing;
 }
 
 void AudioSource::SetAudio(AssetHandle audioHandle)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetAudio");
+
     AudioEngine::m_MusicMixerLock.lock();
 
     Shared<Audio> audio = AssetManager::GetAsset<Audio>(audioHandle);
@@ -103,6 +116,8 @@ void AudioSource::SetAudio(AssetHandle audioHandle)
 
 void AudioSource::UnsetAudio()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UnsetAudio");
+
     AudioEngine::m_MusicMixerLock.lock();
     alSourcei(m_SourceID, AL_BUFFER, NULL);
     CHECK_AL_ERRORS();
@@ -113,6 +128,8 @@ void AudioSource::UnsetAudio()
 
 void AudioSource::UpdateBuffer()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UpdateBuffer");
+
     alSourceStop(m_SourceID);
     CHECK_AL_ERRORS();
     alSourcei(m_SourceID, AL_BUFFER, NULL);
@@ -143,6 +160,8 @@ void AudioSource::UpdateBuffer()
 
 void AudioSource::UpdatePlayer()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UpdatePlayer");
+
     if (!m_Music)
         return;
 
@@ -188,12 +207,17 @@ void AudioSource::UpdatePlayer()
 
 float AudioSource::GetPitch()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetPitch");
+
     float pitch;
     alGetSourcef(m_SourceID, AL_PITCH, &pitch);
     return pitch;
 }
+
 float AudioSource::GetGain()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetGain");
+
     float gain;
     alGetSourcef(m_SourceID, AL_GAIN, &gain);
     return gain;
@@ -201,40 +225,54 @@ float AudioSource::GetGain()
 
 void AudioSource::SetPitch(float pitch)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetPitch");
+
     alSourcef(m_SourceID, AL_PITCH, pitch);
     CHECK_AL_ERRORS();
 }
 void AudioSource::SetGain(float gain)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetGain");
+
     alSourcef(m_SourceID, AL_GAIN, gain);
     CHECK_AL_ERRORS();
 }
 
 void AudioSource::SetMinGain(float gain)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetMinGain");
     alSourcef(m_SourceID, AL_MIN_GAIN, gain);
     CHECK_AL_ERRORS();
 }
+
 void AudioSource::SetMaxGain(float gain)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetMaxGain");
+
     alSourcef(m_SourceID, AL_MAX_GAIN, gain);
     CHECK_AL_ERRORS();
 }
 
 float AudioSource::GetRolloffFactor()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetRolloffFactor");
+
     float factor;
     alGetSourcef(m_SourceID, AL_ROLLOFF_FACTOR, &factor);
     return factor;
 }
+
 float AudioSource::GetMaxDistance()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetMaxDistance");
     float distance;
     alGetSourcef(m_SourceID, AL_MAX_DISTANCE, &distance);
     return distance;
 }
+
 float AudioSource::GetReferenceDistance()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetReferenceDistance");
     float distance;
     alGetSourcef(m_SourceID, AL_REFERENCE_DISTANCE, &distance);
     return distance;
@@ -242,22 +280,32 @@ float AudioSource::GetReferenceDistance()
 
 void AudioSource::SetRolloffFactor(float rate)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetRolloffFactor");
+
     alSourcef(m_SourceID, AL_ROLLOFF_FACTOR, rate);
     CHECK_AL_ERRORS();
 }
+
 void AudioSource::SetMaxDistance(float distance)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetMaxDistance");
+
     alSourcef(m_SourceID, AL_MAX_DISTANCE, distance);
     CHECK_AL_ERRORS();
 }
+
 void AudioSource::SetReferenceDistance(float distance)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetReferenceDistance");
+
     alSourcef(m_SourceID, AL_REFERENCE_DISTANCE, distance);
     CHECK_AL_ERRORS();
 }
 
 bool AudioSource::GetRelative()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetRelative");
+
     int relative;
     alGetSourcei(m_SourceID, AL_SOURCE_RELATIVE, &relative);
 
@@ -268,17 +316,24 @@ bool AudioSource::GetRelative()
 }
 bool AudioSource::GetLooping()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetLooping");
+
     return m_Loop;
 }
 
 float AudioSource::GetMinGain()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetMinGain");
+
     float gain;
     alGetSourcef(m_SourceID, AL_MIN_GAIN, &gain);
     return gain;
 }
+
 float AudioSource::GetMaxGain()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetMaxGain");
+
     float gain;
     alGetSourcef(m_SourceID, AL_MAX_GAIN, &gain);
     return gain;
@@ -286,6 +341,8 @@ float AudioSource::GetMaxGain()
 
 void AudioSource::SetRelative(bool relative)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetRelative");
+
     if (relative) {
         alSourcei(m_SourceID, AL_SOURCE_RELATIVE, AL_TRUE);
         CHECK_AL_ERRORS();
@@ -294,29 +351,40 @@ void AudioSource::SetRelative(bool relative)
         CHECK_AL_ERRORS();
     }
 }
+
 void AudioSource::SetLooping(bool looping)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetLooping");
+
     m_Loop = looping;
 }
 
 Vector3 AudioSource::GetPosition()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetPosition");
+
     float pos[3];
     alGetSourcefv(m_SourceID, AL_POSITION, pos);
     CHECK_AL_ERRORS();
 
     return { pos[0], pos[1], pos[2] };
 }
+
 Vector3 AudioSource::GetVelocity()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetVelocity");
+
     float vel[3];
     alGetSourcefv(m_SourceID, AL_VELOCITY, vel);
     CHECK_AL_ERRORS();
 
     return { vel[0], vel[1], vel[2] };
 }
+
 Vector3 AudioSource::GetDirection()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetDirection");
+
     float dir[3];
     alGetSourcefv(m_SourceID, AL_DIRECTION, dir);
     CHECK_AL_ERRORS();
@@ -326,18 +394,24 @@ Vector3 AudioSource::GetDirection()
 
 void AudioSource::SetPosition(const Vector3& position)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetPosition");
+
     ALfloat pos[] = { position.x, position.x, position.x };
     alSourcefv(m_SourceID, AL_POSITION, pos);
     CHECK_AL_ERRORS();
 }
 void AudioSource::SetVelocity(const Vector3& velocity)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetVelocity");
+
     ALfloat vel[] = { velocity.x, velocity.x, velocity.x };
     alSourcefv(m_SourceID, AL_POSITION, vel);
     CHECK_AL_ERRORS();
 }
 void AudioSource::SetDirection(const Vector3& direction)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetDirection");
+
     ALfloat dir[] = { direction.x, direction.x, direction.x };
     alSourcefv(m_SourceID, AL_POSITION, dir);
     CHECK_AL_ERRORS();
@@ -345,18 +419,26 @@ void AudioSource::SetDirection(const Vector3& direction)
 
 float AudioSource::GetConeOuterGain()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetConeOuterGain");
+
     float gain;
     alGetSourcef(m_SourceID, AL_CONE_OUTER_GAIN, &gain);
     return gain;
 }
+
 float AudioSource::GetConeInnerAngle()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetConeInnerAngle");
+
     float angle;
     alGetSourcef(m_SourceID, AL_CONE_INNER_ANGLE, &angle);
     return angle;
 }
+
 float AudioSource::GetConeOuterAngle()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetConeOuterAngle");
+
     float angle;
     alGetSourcef(m_SourceID, AL_CONE_OUTER_ANGLE, &angle);
     return angle;
@@ -364,16 +446,24 @@ float AudioSource::GetConeOuterAngle()
 
 void AudioSource::SetConeOuterGain(float gain)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetConeOuterGain");
+
     alSourcei(m_SourceID, AL_CONE_OUTER_GAIN, gain);
     CHECK_AL_ERRORS();
 }
+
 void AudioSource::SetConeInnerAngle(float angle)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetConeInnerAngle");
+
     alSourcei(m_SourceID, AL_CONE_INNER_ANGLE, angle);
     CHECK_AL_ERRORS();
 }
+
 void AudioSource::SetConeOuterAngle(float angle)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetConeOuterAngle");
+
     alSourcei(m_SourceID, AL_CONE_OUTER_ANGLE, angle);
     CHECK_AL_ERRORS();
 }

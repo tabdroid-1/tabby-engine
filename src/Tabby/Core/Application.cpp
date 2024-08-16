@@ -15,7 +15,7 @@ Application* Application::s_Instance = nullptr;
 Application::Application(const ApplicationSpecification& specification)
     : m_Specification(specification)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::Constructor");
 
     TB_CORE_ASSERT_TAGGED(!s_Instance, "Application already exists!");
     s_Instance = this;
@@ -45,11 +45,14 @@ Application::Application(const ApplicationSpecification& specification)
 
     m_ImGuiLayer = new ImGuiLayer();
     PushOverlay(m_ImGuiLayer);
+
+    TB_PROFILE_SET_THREAD_NAME("Tabby::Application")
 }
 
 Application::~Application()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::Destructor");
+
     AudioEngine::Shutdown();
     Renderer::Shutdown();
 
@@ -58,7 +61,7 @@ Application::~Application()
 
 void Application::PushLayer(Layer* layer)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::PushLayer");
 
     m_LayerStack.PushLayer(layer);
     layer->OnAttach();
@@ -66,7 +69,7 @@ void Application::PushLayer(Layer* layer)
 
 void Application::PushOverlay(Layer* layer)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::PushOverlay");
 
     m_LayerStack.PushOverlay(layer);
     layer->OnAttach();
@@ -74,11 +77,15 @@ void Application::PushOverlay(Layer* layer)
 
 void Application::Close()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::Close");
+
     m_Running = false;
 }
 
 void Application::SubmitToMainThread(const std::function<void()>& function)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::SubmitToMainThread");
+
     std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
 
     m_MainThreadQueue.emplace_back(function);
@@ -86,7 +93,7 @@ void Application::SubmitToMainThread(const std::function<void()>& function)
 
 void Application::OnEvent(Event& e)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::OnEvent");
 
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<WindowCloseEvent>(TB_BIND_EVENT_FN(Application::OnWindowClose));
@@ -108,7 +115,8 @@ void Application::Run()
 #else
     while (m_Running) {
 #endif
-        TB_PROFILE_FRAME("Application");
+        TB_PROFILE_FRAME();
+        TB_PROFILE_SCOPE_NAME("Tabby::Application::Update");
 
         double time = Time::GetTime();
         Time::SetDeltaTime(time - m_LastFrameTime);
@@ -120,7 +128,7 @@ void Application::Run()
                                                              // and that breaks the phyiscs and some other stuff.
                                                              // this happens because m_LastFrameTime is 0 in first frame.
             {
-                TB_PROFILE_SCOPE_NAME("LayerStack OnUpdate");
+                TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackUpdate");
 
                 // TODO: Remove TimeStep
                 for (Layer* layer : m_LayerStack)
@@ -129,7 +137,7 @@ void Application::Run()
 
             m_ImGuiLayer->Begin();
             {
-                TB_PROFILE_SCOPE_NAME("LayerStack OnImGuiRender");
+                TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackOnImGuiRender");
 
                 for (Layer* layer : m_LayerStack)
                     layer->OnImGuiRender();
@@ -142,6 +150,7 @@ void Application::Run()
 
         // Framerate limiter. this will do nothing if maxFPS is 0.
         if (m_Specification.MaxFPS > 0.0) {
+            TB_PROFILE_SCOPE_NAME("Tabby::Application::FramerateLimiter");
             double frameTime = Time::GetTime() - time;
 
             double frameTimeLimit = 1.0 / m_Specification.MaxFPS;
@@ -155,13 +164,15 @@ void Application::Run()
 
 bool Application::OnWindowClose(WindowCloseEvent& e)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::OnWindowClose");
+
     m_Running = false;
     return true;
 }
 
 bool Application::OnWindowResize(WindowResizeEvent& e)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::OnWindowResize");
 
     if (e.GetWidth() == 0 || e.GetHeight() == 0) {
         m_Minimized = true;
@@ -176,12 +187,16 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
 
 bool Application::OnMouseScroll(MouseScrolledEvent& e)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::OnMouseScroll");
+
     Input::s_Instance->m_MouseScrollDelta = { e.GetXOffset(), e.GetYOffset() };
     return false;
 }
 
 void Application::ExecuteMainThreadQueue()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Application::ExecuteMainThreadQueue");
+
     std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
 
     for (auto& func : m_MainThreadQueue)

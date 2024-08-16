@@ -20,6 +20,8 @@ Material::Material()
     , m_DepthTestEnabled(true)
     , m_AlphaBlendingEnabled(true)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Material::Constructor");
+
     m_ModelMatrix = Matrix4(1.0f);
     m_ModelMatrix = glm::translate(m_ModelMatrix, Vector3(0.0f, 0.0f, 0.0f));
     m_ModelMatrix = glm::scale(m_ModelMatrix, Vector3(1.0f, 1.0f, 1.0f));
@@ -41,6 +43,8 @@ Material::Material(const std::string& name, Shared<Shader> shader)
     , m_DepthTestEnabled(true)
     , m_AlphaBlendingEnabled(true)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Material::Constructor");
+
     m_ModelMatrix = Matrix4(1.0f);
     m_ModelMatrix = glm::translate(m_ModelMatrix, Vector3(0.0f, 0.0f, 0.0f));
     m_ModelMatrix = glm::scale(m_ModelMatrix, Vector3(1.0f, 1.0f, 1.0f));
@@ -61,6 +65,8 @@ Material::Material(const std::string& name, const std::string& shaderPath)
     , m_DepthTestEnabled(true)
     , m_AlphaBlendingEnabled(true)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Material::Constructor");
+
     m_Shader = Shader::Create(shaderPath);
 
     m_ModelMatrix = Matrix4(1.0f);
@@ -70,6 +76,8 @@ Material::Material(const std::string& name, const std::string& shaderPath)
 
 Material::Material(const Shared<Material>& material)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Material::Constructor");
+
     this->m_Name = material->m_Name;
     this->m_Shader = material->m_Shader;
 
@@ -96,6 +104,8 @@ Material::Material(const Shared<Material>& material)
 
 void Material::CloneMaterialProperties(Shared<Material> material)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Material::CloneMaterialProperties");
+
     this->m_Name = material->m_Name;
     this->m_Shader = material->m_Shader;
 
@@ -122,6 +132,8 @@ void Material::CloneMaterialProperties(Shared<Material> material)
 
 void Material::Render()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Material::Render");
+
     RenderCommand::EnableDepthTest(m_DepthTestEnabled);
     RenderCommand::EnableAlphaBlending(m_AlphaBlendingEnabled);
 

@@ -19,6 +19,8 @@ static constexpr int BufferMillisec = 200;
 
 void AudioEngine::FetchALErrors(const std::filesystem::path& file, int line)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::FetchALErrors");
+
     bool error_found = false;
     std::stringstream err_msg_stream;
 
@@ -62,6 +64,8 @@ void AudioEngine::FetchALErrors(const std::filesystem::path& file, int line)
 
 void AudioEngine::FetchALCErrors(ALCdevice* device, const std::filesystem::path& file, int line)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::FetchALCErrors");
+
     bool error_found = false;
     std::stringstream err_msg_stream;
 
@@ -105,6 +109,8 @@ void AudioEngine::FetchALCErrors(ALCdevice* device, const std::filesystem::path&
 
 AudioEngine::AudioEngine()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::Constructor");
+
     TB_CORE_ASSERT_TAGGED(!s_Instance, "Audio Engine instance already created!");
     s_Instance = this;
 
@@ -131,6 +137,8 @@ AudioEngine::AudioEngine()
 
 AudioEngine::~AudioEngine()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::Destructor");
+
     m_ShouldThreadClose = true;
     if (m_PollingThread.joinable()) {
         m_PollingThread.join();
@@ -139,29 +147,40 @@ AudioEngine::~AudioEngine()
 
 void AudioEngine::Init()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::Init");
+
     if (!s_Instance)
         s_Instance = new AudioEngine();
 }
 
 void AudioEngine::Shutdown()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::Shutdown");
+
     delete s_Instance;
 }
 
 Vector3 AudioEngine::GetPosition()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::GetPosition");
+
     ALfloat* listenerPos;
     alGetListenerfv(AL_POSITION, listenerPos);
     return { listenerPos[0], listenerPos[0], listenerPos[0] };
 }
+
 Vector3 AudioEngine::GetVelocity()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::GetVelocity");
+
     ALfloat* listenerVel;
     alGetListenerfv(AL_POSITION, listenerVel);
     return { listenerVel[0], listenerVel[0], listenerVel[0] };
 }
+
 float* AudioEngine::GetOrientation()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::GetOrientation");
     ALfloat* listenerOri;
     alGetListenerfv(AL_POSITION, listenerOri);
     return listenerOri;
@@ -169,22 +188,30 @@ float* AudioEngine::GetOrientation()
 
 void AudioEngine::SetPosition(const Vector3& position)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::SetPosition");
+
     ALfloat listenerPos[] = { position.x, position.x, position.x };
     alListenerfv(AL_POSITION, listenerPos);
 }
 void AudioEngine::SetVelocity(const Vector3& velocity)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::SetVelocity");
+
     ALfloat listenerVel[] = { velocity.x, velocity.x, velocity.x };
     alListenerfv(AL_VELOCITY, listenerVel);
 }
 void AudioEngine::SetOrientation(const Vector3& look, const Vector3& up)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::SetOrientation");
+
     ALfloat listenerOri[] = { look.x, look.x, look.x, up.x, up.y, up.z };
     alListenerfv(AL_ORIENTATION, listenerOri);
 }
 
 AudioSource* AudioEngine::CreateAudioSource(AssetHandle handle)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::CreateAudioSource");
+
     AudioSource* audioSource = new AudioSource();
     if (handle)
         audioSource->SetAudio(handle);
@@ -196,9 +223,14 @@ AudioSource* AudioEngine::CreateAudioSource(AssetHandle handle)
 
 void AudioEngine::EnginePollingThread()
 {
-    while (!m_ShouldThreadClose) {
 
-        TB_PROFILE_SCOPE_NAME("AudioAudioEngine::Update");
+    TB_PROFILE_SET_THREAD_NAME("Tabby::AudioEngine");
+
+    while (!m_ShouldThreadClose) {
+        TB_PROFILE_FRAME();
+
+        TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::UpdateThread");
+
         m_MusicMixerLock.lock();
 
         for (AudioSource* player : m_MusicMixer) {

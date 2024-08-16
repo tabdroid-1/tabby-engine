@@ -20,21 +20,21 @@ static uint8_t s_SDLWindowCount = 0;
 
 LinuxWindow::LinuxWindow(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::Constructor");
 
     Init(props);
 }
 
 LinuxWindow::~LinuxWindow()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::Destructor");
 
     Shutdown();
 }
 
 void LinuxWindow::Init(const WindowProps& props)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::Init");
 
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
@@ -47,7 +47,7 @@ void LinuxWindow::Init(const WindowProps& props)
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
     if (s_SDLWindowCount == 0) {
-        TB_PROFILE_SCOPE_NAME("SDL Init");
+        TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::Init::SDL_Init");
         int success = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
         if (success != 0) {
             TB_CORE_INFO("{}", SDL_GetError());
@@ -56,7 +56,7 @@ void LinuxWindow::Init(const WindowProps& props)
     }
 
     {
-        TB_PROFILE_SCOPE_NAME("SDLCreateWindow");
+        TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::Init::SDL_CreateWindow");
 
         if (Renderer::GetAPI() == RendererAPI::API::OpenGL46) {
 
@@ -108,7 +108,7 @@ void LinuxWindow::Init(const WindowProps& props)
 
 void LinuxWindow::Shutdown()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::Shutdown");
 
     SDL_DestroyWindow(m_Window);
     --s_SDLWindowCount;
@@ -120,7 +120,7 @@ void LinuxWindow::Shutdown()
 
 void LinuxWindow::OnUpdate()
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::OnUpdate");
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -198,7 +198,7 @@ void LinuxWindow::OnUpdate()
 
 void LinuxWindow::SetVSync(bool enabled)
 {
-    TB_PROFILE_SCOPE();
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::SetVSync");
 
     if (enabled)
         SDL_GL_SetSwapInterval(1);
@@ -210,11 +210,14 @@ void LinuxWindow::SetVSync(bool enabled)
 
 bool LinuxWindow::IsVSync() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::IsVSync");
+
     return m_Data.VSync;
 }
 
 void LinuxWindow::SetResizable(bool enabled)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::SetResizable");
 
     if (enabled)
         SDL_SetWindowResizable(m_Window, SDL_TRUE);
@@ -223,13 +226,17 @@ void LinuxWindow::SetResizable(bool enabled)
     m_Data.Resizeable = enabled;
 }
 
-bool LinuxWindow::GetResizable() const
+bool LinuxWindow::IsResizable() const
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::GetResizable");
+
     return m_Data.Resizeable;
 }
 
 void LinuxWindow::SetMinSize(uint32_t minWidth, uint32_t minHeight)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::SetMinSize");
+
     SDL_SetWindowMinimumSize(m_Window, minWidth, minHeight);
     m_Data.MinWidth = minWidth;
     m_Data.MinHeight = minHeight;

@@ -11,6 +11,8 @@ namespace Tabby {
 
 Shared<VertexBuffer> VertexBuffer::Create(uint32_t size)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::VertexBuffer::Create");
+
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
@@ -29,6 +31,8 @@ Shared<VertexBuffer> VertexBuffer::Create(uint32_t size)
 
 Shared<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::VertexBuffer::Create");
+
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
@@ -47,6 +51,8 @@ Shared<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
 
 Shared<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::IndexBuffer::Create");
+
     switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
         TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");

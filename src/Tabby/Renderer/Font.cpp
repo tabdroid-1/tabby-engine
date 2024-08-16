@@ -1,18 +1,21 @@
 
-#include "SDL_rwops.h"
 #include "Font.h"
 #include "tbpch.h"
 #include <Tabby/Core/Base.h>
 #include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Renderer/RendererAPI.h>
 
 #include <Tabby/Renderer/MSDFData.h>
 
 namespace Tabby {
 
 template <typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
-static AssetHandle CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
+static AssetHandle CreateAndCacheFontAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
     const msdf_atlas::FontGeometry& fontGeometry, uint32_t width, uint32_t height)
 {
+
+    TB_PROFILE_SCOPE_NAME("Tabby::CreateAndCacheFontAtlas");
+
     msdf_atlas::GeneratorAttributes attributes;
     attributes.config.overlapSupport = true;
     attributes.scanlinePass = true;
@@ -24,22 +27,46 @@ static AssetHandle CreateAndCacheAtlas(const std::string& fontName, float fontSi
 
     msdfgen::BitmapConstRef<T, N> bitmap = (msdfgen::BitmapConstRef<T, N>)generator.atlasStorage();
 
-    TextureSpecification spec;
-    spec.Width = bitmap.width;
-    spec.Height = bitmap.height;
-    spec.Format = ImageFormat::RGB8;
-    spec.GenerateMips = false;
+    // i have to do this goofy ass thing cus on ES 3, and only ES 3, texture is pitch black, unless its RGBA. i have no idea why.
+    if (RendererAPI::GetAPI() == RendererAPI::API::OpenGLES3) {
+        TextureSpecification spec;
+        spec.Width = bitmap.width;
+        spec.Height = bitmap.height;
+        spec.Format = ImageFormat::RGBA8;
+        spec.GenerateMips = false;
+        spec.UnpackAlignment = 0;
 
-    AssetHandle handle;
-    Shared<Texture> texture = Texture::Create(spec, handle);
-    texture->SetData(Buffer((void*)bitmap.pixels, bitmap.width * bitmap.height * 3));
-    handle = AssetManager::RegisterAsset(texture, handle);
-    return handle;
+        std::vector<uint8_t> rgbaData(bitmap.width * bitmap.height * 4);
+        for (size_t i = 0, j = 0; i < bitmap.width * bitmap.height * 3; i += 3, j += 4) {
+            rgbaData[j] = bitmap.pixels[i]; // R
+            rgbaData[j + 1] = bitmap.pixels[i + 1]; // G
+            rgbaData[j + 2] = bitmap.pixels[i + 2]; // B
+            rgbaData[j + 3] = 255; // A (full opacity)
+        }
+        AssetHandle handle;
+        Shared<Texture> texture = Texture::Create(spec, handle);
+        texture->SetData(Buffer((void*)rgbaData.data(), rgbaData.size()));
+        return AssetManager::RegisterAsset(texture, handle);
+    } else {
+        TextureSpecification spec;
+        spec.Width = bitmap.width;
+        spec.Height = bitmap.height;
+        spec.Format = ImageFormat::RGB8;
+        spec.GenerateMips = false;
+        spec.UnpackAlignment = 0;
+
+        AssetHandle handle;
+        Shared<Texture> texture = Texture::Create(spec, handle);
+        texture->SetData(Buffer((void*)bitmap.pixels, bitmap.width * bitmap.height * 3));
+        return AssetManager::RegisterAsset(texture, handle);
+    }
 }
 
 Font::Font(const std::string name, AssetHandle handle, Buffer data)
     : m_Data(CreateShared<MSDFData>())
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Font::Constructor");
+
     Handle = handle;
     Type = AssetType::TABBY_FONT;
 
@@ -70,7 +97,7 @@ Font::Font(const std::string name, AssetHandle handle, Buffer data)
     double fontScale = 1.0;
     m_Data->FontGeometry = msdf_atlas::FontGeometry(&m_Data->Glyphs);
     int glyphsLoaded = m_Data->FontGeometry.loadCharset(font, fontScale, charset);
-    TB_CORE_INFO("Loaded {} glyphs from font (out of {})", glyphsLoaded, charset.size());
+    // TB_CORE_INFO("Loaded {} glyphs from font (out of {})", glyphsLoaded, charset.size());
 
     double emSize = 40.0;
 
@@ -112,7 +139,7 @@ Font::Font(const std::string name, AssetHandle handle, Buffer data)
         }
     }
 
-    m_AtlasTexture = CreateAndCacheAtlas<uint8_t, float, 3, msdf_atlas::msdfGenerator>("Test", (float)emSize, m_Data->Glyphs, m_Data->FontGeometry, width, height);
+    m_AtlasTexture = CreateAndCacheFontAtlas<uint8_t, float, 3, msdf_atlas::msdfGenerator>("Test", (float)emSize, m_Data->Glyphs, m_Data->FontGeometry, width, height);
 
 #if 0
 		msdfgen::Shape shape;
@@ -135,10 +162,13 @@ Font::Font(const std::string name, AssetHandle handle, Buffer data)
 
 Font::~Font()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Font::Destructor");
+
     Destroy();
 }
 
 void Font::Destroy()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Font::Destroy");
 }
 }

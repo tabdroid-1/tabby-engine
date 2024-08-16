@@ -26,8 +26,10 @@ Todo
     - <s>Go balls deep in to ECS (ECS like in Bevy Engine)</s> kinda done since 20-06-2024_1 Alpha. 
     - <s>Implement File Dialog to linux.</s> Done Since 02-07-2024_1 Alpha
     - <s>Add font support to asset manager.</s> Done since 15-08-2024_1 Alpha 
-    - Fix OpenGL ES Text Shader. 
-    - Clean up the code, add comments etc.
+    - <s>Fix OpenGL ES Text Shader. </s>  
+    - Clean up the code.
+        - <s>Expand Tracy profiler coverage.</s> 
+        - Comments and general cleaning. 
     - Multithreading
     - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
 

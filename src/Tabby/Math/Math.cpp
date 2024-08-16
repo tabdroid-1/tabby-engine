@@ -8,6 +8,7 @@ namespace Tabby::Math {
 
 bool DecomposeTransform(const glm::mat4& transform, glm::vec3& translation, glm::vec3& rotation, glm::vec3& scale)
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::Math::DecomposeTransform");
     // From glm::decompose in matrix_decompose.inl
 
     using namespace glm;

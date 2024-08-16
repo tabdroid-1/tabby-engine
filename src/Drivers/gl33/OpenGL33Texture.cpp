@@ -1,6 +1,7 @@
 #include "Drivers/gl33/OpenGL33Texture.h"
 
 #include "tbpch.h"
+#include <Drivers/GPUProfiler.h>
 #include <stb_image.h>
 
 namespace Tabby {
@@ -45,7 +46,8 @@ OpenGL33Texture::OpenGL33Texture(const TextureSpecification& specification, Asse
     , m_Width(m_Specification.Width)
     , m_Height(m_Specification.Height)
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) Constructor");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Texture::Constructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33Texture::Constructor");
 
     Handle = handle;
     m_InternalFormat = Utils::TabbyImageFormatToGLInternalFormat(m_Specification.Format);
@@ -80,12 +82,16 @@ OpenGL33Texture::OpenGL33Texture(const TextureSpecification& specification, Asse
 
 OpenGL33Texture::~OpenGL33Texture()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Texture::Destructor");
+    TB_PROFILE_GPU("Tabby::OpenGL33Texture::Destructor");
+
     Destroy();
 }
 
 void OpenGL33Texture::SetData(Buffer data)
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) Set data");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Texture::SetData");
+    TB_PROFILE_GPU("Tabby::OpenGL33Texture::SetData");
 
     // uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
     // TB_CORE_ASSERT_TAGGED(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
@@ -99,7 +105,8 @@ void OpenGL33Texture::SetData(Buffer data)
 
 void OpenGL33Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) Set sub data");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Texture::SetSubData");
+    TB_PROFILE_GPU("Tabby::OpenGL33Texture::SetSubData");
 
     glBindTexture(GL_TEXTURE_2D, m_RendererID);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
@@ -110,7 +117,8 @@ void OpenGL33Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 
 void OpenGL33Texture::Bind(uint32_t slot) const
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) bind");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Texture::Bind");
+    TB_PROFILE_GPU("Tabby::OpenGL33Texture::Bind");
 
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, m_RendererID);
@@ -118,7 +126,8 @@ void OpenGL33Texture::Bind(uint32_t slot) const
 
 void OpenGL33Texture::Destroy()
 {
-    TB_PROFILE_SCOPE_NAME("(Textures) Delete");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Texture::Destroy");
+    TB_PROFILE_GPU("Tabby::OpenGL33Texture::Destroy");
 
     glDeleteTextures(1, &m_RendererID);
 }

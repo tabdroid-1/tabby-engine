@@ -43,7 +43,7 @@ OpenGLES3Texture::OpenGLES3Texture(const TextureSpecification& specification, As
     , m_Width(m_Specification.Width)
     , m_Height(m_Specification.Height)
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) Constructor");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Texture::Constructor");
 
     Handle = handle;
     m_InternalFormat = Utils::TabbyImageFormatToGLInternalFormat(m_Specification.Format);
@@ -77,12 +77,14 @@ OpenGLES3Texture::OpenGLES3Texture(const TextureSpecification& specification, As
 
 OpenGLES3Texture::~OpenGLES3Texture()
 {
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Texture::Destructor");
+
     Destroy();
 }
 
 void OpenGLES3Texture::SetData(Buffer data)
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) Set data");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Texture::SetData");
 
     // uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
     // TB_CORE_ASSERT_TAGGED(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
@@ -96,7 +98,7 @@ void OpenGLES3Texture::SetData(Buffer data)
 
 void OpenGLES3Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) Set sub data");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Texture::SetSubData");
 
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
     GLES3::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
@@ -107,7 +109,7 @@ void OpenGLES3Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 
 void OpenGLES3Texture::Bind(uint32_t slot) const
 {
-    TB_PROFILE_SCOPE_NAME("(Texture) bind");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Texture::Bind");
 
     GLES3::GL()->ActiveTexture(GL_TEXTURE0 + slot);
     GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
@@ -115,7 +117,7 @@ void OpenGLES3Texture::Bind(uint32_t slot) const
 
 void OpenGLES3Texture::Destroy()
 {
-    TB_PROFILE_SCOPE_NAME("(Textures) Delete");
+    TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Texture::Destroy");
 
     GLES3::GL()->DeleteTextures(1, &m_RendererID);
 }
