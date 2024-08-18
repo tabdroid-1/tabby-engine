@@ -1,5 +1,5 @@
-#include "Math.h"
-#include "tbpch.h"
+#include <tbpch.h>
+#include <Tabby/Math/Math.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>

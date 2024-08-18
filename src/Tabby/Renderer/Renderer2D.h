@@ -1,9 +1,8 @@
 #pragma once
-
 #include <Tabby/Renderer/Texture.h>
+#include <Tabby/World/Components.h>
 #include <Tabby/Renderer/Camera.h>
 #include <Tabby/Renderer/Font.h>
-#include <Tabby/World/Components.h>
 
 namespace Tabby {
 

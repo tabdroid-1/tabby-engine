@@ -1,10 +1,9 @@
-#include "tbpch.h"
-
+#include <tbpch.h>
 #include <Drivers/gl46/OpenGL46Shader.h>
 #include <Drivers/GPUProfiler.h>
 
-#include <gl.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <gl.h>
 
 namespace Tabby {
 

@@ -1,6 +1,6 @@
 #pragma once
-
 #include <Tabby/World/Entity.h>
+
 #include <box2d/box2d.h>
 
 namespace Tabby {

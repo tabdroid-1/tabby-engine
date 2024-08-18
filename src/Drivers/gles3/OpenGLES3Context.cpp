@@ -1,5 +1,4 @@
-#include "tbpch.h"
-
+#include <tbpch.h>
 #include <Drivers/gles3/GLES3.h>
 #include <Drivers/gles3/OpenGLES3Context.h>
 
@@ -13,7 +12,6 @@
 
 #define GLAD_GLES2_IMPLEMENTATION
 #include <gles3.h>
-
 #include <SDL.h>
 
 namespace Tabby {
@@ -43,14 +41,14 @@ void OpenGLES3Context::Init()
 #endif
     TB_CORE_ASSERT_TAGGED(status, "Failed to initialize Glad!");
 
-    GLES3::Init(context);
+    GLES::Init(context);
 
     TB_CORE_INFO("OpenGL Info:");
-    TB_CORE_INFO("  Vendor: {0}", GLES3::GL()->GetString(GL_VENDOR));
-    TB_CORE_INFO("  Renderer: {0}", GLES3::GL()->GetString(GL_RENDERER));
-    TB_CORE_INFO("  Version: {0}", GLES3::GL()->GetString(GL_VERSION));
+    TB_CORE_INFO("  Vendor: {0}", GLES::gl->GetString(GL_VENDOR));
+    TB_CORE_INFO("  Renderer: {0}", GLES::gl->GetString(GL_RENDERER));
+    TB_CORE_INFO("  Version: {0}", GLES::gl->GetString(GL_VERSION));
 
-    std::string version = reinterpret_cast<const char*>(GLES3::GL()->GetString(GL_VERSION));
+    std::string version = reinterpret_cast<const char*>(GLES::gl->GetString(GL_VERSION));
     size_t dotPosition = version.find('.');
 
     int major = std::stoi(version.substr(dotPosition - 1));

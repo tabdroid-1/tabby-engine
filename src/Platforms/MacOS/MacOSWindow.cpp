@@ -1,19 +1,13 @@
 #ifdef TB_PLATFORM_MACOS
-#include <Tabby/Core/Input/KeyCodes.h>
+#include <tbpch.h>
+#include <Tabby/Core/Events/ApplicationEvent.h>
+#include <Tabby/Core/Events/MouseEvent.h>
+#include <Platforms/MacOS/MacOSWindow.h>
+#include <Tabby/Core/Events/KeyEvent.h>
 #include <Tabby/Renderer/Renderer.h>
-#include <Tabby/Renderer/RendererAPI.h>
+#include <Tabby/Core/Input/Input.h>
 
-#include "Platforms/MacOS/MacOSWindow.h"
-
-#include "Tabby/Input/Input.h"
-
-#include "Tabby/Core/Events/ApplicationEvent.h"
-#include "Tabby/Core/Events/KeyEvent.h"
-#include "Tabby/Core/Events/MouseEvent.h"
-
-#include "Drivers/gl33/OpenGL33Context.h"
-#include "backends/imgui_impl_sdl2.h"
-
+#include <backends/imgui_impl_sdl2.h>
 #include <SDL.h>
 
 namespace Tabby {
@@ -79,6 +73,9 @@ void MacOSWindow::Init(const WindowProps& props)
 #if defined(TB_DEBUG)
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 #endif
+        } else if (Renderer::GetAPI() == RendererAPI::API::OpenGL46) {
+
+            TB_CORE_ASSERT_TAGGED(false, "MacOS does not support OpenGL 4.6!");
         }
         m_Window = SDL_CreateWindow(
             m_Data.Title.c_str(),

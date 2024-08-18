@@ -1,7 +1,6 @@
 #pragma once
-
-#include <Tabby/Renderer/Shader.h>
 #include <Tabby/Renderer/Texture.h>
+#include <Tabby/Renderer/Shader.h>
 #include <Tabby/Renderer/Shader.h>
 
 // TODO: use asset handle instead of Texture.

@@ -1,15 +1,11 @@
 #pragma once
-
 #include <tbpch.h>
-#include "Tabby/Core/Base.h"
-
-#include "Tabby/Core/Events/ApplicationEvent.h"
-#include "Tabby/Core/Events/MouseEvent.h"
-#include "Tabby/Core/Events/Event.h"
-#include "Tabby/Core/Layer/LayerStack.h"
-#include "Tabby/Core/Window.h"
-
-#include "Tabby/UI/ImGui/ImGuiLayer.h"
+#include <Tabby/Core/Events/ApplicationEvent.h>
+#include <Tabby/Core/Events/MouseEvent.h>
+#include <Tabby/Core/Layer/LayerStack.h>
+#include <Tabby/UI/ImGui/ImGuiLayer.h>
+#include <Tabby/Core/Events/Event.h>
+#include <Tabby/Core/Window.h>
 
 int main(int argc, char** argv);
 
@@ -42,7 +38,10 @@ struct ApplicationSpecification {
     uint32_t MinWidth = 160;
     uint32_t MinHeight = 90;
     float MaxFPS = 0.0f;
+    uint32_t FixedUpdateRate = 60;
     RendererAPI RendererAPI = RendererAPI::OpenGL33;
+    uint8_t MaxGamepads = 4;
+    uint8_t MaxGamepadAxis = 8;
     ApplicationCommandLineArgs CommandLineArgs;
 };
 
@@ -53,22 +52,16 @@ public:
 
     void OnEvent(Event& e);
 
-    void PushLayer(Layer* layer);
-    void PushOverlay(Layer* layer);
+    static void PushLayer(Layer* layer);
+    static void PushOverlay(Layer* layer);
 
-    Window& GetWindow() { return *m_Window; }
+    static Window& GetWindow() { return *s_Instance->m_Window; }
+    static ImGuiLayer& GetImGuiLayer() { return *s_Instance->m_ImGuiLayer; }
+    static const ApplicationSpecification& GetSpecification() { return s_Instance->m_Specification; }
 
-    void Close();
-
-    ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
-
-    static Application& Get() { return *s_Instance; }
-
-    const ApplicationSpecification& GetSpecification() const { return m_Specification; }
-
-    void SubmitToMainThread(const std::function<void()>& function);
-
-    void Run();
+    static void SubmitToMainThread(const std::function<void()>& function);
+    static void Run();
+    static void Close();
 
 private:
     bool OnWindowClose(WindowCloseEvent& e);
@@ -78,20 +71,20 @@ private:
     void ExecuteMainThreadQueue();
 
 private:
-    ApplicationSpecification m_Specification;
-    Scope<Window> m_Window;
-    ImGuiLayer* m_ImGuiLayer;
-    LayerStack m_LayerStack;
+    inline static ApplicationSpecification m_Specification;
+    inline static Scope<Window> m_Window;
+    inline static ImGuiLayer* m_ImGuiLayer;
+    inline static LayerStack m_LayerStack;
 
-    double m_LastFrameTime = 0.0f;
-    bool m_Minimized = false;
-    bool m_Running = true;
+    inline static double m_LastFrameTime = 0.0f;
+    inline static bool m_Minimized = false;
+    inline static bool m_Running = true;
 
-    std::vector<std::function<void()>> m_MainThreadQueue;
-    std::mutex m_MainThreadQueueMutex;
+    inline static std::vector<std::function<void()>> m_MainThreadQueue;
+    inline static std::mutex m_MainThreadQueueMutex;
 
 private:
-    static Application* s_Instance;
+    inline static Application* s_Instance = nullptr;
     friend int ::main(int argc, char** argv);
 };
 

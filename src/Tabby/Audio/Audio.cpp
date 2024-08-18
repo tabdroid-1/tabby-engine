@@ -1,6 +1,6 @@
 #include <Tabby/Audio/Audio.h>
 
-#include "SDL_rwops.h"
+#include <SDL_rwops.h>
 #include <AL/al.h>
 
 namespace Tabby {

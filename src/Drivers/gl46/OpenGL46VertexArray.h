@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tabby/Renderer/VertexArray.h"
+#include <Tabby/Renderer/VertexArray.h>
 
 namespace Tabby {
 

@@ -1,18 +1,14 @@
 #ifdef TB_PLATFORM_ANDROID
-#include "tbpch.h"
+#include <tbpch.h>
+#include <Tabby/Core/Events/ApplicationEvent.h>
+#include <Platforms/Android/AndroidWindow.h>
+#include <Tabby/Core/Events/MouseEvent.h>
+#include <Tabby/Core/Events/KeyEvent.h>
+#include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Core/Input/Input.h>
 
-#include "Platforms/Android/AndroidWindow.h"
-
-#include "Tabby/Core/Input/Input.h"
-#include "backends/imgui_impl_sdl2.h"
-
-#include "Tabby/Core/Events/ApplicationEvent.h"
-#include "Tabby/Core/Events/KeyEvent.h"
-#include "Tabby/Core/Events/MouseEvent.h"
-
-#include "Tabby/Renderer/Renderer.h"
-
-#include <../../../vendor/SDL2/src/main/android/SDL_android_main.c>
+#include <backends/imgui_impl_sdl2.h>
+// #include <../../../vendor/SDL2/src/main/android/SDL_android_main.c>
 #include <SDL.h>
 
 namespace Tabby {
@@ -55,17 +51,10 @@ void AndroidWindow::Init(const WindowProps& props)
 
     {
         TB_PROFILE_SCOPE_NAME("Tabby::AndroidWindow::Init::SDL_CreateWindow");
-        if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
+        if (Renderer::GetAPI() == RendererAPI::API::OpenGL33 || Renderer::GetAPI() == RendererAPI::API::OpenGL46) {
 
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-            SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-#if defined(TB_DEBUG)
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-#endif
+            TB_CORE_ASSERT_TAGGED(false, "Android does not support OpenGL 3.3 or OpenGL 4.6!");
+
         } else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3) {
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);

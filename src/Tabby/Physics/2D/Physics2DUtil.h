@@ -1,5 +1,4 @@
 #pragma once
-
 #include <Tabby/Physics/2D/Physics2DTypes.h>
 #include <Tabby/World/Components.h>
 

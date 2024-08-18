@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tabby/Renderer/Framebuffer.h"
+#include <Tabby/Renderer/Framebuffer.h>
 
 namespace Tabby {
 

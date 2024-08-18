@@ -1,8 +1,9 @@
-#include "Drivers/gl33/OpenGL33Texture.h"
-
-#include "tbpch.h"
+#include <tbpch.h>
+#include <Drivers/gl33/OpenGL33Texture.h>
 #include <Drivers/GPUProfiler.h>
+
 #include <stb_image.h>
+#include <gl.h>
 
 namespace Tabby {
 
@@ -93,6 +94,7 @@ void OpenGL33Texture::SetData(Buffer data)
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Texture::SetData");
     TB_PROFILE_GPU("Tabby::OpenGL33Texture::SetData");
 
+    // TODO:
     // uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
     // TB_CORE_ASSERT_TAGGED(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
 

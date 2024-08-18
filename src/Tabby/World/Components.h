@@ -1,5 +1,4 @@
 #pragma once
-
 #include <tbpch.h>
 #include <Tabby/Renderer/Camera.h>
 #include <Tabby/Renderer/Font.h>

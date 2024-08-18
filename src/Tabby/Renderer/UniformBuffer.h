@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Tabby/Core/Base.h"
-
 namespace Tabby {
 
 class UniformBuffer {

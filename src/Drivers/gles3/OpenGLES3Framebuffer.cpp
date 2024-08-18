@@ -1,6 +1,6 @@
-#include "Drivers/gles3/OpenGLES3Framebuffer.h"
-#include "Drivers/gles3/GLES3.h"
-#include "tbpch.h"
+#include <tbpch.h>
+#include <Drivers/gles3/OpenGLES3Framebuffer.h>
+#include <Drivers/gles3/GLES3.h>
 
 #include <gles3.h>
 
@@ -14,53 +14,41 @@ namespace Utils {
     {
         TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::Utils::CreateTextures");
 
-        GLES3::GL()->GenTextures(count, outID);
-        GLES3::GL()->BindTexture(GL_TEXTURE_2D, *outID);
+        GLES::gl->GenTextures(count, outID);
+        GLES::gl->BindTexture(GL_TEXTURE_2D, *outID);
     }
 
     static void BindTexture(uint32_t id)
     {
         TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::Utils::BindTexture");
 
-        GLES3::GL()->BindTexture(GL_TEXTURE_2D, id);
+        GLES::gl->BindTexture(GL_TEXTURE_2D, id);
     }
 
-    static void AttachColorTexture(uint32_t id, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index)
+    static void AttachColorTexture(uint32_t id, GLenum internalFormat, GLenum format, GLenum type, uint32_t width, uint32_t height, int index)
     {
         TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::Utils::AttachColorTexture");
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        GLES::gl->TexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, nullptr);
 
-        GLES3::GL()->TexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
-
-        GLES3::GL()->FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, id, 0);
+        GLES::gl->FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, id, 0);
     }
 
-    static void AttachDepthTexture(uint32_t id, GLenum format, GLenum attachmentType, uint32_t width, uint32_t height)
+    static void AttachDepthTexture(uint32_t id, GLenum internalFormat, GLenum format, GLenum imageType, GLenum attachmentType, uint32_t width, uint32_t height)
     {
         TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::Utils::AttachDepthTexture");
 
-        GLES3::GL()->TexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT_24_8, 0);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-        uint32_t rboID;
-        GLES3::GL()->GenRenderbuffers(1, &rboID);
-        GLES3::GL()->BindRenderbuffer(GL_RENDERBUFFER, rboID);
-        GLES3::GL()->RenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-        GLES3::GL()->FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboID);
-
-        GLES3::GL()->FramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, id, 0);
-
-        GLES3::GL()->DeleteRenderbuffers(1, &rboID);
+        GLES::gl->TexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, imageType, nullptr);
+        GLES::gl->FramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, GL_TEXTURE_2D, id, 0);
     }
 
     static bool IsDepthFormat(FramebufferTextureFormat format)
@@ -107,9 +95,9 @@ OpenGLES3Framebuffer::~OpenGLES3Framebuffer()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::Destructor");
 
-    GLES3::GL()->DeleteFramebuffers(1, &m_RendererID);
-    GLES3::GL()->DeleteTextures(1, &m_ColorAttachment);
-    GLES3::GL()->DeleteTextures(1, &m_DepthAttachment);
+    GLES::gl->DeleteFramebuffers(1, &m_RendererID);
+    GLES::gl->DeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
+    GLES::gl->DeleteTextures(1, &m_DepthAttachment);
 }
 
 void OpenGLES3Framebuffer::Invalidate()
@@ -117,68 +105,95 @@ void OpenGLES3Framebuffer::Invalidate()
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::Invalidate");
 
     if (m_RendererID) {
-        GLES3::GL()->DeleteFramebuffers(1, &m_RendererID);
-        GLES3::GL()->DeleteTextures(1, &m_ColorAttachment);
-        GLES3::GL()->DeleteTextures(1, &m_DepthAttachment);
+        GLES::gl->DeleteFramebuffers(1, &m_RendererID);
+        GLES::gl->DeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
+        GLES::gl->DeleteTextures(1, &m_DepthAttachment);
 
-        m_ColorAttachment = 0;
+        m_ColorAttachments.clear();
         m_DepthAttachment = 0;
     }
 
-    GLES3::GL()->GenFramebuffers(1, &m_RendererID);
-    GLES3::GL()->BindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+    GLES::gl->GenFramebuffers(1, &m_RendererID);
+    GLES::gl->BindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
-    {
+    bool multisample = m_Specification.Samples > 1;
 
-        GLES3::GL()->GenTextures(1, &m_ColorAttachment);
-        GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_ColorAttachment);
-        // GLES3::GL()->TexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA, m_Specification.Width, m_Specification.Height);
-        GLES3::GL()->TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        GLES3::GL()->FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttachment, 0);
+    // Attachments
+    // Helpfull: https://registry.khronos.org/OpenGL-Refpages/es3.0/html/glTexImage2D.xhtml
+    if (m_ColorAttachmentSpecifications.size()) {
+        m_ColorAttachments.resize(m_ColorAttachmentSpecifications.size());
+        Utils::CreateTextures(m_ColorAttachments.data(), m_ColorAttachments.size());
 
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        // GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        GLES3::GL()->BindTexture(GL_TEXTURE_2D, 0);
+        for (size_t i = 0; i < m_ColorAttachments.size(); i++) {
+            Utils::BindTexture(m_ColorAttachments[i]);
+
+            switch (m_ColorAttachmentSpecifications[i].TextureFormat) {
+            case FramebufferTextureFormat::RGBA8:
+                Utils::AttachColorTexture(m_ColorAttachments[i], GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, m_Specification.Width, m_Specification.Height, i);
+                break;
+            case FramebufferTextureFormat::RED_INTEGER:
+                Utils::AttachColorTexture(m_ColorAttachments[i], GL_R32I, GL_RED_INTEGER, GL_INT, m_Specification.Width, m_Specification.Height, i);
+                break;
+            }
+        }
     }
 
-    {
-        GLES3::GL()->GenTextures(1, &m_DepthAttachment);
-        GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_DepthAttachment);
-        GLES3::GL()->TexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_Specification.Width, m_Specification.Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-        GLES3::GL()->FramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachment, 0);
-
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-        GLES3::GL()->BindTexture(GL_TEXTURE_2D, 0);
+    if (m_DepthAttachmentSpecification.TextureFormat != FramebufferTextureFormat::None) {
+        Utils::CreateTextures(&m_DepthAttachment, 1);
+        Utils::BindTexture(m_DepthAttachment);
+        switch (m_DepthAttachmentSpecification.TextureFormat) {
+        case FramebufferTextureFormat::DEPTH24STENCIL8:
+            Utils::AttachDepthTexture(m_DepthAttachment, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
+            break;
+        }
     }
 
-    GLenum framebufferStatus = GLES3::GL()->CheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        TB_CORE_ERROR("Framebuffer is incomplete! Status: {0}", framebufferStatus);
+    if (m_ColorAttachments.size() > 0) {
+        TB_CORE_ASSERT(m_ColorAttachments.size() <= 4);
+        GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+        GLES::gl->DrawBuffers(m_ColorAttachments.size(), buffers);
+    } else {
+        // Only depth-pass
+        GLES::gl->DrawBuffers(0, GL_NONE);
     }
 
-    GLES3::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
+    std::string message = "Framebuffer is incomplete! Error code: ";
+
+    GLenum status = GLES::gl->CheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE) {
+        message += std::to_string(GLES::gl->CheckFramebufferStatus(GL_FRAMEBUFFER));
+        message += "(";
+        switch (status) {
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            message += "Incomplete attachment";
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            message += "Missing attachment";
+            break;
+        default:
+            message += "Unknown error";
+            break;
+        }
+        message += ")";
+    }
+
+    TB_CORE_ASSERT_TAGGED(GLES::gl->CheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, message);
+    GLES::gl->BindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OpenGLES3Framebuffer::Bind()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::Bind");
 
-    GLES3::GL()->BindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-    GLES3::GL()->Viewport(0, 0, m_Specification.Width, m_Specification.Height);
+    GLES::gl->BindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+    GLES::gl->Viewport(0, 0, m_Specification.Width, m_Specification.Height);
 }
 
 void OpenGLES3Framebuffer::Unbind()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::Unbind");
 
-    GLES3::GL()->BindFramebuffer(GL_FRAMEBUFFER, 0);
+    GLES::gl->BindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OpenGLES3Framebuffer::Resize(uint32_t width, uint32_t height)
@@ -199,11 +214,11 @@ int OpenGLES3Framebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::ReadPixel");
 
-    // TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
+    TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
-    GLES3::GL()->ReadBuffer(GL_COLOR_ATTACHMENT0);
+    GLES::gl->ReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
     int pixelData;
-    GLES3::GL()->ReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+    GLES::gl->ReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
     return pixelData;
 }
 
@@ -211,12 +226,11 @@ void OpenGLES3Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Framebuffer::ClearAttachment");
 
-    // TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
+    TB_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
-    auto& spec = m_ColorAttachmentSpecifications[0];
-    GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_ColorAttachment);
-    GLES3::GL()->TexImage2D(GL_TEXTURE_2D, 0, Utils::TabbyFBTextureFormatToGL(spec.TextureFormat), m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_INT, &value);
-    GLES3::GL()->BindTexture(GL_TEXTURE_2D, 0);
+    auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
+    GLES::gl->BindTexture(GL_TEXTURE_2D, m_ColorAttachments[attachmentIndex]);
+    GLES::gl->TexImage2D(GL_TEXTURE_2D, 0, Utils::TabbyFBTextureFormatToGL(spec.TextureFormat), m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_INT, &value);
+    GLES::gl->BindTexture(GL_TEXTURE_2D, 0);
 }
-
 }

@@ -1,9 +1,7 @@
 #ifdef TB_PLATFORM_LINUX
-
-#include "tbpch.h"
-
-#include "Tabby/Utils/PlatformUtils.h"
-#include "Tabby/Core/Time/Time.h"
+#include <tbpch.h>
+#include <Tabby/Utils/PlatformUtils.h>
+#include <Tabby/Core/Time/Time.h>
 
 #include <gtk/gtk.h>
 

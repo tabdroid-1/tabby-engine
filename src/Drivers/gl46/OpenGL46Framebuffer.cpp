@@ -1,5 +1,4 @@
-#include "tbpch.h"
-
+#include <tbpch.h>
 #include <Drivers/gl46/OpenGL46Framebuffer.h>
 #include <Drivers/GPUProfiler.h>
 
@@ -38,7 +37,7 @@ namespace Utils {
 
         bool multisampled = samples > 1;
         if (multisampled) {
-            glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
+            glTextureStorage2DMultisample(id, samples, internalFormat, width, height, GL_FALSE);
         } else {
             glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
 
@@ -83,7 +82,7 @@ namespace Utils {
         return false;
     }
 
-    static GLenum HazelFBTextureFormatToGL(FramebufferTextureFormat format)
+    static GLenum TabbyFBTextureFormatToGL(FramebufferTextureFormat format)
     {
         switch (format) {
         case FramebufferTextureFormat::RGBA8:
@@ -142,7 +141,6 @@ void OpenGL46Framebuffer::Invalidate()
 
     bool multisample = m_Specification.Samples > 1;
 
-    // Attachments
     if (m_ColorAttachmentSpecifications.size()) {
         m_ColorAttachments.resize(m_ColorAttachmentSpecifications.size());
         Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
@@ -238,7 +236,7 @@ void OpenGL46Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 
     auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
     glClearTexImage(m_ColorAttachments[attachmentIndex], 0,
-        Utils::HazelFBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+        Utils::TabbyFBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
 }
 
 }

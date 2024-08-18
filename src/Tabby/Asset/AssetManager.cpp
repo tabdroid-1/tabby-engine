@@ -1,11 +1,11 @@
-#include "SDL_rwops.h"
-#include <Tabby/Asset/AssetFile.h>
 #include <Tabby/Asset/AssetManager.h>
-#include <Tabby/Renderer/Font.h>
 #include <Tabby/Renderer/Texture.h>
+#include <Tabby/Asset/AssetFile.h>
+#include <Tabby/Renderer/Font.h>
+#include <Tabby/Utils/Utils.h>
 #include <Tabby/Audio/Audio.h>
 
-#include <Tabby/Utils/Utils.h>
+#include <SDL_rwops.h>
 #include <stb_image.h>
 
 namespace Tabby {
@@ -142,6 +142,7 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
     texture_spec.usage = ImageUsage::TEXTURE;
     texture_spec.array_layers = 1;
     texture_spec.path = path;
+    texture_spec.UnpackAlignment = 4;
     texture_spec.GenerateMips = false;
 
     Shared<Texture> image = Texture::Create(texture_spec, handle, data);

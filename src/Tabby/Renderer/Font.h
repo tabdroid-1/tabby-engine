@@ -1,7 +1,6 @@
 #pragma once
-
-#include <Tabby/Asset/AssetBase.h>
 #include <Tabby/Renderer/Texture.h>
+#include <Tabby/Asset/AssetBase.h>
 
 namespace Tabby {
 
@@ -18,8 +17,7 @@ public:
     void Destroy() override;
 
 private:
-    // idk dude. raw pointer crashes when deleted.
-    Shared<MSDFData> m_Data;
+    Shared<MSDFData> m_Data; // idk dude. raw pointer crashes when deleted.
     AssetHandle m_AtlasTexture;
 };
 

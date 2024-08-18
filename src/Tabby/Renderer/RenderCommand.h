@@ -1,6 +1,5 @@
 #pragma once
-
-#include "Tabby/Renderer/RendererAPI.h"
+#include <Tabby/Renderer/RendererAPI.h>
 
 namespace Tabby {
 

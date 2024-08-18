@@ -1,17 +1,17 @@
-#include "tbpch.h"
-#include "Drivers/gl46/OpenGL46Context.h"
+#include <tbpch.h>
+#include <Drivers/gl46/OpenGL46Context.h>
+#include <Drivers/GPUProfiler.h>
+
 #include <Tabby/Core/Application.h>
 
 #include <tracy/TracyOpenGL.hpp>
-
+#include <SDL.h>
 #define GLAD_GL_IMPLEMENTATION
 #include <gl.h>
 
-#include <SDL2/SDL.h>
-
 namespace Tabby {
 
-#if defined(TB_PROFILE)
+#if defined(TB_PROFILE) && !defined(TRACY_ON_DEMAND) && UPDATE_PROFILER_FRAMEIMAGE
 static GLuint m_fiTexture[4];
 static GLuint m_fiFramebuffer[4];
 static GLuint m_fiPbo[4];
@@ -55,7 +55,7 @@ void OpenGL46Context::Init()
 
     TB_CORE_ASSERT_TAGGED(major > 4 || (major == 4 && minor >= 6), "This device does not support OpenGL 4.6!");
 
-#if defined(TB_PROFILE)
+#if defined(TB_PROFILE) && !defined(TRACY_ON_DEMAND) && UPDATE_PROFILER_FRAMEIMAGE
     glGenTextures(4, m_fiTexture);
     glGenFramebuffers(4, m_fiFramebuffer);
     glGenBuffers(4, m_fiPbo);
@@ -75,7 +75,9 @@ void OpenGL46Context::Init()
 void OpenGL46Context::SwapBuffers()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Context::SwapBuffers");
+    TB_PROFILE_GPU("Tabby::OpenGL46Context::SwapBuffers");
 
+#if defined(TB_PROFILE) && !defined(TRACY_ON_DEMAND) && UPDATE_PROFILER_FRAMEIMAGE
     TB_CORE_ASSERT(m_fiQueue.empty() || m_fiQueue.front() != m_fiIdx); // check for buffer overrun
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fiFramebuffer[m_fiIdx]);
     glBlitFramebuffer(0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight(), 0, 0, 320, 180, GL_COLOR_BUFFER_BIT, GL_LINEAR);
@@ -99,6 +101,7 @@ void OpenGL46Context::SwapBuffers()
         glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
         m_fiQueue.erase(m_fiQueue.begin());
     }
+#endif
 
     SDL_GL_SwapWindow(m_WindowHandle);
 

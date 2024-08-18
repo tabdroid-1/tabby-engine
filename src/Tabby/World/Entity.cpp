@@ -1,5 +1,4 @@
-#include "Entity.h"
-#include "tbpch.h"
+#include <Tabby/World/Entity.h>
 
 namespace Tabby {
 

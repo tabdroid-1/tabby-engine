@@ -1,17 +1,13 @@
 #ifdef TB_PLATFORM_WINDOWS
+#include <tbpch.h>
+#include <Tabby/Core/Events/ApplicationEvent.h>
+#include <Platforms/Windows/WindowsWindow.h>
+#include <Tabby/Core/Events/MouseEvent.h>
+#include <Tabby/Core/Events/KeyEvent.h>
+#include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Core/Input/Input.h>
 
-#include "Platforms/Windows/WindowsWindow.h"
-#include "tbpch.h"
-
-#include "Tabby/Core/Input/Input.h"
-#include "backends/imgui_impl_sdl2.h"
-
-#include "Tabby/Core/Events/ApplicationEvent.h"
-#include "Tabby/Core/Events/KeyEvent.h"
-#include "Tabby/Core/Events/MouseEvent.h"
-
-#include "Tabby/Renderer/Renderer.h"
-
+#include <backends/imgui_impl_sdl2.h>
 #include <SDL.h>
 
 namespace Tabby {

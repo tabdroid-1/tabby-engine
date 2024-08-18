@@ -1,17 +1,13 @@
 #ifdef TB_PLATFORM_LINUX
+#include <tbpch.h>
+#include <Tabby/Core/Events/ApplicationEvent.h>
+#include <Tabby/Core/Events/MouseEvent.h>
+#include <Platforms/Linux/LinuxWindow.h>
+#include <Tabby/Core/Events/KeyEvent.h>
+#include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Core/Input/Input.h>
 
-#include "Platforms/Linux/LinuxWindow.h"
-#include "tbpch.h"
-
-#include "Tabby/Core/Input/Input.h"
-#include "backends/imgui_impl_sdl2.h"
-
-#include "Tabby/Core/Events/ApplicationEvent.h"
-#include "Tabby/Core/Events/KeyEvent.h"
-#include "Tabby/Core/Events/MouseEvent.h"
-
-#include "Tabby/Renderer/Renderer.h"
-
+#include <backends/imgui_impl_sdl2.h>
 #include <SDL.h>
 
 namespace Tabby {

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <Tabby/Renderer/BaseCamera.h>
 #include <Tabby/Foundation/Types.h>
 

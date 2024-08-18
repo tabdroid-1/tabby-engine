@@ -1,6 +1,5 @@
 #pragma once
-
-#include "Tabby/Renderer/VertexArray.h"
+#include <Tabby/Renderer/VertexArray.h>
 
 #include <glm/glm.hpp>
 

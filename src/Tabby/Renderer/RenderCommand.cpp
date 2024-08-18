@@ -1,5 +1,4 @@
-#include "Tabby/Renderer/RenderCommand.h"
-#include "tbpch.h"
+#include <Tabby/Renderer/RenderCommand.h>
 
 namespace Tabby {
 

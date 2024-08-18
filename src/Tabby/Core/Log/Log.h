@@ -1,13 +1,9 @@
 #pragma once
 
-#include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
-#include <Tabby/Foundation/Types.h>
-
-#include "Tabby/Core/Base.h"
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
+#include <spdlog/fmt/ostr.h>
+#include <spdlog/spdlog.h>
 
 namespace Tabby {
 class Log {

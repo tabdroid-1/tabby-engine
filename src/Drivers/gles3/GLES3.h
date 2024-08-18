@@ -4,15 +4,12 @@ struct GladGLES2Context;
 
 namespace Tabby {
 
-class GLES3 {
+class GLES {
 public:
-    GLES3();
-    static void Init(GladGLES2Context*);
-    static GladGLES2Context* GL() { return s_Instance->gl; }
+    static void Init(GladGLES2Context* context) { gl = context; }
+    static GladGLES2Context* GL() { return gl; }
 
-private:
-    static GladGLES2Context* gl;
-    static GLES3* s_Instance;
+    inline static GladGLES2Context* gl;
 };
 
 }

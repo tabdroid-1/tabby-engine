@@ -99,7 +99,7 @@
 #define FASTGLTF_QUOTE(x) FASTGLTF_QUOTE_Q(x)
 
 // fastgltf version string. Use FASTGLTF_QUOTE to stringify.
-#define FASTGLTF_VERSION 0.7.1
+#define FASTGLTF_VERSION 0.8.0
 
 namespace fastgltf {
 #if defined(FASTGLTF_USE_64BIT_FLOAT) && FASTGLTF_USE_64BIT_FLOAT
@@ -2115,7 +2115,7 @@ namespace fastgltf {
 #if !FASTGLTF_DISABLE_CUSTOM_MEMORY_POOL
 		// This has to be first in this struct so that it gets destroyed last, leaving all allocations
 		// alive until the end.
-		std::shared_ptr<ChunkMemoryResource> memoryResource;
+		std::shared_ptr<std::pmr::monotonic_buffer_resource> memoryResource;
 #endif
 
 	public:

@@ -1,7 +1,5 @@
 #ifdef TB_PLATFORM_MACOS
-
-#include "tbpch.h"
-
+#include <tbpch.h>
 #include <Tabby/Core/Input/Input.h>
 #include <Tabby/Math/Math.h>
 

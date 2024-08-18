@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Tabby/Asset/AssetBase.h>
+
 #include <AL/al.h>
 
 struct SDL_RWops;

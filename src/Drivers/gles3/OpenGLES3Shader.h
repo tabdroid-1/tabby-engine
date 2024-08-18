@@ -1,11 +1,6 @@
 #pragma once
 
-#include "Tabby/Renderer/Shader.h"
-#include <glm/glm.hpp>
-#include <tuple>
-
-// TODO: REMOVE!
-typedef unsigned int GLenum;
+#include <Tabby/Renderer/Shader.h>
 
 namespace Tabby {
 
@@ -44,8 +39,8 @@ public:
 
 private:
     std::string ReadFile(const std::string& filepath);
-    std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
-    void Compile(const std::unordered_map<GLenum, std::string>& shaderSource, const std::string& path);
+    std::unordered_map<uint32_t, std::string> PreProcess(const std::string& source);
+    void Compile(const std::unordered_map<uint32_t, std::string>& shaderSource, const std::string& path);
 
 private:
     uint32_t m_RendererID;

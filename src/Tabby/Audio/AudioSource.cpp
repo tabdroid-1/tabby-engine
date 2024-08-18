@@ -1,10 +1,11 @@
+#include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Audio/AudioEngine.h>
 #include <Tabby/Audio/AudioSource.h>
-#include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Asset/AssetType.h>
-#include "SDL_rwops.h"
-#include <AL/al.h>
+
+#include <SDL_rwops.h>
 #include <AL/alext.h>
+#include <AL/al.h>
 
 #define CHECK_AL_ERRORS() \
     AudioEngine::FetchALErrors(__FILE__, __LINE__)
@@ -136,6 +137,8 @@ void AudioSource::UpdateBuffer()
     CHECK_AL_ERRORS();
     ALint buffer_count = 0;
     while (buffer_count < m_BufferIDs.size()) {
+        TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UpdateBuffer::Iteration");
+
         ALsizei buffer_size = static_cast<ALsizei>(std::min(MUSIC_BUFFER_SIZE, m_Music->dataSize - m_Cursor));
         buffer_size -= buffer_size % 8;
         if (buffer_size == 0)
@@ -176,6 +179,8 @@ void AudioSource::UpdatePlayer()
     alGetSourcei(m_SourceID, AL_BUFFERS_PROCESSED, &buffers_processed);
     CHECK_AL_ERRORS();
     while (buffers_processed > 0) {
+        TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UpdatePlayer::Iteration");
+
         buffers_processed--;
 
         ALuint buffer;

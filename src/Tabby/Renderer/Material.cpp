@@ -1,8 +1,7 @@
-#include <Tabby/Renderer/Material.h>
-
-#include <Tabby/Renderer/Renderer.h>
-#include <Tabby/Renderer/Renderer2D.h>
 #include <Tabby/Renderer/RenderCommand.h>
+#include <Tabby/Renderer/Renderer2D.h>
+#include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Renderer/Material.h>
 
 namespace Tabby {
 

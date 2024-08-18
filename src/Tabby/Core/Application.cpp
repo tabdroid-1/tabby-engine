@@ -1,24 +1,20 @@
-#include <Tabby/Core/Application.h>
-#include "Tabby/Renderer/Renderer.h"
-#include <Tabby/Core/Input/Input.h>
-
-#include "Tabby/Utils/PlatformUtils.h"
-#include <Tabby/Asset/AssetManager.h>
-#include <Tabby/Core/Time/Time.h>
-#include <Tabby/Audio/AudioEngine.h>
 #include <Tabby/Core/Filesystem/Filesystem.h>
+#include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Audio/AudioEngine.h>
+#include <Tabby/Core/Application.h>
+#include <Tabby/Core/Input/Input.h>
+#include <Tabby/Core/Time/Time.h>
 
 namespace Tabby {
 
-Application* Application::s_Instance = nullptr;
-
 Application::Application(const ApplicationSpecification& specification)
-    : m_Specification(specification)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Application::Constructor");
 
     TB_CORE_ASSERT_TAGGED(!s_Instance, "Application already exists!");
     s_Instance = this;
+    m_Specification = specification;
 
     switch (specification.RendererAPI) {
     case ApplicationSpecification::RendererAPI::OpenGL46:
@@ -45,8 +41,6 @@ Application::Application(const ApplicationSpecification& specification)
 
     m_ImGuiLayer = new ImGuiLayer();
     PushOverlay(m_ImGuiLayer);
-
-    TB_PROFILE_SET_THREAD_NAME("Tabby::Application")
 }
 
 Application::~Application()
@@ -122,11 +116,11 @@ void Application::Run()
         Time::SetDeltaTime(time - m_LastFrameTime);
         m_LastFrameTime = time;
 
-        ExecuteMainThreadQueue();
+        s_Instance->ExecuteMainThreadQueue();
 
         if (!m_Minimized && Time::GetDeltaTime() < 200.0f) { // ts < 200  because ts is really high number in first frame
-                                                             // and that breaks the phyiscs and some other stuff.
-                                                             // this happens because m_LastFrameTime is 0 in first frame.
+            // and that breaks the phyiscs and some other stuff.
+            // this happens because m_LastFrameTime is 0 in first frame.
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackUpdate");
 

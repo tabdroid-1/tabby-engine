@@ -1,10 +1,9 @@
-#include "Drivers/gles3/OpenGLES3Texture.h"
-#include "Drivers/gles3/GLES3.h"
-#include "tbpch.h"
-#include <Tabby/Debug/Instrumentor.h>
-#include <gles3.h>
+#include <tbpch.h>
+#include <Drivers/gles3/OpenGLES3Texture.h>
+#include <Drivers/gles3/GLES3.h>
 
 #include <stb_image.h>
+#include <gles3.h>
 
 namespace Tabby {
 
@@ -49,26 +48,26 @@ OpenGLES3Texture::OpenGLES3Texture(const TextureSpecification& specification, As
     m_InternalFormat = Utils::TabbyImageFormatToGLInternalFormat(m_Specification.Format);
     m_DataFormat = Utils::TabbyImageFormatToGLDataFormat(m_Specification.Format);
 
-    GLES3::GL()->PixelStorei(GL_UNPACK_ALIGNMENT, m_Specification.UnpackAlignment);
+    GLES::gl->PixelStorei(GL_UNPACK_ALIGNMENT, m_Specification.UnpackAlignment);
 
-    GLES3::GL()->GenTextures(1, &m_RendererID);
-    GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
+    GLES::gl->GenTextures(1, &m_RendererID);
+    GLES::gl->BindTexture(GL_TEXTURE_2D, m_RendererID);
 
-    GLES3::GL()->TexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    GLES::gl->TexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
     if (m_Specification.GenerateMips) {
 
-        GLES3::GL()->GenerateMipmap(GL_TEXTURE_2D);
+        GLES::gl->GenerateMipmap(GL_TEXTURE_2D);
 
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     } else {
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        GLES3::GL()->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        GLES::gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     }
 
     if (data)
@@ -89,36 +88,36 @@ void OpenGLES3Texture::SetData(Buffer data)
     // uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
     // TB_CORE_ASSERT_TAGGED(data.Size == m_Width * m_Height * bpp, "Data must be the entire texture!");
 
-    GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
-    GLES3::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);
+    GLES::gl->BindTexture(GL_TEXTURE_2D, m_RendererID);
+    GLES::gl->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);
 
     if (m_Specification.GenerateMips)
-        GLES3::GL()->GenerateMipmap(GL_TEXTURE_2D);
+        GLES::gl->GenerateMipmap(GL_TEXTURE_2D);
 }
 
 void OpenGLES3Texture::SetSubData(void* data, uint32_t width, uint32_t height)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Texture::SetSubData");
 
-    GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
-    GLES3::GL()->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+    GLES::gl->BindTexture(GL_TEXTURE_2D, m_RendererID);
+    GLES::gl->TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 
     if (m_Specification.GenerateMips)
-        GLES3::GL()->GenerateMipmap(GL_TEXTURE_2D);
+        GLES::gl->GenerateMipmap(GL_TEXTURE_2D);
 }
 
 void OpenGLES3Texture::Bind(uint32_t slot) const
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Texture::Bind");
 
-    GLES3::GL()->ActiveTexture(GL_TEXTURE0 + slot);
-    GLES3::GL()->BindTexture(GL_TEXTURE_2D, m_RendererID);
+    GLES::gl->ActiveTexture(GL_TEXTURE0 + slot);
+    GLES::gl->BindTexture(GL_TEXTURE_2D, m_RendererID);
 }
 
 void OpenGLES3Texture::Destroy()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Texture::Destroy");
 
-    GLES3::GL()->DeleteTextures(1, &m_RendererID);
+    GLES::gl->DeleteTextures(1, &m_RendererID);
 }
 }

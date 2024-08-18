@@ -1,7 +1,8 @@
 #pragma once
+#include <Tabby/Foundation/Types.h>
 
-#include <AL/al.h>
 #include <AL/alc.h>
+#include <AL/al.h>
 
 namespace Tabby {
 

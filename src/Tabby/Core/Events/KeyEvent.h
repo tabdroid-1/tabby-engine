@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Tabby/Core/Events/Event.h"
-#include "Tabby/Core/Input/KeyCode.h"
+#include <Tabby/Core/Events/Event.h>
+#include <Tabby/Core/Input/KeyCode.h>
 
 namespace Tabby {
 

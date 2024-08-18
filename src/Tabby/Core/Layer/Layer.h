@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Tabby/Core/Base.h"
-#include "Tabby/Core/Events/Event.h"
+#include <Tabby/Core/Events/Event.h>
 
 namespace Tabby {
 

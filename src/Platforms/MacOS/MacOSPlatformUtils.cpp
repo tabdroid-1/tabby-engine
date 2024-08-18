@@ -1,7 +1,7 @@
 #ifdef TB_PLATFORM_MACOS
 
-#include "Tabby/Utils/PlatformUtils.h"
-#include "Tabby/Core/Time/Time.h"
+#include <Tabby/Utils/PlatformUtils.h>
+#include <Tabby/Core/Time/Time.h>
 
 namespace Tabby {
 

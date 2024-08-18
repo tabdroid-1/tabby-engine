@@ -1,5 +1,4 @@
 #pragma once
-
 #include <imgui/imgui.h>
 
 namespace Tabby::UI {

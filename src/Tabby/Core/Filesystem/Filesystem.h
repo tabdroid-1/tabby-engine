@@ -1,9 +1,7 @@
 #pragma once
 
+#include <Tabby/Core/Filesystem/File.h>
 #include <Tabby/Foundation/Types.h>
-
-#include "File.h"
-#include <filesystem>
 
 namespace Tabby {
 

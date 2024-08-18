@@ -1,15 +1,13 @@
-#include <Tabby/Renderer/Renderer2D.h>
-
 #include <Tabby/Renderer/RenderCommand.h>
-#include <Tabby/Renderer/Shader.h>
 #include <Tabby/Renderer/UniformBuffer.h>
 #include <Tabby/Renderer/VertexArray.h>
-
+#include <Tabby/Renderer/Renderer2D.h>
 #include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Renderer/MSDFData.h>
+#include <Tabby/Renderer/Shader.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "MSDFData.h"
 
 namespace Tabby {
 

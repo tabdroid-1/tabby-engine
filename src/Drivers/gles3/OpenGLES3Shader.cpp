@@ -1,12 +1,11 @@
-#include "Drivers/gles3/OpenGLES3Shader.h"
-#include "Drivers/gles3/GLES3.h"
-#include "tbpch.h"
-
-#include <gles3.h>
+#include <tbpch.h>
+#include <Drivers/gles3/OpenGLES3Shader.h>
+#include <Drivers/gles3/GLES3.h>
 
 #include <glm/gtc/type_ptr.hpp>
-#include "SDL.h"
-#include "SDL_rwops.h"
+#include <SDL_rwops.h>
+#include <gles3.h>
+
 namespace Tabby {
 
 static GLenum ShaderTypeFromString(const std::string& type)
@@ -53,7 +52,7 @@ OpenGLES3Shader::~OpenGLES3Shader()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Destructor");
 
-    GLES3::GL()->DeleteProgram(m_RendererID);
+    GLES::gl->DeleteProgram(m_RendererID);
 }
 
 std::unordered_map<GLenum, std::string> OpenGLES3Shader::PreProcess(const std::string& source)
@@ -114,7 +113,7 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Compile");
 
-    GLuint program = GLES3::GL()->CreateProgram();
+    GLuint program = GLES::gl->CreateProgram();
     TB_CORE_ASSERT_TAGGED(shaderSource.size() <= 2, "Only 3 shaders are supported");
     std::array<GLenum, 3> glShaderIDs;
     int glShaderIDIndex = 0;
@@ -122,24 +121,24 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
         GLenum type = kv_pair.first;
         const std::string& sourceBase = kv_pair.second;
 
-        GLuint shader = GLES3::GL()->CreateShader(type);
+        GLuint shader = GLES::gl->CreateShader(type);
 
         const GLchar* source = sourceBase.c_str();
-        GLES3::GL()->ShaderSource(shader, 1, &source, 0);
+        GLES::gl->ShaderSource(shader, 1, &source, 0);
 
         // Compile the vertex shader
-        GLES3::GL()->CompileShader(shader);
+        GLES::gl->CompileShader(shader);
 
         GLint isCompiled = 0;
-        GLES3::GL()->GetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+        GLES::gl->GetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
         if (isCompiled == GL_FALSE) {
             GLint maxLength = 0;
-            GLES3::GL()->GetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+            GLES::gl->GetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
             std::vector<GLchar> infoLog(maxLength);
-            GLES3::GL()->GetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+            GLES::gl->GetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
-            GLES3::GL()->DeleteShader(shader);
+            GLES::gl->DeleteShader(shader);
 
             TB_CORE_ERROR("Shader compilation error for {0}!", shaderInfo);
             TB_CORE_ERROR("{0}", infoLog.data());
@@ -147,26 +146,26 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
 
             break;
         }
-        GLES3::GL()->AttachShader(program, shader);
+        GLES::gl->AttachShader(program, shader);
         glShaderIDs[glShaderIDIndex++] = shader;
     }
 
-    GLES3::GL()->LinkProgram(program);
+    GLES::gl->LinkProgram(program);
     GLint isLinked = 0;
-    GLES3::GL()->GetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
+    GLES::gl->GetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
     if (isLinked != 1) {
         GLint maxLength = 0;
-        GLES3::GL()->GetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+        GLES::gl->GetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
         // The maxLength includes the NULL character
         std::vector<GLchar> infoLog(maxLength);
-        GLES3::GL()->GetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+        GLES::gl->GetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
         // We don't need the program anymore.
-        GLES3::GL()->DeleteProgram(program);
+        GLES::gl->DeleteProgram(program);
 
         for (auto id : glShaderIDs)
-            GLES3::GL()->DeleteShader(id);
+            GLES::gl->DeleteShader(id);
 
         TB_CORE_ERROR("Linking shader error for {0}!", shaderInfo);
         TB_CORE_ERROR("{0}", infoLog.data());
@@ -174,7 +173,7 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
         return;
     }
     for (auto id : glShaderIDs)
-        // GLES3::GL()->DetachShader(program, id);
+        // GLES::gl->DetachShader(program, id);
 
         m_RendererID = program;
 }
@@ -183,22 +182,22 @@ void OpenGLES3Shader::Bind() const
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Bind");
 
-    GLES3::GL()->UseProgram(m_RendererID);
+    GLES::gl->UseProgram(m_RendererID);
 }
 
 void OpenGLES3Shader::Unbind() const
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::Unbind");
 
-    GLES3::GL()->UseProgram(0);
+    GLES::gl->UseProgram(0);
 }
 
 void OpenGLES3Shader::SetBool(const std::string& name, bool value)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetBool");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->Uniform1i(location, (int)value);
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->Uniform1i(location, (int)value);
 }
 
 void OpenGLES3Shader::SetInt(const std::string& name, int value)
@@ -219,8 +218,8 @@ void OpenGLES3Shader::SetFloatArray(const std::string& name, float* values, uint
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::SetFloatArray");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->Uniform1fv(location, count, values);
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->Uniform1fv(location, count, values);
 }
 
 void OpenGLES3Shader::SetFloat(const std::string& name, float value)
@@ -269,64 +268,64 @@ void OpenGLES3Shader::UploadUniformInt(const std::string& name, int value)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformInt");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->Uniform1i(location, value);
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->Uniform1i(location, value);
 }
 
 void OpenGLES3Shader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformIntArray");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->Uniform1iv(location, count, values);
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->Uniform1iv(location, count, values);
 }
 
 void OpenGLES3Shader::UploadUniformFloat(const std::string& name, float value)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformFloat");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->Uniform1f(location, value);
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->Uniform1f(location, value);
 }
 
 void OpenGLES3Shader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformFloat2");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->Uniform2f(location, value.x, value.y);
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->Uniform2f(location, value.x, value.y);
 }
 
 void OpenGLES3Shader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformFloat3");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->Uniform3f(location, value.x, value.y, value.z);
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->Uniform3f(location, value.x, value.y, value.z);
 }
 
 void OpenGLES3Shader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformFloat4");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->Uniform4f(location, value.x, value.y, value.z, value.w);
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->Uniform4f(location, value.x, value.y, value.z, value.w);
 }
 
 void OpenGLES3Shader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformMat3");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->UniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->UniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void OpenGLES3Shader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGLES3Shader::UploadUniformMat4");
 
-    GLint location = GLES3::GL()->GetUniformLocation(m_RendererID, name.c_str());
-    GLES3::GL()->UniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    GLint location = GLES::gl->GetUniformLocation(m_RendererID, name.c_str());
+    GLES::gl->UniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 }

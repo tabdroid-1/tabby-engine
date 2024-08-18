@@ -1,9 +1,8 @@
 #pragma once
 
 #ifdef TB_PLATFORM_WINDOWS
-
-#include "Tabby/Core/Window.h"
-#include "Tabby/Renderer/GraphicsContext.h"
+#include <Tabby/Core/Window.h>
+#include <Tabby/Renderer/GraphicsContext.h>
 
 class SDL_Window;
 

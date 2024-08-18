@@ -1,10 +1,5 @@
 #pragma once
 
-#include "Tabby/Core/Base.h"
-#include "Tabby/Debug/Instrumentor.h"
-
-#include <functional>
-
 namespace Tabby {
 
 // Events in Tabby are currently blocking, meaning when an event occurs it

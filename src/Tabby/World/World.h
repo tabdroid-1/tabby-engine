@@ -1,5 +1,4 @@
 #pragma once
-
 #include <tbpch.h>
 #include <Tabby/Foundation/Types.h>
 
@@ -110,7 +109,7 @@ private:
     Camera* m_CurrentCamera;
     const Matrix4* m_CurrentCameraTransform;
 
-    inline static entt::registry m_EntityRegistry;
+    entt::registry m_EntityRegistry;
     std::unordered_map<UUID, entt::entity> m_EntityMap;
 
     std::unordered_map<std::type_index, std::any> m_Resources;

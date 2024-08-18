@@ -1,11 +1,8 @@
-
-#include "Font.h"
-#include "tbpch.h"
-#include <Tabby/Core/Base.h>
-#include <Tabby/Asset/AssetManager.h>
+#include <tbpch.h>
 #include <Tabby/Renderer/RendererAPI.h>
-
+#include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Renderer/MSDFData.h>
+#include <Tabby/Renderer/Font.h>
 
 namespace Tabby {
 
@@ -53,7 +50,7 @@ static AssetHandle CreateAndCacheFontAtlas(const std::string& fontName, float fo
         spec.Height = bitmap.height;
         spec.Format = ImageFormat::RGB8;
         spec.GenerateMips = false;
-        spec.UnpackAlignment = 0;
+        spec.UnpackAlignment = 4;
 
         AssetHandle handle;
         Shared<Texture> texture = Texture::Create(spec, handle);

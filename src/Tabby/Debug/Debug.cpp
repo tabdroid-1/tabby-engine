@@ -1,5 +1,5 @@
-#include <Tabby/Debug/Debug.h>
 #include <Tabby/Renderer/Renderer2D.h>
+#include <Tabby/Debug/Debug.h>
 
 namespace Tabby {
 

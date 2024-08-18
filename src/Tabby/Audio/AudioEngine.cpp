@@ -1,11 +1,10 @@
 #include <tbpch.h>
-
-#include <AL/al.h>
-#include <AL/alext.h>
-
 #include <Tabby/Audio/AudioEngine.h>
 #include <Tabby/Audio/AudioSource.h>
 #include <Tabby/Audio/Audio.h>
+
+#include <AL/alext.h>
+#include <AL/al.h>
 
 #define CHECK_AL_ERRORS() \
     FetchALErrors(__FILE__, __LINE__)
@@ -229,11 +228,12 @@ void AudioEngine::EnginePollingThread()
     while (!m_ShouldThreadClose) {
         TB_PROFILE_FRAME();
 
-        TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::UpdateThread");
+        TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::Update");
 
         m_MusicMixerLock.lock();
 
         for (AudioSource* player : m_MusicMixer) {
+            TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::Update::UpdatePlayer");
             player->UpdatePlayer();
         }
 

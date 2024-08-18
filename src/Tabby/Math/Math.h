@@ -1,6 +1,4 @@
 #pragma once
-
-#include <glm/glm.hpp>
 #include <Tabby/Foundation/Types.h>
 
 namespace Tabby::Math {

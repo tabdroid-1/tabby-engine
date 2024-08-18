@@ -1,20 +1,16 @@
-#include "tbpch.h"
+#include <tbpch.h>
 #include <Drivers/gl33/OpenGL33Context.h>
 #include <Drivers/GPUProfiler.h>
 
 #include <Tabby/Core/Application.h>
 
 #include <tracy/TracyOpenGL.hpp>
-
-// #if !defined(TB_PLATFORM_WEB) && !defined(TB_PLATFORM_ANDROID)
-// #define GLAD_GL_IMPLEMENTATION only one is enough (in OpenGL46Context)
-#include <gl.h>
-
 #include <SDL.h>
+#include <gl.h>
 
 namespace Tabby {
 
-#if defined(TB_PROFILE) && !defined(TRACY_ON_DEMAND)
+#if defined(TB_PROFILE) && !defined(TRACY_ON_DEMAND) && UPDATE_PROFILER_FRAMEIMAGE
 static GLuint m_fiTexture[4];
 static GLuint m_fiFramebuffer[4];
 static GLuint m_fiPbo[4];
@@ -58,7 +54,7 @@ void OpenGL33Context::Init()
 
     TB_CORE_ASSERT_TAGGED(major > 3 || (major == 3 && minor >= 3), "Tabby requires at least OpenGL version 3.3!");
 
-#if defined(TB_PROFILE) && !defined(TRACY_ON_DEMAND)
+#if defined(TB_PROFILE) && !defined(TRACY_ON_DEMAND) && UPDATE_PROFILER_FRAMEIMAGE
     glGenTextures(4, m_fiTexture);
     glGenFramebuffers(4, m_fiFramebuffer);
     glGenBuffers(4, m_fiPbo);
@@ -80,7 +76,7 @@ void OpenGL33Context::SwapBuffers()
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Context::SwapBuffers");
     TB_PROFILE_GPU("Tabby::OpenGL33Context::SwapBuffers");
 
-#if defined(TB_PROFILE) && !defined(TRACY_ON_DEMAND)
+#if defined(TB_PROFILE) && !defined(TRACY_ON_DEMAND) && UPDATE_PROFILER_FRAMEIMAGE
     TB_CORE_ASSERT(m_fiQueue.empty() || m_fiQueue.front() != m_fiIdx); // check for buffer overrun
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fiFramebuffer[m_fiIdx]);
     glBlitFramebuffer(0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight(), 0, 0, 320, 180, GL_COLOR_BUFFER_BIT, GL_LINEAR);
@@ -114,4 +110,3 @@ void OpenGL33Context::SwapBuffers()
 }
 
 }
-// #endif

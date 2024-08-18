@@ -1,9 +1,7 @@
 #ifdef TB_PLATFORM_ANDROID
-
-#include "tbpch.h"
-
-#include "Tabby/Utils/PlatformUtils.h"
-#include "Tabby/Core/Time/Time.h"
+#include <tbpch.h>
+#include <Tabby/Utils/PlatformUtils.h>
+#include <Tabby/Core/Time/Time.h>
 
 namespace Tabby {
 

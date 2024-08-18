@@ -1,11 +1,20 @@
-#include <Tabby.h>
+#include <Tabby/Physics/2D/Physics2D.h>
+#include <Tabby/Renderer/Renderer2D.h>
+#include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Audio/AudioEngine.h>
+#include <Tabby/Audio/AudioSource.h>
+#include <Tabby/Core/Application.h>
+#include <Tabby/Core/Time/Time.h>
 #include <Tabby/Renderer/Mesh.h>
+#include <Tabby/World/Entity.h>
+#include <Tabby/World/World.h>
+#include <Tabby/Debug/Debug.h>
+#include <Tabby/Math/Math.h>
 
+#include <glm/gtx/quaternion.hpp>
+#include <box2d/box2d.h>
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
-
-#include <box2d/box2d.h>
 
 namespace Tabby {
 
@@ -454,13 +463,14 @@ void World::OnStop()
     TB_PROFILE_SCOPE_NAME("Tabby::World::OnStop");
     s_Instance->m_IsRunning = false;
 
+    // TODO: Probably IsPersistent needs to be removed from engine
     {
         auto view = GetRegistry().view<IDComponent>();
         for (auto entityHandle : view) {
 
             Entity entity = { entityHandle };
-            if (entity.GetComponent<IDComponent>().IsPersistent)
-                continue;
+            // if (entity.GetComponent<IDComponent>().IsPersistent)
+            //     continue;
 
             DestroyEntity(entity);
         }
@@ -482,7 +492,7 @@ void World::Update()
         for (const auto& postUpdate : s_Instance->m_PostUpdateSystems)
             postUpdate(s_Instance->m_EntityRegistry);
 
-        constexpr double fixedTimeStep = 1.0 / FIXED_UPDATE_RATE;
+        double fixedTimeStep = 1.0 / Application::GetSpecification().FixedUpdateRate;
 
         s_Instance->m_FixedUpdateAccumulator += Time::GetDeltaTime();
 
@@ -555,7 +565,7 @@ entt::registry& World::GetRegistry()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::World::GetRegistry");
 
-    return m_EntityRegistry;
+    return s_Instance->m_EntityRegistry;
 }
 
 template <typename T>

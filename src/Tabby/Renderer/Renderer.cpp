@@ -1,6 +1,6 @@
-#include "Tabby/Renderer/Renderer.h"
-#include "Tabby/Renderer/Renderer2D.h"
-#include "tbpch.h"
+#include <tbpch.h>
+#include <Tabby/Renderer/Renderer2D.h>
+#include <Tabby/Renderer/Renderer.h>
 
 namespace Tabby {
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tabby/Renderer/UniformBuffer.h"
+#include <Tabby/Renderer/UniformBuffer.h>
 
 namespace Tabby {
 

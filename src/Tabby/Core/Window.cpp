@@ -1,16 +1,16 @@
-#include "Tabby/Core/Window.h"
-#include "tbpch.h"
+#include <tbpch.h>
+#include <Tabby/Core/Window.h>
 
 #ifdef TB_PLATFORM_WINDOWS
-#include "Platforms/Windows/WindowsWindow.h"
+#include <Platforms/Windows/WindowsWindow.h>
 #elif defined(TB_PLATFORM_LINUX)
-#include "Platforms/Linux/LinuxWindow.h"
+#include <Platforms/Linux/LinuxWindow.h>
 #elif defined(TB_PLATFORM_MACOS)
-#include "Platforms/MacOS/MacOSWindow.h"
+#include <Platforms/MacOS/MacOSWindow.h>
 #elif defined(TB_PLATFORM_WEB)
-#include "Platforms/Web/WebWindow.h"
+#include <Platforms/Web/WebWindow.h>
 #elif defined(TB_PLATFORM_ANDROID)
-#include "Platforms/Android/AndroidWindow.h"
+#include <Platforms/Android/AndroidWindow.h>
 #endif
 
 namespace Tabby {

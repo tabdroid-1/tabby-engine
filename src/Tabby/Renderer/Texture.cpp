@@ -1,10 +1,9 @@
-#include "Tabby/Renderer/Texture.h"
-#include "tbpch.h"
-
-#include "Drivers/gl46/OpenGL46Texture.h"
-#include "Drivers/gl33/OpenGL33Texture.h"
-#include "Drivers/gles3/OpenGLES3Texture.h"
-#include "Tabby/Renderer/Renderer.h"
+#include <tbpch.h>
+#include <Drivers/gles3/OpenGLES3Texture.h>
+#include <Drivers/gl46/OpenGL46Texture.h>
+#include <Drivers/gl33/OpenGL33Texture.h>
+#include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Renderer/Texture.h>
 #include <Tabby/Foundation/Types.h>
 
 namespace Tabby {

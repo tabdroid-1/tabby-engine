@@ -1,5 +1,4 @@
-#include "tbpch.h"
-
+#include <tbpch.h>
 #include <Drivers/gl46/OpenGL46VertexArray.h>
 #include <Drivers/GPUProfiler.h>
 

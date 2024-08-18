@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Tabby/Core/Base.h"
 #include <Tabby/Core/Layer/Layer.h>
-
-#include <vector>
 
 namespace Tabby {
 

@@ -1,7 +1,8 @@
-#include "tbpch.h"
-
+#include <tbpch.h>
 #include <Drivers/gl46/OpenGL46Texture.h>
 #include <Drivers/GPUProfiler.h>
+
+#include <gl.h>
 
 namespace Tabby {
 
@@ -56,6 +57,7 @@ OpenGL46Texture::OpenGL46Texture(const TextureSpecification& specification, Asse
 
     glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
     glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
+    glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
     if (m_Specification.GenerateMips) {
         glGenerateTextureMipmap(m_RendererID);

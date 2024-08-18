@@ -1,10 +1,9 @@
-#include <Tabby/Renderer/Mesh.h>
-// #include "Application.h"
 #include <Tabby/Renderer/RenderCommand.h>
+#include <Tabby/Renderer/Mesh.h>
 
+#include <glm/gtx/quaternion.hpp>
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
 
 namespace Tabby {
 
@@ -18,7 +17,6 @@ Mesh::Mesh()
     m_Transform = Matrix4(1.0f);
     m_Transform = glm::translate(m_Transform, glm::vec3(0.0f, 0.0f, 0.0f));
     m_Transform = glm::scale(m_Transform, glm::vec3(1.0f, 1.0f, 1.0f));
-    // m_Material = CreateShared<Material>("UnlitMaterial", "shaders/gl33/Renderer3D_MeshUnlit.glsl");
 }
 
 Mesh::~Mesh()

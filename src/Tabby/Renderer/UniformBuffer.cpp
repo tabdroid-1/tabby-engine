@@ -1,10 +1,9 @@
-#include "UniformBuffer.h"
-#include "tbpch.h"
-
-#include "Drivers/gl46/OpenGL46UniformBuffer.h"
-#include "Drivers/gl33/OpenGL33UniformBuffer.h"
-#include "Drivers/gles3/OpenGLES3UniformBuffer.h"
-#include "Tabby/Renderer/Renderer.h"
+#include <tbpch.h>
+#include <Drivers/gles3/OpenGLES3UniformBuffer.h>
+#include <Drivers/gl46/OpenGL46UniformBuffer.h>
+#include <Drivers/gl33/OpenGL33UniformBuffer.h>
+#include <Tabby/Renderer/UniformBuffer.h>
+#include <Tabby/Renderer/Renderer.h>
 
 namespace Tabby {
 

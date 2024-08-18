@@ -1,5 +1,4 @@
-#include "Tabby/Core/Layer/Layer.h"
-#include "tbpch.h"
+#include <Tabby/Core/Layer/Layer.h>
 
 namespace Tabby {
 

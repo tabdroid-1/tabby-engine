@@ -1,9 +1,8 @@
 #pragma once
-
 #include <tbpch.h>
 #include <Tabby/Core/Events/MouseEvent.h>
-#include <Tabby/Foundation/Types.h>
 #include <Tabby/Core/Input/KeyCode.h>
+#include <Tabby/Foundation/Types.h>
 
 struct _SDL_Joystick;
 typedef struct _SDL_Joystick SDL_Joystick;
@@ -16,8 +15,6 @@ struct GamepadInfo {
     bool isGamepad = false;
     bool ready = false;
     float deadZone = 0.1f;
-    // int axisCount;
-    // int buttonCount;
 };
 
 class Input {
@@ -40,11 +37,12 @@ public:
 
 private:
     Input();
-    GamepadInfo m_Gamepads[MAX_GAMEPADS];
+
+    GamepadInfo* m_Gamepads;
     Vector2 m_MouseScrollDelta;
 
 private:
-    static Input* s_Instance;
+    inline static Input* s_Instance;
 
     friend class Application;
 };

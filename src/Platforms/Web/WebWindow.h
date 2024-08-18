@@ -1,8 +1,8 @@
-#ifdef TB_PLATFORM_WEB
 #pragma once
 
-#include "Tabby/Core/Window.h"
-#include "Tabby/Renderer/GraphicsContext.h"
+#ifdef TB_PLATFORM_WEB
+#include <Tabby/Core/Window.h>
+#include <Tabby/Renderer/GraphicsContext.h>
 
 class SDL_Window;
 

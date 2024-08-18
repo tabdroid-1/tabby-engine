@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tabby/Renderer/GraphicsContext.h"
+#include <Tabby/Renderer/GraphicsContext.h>
 
 struct SDL_Window;
 

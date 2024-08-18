@@ -1,10 +1,9 @@
-#include "Tabby/Renderer/Shader.h"
-#include "tbpch.h"
-
-#include "Drivers/gl46/OpenGL46Shader.h"
-#include "Drivers/gl33/OpenGL33Shader.h"
-#include "Drivers/gles3/OpenGLES3Shader.h"
-#include "Tabby/Renderer/Renderer.h"
+#include <tbpch.h>
+#include <Drivers/gles3/OpenGLES3Shader.h>
+#include <Drivers/gl46/OpenGL46Shader.h>
+#include <Drivers/gl33/OpenGL33Shader.h>
+#include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Renderer/Shader.h>
 
 namespace Tabby {
 

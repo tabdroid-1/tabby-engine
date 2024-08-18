@@ -1,7 +1,18 @@
+Version: 18-08-2024_1 Alpha
+Changes:
+- Fixed GLTFloader oversight. 
+- Application is now a proper singleton. 
+- Instead of Config.h, now every config is in ApplicationSpecification
+- Framebuffer fix and clean up. 
+- Further tracy coverage
+- Cleaned up some code.
+
+--------------------------------------------------------------------------------------
+
 Version: 17-08-2024_1 Alpha
 Changes:
 - Font is now visible on opengl es 3.0. 
-- GPU profiling (not supported for GLES 3). And expanded tracy profiler coverage. I believe all code is being covered. 
+- GPU profiling (not supported for GLES 3). And expanded tracy profiler coverage. I believe all Functions are covered. 
 - FrameImage now visible in tracy
 - "Cleaned" some code
 

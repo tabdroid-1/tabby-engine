@@ -1,21 +1,15 @@
 #ifdef TB_PLATFORM_WEB
+#include <tbpch.h>
+#include <Tabby/Core/Events/ApplicationEvent.h>
+#include <Tabby/Core/Events/MouseEvent.h>
+#include <Tabby/Core/Events/KeyEvent.h>
+#include <Tabby/Renderer/Renderer.h>
+#include <Platforms/Web/WebWindow.h>
+#include <Tabby/Core/Input/Input.h>
 
-#include "Platforms/Web/WebWindow.h"
-#include "tbpch.h"
-
-#include "Tabby/Core/Input/Input.h"
-#include "backends/imgui_impl_sdl2.h"
-
-#include "Tabby/Core/Events/ApplicationEvent.h"
-#include "Tabby/Core/Events/KeyEvent.h"
-#include "Tabby/Core/Events/MouseEvent.h"
-
-#include "Drivers/gl33/OpenGL33Context.h"
-#include "Tabby/Renderer/Renderer.h"
-
-#include <emscripten.h>
+#include <backends/imgui_impl_sdl2.h>
 #include <emscripten/html5.h>
-
+#include <emscripten.h>
 #include <SDL2/SDL.h>
 
 namespace Tabby {

@@ -1,9 +1,8 @@
-#include "Drivers/gl33/OpenGL33RendererAPI.h"
-
-#include "tbpch.h"
+#include <tbpch.h>
+#include <Drivers/gl33/OpenGL33RendererAPI.h>
+#include <Drivers/GPUProfiler.h>
 
 #include <gl.h>
-#include <Drivers/GPUProfiler.h>
 
 namespace Tabby {
 

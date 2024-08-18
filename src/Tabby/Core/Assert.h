@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Tabby/Core/Base.h"
-#include "Tabby/Core/Log/Log.h"
+#include <Tabby/Core/Base.h>
+#include <Tabby/Core/Log/Log.h>
 
 #define TB_CORE_VERIFY(expression)                                           \
     do {                                                                     \

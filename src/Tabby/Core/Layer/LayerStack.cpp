@@ -1,4 +1,3 @@
-#include "tbpch.h"
 #include <Tabby/Core/Layer/LayerStack.h>
 
 namespace Tabby {

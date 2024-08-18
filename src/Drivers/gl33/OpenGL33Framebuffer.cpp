@@ -1,4 +1,4 @@
-#include "tbpch.h"
+#include <tbpch.h>
 #include <Drivers/gl33/OpenGL33Framebuffer.h>
 #include <Drivers/GPUProfiler.h>
 
@@ -58,15 +58,20 @@ namespace Utils {
         TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Framebuffer::Utils::AttachDepthTexture");
         TB_PROFILE_GPU("Tabby::OpenGL33Framebuffer::Utils::AttachDepthTexture");
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+        bool multisampled = samples > 1;
+        if (multisampled) {
+            glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
+        } else {
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        }
 
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, id, 0);
+        glFramebufferTexture(GL_FRAMEBUFFER, attachmentType, id, 0);
     }
 
     static bool IsDepthFormat(FramebufferTextureFormat format)
@@ -168,7 +173,7 @@ void OpenGL33Framebuffer::Invalidate()
         }
     }
 
-    if (m_ColorAttachments.size() > 1) {
+    if (m_ColorAttachments.size() > 0) {
         TB_CORE_ASSERT(m_ColorAttachments.size() <= 4);
         GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
         glDrawBuffers(m_ColorAttachments.size(), buffers);
@@ -238,5 +243,4 @@ void OpenGL33Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
     glTexImage2D(GL_TEXTURE_2D, 0, Utils::TabbyFBTextureFormatToGL(spec.TextureFormat), m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_INT, &value);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
-
 }

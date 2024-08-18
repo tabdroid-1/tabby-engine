@@ -1,9 +1,8 @@
-#include "Tabby/Renderer/RendererAPI.h"
-#include "tbpch.h"
-
-#include "Drivers/gl46/OpenGL46RendererAPI.h"
-#include "Drivers/gl33/OpenGL33RendererAPI.h"
-#include "Drivers/gles3/OpenGLES3RendererAPI.h"
+#include <tbpch.h>
+#include <Drivers/gles3/OpenGLES3RendererAPI.h>
+#include <Drivers/gl46/OpenGL46RendererAPI.h>
+#include <Drivers/gl33/OpenGL33RendererAPI.h>
+#include <Tabby/Renderer/RendererAPI.h>
 
 namespace Tabby {
 

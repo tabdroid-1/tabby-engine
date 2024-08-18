@@ -1,7 +1,6 @@
+#include <tbpch.h>
 #include <Drivers/gl46/OpenGL46Buffer.h>
 #include <Drivers/GPUProfiler.h>
-
-#include "tbpch.h"
 
 #include <gl.h>
 

@@ -1,12 +1,10 @@
 #include <Tabby/Core/Log/Log.h>
 
-#include <Tabby/Foundation/Types.h>
+#if defined(TB_PLATFORM_ANDROID)
+#include <spdlog/sinks/android_sink.h>
+#endif
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-
-#if defined(TB_PLATFORM_ANDROID)
-#include "spdlog/sinks/android_sink.h"
-#endif
 
 namespace Tabby {
 

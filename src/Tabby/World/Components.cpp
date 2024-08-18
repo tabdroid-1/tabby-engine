@@ -1,17 +1,15 @@
-#include <Tabby/Audio/AudioSource.h>
-#include <Tabby/Audio/AudioEngine.h>
-#include <Tabby/World/Components.h>
-#include <Tabby/Physics/2D/Physics2D.h>
 #include <Tabby/Physics/2D/Physics2DTypes.h>
 #include <Tabby/Physics/2D/Physics2DUtil.h>
+#include <Tabby/Physics/2D/Physics2D.h>
+#include <Tabby/Audio/AudioEngine.h>
+#include <Tabby/Audio/AudioSource.h>
+#include <Tabby/World/Components.h>
 #include <Tabby/Math/Math.h>
 
-#include <box2d/box2d.h>
-// #include <glm/glm.hpp>
-// #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <box2d/box2d.h>
 
 namespace Tabby {
 

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Tabby/Core/PlatformDetection.h"
-
-#include <memory>
+#include <Tabby/Core/PlatformDetection.h>
 
 #if defined(TB_PLATFORM_WINDOWS)
 #define TB_DEBUGBREAK() __debugbreak()

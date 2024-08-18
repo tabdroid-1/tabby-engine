@@ -1,10 +1,9 @@
-#include "tbpch.h"
-
-#include "Drivers/gl46/OpenGL46VertexArray.h"
-#include "Drivers/gl33/OpenGL33VertexArray.h"
-#include "Drivers/gles3/OpenGLES3VertexArray.h"
-#include "Tabby/Renderer/Renderer.h"
-#include "Tabby/Renderer/VertexArray.h"
+#include <tbpch.h>
+#include <Drivers/gles3/OpenGLES3VertexArray.h>
+#include <Drivers/gl46/OpenGL46VertexArray.h>
+#include <Drivers/gl33/OpenGL33VertexArray.h>
+#include <Tabby/Renderer/VertexArray.h>
+#include <Tabby/Renderer/Renderer.h>
 
 namespace Tabby {
 

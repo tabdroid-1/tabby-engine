@@ -1,21 +1,15 @@
-#include "Tabby/UI/ImGui/ImGuiLayer.h"
-#include "tbpch.h"
-
-#include <Drivers/gl33/OpenGL33Context.h>
+#include <tbpch.h>
 #include <Tabby/Renderer/RendererAPI.h>
-#include <imgui.h>
-#include <imgui_internal.h>
+#include <Tabby/UI/ImGui/ImGuiLayer.h>
+#include <Tabby/Core/Application.h>
 
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_sdl2.h>
-
-#include "Tabby/Core/Application.h"
-
+#include <imgui_internal.h>
+#include <imgui.h>
 #include <SDL.h>
-
 #include <gl.h>
-
-#include "ImGuizmo.h"
+#include <ImGuizmo.h>
 
 namespace Tabby {
 
@@ -58,8 +52,7 @@ void ImGuiLayer::OnAttach()
 
     SetDarkThemeColors();
 
-    Application& app = Application::Get();
-    SDL_Window* window = static_cast<SDL_Window*>(app.GetWindow().GetNativeWindow());
+    SDL_Window* window = static_cast<SDL_Window*>(Application::GetWindow().GetNativeWindow());
 
     // Setup Platform/Renderer bindings
     ImGui_ImplSDL2_InitForOpenGL(window, SDL_GL_GetCurrentContext());
@@ -106,8 +99,8 @@ void ImGuiLayer::End()
     TB_PROFILE_SCOPE_NAME("Tabby::ImGuiLayer::End");
 
     ImGuiIO& io = ImGui::GetIO();
-    Application& app = Application::Get();
-    io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
+    // Application& app = Application::Get();
+    io.DisplaySize = ImVec2((float)Application::GetWindow().GetWidth(), (float)Application::GetWindow().GetHeight());
 
     // Rendering
     ImGui::Render();
@@ -118,7 +111,7 @@ void ImGuiLayer::End()
 
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
-        SDL_GL_MakeCurrent(static_cast<SDL_Window*>(app.GetWindow().GetNativeWindow()), backup_current_context);
+        SDL_GL_MakeCurrent(static_cast<SDL_Window*>(Application::GetWindow().GetNativeWindow()), backup_current_context);
     }
 }
 

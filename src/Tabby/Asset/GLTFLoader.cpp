@@ -1,28 +1,24 @@
-#include <Tabby/Asset/GLTFLoader.h>
-#include <Tabby/Renderer/Texture.h>
-#include <Tabby/Renderer/Mesh.h>
+#include <Tabby/Renderer/VertexArray.h>
+#include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Renderer/Renderer.h>
 #include <Tabby/Renderer/Material.h>
+#include <Tabby/Renderer/Texture.h>
+#include <Tabby/Asset/GLTFLoader.h>
+#include <Tabby/Renderer/Buffer.h>
+#include <Tabby/Renderer/Mesh.h>
 #include <Tabby/World/Entity.h>
 #include <Tabby/World/World.h>
-#include <Tabby/Asset/AssetFile.h>
-#include <Tabby/Asset/AssetManager.h>
-#include <Tabby/Renderer/Buffer.h>
-#include <Tabby/Renderer/VertexArray.h>
-#include <Tabby/Renderer/RenderCommand.h>
-#include <Tabby/Renderer/Renderer.h>
 
-#include <fastgltf/core.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <fastgltf/types.hpp>
 #include <fastgltf/tools.hpp>
-#include <stb_image.h>
-
-#include <fastgltf/core.hpp>
 #include <fastgltf/types.hpp>
 #include <fastgltf/tools.hpp>
-
+#include <fastgltf/core.hpp>
+#include <fastgltf/core.hpp>
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
+#include <stb_image.h>
 
 namespace Tabby {
 
@@ -39,7 +35,7 @@ void GLTFLoader::Parse(const std::filesystem::path& filePath)
 
     fastgltf::Parser parser;
 
-    constexpr auto gltfOptions = fastgltf::Options::DontRequireValidAssetMember | fastgltf::Options::AllowDouble | fastgltf::Options::LoadGLBBuffers | fastgltf::Options::LoadExternalBuffers | fastgltf::Options::LoadExternalImages | fastgltf::Options::GenerateMeshIndices;
+    constexpr auto gltfOptions = fastgltf::Options::DontRequireValidAssetMember | fastgltf::Options::AllowDouble | fastgltf::Options::LoadExternalBuffers | fastgltf::Options::LoadExternalImages | fastgltf::Options::GenerateMeshIndices;
 
 #ifdef TB_PLATFORM_ANDROID
     auto asset = parser.loadFileFromApk(filePath);
@@ -65,10 +61,6 @@ void GLTFLoader::Parse(const std::filesystem::path& filePath)
 void GLTFLoader::LoadImages(fastgltf::Asset& asset, std::vector<Shared<Texture>>& images)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::GLTFLoader::LoadImages");
-
-    auto getLevelCount = [](int width, int height) -> int {
-        return static_cast<int>(1 + floor(log2(width > height ? width : height)));
-    };
 
     for (auto& image : asset.images) {
         Shared<Texture> imageptr;
@@ -178,7 +170,9 @@ void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>
 {
     TB_PROFILE_SCOPE_NAME("Tabby::GLTFLoader::LoadMeshes");
 
-    std::vector<Shared<Tabby::Mesh>> tabbyMeshes;
+    std::vector<std::pair<uint32_t, Shared<Mesh>>> tabbyMeshes;
+
+    int meshID = 0;
 
     for (auto& mesh : asset.meshes) {
 
@@ -266,8 +260,10 @@ void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>
             tabbyMesh->SetIndices(meshIndices);
 
             tabbyMesh->Create();
-            tabbyMeshes.push_back(tabbyMesh);
+
+            tabbyMeshes.push_back(std::make_pair(meshID, tabbyMesh));
         }
+        meshID++;
     }
 
     auto SceneEntity = Tabby::World::CreateEntity("Scene");
@@ -275,8 +271,15 @@ void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>
     for (auto& node : asset.nodes) {
 
         auto ent = Tabby::World::CreateEntity(node.name.c_str());
-        auto& mC = ent.AddComponent<MeshComponent>();
-        mC.m_Mesh = tabbyMeshes[node.meshIndex.value()];
+
+        for (auto mesh : tabbyMeshes) {
+            if (mesh.first == node.meshIndex.value()) {
+                auto childEnt = Tabby::World::CreateEntity(mesh.second->GetName());
+                auto& mC = childEnt.AddComponent<MeshComponent>();
+                mC.m_Mesh = mesh.second;
+                ent.AddChild(childEnt);
+            }
+        }
 
         auto& tc = ent.GetComponent<TransformComponent>();
         std::visit(fastgltf::visitor { [&](const fastgltf::math::fmat4x4& matrix) {

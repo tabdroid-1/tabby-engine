@@ -1,11 +1,9 @@
-#include "Tabby/Renderer/Framebuffer.h"
-#include "tbpch.h"
-
-#include "Tabby/Renderer/Renderer.h"
-
-#include "Drivers/gl46/OpenGL46Framebuffer.h"
-#include "Drivers/gl33/OpenGL33Framebuffer.h"
-#include "Drivers/gles3/OpenGLES3Framebuffer.h"
+#include <tbpch.h>
+#include <Drivers/gles3/OpenGLES3Framebuffer.h>
+#include <Drivers/gl46/OpenGL46Framebuffer.h>
+#include <Drivers/gl33/OpenGL33Framebuffer.h>
+#include <Tabby/Renderer/Framebuffer.h>
+#include <Tabby/Renderer/Renderer.h>
 
 namespace Tabby {
 

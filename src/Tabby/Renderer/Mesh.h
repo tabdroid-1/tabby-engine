@@ -1,8 +1,7 @@
 #pragma once
-
 #include <Tabby/Renderer/VertexArray.h>
-#include <Tabby/Foundation/Types.h>
 #include <Tabby/Renderer/Material.h>
+#include <Tabby/Foundation/Types.h>
 
 namespace Tabby {
 

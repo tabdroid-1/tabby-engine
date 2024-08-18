@@ -1,9 +1,8 @@
-#include "Input.h"
-#include "SDL.h"
+#include <Tabby/Core/Input/Input.h>
+#include <Tabby/Core/Application.h>
+#include <SDL.h>
 
 namespace Tabby {
-
-Input* Input::s_Instance = nullptr;
 
 void Input::Init()
 {
@@ -17,7 +16,9 @@ Input::Input()
     TB_PROFILE_SCOPE_NAME("Tabby::Input::Constructor");
     s_Instance = this;
 
-    for (int i = 0; (i < SDL_NumJoysticks()) && (i < MAX_GAMEPADS); i++) {
+    m_Gamepads = (GamepadInfo*)malloc(Application::GetSpecification().MaxGamepads * sizeof(GamepadInfo));
+
+    for (int i = 0; (i < SDL_NumJoysticks()) && (i < Application::GetSpecification().MaxGamepads); i++) {
         GamepadInfo tempCont;
 
         // Check if joystick is a gamepad (ex. xbox360 and ps3 controllers)
@@ -34,8 +35,6 @@ Input::Input()
             if (tempCont.isGamepad) {
                 tempCont.name = SDL_GameControllerName((SDL_GameController*)tempCont.SDL_Gamepad);
             } else {
-                // tempCont.axisCount = SDL_JoystickNumAxes((SDL_Joystick*)tempCont.SDL_Gamepad);
-                // tempCont.buttonCount = SDL_JoystickNumButtons((SDL_Joystick*)tempCont.SDL_Gamepad);
                 tempCont.name = SDL_JoystickName((SDL_Joystick*)tempCont.SDL_Gamepad);
             }
             tempCont.name += '\0';
@@ -49,7 +48,7 @@ void Input::RefreshGamepads()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Input::RefreshGamepads");
 
-    for (int i = 0; (i < SDL_NumJoysticks()) && (i < MAX_GAMEPADS); i++) {
+    for (int i = 0; (i < SDL_NumJoysticks()) && (i < Application::GetSpecification().MaxGamepads); i++) {
         GamepadInfo tempCont;
 
         // Check if joystick is a gamepad (ex. xbox360 and ps3 controllers)
@@ -66,8 +65,6 @@ void Input::RefreshGamepads()
             if (tempCont.isGamepad) {
                 tempCont.name = SDL_GameControllerName((SDL_GameController*)tempCont.SDL_Gamepad);
             } else {
-                // tempCont.axisCount = SDL_JoystickNumAxes((SDL_Joystick*)tempCont.SDL_Gamepad);
-                // tempCont.buttonCount = SDL_JoystickNumButtons((SDL_Joystick*)tempCont.SDL_Gamepad);
                 tempCont.name = SDL_JoystickName((SDL_Joystick*)tempCont.SDL_Gamepad);
             }
             tempCont.name += '\0';

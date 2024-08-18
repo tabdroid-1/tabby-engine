@@ -1,13 +1,12 @@
 #ifdef TB_PLATFORM_WINDOWS
+#include <tbpch.h>
+#include <Tabby/Utils/PlatformUtils.h>
+#include <Tabby/Core/Application.h>
+#include <Tabby/Core/Time/Time.h>
 
-#include "Tabby/Core/Application.h"
-#include "Tabby/Utils/PlatformUtils.h"
-#include "Tabby/Core/Time/Time.h"
-#include "tbpch.h"
-
-#include <SDL.h>
 #include <SDL_syswm.h>
 #include <commdlg.h>
+#include <SDL.h>
 
 namespace Tabby {
 
