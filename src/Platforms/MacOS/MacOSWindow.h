@@ -23,9 +23,10 @@ public:
 
     void SetVSync(bool enabled) override;
     bool IsVSync() const override;
-
     void SetResizable(bool enabled) override;
     bool IsResizable() const override;
+    void SetFullscreen(uint8_t mode) override;
+    uint8_t GetFullscreenMode() const override;
 
     void SetMinSize(uint32_t minWidth, uint32_t minHeight) override;
 
@@ -41,9 +42,10 @@ private:
 
     struct WindowData {
         std::string Title;
-        bool Resizeable;
+        bool Resizable;
         unsigned int Width, Height;
         unsigned int MinWidth, MinHeight;
+        uint8_t FullscreenMode;
         bool VSync;
 
         EventCallbackFn EventCallback;

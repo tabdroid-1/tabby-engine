@@ -44,7 +44,8 @@ void OpenGL33Context::Init()
     TB_CORE_INFO("OpenGL Info:");
     TB_CORE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
     TB_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
-    TB_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
+    TB_CORE_INFO("  Version: OpenGL 3.3");
+    TB_CORE_INFO("  Max Supported Version: {0}", glGetString(GL_VERSION));
 
     std::string version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
     size_t dotPosition = version.find('.');

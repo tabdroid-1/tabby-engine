@@ -9,7 +9,8 @@ struct WindowProps {
     uint32_t Height;
     uint32_t MinWidth;
     uint32_t MinHeight;
-    bool Resizeable;
+    uint8_t FullscreenMode;
+    bool Resizable;
     bool VSync;
 
     WindowProps(const std::string& title = "Tabby Engine",
@@ -17,6 +18,7 @@ struct WindowProps {
         uint32_t height = 900,
         uint32_t minWidth = 1600,
         uint32_t minHeight = 900,
+        uint8_t FullscreenMode = 0,
         bool resizeable = true,
         bool vsync = true)
         : Title(title)
@@ -24,7 +26,7 @@ struct WindowProps {
         , Height(height)
         , MinWidth(minWidth)
         , MinHeight(minHeight)
-        , Resizeable(resizeable)
+        , Resizable(resizeable)
         , VSync(vsync)
     {
     }
@@ -44,11 +46,13 @@ public:
 
     // Window attributes
     virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+
     virtual void SetVSync(bool enabled) = 0;
     virtual bool IsVSync() const = 0;
-
     virtual void SetResizable(bool enabled) = 0;
     virtual bool IsResizable() const = 0;
+    virtual void SetFullscreen(uint8_t mode) = 0;
+    virtual uint8_t GetFullscreenMode() const = 0;
 
     virtual void SetMinSize(uint32_t minWidth, uint32_t minHeight) = 0;
 

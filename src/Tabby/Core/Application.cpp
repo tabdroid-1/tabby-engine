@@ -6,6 +6,8 @@
 #include <Tabby/Core/Input/Input.h>
 #include <Tabby/Core/Time/Time.h>
 
+#include <SDL_rwops.h>
+
 namespace Tabby {
 
 Application::Application(const ApplicationSpecification& specification)
@@ -32,7 +34,9 @@ Application::Application(const ApplicationSpecification& specification)
         FileSystem::SetWorkingDirectory(m_Specification.WorkingDirectory);
     }
 
-    m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight, m_Specification.Resizeable, m_Specification.VSync));
+    ParseEngineConfig();
+
+    m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight, m_Specification.FullscreenMode, m_Specification.Resizable, m_Specification.VSync));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
     Renderer::Init();
@@ -41,6 +45,8 @@ Application::Application(const ApplicationSpecification& specification)
 
     m_ImGuiLayer = new ImGuiLayer();
     PushOverlay(m_ImGuiLayer);
+
+    m_Console = new ConsolePanel();
 }
 
 Application::~Application()
@@ -57,7 +63,7 @@ void Application::PushLayer(Layer* layer)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Application::PushLayer");
 
-    m_LayerStack.PushLayer(layer);
+    s_Instance->m_LayerStack.PushLayer(layer);
     layer->OnAttach();
 }
 
@@ -65,24 +71,29 @@ void Application::PushOverlay(Layer* layer)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Application::PushOverlay");
 
-    m_LayerStack.PushOverlay(layer);
+    s_Instance->m_LayerStack.PushOverlay(layer);
     layer->OnAttach();
+}
+
+void Application::SetConsoleActive(bool active)
+{
+    s_Instance->m_Console->SetActive(active);
 }
 
 void Application::Close()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Application::Close");
 
-    m_Running = false;
+    s_Instance->m_Running = false;
 }
 
 void Application::SubmitToMainThread(const std::function<void()>& function)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Application::SubmitToMainThread");
 
-    std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
+    std::scoped_lock<std::mutex> lock(s_Instance->m_MainThreadQueueMutex);
 
-    m_MainThreadQueue.emplace_back(function);
+    s_Instance->m_MainThreadQueue.emplace_back(function);
 }
 
 void Application::OnEvent(Event& e)
@@ -107,52 +118,71 @@ void Application::Run()
 #ifdef TB_PLATFORM_WEB
     if (m_Running) {
 #else
-    while (m_Running) {
+    while (s_Instance->m_Running) {
 #endif
         TB_PROFILE_FRAME();
         TB_PROFILE_SCOPE_NAME("Tabby::Application::Update");
 
         double time = Time::GetTime();
-        Time::SetDeltaTime(time - m_LastFrameTime);
-        m_LastFrameTime = time;
+        Time::SetDeltaTime(time - s_Instance->m_LastFrameTime);
+        s_Instance->m_LastFrameTime = time;
 
         s_Instance->ExecuteMainThreadQueue();
 
-        if (!m_Minimized && Time::GetDeltaTime() < 200.0f) { // ts < 200  because ts is really high number in first frame
+        if (!s_Instance->m_Minimized && Time::GetDeltaTime() < 200.0f) { // ts < 200  because ts is really high number in first frame
             // and that breaks the phyiscs and some other stuff.
             // this happens because m_LastFrameTime is 0 in first frame.
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackUpdate");
 
-                // TODO: Remove TimeStep
-                for (Layer* layer : m_LayerStack)
+                for (Layer* layer : s_Instance->m_LayerStack)
                     layer->OnUpdate();
             }
 
-            m_ImGuiLayer->Begin();
+            s_Instance->m_ImGuiLayer->Begin();
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackOnImGuiRender");
 
-                for (Layer* layer : m_LayerStack)
+                for (Layer* layer : s_Instance->m_LayerStack)
                     layer->OnImGuiRender();
             }
-            m_ImGuiLayer->End();
+
+            s_Instance->m_Console->Draw();
+
+            s_Instance->m_ImGuiLayer->End();
         }
 
+        ProcessApplicationSpec();
+
         Input::s_Instance->m_MouseScrollDelta = { 0, 0 };
-        m_Window->OnUpdate();
+        s_Instance->m_Window->OnUpdate();
 
         // Framerate limiter. this will do nothing if maxFPS is 0.
-        if (m_Specification.MaxFPS > 0.0) {
+        if (s_Instance->m_Specification.MaxFPS > 0.0) {
             TB_PROFILE_SCOPE_NAME("Tabby::Application::FramerateLimiter");
             double frameTime = Time::GetTime() - time;
 
-            double frameTimeLimit = 1.0 / m_Specification.MaxFPS;
+            double frameTimeLimit = 1.0 / s_Instance->m_Specification.MaxFPS;
             if (frameTime < frameTimeLimit) {
                 double sleepTime = frameTimeLimit - frameTime;
                 std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
             }
         }
+    }
+}
+
+void Application::ProcessApplicationSpec()
+{
+    if (GetWindow().IsVSync() != GetSpecification().VSync) {
+        GetWindow().SetVSync(GetSpecification().VSync);
+    }
+
+    if (GetWindow().IsResizable() != GetSpecification().Resizable) {
+        GetWindow().SetResizable(GetSpecification().Resizable);
+    }
+
+    if (GetWindow().GetFullscreenMode() != GetSpecification().FullscreenMode) {
+        GetWindow().SetFullscreen(GetSpecification().FullscreenMode);
     }
 }
 
@@ -197,5 +227,115 @@ void Application::ExecuteMainThreadQueue()
         func();
 
     m_MainThreadQueue.clear();
+}
+
+void Application::ParseEngineConfig()
+{
+    std::vector<std::string> lines;
+    SDL_RWops* rw = SDL_RWFromFile("tbconfig", "rb");
+    if (rw != nullptr) {
+        Sint64 size = SDL_RWsize(rw);
+
+        uint32_t offset = 0;
+        while (offset < size) {
+
+            std::string line;
+            char c;
+            do {
+                c = SDL_ReadU8(rw);
+                if (c != '\n' && c != '\000')
+                    line.push_back(c);
+                offset++;
+            } while (c != '\n' && c != '\000');
+
+            lines.push_back(line);
+        }
+
+        SDL_RWclose(rw);
+    } else {
+        TB_CORE_ERROR("Could not find tbconfig file");
+    }
+
+    for (auto line : lines) {
+        {
+            size_t a = line.find("graphics_api");
+            if (a != line.npos) {
+                std::string option;
+                size_t offset = a + 12 + 1; // 12 is the size of 'graphics_api' and 1 is '='
+                option = line.substr(offset, line.size());
+
+                if (option == "gles3") {
+                    RendererAPI::s_API = RendererAPI::API::OpenGLES3;
+                    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGLES3;
+
+                } else if (option == "gl33") {
+                    RendererAPI::s_API = RendererAPI::API::OpenGL33;
+                    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGL33;
+
+                } else if (option == "gl46") {
+                    RendererAPI::s_API = RendererAPI::API::OpenGL46;
+                    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGL46;
+
+                } else
+                    TB_CORE_ERROR("Unknown graphics_api option in config!");
+
+                continue;
+            }
+        }
+
+        {
+            size_t a = line.find("max_fps");
+            if (a != line.npos) {
+                std::string option;
+                size_t offset = a + 7 + 1; // 7 is the size of 'graphics_api' and 1 is '='
+                option = line.substr(offset, line.size());
+
+                float value = std::stof(option);
+
+                if (value > 0)
+                    GetSpecification().MaxFPS = value;
+                else
+                    TB_CORE_ERROR("Invalid max_fps value in config!");
+
+                continue;
+            }
+        }
+
+        {
+            size_t a = line.find("vsync");
+            if (a != line.npos) {
+                std::string option;
+                size_t offset = a + 5 + 1; // 5 is the size of 'vsync' and 1 is '='
+                option = line.substr(offset, line.size());
+
+                int value = std::stoi(option);
+
+                if (value >= 0 && value <= 1)
+                    GetSpecification().VSync = value;
+                else
+                    TB_CORE_ERROR("Invalid fullscreen value in config!");
+
+                continue;
+            }
+        }
+
+        {
+            size_t a = line.find("fullscreen");
+            if (a != line.npos) {
+                std::string option;
+                size_t offset = a + 10 + 1; // 10 is the size of 'fullscreen' and 1 is '='
+                option = line.substr(offset, line.size());
+
+                int value = std::stoi(option);
+
+                if (value >= 0 && value <= 2)
+                    GetSpecification().FullscreenMode = value;
+                else
+                    TB_CORE_ERROR("Invalid fullscreen value in config!");
+
+                continue;
+            }
+        }
+    }
 }
 }

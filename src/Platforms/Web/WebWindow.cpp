@@ -39,7 +39,7 @@ void WebWindow::Init(const WindowProps& props)
     m_Data.Height = props.Height;
     m_Data.MinWidth = props.MinWidth;
     m_Data.MinHeight = props.MinHeight;
-    m_Data.Resizeable = props.Resizeable;
+    m_Data.Resizable = props.Resizable;
     m_Data.VSync = props.VSync;
 
     TB_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
@@ -94,7 +94,7 @@ void WebWindow::Init(const WindowProps& props)
 
     SDL_SetWindowData(m_Window, "WindowData", &m_Data);
     SetVSync(props.VSync);
-    SetResizable(props.Resizeable);
+    SetResizable(props.Resizable);
     SetMinSize(props.MinWidth, props.MinHeight);
 
     Input::Init();
@@ -217,14 +217,14 @@ void WebWindow::SetResizable(bool enabled)
         SDL_SetWindowResizable(m_Window, SDL_TRUE);
     else
         SDL_SetWindowResizable(m_Window, SDL_FALSE);
-    m_Data.Resizeable = enabled;
+    m_Data.Resizable = enabled;
 }
 
 bool WebWindow::IsResizable() const
 {
     TB_PROFILE_SCOPE_NAME("Tabby::WebWindow::GetResizable");
 
-    return m_Data.Resizeable;
+    return m_Data.Resizable;
 }
 
 void WebWindow::SetMinSize(uint32_t minWidth, uint32_t minHeight)
@@ -234,6 +234,28 @@ void WebWindow::SetMinSize(uint32_t minWidth, uint32_t minHeight)
     SDL_SetWindowMinimumSize(m_Window, minWidth, minHeight);
     m_Data.MinWidth = minWidth;
     m_Data.MinHeight = minHeight;
+}
+
+void WebWindow::SetFullscreen(uint8_t mode)
+{
+    if (mode > 2) {
+        TB_CORE_ERROR("Invalid window fullscreen mode! It should be 0, 1 or 2.");
+        return;
+    }
+
+    m_Data.FullscreenMode = mode;
+
+    if (mode == 0)
+        SDL_SetWindowFullscreen(m_Window, 0);
+    else if (mode == 1)
+        SDL_SetWindowFullscreen(m_Window, SDL_WINDOW_FULLSCREEN);
+    else if (mode == 2)
+        SDL_SetWindowFullscreen(m_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+}
+
+uint8_t WebWindow::GetFullscreenMode() const
+{
+    return m_Data.FullscreenMode;
 }
 }
 

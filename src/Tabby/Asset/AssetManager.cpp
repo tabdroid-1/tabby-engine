@@ -89,9 +89,8 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
     int image_width, image_height, channels;
 
     {
-
+        TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::ImportImageSource::Read");
         stbi_set_flip_vertically_on_load(true);
-        TB_PROFILE_SCOPE_NAME("stbi_load - AssetManager::ImportTextureSource");
         std::vector<unsigned char> imageData;
 
         SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");

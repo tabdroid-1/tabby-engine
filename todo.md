@@ -31,8 +31,8 @@ Todo
         - <s>Expand Tracy profiler coverage.</s> 18-08-2024_1 Alpha
         - <s>General cleaning.</s> 18-08-2024_1 Alpha
         - <s>Fix framebuffers.</s> 18-08-2024_1 Alpha
+    - <s> Create Application by reading a file. From a file named "tbconfig.(file format)" maybe. </s> Done sine 19-08-2024_1 Alpha.
     - Multithreading
-    - Create Application by reading a file. From a file named "tbconfig.(file format)" maybe.
 
 
 - Low priority
