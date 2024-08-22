@@ -42,10 +42,10 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type)
         return 4 * 4;
     case ShaderDataType::Bool:
         return 1;
+    default:
+        TB_CORE_ASSERT_TAGGED(false, "Unknown ShaderDataType!");
+        return 0;
     }
-
-    TB_CORE_ASSERT_TAGGED(false, "Unknown ShaderDataType!");
-    return 0;
 }
 
 struct BufferElement {
@@ -91,10 +91,10 @@ struct BufferElement {
             return 4;
         case ShaderDataType::Bool:
             return 1;
+        default:
+            TB_CORE_ASSERT_TAGGED(false, "Unknown ShaderDataType!");
+            return 0;
         }
-
-        TB_CORE_ASSERT_TAGGED(false, "Unknown ShaderDataType!");
-        return 0;
     }
 };
 

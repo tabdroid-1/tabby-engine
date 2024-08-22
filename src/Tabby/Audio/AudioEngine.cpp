@@ -14,8 +14,6 @@
 
 namespace Tabby {
 
-static constexpr int BufferMillisec = 200;
-
 void AudioEngine::FetchALErrors(const std::filesystem::path& file, int line)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::FetchALErrors");
@@ -163,7 +161,7 @@ Vector3 AudioEngine::GetPosition()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::GetPosition");
 
-    ALfloat* listenerPos;
+    ALfloat* listenerPos = nullptr;
     alGetListenerfv(AL_POSITION, listenerPos);
     return { listenerPos[0], listenerPos[0], listenerPos[0] };
 }
@@ -172,7 +170,7 @@ Vector3 AudioEngine::GetVelocity()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::GetVelocity");
 
-    ALfloat* listenerVel;
+    ALfloat* listenerVel = nullptr;
     alGetListenerfv(AL_POSITION, listenerVel);
     return { listenerVel[0], listenerVel[0], listenerVel[0] };
 }
@@ -180,7 +178,7 @@ Vector3 AudioEngine::GetVelocity()
 float* AudioEngine::GetOrientation()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::GetOrientation");
-    ALfloat* listenerOri;
+    ALfloat* listenerOri = nullptr;
     alGetListenerfv(AL_POSITION, listenerOri);
     return listenerOri;
 }

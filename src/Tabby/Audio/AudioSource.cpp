@@ -38,7 +38,7 @@ AudioSource::~AudioSource()
 
     alSourceStop(m_SourceID);
     CHECK_AL_ERRORS();
-    alSourcei(m_SourceID, AL_BUFFER, NULL);
+    alSourcei(m_SourceID, AL_BUFFER, (int)NULL);
     CHECK_AL_ERRORS();
     alDeleteSources(1, &m_SourceID);
     alDeleteBuffers(NUM_BUFFERS, m_BufferIDs.data());
@@ -120,7 +120,7 @@ void AudioSource::UnsetAudio()
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UnsetAudio");
 
     AudioEngine::m_MusicMixerLock.lock();
-    alSourcei(m_SourceID, AL_BUFFER, NULL);
+    alSourcei(m_SourceID, AL_BUFFER, (int)NULL);
     CHECK_AL_ERRORS();
     m_Cursor = 0;
 
@@ -133,20 +133,22 @@ void AudioSource::UpdateBuffer()
 
     alSourceStop(m_SourceID);
     CHECK_AL_ERRORS();
-    alSourcei(m_SourceID, AL_BUFFER, NULL);
+    alSourcei(m_SourceID, AL_BUFFER, (int)NULL);
     CHECK_AL_ERRORS();
-    ALint buffer_count = 0;
+    uint64_t buffer_count = 0;
     while (buffer_count < m_BufferIDs.size()) {
         TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UpdateBuffer::Iteration");
 
-        ALsizei buffer_size = static_cast<ALsizei>(std::min(MUSIC_BUFFER_SIZE, m_Music->dataSize - m_Cursor));
+        uint64_t buffer_size = static_cast<ALsizei>(std::min(MUSIC_BUFFER_SIZE, m_Music->dataSize - m_Cursor));
         buffer_size -= buffer_size % 8;
         if (buffer_size == 0)
             break;
 
         std::vector<byte> buffer_data(buffer_size);
         SDL_RWseek(m_Music->m_RWops, m_Music->dataStart + m_Cursor, RW_SEEK_SET);
-        TB_CORE_ASSERT_TAGGED(SDL_RWread(m_Music->m_RWops, buffer_data.data(), 1, buffer_size) == buffer_size, "Failed to read WAV data using SDL_RWops");
+        if (SDL_RWread(m_Music->m_RWops, buffer_data.data(), 1, buffer_size) != buffer_size) {
+            TB_CORE_ASSERT_TAGGED(false, "Failed to read WAV data using SDL_RWops");
+        }
         alBufferData(m_BufferIDs[buffer_count], m_Music->format, buffer_data.data(), buffer_size, m_Music->sampleRate);
         CHECK_AL_ERRORS();
         buffer_count++;
@@ -190,12 +192,14 @@ void AudioSource::UpdatePlayer()
         if (m_Cursor >= m_Music->dataSize)
             continue;
 
-        ALsizei buffer_size = static_cast<ALsizei>(std::min(MUSIC_BUFFER_SIZE, m_Music->dataSize - m_Cursor));
+        uint64_t buffer_size = static_cast<ALsizei>(std::min(MUSIC_BUFFER_SIZE, m_Music->dataSize - m_Cursor));
         buffer_size -= buffer_size % 8;
 
         std::vector<byte> buffer_data(buffer_size);
         SDL_RWseek(m_Music->m_RWops, m_Music->dataStart + m_Cursor, RW_SEEK_SET);
-        TB_CORE_ASSERT_TAGGED(SDL_RWread(m_Music->m_RWops, buffer_data.data(), 1, buffer_size) == buffer_size, "Failed to read WAV data using SDL_RWops");
+        if (SDL_RWread(m_Music->m_RWops, buffer_data.data(), 1, buffer_size) != buffer_size) {
+            TB_CORE_ASSERT_TAGGED(false, "Failed to read WAV data using SDL_RWops");
+        }
 
         alBufferData(buffer, m_Music->format, buffer_data.data(), buffer_size, m_Music->sampleRate);
         CHECK_AL_ERRORS();

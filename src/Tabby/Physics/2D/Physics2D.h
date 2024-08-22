@@ -2,15 +2,17 @@
 #include <Tabby/Physics/2D/Physics2DTypes.h>
 
 #include <box2d/box2d.h>
+#include <TaskScheduler.h>
 
 namespace Tabby {
 
 class Scene;
+class Physics2DTask;
 
-class Physisc2D {
+class Physics2D {
 public:
-    Physisc2D();
-    ~Physisc2D();
+    Physics2D();
+    ~Physics2D();
 
     static void Init();
     static void Init(const Vector2& gravity);
@@ -58,6 +60,8 @@ private:
 
 private:
     static float Physics2DRaycastCallback(b2ShapeId shapeId, b2Vec2 point, b2Vec2 normal, float fraction, void* context);
+    static void* Physics2DEnqueueTask(b2TaskCallback* task, int32_t itemCount, int32_t minRange, void* taskContext, void* userContext);
+    static void Physics2DFinishTask(void* taskPtr, void* userContext);
 
 private:
     b2WorldId m_PhysicsWorld;
@@ -66,15 +70,34 @@ private:
     std::queue<ShapeInfo2D> shapeInitQueue;
     std::queue<ShapeInfo2D> shapeUpdateQueue;
 
+    enki::TaskScheduler m_TaskScheduler;
+    int32_t m_TaskCount;
+    int m_ThreadCount;
+
     bool queueEmpty = true;
 
 private:
-    static Physisc2D* s_Instance;
+    static Physics2D* s_Instance;
     friend class World;
     friend BoxCollider2DComponent;
     friend CircleCollider2DComponent;
     friend CapsuleCollider2DComponent;
     friend SegmentCollider2DComponent;
+    // friend void Physics2DFinishTask(void* taskPtr, void* userContext);
+    // friend void* Physics2DEnqueueTask(b2TaskCallback* task, int32_t itemCount, int32_t minRange, void* taskContext, void* userContext);
+};
+
+class Physics2DTask : public enki::ITaskSet {
+public:
+    Physics2DTask() = default;
+
+    void ExecuteRange(enki::TaskSetPartition range, uint32_t threadIndex) override
+    {
+        m_task(range.start, range.end, threadIndex, m_taskContext);
+    }
+
+    b2TaskCallback* m_task = nullptr;
+    void* m_taskContext = nullptr;
 };
 
 }

@@ -92,17 +92,14 @@ std::string OpenGLES3Shader::ReadFile(const std::string& filepath)
             result.resize(size);
             Sint64 bytesRead = SDL_RWread(rw, &result[0], 1, size);
             if (bytesRead != size) {
-                // Handle read error
                 TB_CORE_ERROR("Error reading file {0}", filepath);
-                result.clear(); // Clear the result to indicate an error
+                result.clear();
             }
         }
 
         SDL_RWclose(rw);
     } else {
-        // Handle file open error
         TB_CORE_ERROR("Could not open file {0}", filepath);
-        TB_CORE_INFO("Current working dir: {0}", std::filesystem::current_path());
     }
 
     return result;
@@ -173,9 +170,9 @@ void OpenGLES3Shader::Compile(const std::unordered_map<GLenum, std::string>& sha
         return;
     }
     for (auto id : glShaderIDs)
-        // GLES::gl->DetachShader(program, id);
+        GLES::gl->DetachShader(program, id);
 
-        m_RendererID = program;
+    m_RendererID = program;
 }
 
 void OpenGLES3Shader::Bind() const

@@ -34,7 +34,7 @@ static AssetHandle CreateAndCacheFontAtlas(const std::string& fontName, float fo
         spec.UnpackAlignment = 0;
 
         std::vector<uint8_t> rgbaData(bitmap.width * bitmap.height * 4);
-        for (size_t i = 0, j = 0; i < bitmap.width * bitmap.height * 3; i += 3, j += 4) {
+        for (int i = 0, j = 0; i < bitmap.width * bitmap.height * 3; i += 3, j += 4) {
             rgbaData[j] = bitmap.pixels[i]; // R
             rgbaData[j + 1] = bitmap.pixels[i + 1]; // G
             rgbaData[j + 2] = bitmap.pixels[i + 2]; // B
@@ -93,7 +93,7 @@ Font::Font(const std::string name, AssetHandle handle, Buffer data)
 
     double fontScale = 1.0;
     m_Data->FontGeometry = msdf_atlas::FontGeometry(&m_Data->Glyphs);
-    int glyphsLoaded = m_Data->FontGeometry.loadCharset(font, fontScale, charset);
+    m_Data->FontGeometry.loadCharset(font, fontScale, charset);
     // TB_CORE_INFO("Loaded {} glyphs from font (out of {})", glyphsLoaded, charset.size());
 
     double emSize = 40.0;

@@ -2,6 +2,7 @@
 #include <tbpch.h>
 #include <Tabby/Foundation/Types.h>
 
+#include <TaskScheduler.h>
 #include <entt.hpp>
 
 namespace Tabby {
@@ -71,7 +72,7 @@ public:
     static void OnStop();
 
     static void Update();
-    static void DrawImGui();
+    void RendererThread();
 
     static void OnViewportResize(uint32_t width, uint32_t height);
 
@@ -109,6 +110,7 @@ private:
     Camera* m_CurrentCamera;
     const Matrix4* m_CurrentCameraTransform;
 
+    enki::TaskScheduler m_TaskScheduler;
     entt::registry m_EntityRegistry;
     std::unordered_map<UUID, entt::entity> m_EntityMap;
 

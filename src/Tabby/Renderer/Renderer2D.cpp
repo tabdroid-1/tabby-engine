@@ -792,7 +792,8 @@ void Renderer2D::ResetStats()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::ResetStats");
 
-    memset(&s_Data.Stats, 0, sizeof(Statistics));
+    s_Data.Stats.DrawCalls = 0;
+    s_Data.Stats.QuadCount = 0;
 }
 
 Renderer2D::Statistics Renderer2D::GetStats()

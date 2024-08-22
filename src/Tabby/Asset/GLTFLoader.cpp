@@ -51,7 +51,7 @@ void GLTFLoader::Parse(const std::filesystem::path& filePath)
     TB_CORE_ASSERT_TAGGED(asset.error() == fastgltf::Error::None, message);
 
     m_Asset = std::move(asset.get());
-    auto& defaultMaterial = m_Materials.emplace_back();
+    m_Materials.emplace_back();
 
     LoadImages(m_Asset, m_Images);
     LoadMaterials(m_Asset, m_Materials);
@@ -72,7 +72,7 @@ void GLTFLoader::LoadImages(fastgltf::Asset& asset, std::vector<Shared<Texture>>
 
                            const std::string path(filePath.uri.path());
 
-                           AssetHandle handle = AssetManager::LoadAssetSource(path, handle);
+                           AssetHandle handle = AssetManager::LoadAssetSource(path);
                            imageptr = AssetManager::GetAsset<Texture>(handle);
                        },
                        [&](fastgltf::sources::Array& vector) {
@@ -184,11 +184,11 @@ void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>
             TB_CORE_ASSERT(positionIt != it->attributes.end()); // A mesh primitive is required to hold the POSITION attribute.
             TB_CORE_ASSERT(it->indicesAccessor.has_value()); // We specify GenerateMeshIndices, so we should always have indices
 
-            auto index = std::distance(mesh.primitives.begin(), it);
+            // auto index = std::distance(mesh.primitives.begin(), it);
             // auto& primitive = .primitives[index];
             tabbyMesh->SetPrimitiveType((Mesh::PrimitiveType)fastgltf::to_underlying(it->type));
 
-            std::size_t materialUniformsIndex;
+            // std::size_t materialUniformsIndex;
             std::size_t baseColorTexcoordIndex;
 
             Shared<Material> tabbyMaterial;
@@ -200,7 +200,7 @@ void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>
                 tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gles3/Renderer3D_MeshUnlit.glsl");
 
             if (it->materialIndex.has_value()) {
-                materialUniformsIndex = it->materialIndex.value() + 1; // Adjust for default material
+                // materialUniformsIndex = it->materialIndex.value() + 1; // Adjust for default material
                 auto& material = asset.materials[it->materialIndex.value()];
 
                 auto& baseColorTexture = material.pbrData.baseColorTexture;
@@ -219,7 +219,7 @@ void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>
                     }
                 }
             } else {
-                materialUniformsIndex = 0;
+                // materialUniformsIndex = 0;
             }
 
             std::vector<Mesh::Vertex> meshVertices;

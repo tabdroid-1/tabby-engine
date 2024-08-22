@@ -95,26 +95,26 @@ private:
     Matrix4 m_ModelMatrix;
 
     // Ambient
-    Vector4 m_AmbientColor = Vector4(0.8f, 0.8f, 0.8f, 1);
+    Vector4 m_AmbientColor;
     // Albedo
-    Vector4 m_AlbedoColor = Vector4(0.8f, 0.8f, 0.8f, 1);
+    Vector4 m_AlbedoColor;
     Shared<Texture> m_AlbedoMap = nullptr;
-    Vector2 m_AlbedoMapOffset = Vector2(0, 0);
-    Vector2 m_AlbedoMapTiling = Vector2(1, 1);
+    Vector2 m_AlbedoMapOffset;
+    Vector2 m_AlbedoMapTiling;
     // Normal
     Shared<Texture> m_NormalMap = nullptr;
-    Vector2 m_NormalMapOffset = Vector2(0, 0);
-    Vector2 m_NormalMapTiling = Vector2(1, 1);
+    Vector2 m_NormalMapOffset;
+    Vector2 m_NormalMapTiling;
     float m_BumpValue = 0.0f;
     // Metallic
-    Vector4 m_MetallicColor = Vector4(0.8f, 0.8f, 0.8f, 1);
+    Vector4 m_MetallicColor;
     Shared<Texture> m_MetallicMap = nullptr;
-    Vector2 m_MetallicMapOffset = Vector2(0, 0);
-    Vector2 m_MetallicMapTiling = Vector2(1, 1);
+    Vector2 m_MetallicMapOffset;
+    Vector2 m_MetallicMapTiling;
     // Ambient Occlusion
     Shared<Texture> m_AmbientOcclusionMap = nullptr;
-    Vector2 m_AmbientOcclusionMapOffset = Vector2(0, 0);
-    Vector2 m_AmbientOcclusionMapTiling = Vector2(1, 1);
+    Vector2 m_AmbientOcclusionMapOffset;
+    Vector2 m_AmbientOcclusionMapTiling;
 
     // Other material properties
     bool m_DepthTestEnabled;

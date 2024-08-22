@@ -3,6 +3,7 @@
 #include <Drivers/GPUProfiler.h>
 
 #include <glm/gtc/type_ptr.hpp>
+#include <SDL_rwops.h>
 #include <gl.h>
 
 namespace Tabby {
@@ -60,19 +61,23 @@ std::string OpenGL46Shader::ReadFile(const std::string& filepath)
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGL46Shader::ReadFile");
 
     std::string result;
-    std::ifstream in(filepath, std::ios::in | std::ios::binary); // ifstream closes itself due to RAII
-    if (in) {
-        in.seekg(0, std::ios::end);
-        size_t size = in.tellg();
-        if (size != -1) {
+
+    SDL_RWops* rw = SDL_RWFromFile(filepath.c_str(), "rb");
+    if (rw != nullptr) {
+        Sint64 size = SDL_RWsize(rw);
+
+        if (size > 0) {
             result.resize(size);
-            in.seekg(0, std::ios::beg);
-            in.read(&result[0], size);
-        } else {
-            TB_CORE_ERROR("Could not read from file '{0}'", filepath);
+            Sint64 bytesRead = SDL_RWread(rw, &result[0], 1, size);
+            if (bytesRead != size) {
+                TB_CORE_ERROR("Error reading file {0}", filepath);
+                result.clear();
+            }
         }
+
+        SDL_RWclose(rw);
     } else {
-        TB_CORE_ERROR("Could not open file '{0}'", filepath);
+        TB_CORE_ERROR("Could not open file {0}", filepath);
     }
 
     return result;

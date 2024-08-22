@@ -25,9 +25,7 @@
 #define TB_PROFILE
 #endif
 
-#ifndef TB_DIST
 #define TB_ENABLE_VERIFY
-#endif
 
 #define TB_EXPAND_MACRO(x) x
 #define TB_STRINGIFY_MACRO(x) #x

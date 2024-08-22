@@ -6,6 +6,7 @@
 #include <Tabby/Core/Events/KeyEvent.h>
 #include <Tabby/Renderer/Renderer.h>
 #include <Tabby/Core/Input/Input.h>
+#include <Tabby/Core/Application.h>
 
 #include <backends/imgui_impl_sdl2.h>
 #include <SDL.h>

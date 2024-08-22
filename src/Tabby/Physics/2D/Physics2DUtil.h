@@ -15,10 +15,10 @@ namespace Utils {
             return b2_dynamicBody;
         case Rigidbody2DComponent::BodyType::Kinematic:
             return b2_kinematicBody;
+        default:
+            TB_CORE_ASSERT_TAGGED(false, "Unknown body type");
+            return b2_staticBody;
         }
-
-        TB_CORE_ASSERT_TAGGED(false, "Unknown body type");
-        return b2_staticBody;
     }
 
     inline Rigidbody2DComponent::BodyType Rigidbody2DTypeFromBox2DBody(b2BodyType bodyType)
@@ -30,10 +30,10 @@ namespace Utils {
             return Rigidbody2DComponent::BodyType::Dynamic;
         case b2_kinematicBody:
             return Rigidbody2DComponent::BodyType::Kinematic;
+        default:
+            TB_CORE_ASSERT_TAGGED(false, "Unknown body type");
+            return Rigidbody2DComponent::BodyType::Static;
         }
-
-        TB_CORE_ASSERT_TAGGED(false, "Unknown body type");
-        return Rigidbody2DComponent::BodyType::Static;
     }
 }
 

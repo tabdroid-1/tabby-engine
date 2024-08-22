@@ -3,6 +3,7 @@
 #include <Drivers/GPUProfiler.h>
 
 #include <glm/gtc/type_ptr.hpp>
+#include <SDL_rwops.h>
 #include <gl.h>
 
 namespace Tabby {
@@ -83,18 +84,25 @@ std::string OpenGL33Shader::ReadFile(const std::string& filepath)
     TB_PROFILE_SCOPE_NAME("Tabby::OpenGL33Shader::ReadFile");
 
     std::string result;
-    std::ifstream in(filepath, std::ios::in | std::ios::binary);
 
-    if (in) {
-        in.seekg(0, std::ios::end);
-        result.resize(in.tellg());
-        in.seekg(0, std::ios::beg);
-        in.read(&result[0], result.size());
+    SDL_RWops* rw = SDL_RWFromFile(filepath.c_str(), "rb");
+    if (rw != nullptr) {
+        Sint64 size = SDL_RWsize(rw);
+
+        if (size > 0) {
+            result.resize(size);
+            Sint64 bytesRead = SDL_RWread(rw, &result[0], 1, size);
+            if (bytesRead != size) {
+                TB_CORE_ERROR("Error reading file {0}", filepath);
+                result.clear();
+            }
+        }
+
+        SDL_RWclose(rw);
     } else {
-
         TB_CORE_ERROR("Could not open file {0}", filepath);
-        TB_CORE_INFO("Current working dir: {0}", std::filesystem::current_path());
     }
+
     return result;
 }
 

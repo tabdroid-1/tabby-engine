@@ -15,8 +15,8 @@ public:
     virtual void AddVertexBuffer(const Shared<VertexBuffer>& vertexBuffer) override;
     virtual void SetIndexBuffer(const Shared<IndexBuffer>& indexBuffer) override;
 
-    virtual const std::vector<Shared<VertexBuffer>>& GetVertexBuffers() const { return m_VertexBuffers; }
-    virtual const Shared<IndexBuffer>& GetIndexBuffer() const { return m_IndexBuffer; }
+    virtual const std::vector<Shared<VertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; }
+    virtual const Shared<IndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; }
 
 private:
     uint32_t m_RendererID;

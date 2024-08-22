@@ -79,9 +79,9 @@ namespace Utils {
         switch (format) {
         case FramebufferTextureFormat::DEPTH24STENCIL8:
             return true;
+        default:
+            return false;
         }
-
-        return false;
     }
 
     static GLenum TabbyFBTextureFormatToGL(FramebufferTextureFormat format)
@@ -91,10 +91,10 @@ namespace Utils {
             return GL_RGBA8;
         case FramebufferTextureFormat::RED_INTEGER:
             return GL_RED_INTEGER;
+        default:
+            TB_CORE_ASSERT(false);
+            return 0;
         }
-
-        TB_CORE_ASSERT(false);
-        return 0;
     }
 
 }
@@ -159,6 +159,8 @@ void OpenGL33Framebuffer::Invalidate()
             case FramebufferTextureFormat::RED_INTEGER:
                 Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
                 break;
+            default:
+                break;
             }
         }
     }
@@ -169,6 +171,8 @@ void OpenGL33Framebuffer::Invalidate()
         switch (m_DepthAttachmentSpecification.TextureFormat) {
         case FramebufferTextureFormat::DEPTH24STENCIL8:
             Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
+            break;
+        default:
             break;
         }
     }

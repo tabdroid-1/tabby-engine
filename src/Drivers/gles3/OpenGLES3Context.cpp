@@ -47,7 +47,7 @@ void OpenGLES3Context::Init()
     TB_CORE_INFO("  Vendor: {0}", GLES::gl->GetString(GL_VENDOR));
     TB_CORE_INFO("  Renderer: {0}", GLES::gl->GetString(GL_RENDERER));
     TB_CORE_INFO("  Version: OpenGL ES 3.0");
-    TB_CORE_INFO("  Max Supported Version: {0}", GLES::gl->GetString(GL_VERSION));
+    TB_CORE_INFO("  Supported Version: {0}", GLES::gl->GetString(GL_VERSION));
 
     std::string version = reinterpret_cast<const char*>(GLES::gl->GetString(GL_VERSION));
     size_t dotPosition = version.find('.');

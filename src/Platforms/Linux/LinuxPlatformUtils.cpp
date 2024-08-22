@@ -155,9 +155,6 @@ std::string FileDialogs::OpenFile(const char* filter)
     char* initial_file = NULL;
     char* accept_label = NULL;
     int timeout = -1;
-    GOptionContext* context;
-
-    context = g_option_context_new("ACTION");
 
     gtk_init();
 
@@ -236,9 +233,6 @@ std::string FileDialogs::SaveFile(const char* filter)
     char* initial_file = NULL;
     char* accept_label = NULL;
     int timeout = -1;
-    GOptionContext* context;
-
-    context = g_option_context_new("ACTION");
 
     gtk_init();
 

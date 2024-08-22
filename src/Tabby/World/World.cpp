@@ -32,60 +32,86 @@ void World::Init()
 
         s_Instance = new World();
 
+        s_Instance->m_TaskScheduler.Initialize((int)(enki::GetNumHardwareThreads() * 0.75f));
+
         AddSystem(Schedule::PreUpdate, [](entt::registry&) {
             // Apply transform to children
             TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::TransformUpdate");
             auto view = World::GetRegistry().view<TransformComponent>();
 
+            std::vector<enki::TaskSet*> tasks;
             for (auto entity : view) {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::TransformUpdate::Iteration");
-                auto& hierarchy_node_component = World::GetRegistry().get<HierarchyNodeComponent>(entity);
-                auto& transform = World::GetRegistry().get<TransformComponent>(entity);
+                enki::TaskSet* task = new enki::TaskSet(1, [entity](enki::TaskSetPartition range_, uint32_t threadnum_) {
+                    TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::TransformUpdate::Iteration");
+                    auto& hierarchy_node_component = World::GetRegistry().get<HierarchyNodeComponent>(entity);
+                    auto& transform = World::GetRegistry().get<TransformComponent>(entity);
 
-                Matrix4 rotation = glm::toMat4(Quaternion(glm::radians((Vector3&)transform.Rotation)));
-                transform.TransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.Translation) * rotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.Scale);
+                    Matrix4 rotation = glm::toMat4(Quaternion(glm::radians((Vector3&)transform.Rotation)));
+                    transform.TransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.Translation) * rotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.Scale);
 
-                Matrix4 localRotation = glm::toMat4(Quaternion(glm::radians((Vector3&)transform.LocalRotation)));
-                transform.LocalTransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.LocalTranslation) * localRotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.LocalScale);
+                    Matrix4 localRotation = glm::toMat4(Quaternion(glm::radians((Vector3&)transform.LocalRotation)));
+                    transform.LocalTransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.LocalTranslation) * localRotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.LocalScale);
 
-                for (auto& child : hierarchy_node_component.Children) {
-                    auto& childTransform = World::GetRegistry().get<TransformComponent>(child.second);
-                    childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
-                }
+                    for (auto& child : hierarchy_node_component.Children) {
+                        auto& childTransform = World::GetRegistry().get<TransformComponent>(child.second);
+                        childTransform.ApplyTransform(transform.GetTransform() * childTransform.GetLocalTransform());
+                    }
 
-                if (World::GetRegistry().any_of<Rigidbody2DComponent>(entity)) {
-                    auto& rb2d = World::GetRegistry().get<Rigidbody2DComponent>(entity);
+                    if (World::GetRegistry().any_of<Rigidbody2DComponent>(entity)) {
+                        auto& rb2d = World::GetRegistry().get<Rigidbody2DComponent>(entity);
 
-                    if (B2_IS_NON_NULL(rb2d.RuntimeBodyId))
-                        b2Body_SetTransform(rb2d.RuntimeBodyId, { transform.Translation.x, transform.Translation.y }, b2MakeRot(Math::DEG2RAD * transform.Rotation.z));
-                }
+                        if (B2_IS_NON_NULL(rb2d.RuntimeBodyId))
+                            b2Body_SetTransform(rb2d.RuntimeBodyId, { transform.Translation.x, transform.Translation.y }, b2MakeRot(Math::DEG2RAD * transform.Rotation.z));
+                    }
+                });
+                tasks.push_back(task);
+                s_Instance->m_TaskScheduler.AddTaskSetToPipe(task);
             };
+            s_Instance->m_TaskScheduler.WaitforAll();
+            for (auto* task : tasks) {
+                delete task;
+            }
+            tasks.clear();
         });
 
         AddSystem(Schedule::PreUpdate, [](entt::registry&) {
             TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::UpdatePhysics2DWorld");
-            const int32_t subStepCount = 6;
-            Physisc2D::UpdateWorld();
+            Physics2D::UpdateWorld();
 
             // Retrieve transform from Box2D
             auto view = World::GetRegistry().view<Rigidbody2DComponent>();
-            for (auto e : view) {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::UpdatePhysics2DWorld::UpdateRigidbodyEntity");
-                Entity entity = { e };
-                auto& transform = entity.GetComponent<TransformComponent>();
-                auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
-                const auto& position = b2Body_GetPosition(rb2d.RuntimeBodyId);
-                transform.Translation.x = position.x;
-                transform.Translation.y = position.y;
-                transform.Rotation.z = Math::RAD2DEG * b2Rot_GetAngle(b2Body_GetRotation(rb2d.RuntimeBodyId));
+            std::vector<enki::TaskSet*> tasks;
+            for (auto e : view) {
+                enki::TaskSet* task = new enki::TaskSet(1, [e](enki::TaskSetPartition range_, uint32_t threadnum_) {
+                    TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::UpdatePhysics2DWorld::UpdateRigidbodyEntity");
+                    Entity entity = { e };
+                    auto& transform = entity.GetComponent<TransformComponent>();
+                    auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+
+                    const auto& position = b2Body_GetPosition(rb2d.RuntimeBodyId);
+                    transform.Translation.x = position.x;
+                    transform.Translation.y = position.y;
+                    transform.Rotation.z = Math::RAD2DEG * b2Rot_GetAngle(b2Body_GetRotation(rb2d.RuntimeBodyId));
+                });
+
+                tasks.push_back(task);
+                s_Instance->m_TaskScheduler.AddTaskSetToPipe(task);
             }
+
+            s_Instance->m_TaskScheduler.WaitforAll();
+            for (auto* task : tasks) {
+                delete task;
+            }
+            tasks.clear();
         });
 
         AddSystem(Schedule::PostUpdate, [](entt::registry&) {
             TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera");
+
             auto view = World::GetRegistry().view<TransformComponent, CameraComponent>();
             for (auto entity : view) {
+
                 TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera::Iteration");
                 auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 
@@ -95,23 +121,35 @@ void World::Init()
                 }
             }
         });
-
         AddSystem(Schedule::PostUpdate, [](entt::registry& registry) {
             TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::UpdateAudioSource");
             auto view = World::GetRegistry().view<TransformComponent, AudioSourceComponent>();
+
+            std::vector<enki::TaskSet*> tasks;
             for (auto entity : view) {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::Iteration");
-                auto [transform, source] = view.get<TransformComponent, AudioSourceComponent>(entity);
+                TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::UpdateAudioSource::Iteration");
+                enki::TaskSet* task = new enki::TaskSet(1, [entity, view](enki::TaskSetPartition range_, uint32_t threadnum_) {
+                    auto [transform, source] = view.get<TransformComponent, AudioSourceComponent>(entity);
 
-                source.Source->SetPosition(transform.Translation);
-                source.Source->SetDirection(transform.Rotation);
+                    source.Source->SetPosition(transform.Translation);
+                    source.Source->SetDirection(transform.Rotation);
 
-                if (registry.any_of<Rigidbody2DComponent>(entity)) {
-                    auto& rb = registry.get<Rigidbody2DComponent>(entity);
+                    if (World::GetRegistry().any_of<Rigidbody2DComponent>(entity)) {
+                        auto& rb = World::GetRegistry().get<Rigidbody2DComponent>(entity);
 
-                    source.Source->SetVelocity({ rb.GetVelocity().x, rb.GetVelocity().y, 0 });
-                }
+                        source.Source->SetVelocity({ rb.GetVelocity().x, rb.GetVelocity().y, 0 });
+                    }
+                });
+
+                tasks.push_back(task);
+                s_Instance->m_TaskScheduler.AddTaskSetToPipe(task);
             }
+
+            s_Instance->m_TaskScheduler.WaitforAll();
+            for (auto* task : tasks) {
+                delete task;
+            }
+            tasks.clear();
         });
 
         AddSystem(Schedule::PostUpdate, [](entt::registry& registry) {
@@ -152,23 +190,11 @@ void World::Init()
         AddSystem(Schedule::Draw, [](entt::registry&) {
             TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle");
             auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
+
             for (auto entity : view) {
                 TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle::Iteration");
 
                 auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-
-                Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
-            }
-        });
-
-        AddSystem(Schedule::Draw, [](entt::registry&) {
-            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle");
-            auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
-            for (auto entity : view) {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle::Iteration");
-
-                auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-
                 Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
             }
         });
@@ -345,7 +371,6 @@ void World::DestroyEntity(Entity entity)
     }
 
     auto& hc = entity.GetComponent<HierarchyNodeComponent>();
-    auto& tc = entity.GetComponent<TransformComponent>();
     auto& id_component = entity.GetComponent<IDComponent>();
 
     for (auto& child : hc.Children) {
@@ -383,7 +408,7 @@ void World::DestroyEntityWithChildren(Entity entity)
         }
     }
 
-    IDComponent uuid_component = entity.GetComponent<IDComponent>();
+    // IDComponent uuid_component = entity.GetComponent<IDComponent>();
     HierarchyNodeComponent& hierarchy_node_component = entity.GetComponent<HierarchyNodeComponent>();
     for (auto& child : hierarchy_node_component.Children) {
         DestroyEntityWithChildren(Entity(child.second));
@@ -446,7 +471,7 @@ void World::OnStart()
 
     s_Instance->m_IsRunning = true;
 
-    Physisc2D::Init();
+    Physics2D::Init();
 
     for (const auto& preStartup : s_Instance->m_PreStartupSystems)
         preStartup(s_Instance->m_EntityRegistry);
@@ -469,8 +494,6 @@ void World::OnStop()
         for (auto entityHandle : view) {
 
             Entity entity = { entityHandle };
-            // if (entity.GetComponent<IDComponent>().IsPersistent)
-            //     continue;
 
             DestroyEntity(entity);
         }
@@ -520,11 +543,6 @@ void World::Update()
 
         Renderer2D::EndScene();
     }
-}
-
-void World::DrawImGui()
-{
-    TB_PROFILE_SCOPE_NAME("Tabby::World::DrawImGui");
 }
 
 void World::OnViewportResize(uint32_t width, uint32_t height)
@@ -605,6 +623,12 @@ void World::OnComponentAdded<AudioSourceComponent>(Entity entity, AudioSourceCom
 }
 
 template <>
+void World::OnComponentAdded<AudioListenerComponent>(Entity entity, AudioListenerComponent& component)
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<AudioSourceComponent>");
+}
+
+template <>
 void World::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<SpriteRendererComponent>");
@@ -633,10 +657,8 @@ void World::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DCom
 {
     TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<Rigidbody2DComponent>");
 
-    if (B2_IS_NULL(Physisc2D::GetPhysicsWorld()))
+    if (B2_IS_NULL(Physics2D::GetPhysicsWorld()))
         return;
-
-    auto& transform = entity.GetComponent<TransformComponent>();
 
     if (B2_IS_NON_NULL(component.RuntimeBodyId))
         return;
@@ -645,7 +667,7 @@ void World::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DCom
         entity,
     };
 
-    Physisc2D::EnqueueBodyInit(bodyInfo);
+    Physics2D::EnqueueBodyInit(bodyInfo);
 }
 
 template <>
@@ -656,14 +678,14 @@ void World::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2
     if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    component.worldId = Physisc2D::GetPhysicsWorld();
+    component.worldId = Physics2D::GetPhysicsWorld();
 
     ShapeInfo2D ShapeInfo = {
         entity,
         ColliderType2D::Box,
     };
 
-    Physisc2D::EnqueueShapeInit(ShapeInfo);
+    Physics2D::EnqueueShapeInit(ShapeInfo);
     component.QueuedForInitialization = true;
 }
 
@@ -675,14 +697,14 @@ void World::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCol
     if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    component.WorldId = Physisc2D::GetPhysicsWorld();
+    component.WorldId = Physics2D::GetPhysicsWorld();
 
     ShapeInfo2D shapeInfo {
         entity,
         ColliderType2D::Circle
     };
 
-    Physisc2D::EnqueueShapeInit(shapeInfo);
+    Physics2D::EnqueueShapeInit(shapeInfo);
     component.QueuedForInitialization = true;
 }
 
@@ -694,14 +716,14 @@ void World::OnComponentAdded<CapsuleCollider2DComponent>(Entity entity, CapsuleC
     if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    component.WorldId = Physisc2D::GetPhysicsWorld();
+    component.WorldId = Physics2D::GetPhysicsWorld();
 
     ShapeInfo2D shapeInfo {
         entity,
         ColliderType2D::Capsule
     };
 
-    Physisc2D::EnqueueShapeInit(shapeInfo);
+    Physics2D::EnqueueShapeInit(shapeInfo);
     component.QueuedForInitialization = true;
 }
 
@@ -713,14 +735,14 @@ void World::OnComponentAdded<SegmentCollider2DComponent>(Entity entity, SegmentC
     if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
         return;
 
-    component.WorldId = Physisc2D::GetPhysicsWorld();
+    component.WorldId = Physics2D::GetPhysicsWorld();
 
     ShapeInfo2D shapeInfo {
         entity,
         ColliderType2D::Segment
     };
 
-    Physisc2D::EnqueueShapeInit(shapeInfo);
+    Physics2D::EnqueueShapeInit(shapeInfo);
     component.QueuedForInitialization = true;
 }
 

@@ -4,10 +4,10 @@
 
 #define TB_PROFILE_SCOPE()
 #define TB_PROFILE_SCOPE_NAME(x)
-#define TB_PROFILE_SET_THREAD_NAME(x) TracyCSetThreadName(x)
-#define TB_PROFILE_FRAME(x) FrameMark
-#define TB_PROFILE_FRAME_START(x) FrameMarkStart(x)
-#define TB_PROFILE_FRAME_END(x) FrameMarkEnd(x)
+#define TB_PROFILE_SET_THREAD_NAME(x)
+#define TB_PROFILE_FRAME(x)
+#define TB_PROFILE_FRAME_START(x)
+#define TB_PROFILE_FRAME_END(x)
 #define TB_PROFILE_TAG(y, x)
 #define TB_PROFILE_LOG(text, size)
 #define TB_PROFILE_VALUE(text, value)

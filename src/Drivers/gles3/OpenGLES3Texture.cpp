@@ -16,10 +16,10 @@ namespace Utils {
             return GL_RGB;
         case ImageFormat::RGBA8:
             return GL_RGBA;
+        default:
+            TB_CORE_ASSERT(false);
+            return 0;
         }
-
-        TB_CORE_ASSERT(false);
-        return 0;
     }
 
     static GLenum TabbyImageFormatToGLInternalFormat(ImageFormat format)
@@ -29,10 +29,10 @@ namespace Utils {
             return GL_RGB8;
         case ImageFormat::RGBA8:
             return GL_RGBA8;
+        default:
+            TB_CORE_ASSERT(false);
+            return 0;
         }
-
-        TB_CORE_ASSERT(false);
-        return 0;
     }
 }
 

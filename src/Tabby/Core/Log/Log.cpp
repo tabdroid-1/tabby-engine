@@ -44,6 +44,8 @@ protected:
             case spdlog::level::critical:
                 Application::GetConsole()->System().Log(csys::ItemType::ERROR) << front.second;
                 break;
+            default:
+                TB_CORE_ASSERT(false);
             }
 
             printQueue.pop();

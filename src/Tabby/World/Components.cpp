@@ -38,7 +38,7 @@ void TransformComponent::ApplyTransform(const Matrix4& transform)
     Translation = Vector3(LocalMatrix[3]);
     LocalMatrix[3] = Vector4(0, 0, 0, LocalMatrix[3].w);
 
-    Vector3 Row[3], Pdum3;
+    Vector3 Row[3];
 
     // Now get scale and shear.
     for (glm::length_t i = 0; i < 3; ++i)
@@ -106,7 +106,7 @@ void TransformComponent::ApplyTransformToLocal(const Matrix4& transform)
     LocalTranslation = Vector3(LocalMatrix[3]);
     LocalMatrix[3] = Vector4(0, 0, 0, LocalMatrix[3].w);
 
-    Vector3 Row[3], Pdum3;
+    Vector3 Row[3];
 
     // Now get scale and shear.
     for (glm::length_t i = 0; i < 3; ++i)
@@ -409,7 +409,7 @@ float Rigidbody2DComponent::GetAngle() const
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Rigidbody2DComponent::GetAngle");
 
-    float angleRadians;
+    float angleRadians = 0;
 
     if (B2_IS_NON_NULL(RuntimeBodyId))
         angleRadians = b2Rot_GetAngle(b2Body_GetRotation(RuntimeBodyId));
@@ -533,7 +533,7 @@ void BoxCollider2DComponent::RefreshShape()
         ColliderType2D::Circle
     };
 
-    Physisc2D::EnqueueShapeUpdate(shapeInfo);
+    Physics2D::EnqueueShapeUpdate(shapeInfo);
 }
 
 // --------------------------------------------------
@@ -641,7 +641,7 @@ void CircleCollider2DComponent::RefreshShape()
         ColliderType2D::Circle
     };
 
-    Physisc2D::EnqueueShapeUpdate(shapeInfo);
+    Physics2D::EnqueueShapeUpdate(shapeInfo);
 }
 
 // --------------------------------------------------
@@ -753,7 +753,7 @@ void CapsuleCollider2DComponent::RefreshShape()
         ColliderType2D::Circle
     };
 
-    Physisc2D::EnqueueShapeUpdate(shapeInfo);
+    Physics2D::EnqueueShapeUpdate(shapeInfo);
 }
 
 // --------------------------------------------------
@@ -865,7 +865,7 @@ void SegmentCollider2DComponent::RefreshShape()
         ColliderType2D::Segment
     };
 
-    Physisc2D::EnqueueShapeUpdate(shapeInfo);
+    Physics2D::EnqueueShapeUpdate(shapeInfo);
 }
 
 }

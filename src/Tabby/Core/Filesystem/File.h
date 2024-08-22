@@ -7,9 +7,9 @@ namespace Tabby {
 class File {
 public:
     File(byte* data, uint64_t size, BitMask flags, std::filesystem::path path = "")
-        : m_Data(data)
+        : m_Path(path)
+        , m_Data(data)
         , m_Size(size)
-        , m_Path(path)
         , m_Flags(flags)
     {
     }
@@ -23,6 +23,7 @@ public:
 
     byte* GetData() const { return m_Data; };
     uint64_t GetSize() const { return m_Size; };
+    BitMask GetFlags() const { return m_Flags; };
 
 private:
     std::filesystem::path m_Path;

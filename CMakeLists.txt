@@ -18,10 +18,7 @@ endif()
 
 
 option(TB_DIST "Enable distrubition build" OFF)
-
-if (NOT TB_DIST AND NOT WIN32)
-    add_definitions(-w) # disables warnings
-endif()
+option(TB_PROFILE "Enable profiling" OFF)
 
 set(ALSOFT_UTILS OFF CACHE BOOL "Build utility programs" FORCE)
 set(ALSOFT_NO_CONFIG_UTIL OFF CACHE BOOL "Disable building the alsoft-config utility" FORCE)
@@ -32,13 +29,12 @@ set(ALSOFT_INSTALL_CONFIG CACHE BOOL "Install alsoft.conf sample configuration f
 set(ALSOFT_INSTALL_HRTF_DATA CACHE BOOL "Install HRTF data files" FORCE)
 set(ALSOFT_INSTALL_AMBDEC_PRESETS CACHE BOOL "Install AmbDec preset files" FORCE)
 set(ALSOFT_INSTALL_EXAMPLES BOOL "Install example programs (alplay, alstream, ...)" FORCE)
-# # set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
-# set(BUILD_PROGRAMS OFF CACHE BOOL "Build programs (libsndfile)" FORCE)
-# set(BUILD_EXAMPLES OFF CACHE BOOL "Build examples (libsndfile)" FORCE)
-# set(BUILD_TESTING OFF CACHE BOOL "Build tests (libsndfile)" FORCE)
+# set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 set(SDL_SHARED OFF CACHE BOOL "Build a shared version of the library" FORCE)
 set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
 set(SDL_TEST OFF CACHE BOOL "Build the SDL2_test library" FORCE)
+set(ENKITS_BUILD_C_INTERFACE OFF CACHE BOOL "Build C interface" FORCE)
+set(ENKITS_BUILD_EXAMPLES OFF CACHE BOOL "Build example applications" FORCE)
 set(BOX2D_SAMPLES OFF CACHE BOOL "" FORCE)
 set(BOX2D_DOCS OFF CACHE BOOL "" FORCE)
 set(BOX2D_PROFILE OFF CACHE BOOL "" FORCE)
@@ -63,10 +59,6 @@ set(MSDFGEN_INSTALL  OFF CACHE BOOL "Generate installation target" FORCE)
 set(MSDFGEN_DYNAMIC_RUNTIME OFF CACHE BOOL "Link dynamic runtime library instead of static" FORCE)
 set(SPDLOG_HEADER_ONLY OFF CACHE BOOL "" FORCE)
 
-if(TB_DIST)
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build utility programs" FORCE)
-endif(TB_DIST)
-
 set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_VENDOR_DIR "vendor")
 
@@ -79,17 +71,15 @@ set(STB ${PROJECT_VENDOR_DIR}/stb)
 set(SDL2 ${PROJECT_VENDOR_DIR}/SDL2)
 set(GLAD ${PROJECT_VENDOR_DIR}/glad)
 set(ENTT ${PROJECT_VENDOR_DIR}/entt)
-set(BOX2C ${PROJECT_VENDOR_DIR}/box2c)
 set(BOX2D ${PROJECT_VENDOR_DIR}/box2d)
 set(TRACY ${PROJECT_VENDOR_DIR}/tracy)
 set(IMGUI ${PROJECT_VENDOR_DIR}/imgui)
+set(ENKITS ${PROJECT_VENDOR_DIR}/enkiTS)
 set(SPDLOG ${PROJECT_VENDOR_DIR}/spdlog)
 set(FASTGLTF ${PROJECT_VENDOR_DIR}/fastgltf)
 set(IMGUIZMO ${PROJECT_VENDOR_DIR}/imguizmo)
 set(OPENAL ${PROJECT_VENDOR_DIR}/openal-soft)
-# set(LIBSNDFILE ${PROJECT_VENDOR_DIR}/libsndfile)
 set(MSDF-ATLAS-GEN ${PROJECT_VENDOR_DIR}/msdf-atlas-gen)
-# set(TINY-OBJ-LOADER ${PROJECT_VENDOR_DIR}/tinyobjloader)
 
 # ##############################################################################
 # Project executable setup
@@ -111,12 +101,12 @@ list(APPEND PROJECT_SOURCES
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}) 
-# target_include_directories(${PROJECT_NAME} PUBLIC ${LIBSNDFILE}/include) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${FASTGLTF}/include) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SPDLOG}/include) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${OPENAL}/include) 
-target_include_directories(${PROJECT_NAME} PUBLIC ${BOX2C}/include) 
+target_include_directories(${PROJECT_NAME} PUBLIC ${BOX2D}/include) 
+target_include_directories(${PROJECT_NAME} PUBLIC ${ENKITS}/src) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUIZMO}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUI}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${TRACY}) 
@@ -124,7 +114,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${ENTT})
 target_include_directories(${PROJECT_NAME} PUBLIC ${STB}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${GLM}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${MSDF-ATLAS-GEN}/msdf-atlas-gen) 
-# target_include_directories(${PROJECT_NAME} PRIVATE ${TINY-OBJ-LOADER}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLAD}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${STB}) 
 
@@ -135,12 +124,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${STB})
 add_subdirectory(${GLM})
 add_subdirectory(${SDL2})
 add_subdirectory(${IMGUI})
-add_subdirectory(${BOX2C})
+add_subdirectory(${BOX2D})
 add_subdirectory(${TRACY})
+add_subdirectory(${ENKITS})
 add_subdirectory(${SPDLOG})
 add_subdirectory(${IMGUIZMO})
 add_subdirectory(${FASTGLTF})
-# add_subdirectory(${LIBSNDFILE})
 add_subdirectory(${MSDF-ATLAS-GEN})
 
 
@@ -181,6 +170,7 @@ if (WIN32)
         imgui
         box2d
         tracy 
+        enkiTS
         fastgltf
         imguizmo
         OpenAL::OpenAL
@@ -204,6 +194,7 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
         imgui
         box2d
         spdlog
+        enkiTS
         imguizmo
         fastgltf
         msdf-atlas-gen 
@@ -219,6 +210,7 @@ elseif (APPLE)
         imgui
         box2d
         spdlog
+        enkiTS
         fastgltf
         imguizmo
         msdf-atlas-gen 
@@ -273,6 +265,7 @@ elseif (ANDROID)
         EGL
         imgui
         box2d
+        enkiTS
         spdlog
         GLESv2
         GLESv3
@@ -284,8 +277,18 @@ elseif (ANDROID)
         )
 endif()
 
+if(TB_DIST)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build utility programs" FORCE)
+    set(TB_PROFILE OFF CACHE BOOL "" FORCE)
+endif(TB_DIST)
+
+if(TB_PROFILE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTB_PROFILE=1 -DTRACY_ENABLE=1")
+    message(WARNING "Tabby: Extremely high memory usage when profiler is enabled")
+endif(TB_PROFILE)
+
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_DEBUG=1")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_DEBUG=1 -DTRACY_ENABLE=1")
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")

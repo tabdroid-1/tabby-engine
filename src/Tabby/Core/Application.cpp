@@ -28,6 +28,8 @@ Application::Application(const ApplicationSpecification& specification)
     case ApplicationSpecification::RendererAPI::OpenGLES3:
         RendererAPI::s_API = RendererAPI::API::OpenGLES3;
         break;
+    default:
+        TB_CORE_ASSERT(false);
     }
 
     if (!m_Specification.WorkingDirectory.empty()) {
@@ -152,10 +154,10 @@ void Application::Run()
             s_Instance->m_ImGuiLayer->End();
         }
 
-        ProcessApplicationSpec();
-
         Input::s_Instance->m_MouseScrollDelta = { 0, 0 };
         s_Instance->m_Window->OnUpdate();
+
+        ProcessApplicationSpec();
 
         // Framerate limiter. this will do nothing if maxFPS is 0.
         if (s_Instance->m_Specification.MaxFPS > 0.0) {
@@ -181,9 +183,10 @@ void Application::ProcessApplicationSpec()
         GetWindow().SetResizable(GetSpecification().Resizable);
     }
 
-    if (GetWindow().GetFullscreenMode() != GetSpecification().FullscreenMode) {
-        GetWindow().SetFullscreen(GetSpecification().FullscreenMode);
-    }
+    // This is anoying
+    // if (GetWindow().GetFullscreenMode() != GetSpecification().FullscreenMode) {
+    //     GetWindow().SetFullscreen(GetSpecification().FullscreenMode);
+    // }
 }
 
 bool Application::OnWindowClose(WindowCloseEvent& e)

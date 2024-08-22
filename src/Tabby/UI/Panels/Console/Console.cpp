@@ -37,7 +37,13 @@ static int InputTextCallback(ImGuiInputTextCallbackData* data)
 static void window_fullscreen_setter(uint8_t& var, unsigned int value)
 {
     Tabby::Application::GetWindow().SetFullscreen(value);
+    Tabby::Application::GetSpecification().FullscreenMode = value;
 }
+
+// static void uint8_t_setter(uint8_t& var, unsigned value)
+// {
+//     var = value;
+// }
 
 static void float_setter(float& var, float value)
 {
@@ -582,8 +588,10 @@ void ConsolePanel::SettingsHandler_ReadLine(ImGuiContext* ctx, ImGuiSettingsHand
     console->m_LoadedFromIni = true;
 
 // Disable warning regarding sscanf when using MVSC
+#ifdef TB_PLATFORM_WINDOWS
 #pragma warning(push)
 #pragma warning(disable : 4996)
+#endif
 
 #define INI_CONSOLE_LOAD_COLOR(type) \
     (std::sscanf(line, #type "=%i,%i,%i,%i", &r, &g, &b, &a) == 4) { console->m_ColorPalette[type] = ImColor(r, g, b, a); }
@@ -596,13 +604,26 @@ void ConsolePanel::SettingsHandler_ReadLine(ImGuiContext* ctx, ImGuiSettingsHand
     int r, g, b, a;
 
     // Window style/visuals
-    if INI_CONSOLE_LOAD_COLOR (COL_COMMAND)
-        else if INI_CONSOLE_LOAD_COLOR (COL_LOG) else if INI_CONSOLE_LOAD_COLOR (COL_WARNING) else if INI_CONSOLE_LOAD_COLOR (COL_ERROR) else if INI_CONSOLE_LOAD_COLOR (COL_INFO) else if INI_CONSOLE_LOAD_COLOR (COL_TIMESTAMP) else if INI_CONSOLE_LOAD_FLOAT (m_WindowAlpha)
+    // clang-format off
+    if INI_CONSOLE_LOAD_COLOR (COL_COMMAND)            
+    else if INI_CONSOLE_LOAD_COLOR (COL_LOG)           
+    else if INI_CONSOLE_LOAD_COLOR (COL_WARNING)       
+    else if INI_CONSOLE_LOAD_COLOR (COL_ERROR)         
+    else if INI_CONSOLE_LOAD_COLOR (COL_INFO)          
+    else if INI_CONSOLE_LOAD_COLOR (COL_TIMESTAMP)     
+    else if INI_CONSOLE_LOAD_FLOAT (m_WindowAlpha)     
+                                                       
+    // Window settings                         
+    else if INI_CONSOLE_LOAD_BOOL (m_AutoScroll)       
+    else if INI_CONSOLE_LOAD_BOOL (m_ScrollToBottom)   
+    else if INI_CONSOLE_LOAD_BOOL (m_ColoredOutput)     
+    else if INI_CONSOLE_LOAD_BOOL (m_FilterBar)         
+    else if INI_CONSOLE_LOAD_BOOL (m_TimeStamps)
+        // clang-format on
 
-            // Window settings
-            else if INI_CONSOLE_LOAD_BOOL (m_AutoScroll) else if INI_CONSOLE_LOAD_BOOL (m_ScrollToBottom) else if INI_CONSOLE_LOAD_BOOL (m_ColoredOutput) else if INI_CONSOLE_LOAD_BOOL (m_FilterBar) else if INI_CONSOLE_LOAD_BOOL (m_TimeStamps)
-
+#ifdef TB_PLATFORM_WINDOWS
 #pragma warning(pop)
+#endif
 }
 
 void ConsolePanel::SettingsHandler_ApplyAll(ImGuiContext* ctx, ImGuiSettingsHandler* handler)

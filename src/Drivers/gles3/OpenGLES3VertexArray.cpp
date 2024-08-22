@@ -31,10 +31,10 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
         return GL_INT;
     case ShaderDataType::Bool:
         return GL_BOOL;
+    default:
+        TB_CORE_ASSERT_TAGGED(false, "Unknown ShaderDataType!");
+        return 0;
     }
-
-    TB_CORE_ASSERT_TAGGED(false, "Unknown ShaderDataType!");
-    return 0;
 }
 
 OpenGLES3VertexArray::OpenGLES3VertexArray()

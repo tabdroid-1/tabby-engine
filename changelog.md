@@ -1,8 +1,18 @@
-Version: 18-08-2024_1 Alpha
+Version: 22-08-2024_1 Alpha
+Changes:
+- Multithreading in some World systems.
+- Fixed most warnings.
+- Fixed audio engine not working on release builds (specifically, when asserts are disabled)
+
+--------------------------------------------------------------------------------------
+
+Version: 19-08-2024_1 Alpha
 Changes:
 - Created console. 
 - Application settings can be set at startup using tbconfig file. 
 - Added a way to switch between fullscreen modes in Window.
+
+--------------------------------------------------------------------------------------
 
 Version: 18-08-2024_1 Alpha
 Changes:

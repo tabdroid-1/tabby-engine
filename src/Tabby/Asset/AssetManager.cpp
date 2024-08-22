@@ -124,14 +124,14 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
     data.Size = image_width * image_height * channels;
 
     // Configure file header
-    AssetFileHeader file_header = {};
-    file_header.header_size = sizeof(AssetFileHeader);
-    file_header.asset_type = AssetType::IMAGE_SRC;
-    file_header.subresources_size = 0;
-    file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
+    // AssetFileHeader file_header = {};
+    // file_header.header_size = sizeof(AssetFileHeader);
+    // file_header.asset_type = AssetType::IMAGE_SRC;
+    // file_header.subresources_size = 0;
+    // file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
 
     // Compute metadata for subresources
-    std::array<AssetFileSubresourceMetadata, 16> subresources_metadata = {};
+    // std::array<AssetFileSubresourceMetadata, 16> subresources_metadata = {};
 
     TextureSpecification texture_spec = {};
     texture_spec.Format = ImageFormat::RGBA8;
@@ -170,7 +170,7 @@ AssetHandle AssetManager::ImportFontSource(std::filesystem::path path, AssetHand
             Sint64 size = SDL_RWsize(rw);
 
             if (size > 0) {
-                data.Data = new uint8_t[size];
+                data.Allocate(size);
                 data.Size = size;
 
                 Sint64 bytesRead = SDL_RWread(rw, data.Data, 1, size);
@@ -212,19 +212,16 @@ AssetHandle AssetManager::ImportAudioSource(std::filesystem::path path, AssetHan
         SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
         TB_CORE_ASSERT_TAGGED(rw, "Failed to open WAV file!");
 
-        // Read the RIFF header
         char riff_header[4];
         SDL_RWread(rw, riff_header, 1, 4);
 
         TB_CORE_ASSERT_TAGGED(std::strncmp(riff_header, "RIFF", 4) == 0, "Invalid WAV file: missing RIFF header.");
 
-        // Skip file size and read WAVE identifier
-        SDL_RWseek(rw, 4, RW_SEEK_CUR); // Skip file size
+        SDL_RWseek(rw, 4, RW_SEEK_CUR);
         char wave_identifier[4];
         SDL_RWread(rw, wave_identifier, 1, 4);
         TB_CORE_ASSERT_TAGGED(std::strncmp(wave_identifier, "WAVE", 4) == 0, "Invalid WAV file: missing WAVE identifier.");
 
-        // Read chunks until we find the "fmt " and "data" chunks
         bool fmt_found = false;
         bool data_found = false;
 
@@ -235,8 +232,8 @@ AssetHandle AssetManager::ImportAudioSource(std::filesystem::path path, AssetHan
             Uint32 chunk_size = 0;
             SDL_RWread(rw, &chunk_size, sizeof(Uint32), 1);
 
-            uint16_t num_channels;
-            uint16_t bits_per_sample;
+            uint16_t num_channels = 0;
+            uint16_t bits_per_sample = 0;
             if (std::strncmp(chunk_id, "fmt ", 4) == 0) {
                 fmt_found = true;
 
@@ -254,7 +251,6 @@ AssetHandle AssetManager::ImportAudioSource(std::filesystem::path path, AssetHan
 
                 wavData.sampleRate = sample_rate;
 
-                // Determine the format
                 if (audio_format == 1) { // PCM format
                     if (num_channels == 1) {
                         if (bits_per_sample == 8) {
@@ -271,7 +267,6 @@ AssetHandle AssetManager::ImportAudioSource(std::filesystem::path path, AssetHan
                     }
                 }
 
-                // Skip any extra format bytes
                 if (chunk_size > 16) {
                     SDL_RWseek(rw, chunk_size - 16, RW_SEEK_CUR);
                 }
@@ -285,10 +280,8 @@ AssetHandle AssetManager::ImportAudioSource(std::filesystem::path path, AssetHan
                 float num_samples = (float)wavData.dataSize / ((float)num_channels * bits_per_sample / 8);
                 wavData.duration = num_samples / wavData.sampleRate;
 
-                // We found the data chunk, so no need to read further
                 break;
             } else {
-                // Skip this chunk
                 SDL_RWseek(rw, chunk_size, RW_SEEK_CUR);
             }
         }
