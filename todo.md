@@ -34,7 +34,7 @@ Todo
     - <s> Create Application by reading a file. From a file named "tbconfig.(file format)" maybe. </s> Done sine 19-08-2024_1 Alpha.
     - <s>Multithreading </s> Multithreaded some World systems since 20-08-2024_1 Alpha
     - <s>Deal with all compiler warnings.</s> Done since 20-08-2024_1 Alpha
-    - Static mode for transform. Which means its trasnform will not get updated.
+    - Drop emscripten support. Its not worth it.
 
 
 - Low priority
