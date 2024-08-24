@@ -313,8 +313,8 @@ void Physics2D::ProcessBodyInitQueue()
 
         b2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
-        bodyDef.position = { transform.Translation.x, transform.Translation.y };
-        bodyDef.rotation = b2MakeRot(transform.Rotation.z * Math::DEG2RAD);
+        bodyDef.position = { transform.LocalTranslation.x, transform.LocalTranslation.y };
+        bodyDef.rotation = b2MakeRot(transform.LocalRotation.z * Math::DEG2RAD);
         bodyDef.userData = static_cast<void*>(bodyUserData);
 
         // --------- Create Body ---------
@@ -372,7 +372,7 @@ void Physics2D::ProcessShapeInitQueue()
             ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.ShapeEntity, rb2dEntity, ColliderType2D::Box };
 
             // --------- Create box collider def ---------
-            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.Angle);
+            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { bc2d.Offset.x, bc2d.Offset.y }, bc2d.Angle);
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = bc2d.Density;
@@ -395,7 +395,7 @@ void Physics2D::ProcessShapeInitQueue()
             ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.ShapeEntity, rb2dEntity, ColliderType2D::Circle };
 
             // --------- Create circle collider def ---------
-            b2Circle circleShape = { { transform.LocalTranslation.x + cc2d.Offset.x, transform.LocalTranslation.y + cc2d.Offset.y }, cc2d.Radius };
+            b2Circle circleShape = { { cc2d.Offset.x, cc2d.Offset.y }, cc2d.Radius };
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = cc2d.Density;
@@ -418,8 +418,8 @@ void Physics2D::ProcessShapeInitQueue()
 
             // --------- Create circle collider def ---------
 
-            b2Vec2 center1 = { cc2d.center1.x + transform.LocalTranslation.x, cc2d.center1.y + transform.LocalTranslation.y };
-            b2Vec2 center2 = { cc2d.center2.x + transform.LocalTranslation.x, cc2d.center2.y + transform.LocalTranslation.y };
+            b2Vec2 center1 = { cc2d.center1.x, cc2d.center1.y };
+            b2Vec2 center2 = { cc2d.center2.x, cc2d.center2.y };
             b2Capsule capsuleShape = { center1, center2, cc2d.Radius };
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -437,14 +437,43 @@ void Physics2D::ProcessShapeInitQueue()
             // --------- Create circle collider in body ---------
             cc2d.RuntimeShapeId = b2CreateCapsuleShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &capsuleShape);
             cc2d.QueuedForInitialization = false;
+        } else if (shapeInfo.ColliderType == ColliderType2D::Polygon) {
+            auto& pc2d = shapeInfo.ShapeEntity.GetComponent<PolygonCollider2DComponent>();
+            ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.ShapeEntity, rb2dEntity, ColliderType2D::Polygon };
+
+            // --------- Create circle collider def ---------
+
+            std::vector<b2Vec2> points;
+            for (const auto& point : pc2d.Points) {
+                points.push_back({ point.x, point.y });
+            }
+            b2Hull hull = b2ComputeHull(points.data(), points.size());
+            TB_CORE_VERIFY_TAGGED(hull.count != 0, "Hull computation failed!");
+            b2Polygon polygon = b2MakePolygon(&hull, Math::RAD2DEG * pc2d.Radius);
+
+            b2ShapeDef shapeDef = b2DefaultShapeDef();
+            shapeDef.density = pc2d.Density;
+            shapeDef.friction = pc2d.Friction;
+            shapeDef.restitution = pc2d.Restitution;
+            shapeDef.isSensor = pc2d.IsSensor;
+            shapeDef.enableSensorEvents = pc2d.EnableSensorEvents;
+            shapeDef.enableContactEvents = pc2d.EnableContactEvents;
+            shapeDef.enablePreSolveEvents = pc2d.EnablePreSolveEvents;
+            shapeDef.filter.categoryBits = pc2d.CollisionLayer;
+            shapeDef.filter.maskBits = pc2d.CollisionMask;
+            shapeDef.userData = static_cast<void*>(userData);
+
+            // --------- Create circle collider in body ---------
+            pc2d.RuntimeShapeId = b2CreatePolygonShape(Entity(rb2dEntity).GetComponent<Rigidbody2DComponent>().RuntimeBodyId, &shapeDef, &polygon);
+            pc2d.QueuedForInitialization = false;
         } else if (shapeInfo.ColliderType == ColliderType2D::Segment) {
             auto& sc2d = shapeInfo.ShapeEntity.GetComponent<SegmentCollider2DComponent>();
             ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.ShapeEntity, rb2dEntity, ColliderType2D::Segment };
 
             // --------- Create circle collider def ---------
 
-            b2Vec2 point1 = { sc2d.point1.x + transform.LocalTranslation.x, sc2d.point1.y + transform.LocalTranslation.y };
-            b2Vec2 point2 = { sc2d.point2.x + transform.LocalTranslation.x, sc2d.point2.y + transform.LocalTranslation.y };
+            b2Vec2 point1 = { sc2d.point1.x, sc2d.point1.y };
+            b2Vec2 point2 = { sc2d.point2.x, sc2d.point2.y };
             b2Segment segmentShape = { point1, point2 };
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
@@ -485,7 +514,7 @@ void Physics2D::ProcessShapeUpdateQueue()
             auto& bc2d = shapeInfo.ShapeEntity.GetComponent<BoxCollider2DComponent>();
 
             // --------- Create box collider def ---------
-            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { transform.LocalTranslation.x + bc2d.Offset.x, transform.LocalTranslation.y + bc2d.Offset.y }, bc2d.Angle);
+            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { bc2d.Offset.x, bc2d.Offset.y }, bc2d.Angle);
 
             b2Shape_SetPolygon(bc2d.RuntimeShapeId, &box);
 
@@ -498,7 +527,7 @@ void Physics2D::ProcessShapeUpdateQueue()
 
         } else if (shapeInfo.ColliderType == ColliderType2D::Circle) {
             auto& cc2d = shapeInfo.ShapeEntity.GetComponent<CircleCollider2DComponent>();
-            b2Circle circleShape = { { transform.LocalTranslation.x + cc2d.Offset.x, transform.LocalTranslation.y + cc2d.Offset.y }, cc2d.Radius };
+            b2Circle circleShape = { { cc2d.Offset.x, cc2d.Offset.y }, cc2d.Radius };
 
             b2Shape_SetCircle(cc2d.RuntimeShapeId, &circleShape);
 
@@ -512,8 +541,8 @@ void Physics2D::ProcessShapeUpdateQueue()
         } else if (shapeInfo.ColliderType == ColliderType2D::Capsule) {
             auto& cc2d = shapeInfo.ShapeEntity.GetComponent<CapsuleCollider2DComponent>();
 
-            b2Vec2 center1 = { cc2d.center1.x + transform.LocalTranslation.x, cc2d.center1.y + transform.LocalTranslation.y };
-            b2Vec2 center2 = { cc2d.center2.x + transform.LocalTranslation.x, cc2d.center2.y + transform.LocalTranslation.y };
+            b2Vec2 center1 = { cc2d.center1.x, cc2d.center1.y };
+            b2Vec2 center2 = { cc2d.center2.x, cc2d.center2.y };
             b2Capsule capsuleShape = { center1, center2, cc2d.Radius };
 
             // --------- Create circle collider in body ---------
@@ -525,11 +554,34 @@ void Physics2D::ProcessShapeUpdateQueue()
             b2Shape_SetFilter(cc2d.RuntimeShapeId, filter);
 
             cc2d.QueuedForInitialization = false;
+
+        } else if (shapeInfo.ColliderType == ColliderType2D::Polygon) {
+            auto& pc2d = shapeInfo.ShapeEntity.GetComponent<PolygonCollider2DComponent>();
+
+            // --------- Create box collider def ---------
+
+            std::vector<b2Vec2> points;
+            for (const auto& point : pc2d.Points) {
+                points.push_back({ point.x, point.y });
+            }
+            b2Hull hull = b2ComputeHull(points.data(), points.size());
+            TB_CORE_VERIFY_TAGGED(hull.count != 0, "Hull computation failed!");
+            b2Polygon polygon = b2MakePolygon(&hull, Math::RAD2DEG * pc2d.Radius);
+
+            b2Shape_SetPolygon(pc2d.RuntimeShapeId, &polygon);
+
+            b2Filter filter = b2Shape_GetFilter(pc2d.RuntimeShapeId);
+            filter.categoryBits = pc2d.CollisionLayer;
+            filter.maskBits = pc2d.CollisionMask;
+            b2Shape_SetFilter(pc2d.RuntimeShapeId, filter);
+
+            pc2d.QueuedForInitialization = false;
+
         } else if (shapeInfo.ColliderType == ColliderType2D::Segment) {
             auto& sc2d = shapeInfo.ShapeEntity.GetComponent<SegmentCollider2DComponent>();
 
-            b2Vec2 point1 = { sc2d.point1.x + transform.LocalTranslation.x, sc2d.point1.y + transform.LocalTranslation.y };
-            b2Vec2 point2 = { sc2d.point2.x + transform.LocalTranslation.x, sc2d.point2.y + transform.LocalTranslation.y };
+            b2Vec2 point1 = { sc2d.point1.x, sc2d.point1.y };
+            b2Vec2 point2 = { sc2d.point2.x, sc2d.point2.y };
             b2Segment segmentShape = { point1, point2 };
 
             // --------- Create circle collider in body ---------

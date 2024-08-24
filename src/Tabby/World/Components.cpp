@@ -760,6 +760,118 @@ void CapsuleCollider2DComponent::RefreshShape()
 //
 //
 //
+// ----- PolygonCollider2DComponent -----------------------
+
+void PolygonCollider2DComponent::SetCollisionLayer(uint32_t layer)
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionLayer");
+
+    CollisionLayer = layer;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = layer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+
+uint32_t PolygonCollider2DComponent::GetCollisionLayer() const
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionLayer");
+
+    return CollisionLayer;
+}
+
+void PolygonCollider2DComponent::SetCollisionMask(uint32_t mask)
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionMask");
+
+    CollisionMask = mask;
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = mask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+
+uint32_t PolygonCollider2DComponent::GetCollisionMask() const
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionMask");
+
+    return CollisionMask;
+}
+
+void PolygonCollider2DComponent::SetCollisionLayerValue(int layerNumber, bool value)
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionLayerValue");
+
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        CollisionLayer |= 1 << (layerNumber - 1);
+    } else {
+        CollisionLayer &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.categoryBits = CollisionLayer;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+
+bool PolygonCollider2DComponent::GetCollisionLayerValue(int layerNumber) const
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionLayerValue");
+
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return CollisionLayer & (1 << (layerNumber - 1));
+}
+
+void PolygonCollider2DComponent::SetCollisionMaskValue(int layerNumber, bool value)
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::SetCollisionMaskValue");
+
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    if (value) {
+        CollisionMask |= 1 << (layerNumber - 1);
+    } else {
+        CollisionMask &= ~(1 << (layerNumber - 1));
+    }
+
+    if (B2_IS_NON_NULL(RuntimeShapeId)) {
+        b2Filter filter = b2Shape_GetFilter(RuntimeShapeId);
+        filter.maskBits = CollisionMask;
+        b2Shape_SetFilter(RuntimeShapeId, filter);
+    }
+}
+
+bool PolygonCollider2DComponent::GetCollisionMaskValue(int layerNumber) const
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::GetCollisionMaskValue");
+
+    TB_CORE_VERIFY_TAGGED(layerNumber >= 1, "Collision layer number must be between 1 and 32 inclusive.");
+    TB_CORE_VERIFY_TAGGED(layerNumber <= 32, "Collision layer number must be between 1 and 32 inclusive.");
+    return CollisionMask & (1 << (layerNumber - 1));
+}
+
+void PolygonCollider2DComponent::RefreshShape()
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::CapsuleCollider2DComponent::RefreshShape");
+
+    ShapeInfo2D shapeInfo {
+        static_cast<ShapeUserData2D*>(b2Shape_GetUserData(RuntimeShapeId))->ShapeEntity,
+        ColliderType2D::Segment
+    };
+
+    Physics2D::EnqueueShapeUpdate(shapeInfo);
+}
+
+// --------------------------------------------------
+//
+//
+//
 // ----- SegmentCollider2DComponent -----------------------
 
 void SegmentCollider2DComponent::SetCollisionLayer(uint32_t layer)

@@ -372,57 +372,54 @@ Vector3 AudioSource::GetPosition()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetPosition");
 
-    float pos[3];
-    alGetSourcefv(m_SourceID, AL_POSITION, pos);
+    Vector3 position;
+    alGetSource3f(m_SourceID, AL_POSITION, &position.x, &position.y, &position.z);
     CHECK_AL_ERRORS();
 
-    return { pos[0], pos[1], pos[2] };
+    return position;
 }
 
 Vector3 AudioSource::GetVelocity()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetVelocity");
 
-    float vel[3];
-    alGetSourcefv(m_SourceID, AL_VELOCITY, vel);
+    Vector3 velocity;
+    alGetSource3f(m_SourceID, AL_VELOCITY, &velocity.x, &velocity.y, &velocity.z);
     CHECK_AL_ERRORS();
 
-    return { vel[0], vel[1], vel[2] };
+    return velocity;
 }
 
 Vector3 AudioSource::GetDirection()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::GetDirection");
 
-    float dir[3];
-    alGetSourcefv(m_SourceID, AL_DIRECTION, dir);
+    Vector3 direction;
+    alGetSource3f(m_SourceID, AL_DIRECTION, &direction.x, &direction.y, &direction.z);
     CHECK_AL_ERRORS();
 
-    return { dir[0], dir[1], dir[2] };
+    return direction;
 }
 
 void AudioSource::SetPosition(const Vector3& position)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetPosition");
 
-    ALfloat pos[] = { position.x, position.x, position.x };
-    alSourcefv(m_SourceID, AL_POSITION, pos);
+    alSource3f(m_SourceID, AL_POSITION, position.x, position.y, position.z);
     CHECK_AL_ERRORS();
 }
 void AudioSource::SetVelocity(const Vector3& velocity)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetVelocity");
 
-    ALfloat vel[] = { velocity.x, velocity.x, velocity.x };
-    alSourcefv(m_SourceID, AL_POSITION, vel);
+    alSource3f(m_SourceID, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
     CHECK_AL_ERRORS();
 }
 void AudioSource::SetDirection(const Vector3& direction)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetDirection");
 
-    ALfloat dir[] = { direction.x, direction.x, direction.x };
-    alSourcefv(m_SourceID, AL_POSITION, dir);
+    alSource3f(m_SourceID, AL_DIRECTION, direction.x, direction.y, direction.z);
     CHECK_AL_ERRORS();
 }
 

@@ -27,10 +27,12 @@ World::World()
 
 void World::Init()
 {
+
     TB_PROFILE_SCOPE_NAME("Tabby::World::Init");
     if (!s_Instance) {
 
         s_Instance = new World();
+        Physics2D::Init();
 
         s_Instance->m_TaskScheduler.Initialize((int)(enki::GetNumHardwareThreads() * 0.75f));
 
@@ -40,17 +42,30 @@ void World::Init()
             auto view = World::GetRegistry().view<TransformComponent>();
 
             std::vector<enki::TaskSet*> tasks;
-            for (auto entity : view) {
-                enki::TaskSet* task = new enki::TaskSet(1, [entity](enki::TaskSetPartition range_, uint32_t threadnum_) {
+            for (auto e : view) {
+                enki::TaskSet* task = new enki::TaskSet(1, [e](enki::TaskSetPartition range_, uint32_t threadnum_) {
                     TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::TransformUpdate::Iteration");
-                    auto& hierarchy_node_component = World::GetRegistry().get<HierarchyNodeComponent>(entity);
-                    auto& transform = World::GetRegistry().get<TransformComponent>(entity);
+                    Entity entity(e);
+                    auto& hierarchy_node_component = entity.GetComponent<HierarchyNodeComponent>();
+                    auto& transform = entity.GetComponent<TransformComponent>();
 
-                    Matrix4 rotation = glm::toMat4(Quaternion(glm::radians((Vector3&)transform.Rotation)));
-                    transform.TransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.Translation) * rotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.Scale);
+                    if (Entity parent = entity.GetParent(); !parent.Valid()) {
+                        transform.Translation = transform.LocalTranslation;
+                        transform.Rotation = transform.LocalRotation;
+                        transform.Scale = transform.LocalScale;
 
-                    Matrix4 localRotation = glm::toMat4(Quaternion(glm::radians((Vector3&)transform.LocalRotation)));
-                    transform.LocalTransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.LocalTranslation) * localRotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.LocalScale);
+                        Matrix4 rotation = glm::toMat4(Quaternion(glm::radians((Vector3&)transform.Rotation)));
+                        transform.TransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.Translation) * rotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.Scale);
+                        transform.LocalTransformMatrix = transform.TransformMatrix;
+
+                    } else {
+
+                        Matrix4 localRotation = glm::toMat4(Quaternion(glm::radians((Vector3&)transform.LocalRotation)));
+                        transform.LocalTransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.LocalTranslation) * localRotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.LocalScale);
+
+                        Matrix4 rotation = glm::toMat4(Quaternion(glm::radians((Vector3&)transform.Rotation)));
+                        transform.TransformMatrix = glm::translate(Matrix4(1.0f), (Vector3&)transform.Translation) * rotation * glm::scale(Matrix4(1.0f), (Vector3&)transform.Scale);
+                    }
 
                     for (auto& child : hierarchy_node_component.Children) {
                         auto& childTransform = World::GetRegistry().get<TransformComponent>(child.second);
@@ -90,9 +105,15 @@ void World::Init()
                     auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 
                     const auto& position = b2Body_GetPosition(rb2d.RuntimeBodyId);
-                    transform.Translation.x = position.x;
-                    transform.Translation.y = position.y;
-                    transform.Rotation.z = Math::RAD2DEG * b2Rot_GetAngle(b2Body_GetRotation(rb2d.RuntimeBodyId));
+                    transform.LocalTranslation.x = position.x;
+                    transform.LocalTranslation.y = position.y;
+                    transform.LocalRotation.z = Math::RAD2DEG * b2Rot_GetAngle(b2Body_GetRotation(rb2d.RuntimeBodyId));
+
+                    if (Entity parent = entity.GetParent(); parent.Valid()) {
+                        transform.LocalTranslation.x -= transform.Translation.x;
+                        transform.LocalTranslation.y -= transform.Translation.y;
+                        transform.LocalRotation.z -= transform.Rotation.z;
+                    }
                 });
 
                 tasks.push_back(task);
@@ -167,6 +188,7 @@ void World::Init()
 
                     glm::vec3 lookVector = glm::normalize(glm::vec3(transform.GetTransform()[0][2], transform.GetTransform()[1][2], transform.GetTransform()[2][2]));
                     glm::vec3 upVector = glm::normalize(glm::vec3(transform.GetTransform()[0][1], transform.GetTransform()[1][1], transform.GetTransform()[2][1]));
+                    lookVector.z *= -1;
                     AudioEngine::SetPosition(transform.Translation);
                     AudioEngine::SetOrientation(lookVector, upVector);
 
@@ -467,11 +489,7 @@ void World::OnStart()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::World::OnStart");
 
-    Init();
-
     s_Instance->m_IsRunning = true;
-
-    Physics2D::Init();
 
     for (const auto& preStartup : s_Instance->m_PreStartupSystems)
         preStartup(s_Instance->m_EntityRegistry);
@@ -721,6 +739,25 @@ void World::OnComponentAdded<CapsuleCollider2DComponent>(Entity entity, CapsuleC
     ShapeInfo2D shapeInfo {
         entity,
         ColliderType2D::Capsule
+    };
+
+    Physics2D::EnqueueShapeInit(shapeInfo);
+    component.QueuedForInitialization = true;
+}
+
+template <>
+void World::OnComponentAdded<PolygonCollider2DComponent>(Entity entity, PolygonCollider2DComponent& component)
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<PolygonCollider2DComponent>");
+
+    if (component.QueuedForInitialization || B2_IS_NON_NULL(component.RuntimeShapeId))
+        return;
+
+    component.WorldId = Physics2D::GetPhysicsWorld();
+
+    ShapeInfo2D shapeInfo {
+        entity,
+        ColliderType2D::Polygon
     };
 
     Physics2D::EnqueueShapeInit(shapeInfo);

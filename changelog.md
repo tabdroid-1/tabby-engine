@@ -1,3 +1,10 @@
+Version: 25-08-2024_1 Alpha
+Changes:
+- Fixed extremely large quantity of typos in AudioEngine and AudioSource. Also fixed audio not coming through right direction.
+- Some transform related issue fix
+
+--------------------------------------------------------------------------------------
+
 Version: 22-08-2024_1 Alpha
 Changes:
 - Multithreading in some World systems.

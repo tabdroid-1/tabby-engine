@@ -76,17 +76,21 @@ public:
     operator entt::entity() const { return m_EntityHandle; }
     operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
+    Entity GetParent()
+    {
+        TB_PROFILE_SCOPE_NAME("Tabby::Entity::GetUUID");
+        return GetComponent<HierarchyNodeComponent>().Parent.second;
+    }
+
     UUID GetUUID()
     {
         TB_PROFILE_SCOPE_NAME("Tabby::Entity::GetUUID");
-
         return GetComponent<IDComponent>().ID;
     }
 
     const std::string& GetName()
     {
         TB_PROFILE_SCOPE_NAME("Tabby::Entity::GetName");
-
         return GetComponent<TagComponent>().Tag;
     }
 

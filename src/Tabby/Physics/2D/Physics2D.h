@@ -82,9 +82,8 @@ private:
     friend BoxCollider2DComponent;
     friend CircleCollider2DComponent;
     friend CapsuleCollider2DComponent;
+    friend PolygonCollider2DComponent;
     friend SegmentCollider2DComponent;
-    // friend void Physics2DFinishTask(void* taskPtr, void* userContext);
-    // friend void* Physics2DEnqueueTask(b2TaskCallback* task, int32_t itemCount, int32_t minRange, void* taskContext, void* userContext);
 };
 
 class Physics2DTask : public enki::ITaskSet {

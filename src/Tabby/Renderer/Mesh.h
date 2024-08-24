@@ -61,8 +61,7 @@ public:
 
     const std::string GetName() const { return m_Name; }
     std::vector<Vertex> GetVertices() { return m_Vertices; }
-    std::vector<Vertex> GetWorldSpaceVertices(const Matrix4& matrix);
-    std::vector<Vertex> GetWorldSpaceVertices(Vector3 position, Vector3 eulerAngles, Vector3 scale);
+    std::vector<Vertex> GetWorldSpaceVertices();
     std::vector<uint32_t> GetIndices() { return m_Indices; }
     Shared<Material> GetMaterial() const { return m_Material; }
     PrimitiveType GetPrimitiveType() { return m_PrimitiveType; }

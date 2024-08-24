@@ -179,19 +179,16 @@ void Mesh::CloneMesh(Shared<Mesh> mesh)
     this->m_Material->CloneMaterialProperties(mesh->GetMaterial());
 }
 
-std::vector<Mesh::Vertex> Mesh::GetWorldSpaceVertices(Vector3 position = Vector3(0, 0, 0), Vector3 eulerAngles = Vector3(0, 0, 0), Vector3 scale = Vector3(1, 1, 1))
+std::vector<Mesh::Vertex> Mesh::GetWorldSpaceVertices()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Mesh::GetWorldSpaceVertices");
-
-    Matrix4 rotation = glm::toMat4(glm::quat(glm::radians((glm::vec3)eulerAngles)));
-    Matrix4 modelMatrix = glm::translate(Matrix4(1.0f), (glm::vec3)position) * rotation * glm::scale(Matrix4(1.0f), (glm::vec3)scale);
 
     std::vector<Vertex> worldSpaceVertices;
 
     for (const Vertex& vertex : m_Vertices) {
         Vertex transformedVertex = Vertex();
-        transformedVertex.Position = modelMatrix * vertex.Position;
-        // transformedVertex.normal = vertex.normal;
+        transformedVertex.Position = m_Transform * vertex.Position;
+        transformedVertex.Normal = vertex.Normal;
         transformedVertex.TexCoords = vertex.TexCoords;
 
         worldSpaceVertices.push_back(transformedVertex);

@@ -43,6 +43,7 @@ enum ColliderType2D : uint8_t {
     Box = 0,
     Circle,
     Capsule,
+    Polygon,
     Segment
 };
 

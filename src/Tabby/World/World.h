@@ -38,6 +38,10 @@ class World {
 public:
     World();
 
+    static void Init();
+    static void OnStart();
+    static void OnStop();
+
     static void AddSystem(Schedule schedule, const std::function<void(entt::registry&)>& function);
 
     template <typename T, typename... Args>
@@ -68,9 +72,6 @@ public:
 
     static Entity GetPrimaryCameraEntity();
 
-    static void OnStart();
-    static void OnStop();
-
     static void Update();
     void RendererThread();
 
@@ -94,8 +95,6 @@ public:
     static void SetCurrentCamera(Camera* currentCamera, Matrix4* currentCameraTransform);
 
 private:
-    static void Init();
-
     template <typename T>
     static void OnComponentAdded(Entity entity, T& component);
 

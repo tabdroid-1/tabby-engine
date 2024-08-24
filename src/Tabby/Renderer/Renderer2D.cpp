@@ -576,7 +576,7 @@ void Renderer2D::DrawCircle(const Matrix4& transform, const glm::vec4& color, fl
     s_Data.Stats.QuadCount++;
 }
 
-void Renderer2D::DrawLine(const glm::vec3& p0, glm::vec3& p1, const glm::vec4& color, int entityID)
+void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, int entityID)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Renderer2D::DrawLine");
 

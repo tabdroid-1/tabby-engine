@@ -161,25 +161,25 @@ Vector3 AudioEngine::GetPosition()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::GetPosition");
 
-    ALfloat* listenerPos = nullptr;
-    alGetListenerfv(AL_POSITION, listenerPos);
-    return { listenerPos[0], listenerPos[0], listenerPos[0] };
+    Vector3 position;
+    alGetListener3f(AL_POSITION, &position.x, &position.y, &position.z);
+    return position;
 }
 
 Vector3 AudioEngine::GetVelocity()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::GetVelocity");
 
-    ALfloat* listenerVel = nullptr;
-    alGetListenerfv(AL_POSITION, listenerVel);
-    return { listenerVel[0], listenerVel[0], listenerVel[0] };
+    Vector3 velocity;
+    alGetListener3f(AL_POSITION, &velocity.x, &velocity.y, &velocity.z);
+    return velocity;
 }
 
 float* AudioEngine::GetOrientation()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::GetOrientation");
     ALfloat* listenerOri = nullptr;
-    alGetListenerfv(AL_POSITION, listenerOri);
+    alGetListenerfv(AL_ORIENTATION, listenerOri);
     return listenerOri;
 }
 
@@ -187,21 +187,19 @@ void AudioEngine::SetPosition(const Vector3& position)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::SetPosition");
 
-    ALfloat listenerPos[] = { position.x, position.x, position.x };
-    alListenerfv(AL_POSITION, listenerPos);
+    alListener3f(AL_POSITION, position.x, position.y, position.z);
 }
 void AudioEngine::SetVelocity(const Vector3& velocity)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::SetVelocity");
 
-    ALfloat listenerVel[] = { velocity.x, velocity.x, velocity.x };
-    alListenerfv(AL_VELOCITY, listenerVel);
+    alListener3f(AL_VELOCITY, velocity.x, velocity.y, velocity.z);
 }
 void AudioEngine::SetOrientation(const Vector3& look, const Vector3& up)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioEngine::SetOrientation");
 
-    ALfloat listenerOri[] = { look.x, look.x, look.x, up.x, up.y, up.z };
+    ALfloat listenerOri[] = { look.x, look.y, look.z, up.x, up.y, up.z };
     alListenerfv(AL_ORIENTATION, listenerOri);
 }
 

@@ -343,6 +343,63 @@ struct CapsuleCollider2DComponent {
     void RefreshShape();
 };
 
+struct PolygonCollider2DComponent {
+    std::vector<Vector2> Points;
+    Vector2 Center = { 0.0f, 0.0f };
+    float Radius = 0;
+
+    uint32_t CollisionLayer = 1;
+    uint32_t CollisionMask = 1;
+
+    // TODO(Yan): move into physics material in the future maybe
+    float Density = 1.0f;
+    float Friction = 0.5f;
+    float Restitution = 0.0f;
+    float RestitutionThreshold = 0.5f;
+
+    /// A sensor shape collects contact information but never generates a
+    /// collision response.
+    bool IsSensor = false;
+
+    /// Enable sensor events for this shape. Only applies to kinematic and dynamic
+    /// bodies. Ignored for sensors.
+    bool EnableSensorEvents = false;
+
+    /// Enable contact events for this shape. Only applies to kinematic and
+    /// dynamic bodies. Ignored for sensors.
+    bool EnableContactEvents = false;
+
+    /// Enable pre-solve contact events for this shape. Only applies to dynamic
+    /// bodies. These are expensive
+    ///    and must be carefully handled due to multi-threading. Ignored for
+    ///    sensors.
+    bool EnablePreSolveEvents = false;
+
+    std::function<bool(Collision contact)> OnPreSolve;
+
+    // Storage for runtime
+    b2ShapeId RuntimeShapeId = b2_nullShapeId;
+    b2WorldId WorldId = b2_nullWorldId;
+    bool QueuedForInitialization;
+
+    PolygonCollider2DComponent() = default;
+    PolygonCollider2DComponent(const PolygonCollider2DComponent&) = default;
+
+    void SetCollisionLayer(uint32_t layer);
+    uint32_t GetCollisionLayer() const;
+
+    void SetCollisionMask(uint32_t mask);
+    uint32_t GetCollisionMask() const;
+
+    void SetCollisionLayerValue(int layerNumber, bool value);
+    bool GetCollisionLayerValue(int layerNumber) const;
+
+    void SetCollisionMaskValue(int layerNumber, bool value);
+    bool GetCollisionMaskValue(int layerNumber) const;
+
+    void RefreshShape();
+};
+
 struct SegmentCollider2DComponent {
     Vector2 Offset = { 0.0f, 0.0f };
     Vector2 point1, point2;
