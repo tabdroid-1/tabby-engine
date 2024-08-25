@@ -313,8 +313,8 @@ void Physics2D::ProcessBodyInitQueue()
 
         b2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
-        bodyDef.position = { transform.LocalTranslation.x, transform.LocalTranslation.y };
-        bodyDef.rotation = b2MakeRot(transform.LocalRotation.z * Math::DEG2RAD);
+        bodyDef.position = { transform.GetWorldPosition().x, transform.GetWorldPosition().y };
+        bodyDef.rotation = b2MakeRot(transform.GetWorldRotation().z * Math::DEG2RAD);
         bodyDef.userData = static_cast<void*>(bodyUserData);
 
         // --------- Create Body ---------
@@ -372,7 +372,7 @@ void Physics2D::ProcessShapeInitQueue()
             ShapeUserData2D* userData = new ShapeUserData2D { shapeInfo.ShapeEntity, rb2dEntity, ColliderType2D::Box };
 
             // --------- Create box collider def ---------
-            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { bc2d.Offset.x, bc2d.Offset.y }, bc2d.Angle);
+            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.scale.x, bc2d.Size.y * transform.scale.y, { bc2d.Offset.x, bc2d.Offset.y }, bc2d.Angle);
 
             b2ShapeDef shapeDef = b2DefaultShapeDef();
             shapeDef.density = bc2d.Density;
@@ -514,7 +514,7 @@ void Physics2D::ProcessShapeUpdateQueue()
             auto& bc2d = shapeInfo.ShapeEntity.GetComponent<BoxCollider2DComponent>();
 
             // --------- Create box collider def ---------
-            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, { bc2d.Offset.x, bc2d.Offset.y }, bc2d.Angle);
+            b2Polygon box = b2MakeOffsetBox(bc2d.Size.x * transform.scale.x, bc2d.Size.y * transform.scale.y, { bc2d.Offset.x, bc2d.Offset.y }, bc2d.Angle);
 
             b2Shape_SetPolygon(bc2d.RuntimeShapeId, &box);
 

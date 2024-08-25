@@ -35,64 +35,44 @@ struct HierarchyNodeComponent {
 };
 
 struct TransformComponent {
-    Vector3 Translation = { 0.0f, 0.0f, 0.0f };
-    Vector3 Rotation = { 0.0f, 0.0f, 0.0f };
-    Vector3 Scale = { 1.0f, 1.0f, 1.0f };
-
-    Vector3 LocalTranslation = { 0.0f, 0.0f, 0.0f };
-    Vector3 LocalRotation = { 0.0f, 0.0f, 0.0f };
-    Vector3 LocalScale = { 1.0f, 1.0f, 1.0f };
-
-    Matrix4 TransformMatrix = Matrix4(1);
-    Matrix4 LocalTransformMatrix = Matrix4(1);
+public:
+    Vector3 position = { 0.0f, 0.0f, 0.0f };
+    Vector3 rotation = { 0.0f, 0.0f, 0.0f };
+    Vector3 scale = { 1.0f, 1.0f, 1.0f };
 
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
-    TransformComponent(const Vector3& translation)
-        : Translation(translation)
+    TransformComponent(const Vector3& Position)
+        : position(Position)
     {
     }
 
-    Matrix4& GetTransform() { return TransformMatrix; }
-    const Matrix4& GetTransform() const { return TransformMatrix; }
-    Matrix4& GetLocalTransform() { return LocalTransformMatrix; }
-    const Matrix4& GetLocalTransform() const { return LocalTransformMatrix; }
     void ApplyTransform(const Matrix4& transform);
-    void ApplyTransformToLocal(const Matrix4& transform);
 
-    operator Matrix4&() { return TransformMatrix; }
+    const Vector3& GetWorldPosition() { return worldPosition; }
+    const Vector3& GetWorldRotation() { return worldRotation; }
+    const Vector3& GetWorldScale() { return worldScale; }
+
+    Matrix4& GetTransform() { return transformMatrix; }
+    const Matrix4& GetTransform() const { return transformMatrix; }
+    Matrix4& GetWorldTransform() { return worldTransformMatrix; }
+    const Matrix4& GetWorldTransform() const { return worldTransformMatrix; }
+
+    // operator Matrix4&() { return worldTransformMatrix; }
+
+private:
+    void ApplyWorldTransform(const Matrix4& transform);
+
+    Vector3 worldPosition = { 0.0f, 0.0f, 0.0f };
+    Vector3 worldRotation = { 0.0f, 0.0f, 0.0f };
+    Vector3 worldScale = { 1.0f, 1.0f, 1.0f };
+
+    Matrix4 worldTransformMatrix = Matrix4(1);
+    Matrix4 transformMatrix = Matrix4(1);
+
+private:
+    friend struct ParallelTransformUpdate;
 };
-
-// struct TransformComponent {
-// public:
-//     Vector3 position = { 0.0f, 0.0f, 0.0f };
-//     Vector3 rotation = { 0.0f, 0.0f, 0.0f };
-//     Vector3 scale = { 1.0f, 1.0f, 1.0f };
-//
-//     Matrix4 worldTransformMatrix = Matrix4(1);
-//     Matrix4 transformMatrix = Matrix4(1);
-//
-//     TransformComponent() = default;
-//     TransformComponent(const TransformComponent&) = default;
-//     TransformComponent(const Vector3& Position)
-//         : position(Position)
-//     {
-//     }
-//
-//     Matrix4& GetTransform() { return transformMatrix; }
-//     const Matrix4& GetTransform() const { return transformMatrix; }
-//     Matrix4& GetWorldTransform() { return worldTransformMatrix; }
-//     const Matrix4& GetWorldTransform() const { return worldTransformMatrix; }
-//     void ApplyTransform(const Matrix4& transform);
-//     // void ApplyTransformToLocal(const Matrix4& transform);
-//
-//     operator Matrix4&() { return worldTransformMatrix; }
-//
-// private:
-//     Vector3 worldPosition = { 0.0f, 0.0f, 0.0f };
-//     Vector3 worldRotation = { 0.0f, 0.0f, 0.0f };
-//     Vector3 worldScale = { 1.0f, 1.0f, 1.0f };
-// };
 
 struct SpriteRendererComponent {
     Vector4 Color { 1.0f, 1.0f, 1.0f, 1.0f };

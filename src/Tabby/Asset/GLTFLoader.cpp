@@ -292,14 +292,14 @@ void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>
                                           Quaternion Grotation = { rotation.w(), rotation.x(), rotation.y(), rotation.z() };
                                           Vector3 Gtranslation = { translation.x(), translation.y(), translation.z() };
                                           Matrix4 rotMat = glm::toMat4(Grotation);
-                                          tc.ApplyTransformToLocal(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
+                                          tc.ApplyTransform(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
                                       },
                        [&](const fastgltf::TRS& trs) {
                            Vector3 Gscale = { trs.scale.x(), trs.scale.y(), trs.scale.z() };
                            Quaternion Grotation = { trs.rotation.w(), trs.rotation.x(), trs.rotation.y(), trs.rotation.z() };
                            Vector3 Gtranslation = { trs.translation.x(), trs.translation.y(), trs.translation.z() };
                            Matrix4 rotMat = glm::toMat4(Grotation);
-                           tc.ApplyTransformToLocal(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
+                           tc.ApplyTransform(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
                        } },
             node.transform);
 

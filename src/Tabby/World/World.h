@@ -95,6 +95,8 @@ public:
     static void SetCurrentCamera(Camera* currentCamera, Matrix4* currentCameraTransform);
 
 private:
+    static void UpdateEntityTransforms();
+
     template <typename T>
     static void OnComponentAdded(Entity entity, T& component);
 

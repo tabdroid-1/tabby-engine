@@ -14,6 +14,74 @@
 namespace Tabby {
 
 // ----- TransformComponent ---------------------
+void TransformComponent::ApplyWorldTransform(const Matrix4& transform)
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::TransformComponent::ApplyTransform");
+
+    // using namespace glm;
+    using T = float;
+
+    Matrix4 LocalMatrix(transform);
+
+    // Normalize the matrix.
+    if (glm::epsilonEqual(LocalMatrix[3][3], static_cast<float>(0), glm::epsilon<T>()))
+        return;
+
+    // First, isolate perspective.  This is the messiest.
+    if (glm::epsilonNotEqual(LocalMatrix[0][3], static_cast<T>(0), glm::epsilon<T>()) || glm::epsilonNotEqual(LocalMatrix[1][3], static_cast<T>(0), glm::epsilon<T>()) || glm::epsilonNotEqual(LocalMatrix[2][3], static_cast<T>(0), glm::epsilon<T>())) {
+        // Clear the perspective partition
+        LocalMatrix[0][3] = LocalMatrix[1][3] = LocalMatrix[2][3] = static_cast<T>(0);
+        LocalMatrix[3][3] = static_cast<T>(1);
+    }
+
+    // Next take care of translation (easy).
+    worldPosition = Vector3(LocalMatrix[3]);
+    LocalMatrix[3] = Vector4(0, 0, 0, LocalMatrix[3].w);
+
+    Vector3 Row[3];
+
+    // Now get scale and shear.
+    for (glm::length_t i = 0; i < 3; ++i)
+        for (glm::length_t j = 0; j < 3; ++j)
+            Row[i][j] = LocalMatrix[i][j];
+
+    // Compute X scale factor and normalize first row.
+    worldScale.x = length(Row[0]);
+    Row[0] = glm::detail::scale(Row[0], static_cast<T>(1));
+    worldScale.y = length(Row[1]);
+    Row[1] = glm::detail::scale(Row[1], static_cast<T>(1));
+    worldScale.z = length(Row[2]);
+    Row[2] = glm::detail::scale(Row[2], static_cast<T>(1));
+
+    // At this point, the matrix (in rows[]) is orthonormal.
+    // Check for a coordinate system flip.  If the determinant
+    // is -1, then negate the matrix and the scaling factors.
+#if 0
+        		Pdum3 = cross(Row[1], Row[2]); // v3Cross(row[1], row[2], Pdum3);
+        		if (dot(Row[0], Pdum3) < 0)
+        		{
+        			for (length_t i = 0; i < 3; i++)
+        			{
+        				scale[i] *= static_cast<T>(-1);
+        				Row[i] *= static_cast<T>(-1);
+        			}
+        		}
+#endif
+
+    worldRotation.y = asin(-Row[0][2]);
+    if (cos(worldRotation.y) != 0) {
+        worldRotation.x = atan2(Row[1][2], Row[2][2]);
+        worldRotation.z = atan2(Row[0][1], Row[0][0]);
+    } else {
+        worldRotation.x = atan2(-Row[2][0], Row[1][1]);
+        worldRotation.z = 0;
+    }
+
+    worldRotation.x *= Math::RAD2DEG;
+    worldRotation.y *= Math::RAD2DEG;
+    worldRotation.z *= Math::RAD2DEG;
+}
+
 void TransformComponent::ApplyTransform(const Matrix4& transform)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::TransformComponent::ApplyTransform");
@@ -35,7 +103,7 @@ void TransformComponent::ApplyTransform(const Matrix4& transform)
     }
 
     // Next take care of translation (easy).
-    Translation = Vector3(LocalMatrix[3]);
+    position = Vector3(LocalMatrix[3]);
     LocalMatrix[3] = Vector4(0, 0, 0, LocalMatrix[3].w);
 
     Vector3 Row[3];
@@ -46,11 +114,11 @@ void TransformComponent::ApplyTransform(const Matrix4& transform)
             Row[i][j] = LocalMatrix[i][j];
 
     // Compute X scale factor and normalize first row.
-    Scale.x = length(Row[0]);
+    scale.x = length(Row[0]);
     Row[0] = glm::detail::scale(Row[0], static_cast<T>(1));
-    Scale.y = length(Row[1]);
+    scale.y = length(Row[1]);
     Row[1] = glm::detail::scale(Row[1], static_cast<T>(1));
-    Scale.z = length(Row[2]);
+    scale.z = length(Row[2]);
     Row[2] = glm::detail::scale(Row[2], static_cast<T>(1));
 
     // At this point, the matrix (in rows[]) is orthonormal.
@@ -68,86 +136,18 @@ void TransformComponent::ApplyTransform(const Matrix4& transform)
         		}
 #endif
 
-    Rotation.y = asin(-Row[0][2]);
-    if (cos(Rotation.y) != 0) {
-        Rotation.x = atan2(Row[1][2], Row[2][2]);
-        Rotation.z = atan2(Row[0][1], Row[0][0]);
+    rotation.y = asin(-Row[0][2]);
+    if (cos(rotation.y) != 0) {
+        rotation.x = atan2(Row[1][2], Row[2][2]);
+        rotation.z = atan2(Row[0][1], Row[0][0]);
     } else {
-        Rotation.x = atan2(-Row[2][0], Row[1][1]);
-        Rotation.z = 0;
+        rotation.x = atan2(-Row[2][0], Row[1][1]);
+        rotation.z = 0;
     }
 
-    Rotation.x *= Math::RAD2DEG;
-    Rotation.y *= Math::RAD2DEG;
-    Rotation.z *= Math::RAD2DEG;
-}
-
-void TransformComponent::ApplyTransformToLocal(const Matrix4& transform)
-{
-    TB_PROFILE_SCOPE_NAME("Tabby::TransformComponent::ApplyTransformToLocal");
-
-    // using namespace glm;
-    using T = float;
-
-    Matrix4 LocalMatrix(transform);
-
-    // Normalize the matrix.
-    if (glm::epsilonEqual(LocalMatrix[3][3], static_cast<float>(0), glm::epsilon<T>()))
-        return;
-
-    // First, isolate perspective.  This is the messiest.
-    if (glm::epsilonNotEqual(LocalMatrix[0][3], static_cast<T>(0), glm::epsilon<T>()) || glm::epsilonNotEqual(LocalMatrix[1][3], static_cast<T>(0), glm::epsilon<T>()) || glm::epsilonNotEqual(LocalMatrix[2][3], static_cast<T>(0), glm::epsilon<T>())) {
-        // Clear the perspective partition
-        LocalMatrix[0][3] = LocalMatrix[1][3] = LocalMatrix[2][3] = static_cast<T>(0);
-        LocalMatrix[3][3] = static_cast<T>(1);
-    }
-
-    // Next take care of translation (easy).
-    LocalTranslation = Vector3(LocalMatrix[3]);
-    LocalMatrix[3] = Vector4(0, 0, 0, LocalMatrix[3].w);
-
-    Vector3 Row[3];
-
-    // Now get scale and shear.
-    for (glm::length_t i = 0; i < 3; ++i)
-        for (glm::length_t j = 0; j < 3; ++j)
-            Row[i][j] = LocalMatrix[i][j];
-
-    // Compute X scale factor and normalize first row.
-    LocalScale.x = length(Row[0]);
-    Row[0] = glm::detail::scale(Row[0], static_cast<T>(1));
-    LocalScale.y = length(Row[1]);
-    Row[1] = glm::detail::scale(Row[1], static_cast<T>(1));
-    LocalScale.z = length(Row[2]);
-    Row[2] = glm::detail::scale(Row[2], static_cast<T>(1));
-
-    // At this point, the matrix (in rows[]) is orthonormal.
-    // Check for a coordinate system flip.  If the determinant
-    // is -1, then negate the matrix and the scaling factors.
-#if 0
-        		Pdum3 = cross(Row[1], Row[2]); // v3Cross(row[1], row[2], Pdum3);
-        		if (dot(Row[0], Pdum3) < 0)
-        		{
-        			for (length_t i = 0; i < 3; i++)
-        			{
-        				scale[i] *= static_cast<T>(-1);
-        				Row[i] *= static_cast<T>(-1);
-        			}
-        		}
-#endif
-
-    LocalRotation.y = asin(-Row[0][2]);
-    if (cos(Rotation.y) != 0) {
-        LocalRotation.x = atan2(Row[1][2], Row[2][2]);
-        LocalRotation.z = atan2(Row[0][1], Row[0][0]);
-    } else {
-        LocalRotation.x = atan2(-Row[2][0], Row[1][1]);
-        LocalRotation.z = 0;
-    }
-
-    LocalRotation.x *= Math::RAD2DEG;
-    LocalRotation.y *= Math::RAD2DEG;
-    LocalRotation.z *= Math::RAD2DEG;
+    rotation.x *= Math::RAD2DEG;
+    rotation.y *= Math::RAD2DEG;
+    rotation.z *= Math::RAD2DEG;
 }
 
 // --------------------------------------------------
