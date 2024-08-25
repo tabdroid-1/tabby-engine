@@ -1,4 +1,3 @@
-#ifdef TB_PLATFORM_WEB
 #include <tbpch.h>
 #include <Tabby/Core/Events/ApplicationEvent.h>
 #include <Tabby/Core/Events/MouseEvent.h>
@@ -258,5 +257,3 @@ uint8_t WebWindow::GetFullscreenMode() const
     return m_Data.FullscreenMode;
 }
 }
-
-#endif

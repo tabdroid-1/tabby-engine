@@ -1,4 +1,3 @@
-#ifdef TB_PLATFORM_WINDOWS
 #include <tbpch.h>
 #include <Tabby/Utils/PlatformUtils.h>
 #include <Tabby/Core/Application.h>
@@ -83,5 +82,3 @@ std::string FileDialogs::SaveFile(const char* filter)
 }
 
 }
-
-#endif

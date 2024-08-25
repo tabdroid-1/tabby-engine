@@ -1,5 +1,3 @@
-#ifdef TB_PLATFORM_MACOS
-
 #include <Tabby/Utils/PlatformUtils.h>
 #include <Tabby/Core/Time/Time.h>
 
@@ -19,5 +17,3 @@ double Time::GetTime()
 }
 
 }
-
-#endif

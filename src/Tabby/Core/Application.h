@@ -25,7 +25,7 @@ struct ApplicationCommandLineArgs {
 
 struct ApplicationSpecification {
     enum class RendererAPI {
-        None = 0,
+        Null = 0,
         OpenGL46 = 1,
         OpenGL33 = 2,
         OpenGLES3 = 3

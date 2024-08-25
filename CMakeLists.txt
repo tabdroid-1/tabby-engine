@@ -19,6 +19,31 @@ endif()
 
 option(TB_DIST "Enable distrubition build" OFF)
 option(TB_PROFILE "Enable profiling" OFF)
+option(TB_HEADLESS "Enable headless mode" OFF)
+
+add_library(tabby_flags INTERFACE)
+
+if(TB_DIST)
+    # set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build utility programs" FORCE)
+    set(TB_PROFILE OFF CACHE BOOL "" FORCE)
+endif(TB_DIST)
+
+if(TB_PROFILE)
+    target_compile_definitions(tabby_flags INTERFACE 
+        TB_PROFILE=1 
+        TRACY_ENABLE=1
+        )
+    add_compile_definitions(
+        TB_PROFILE=1 
+        TRACY_ENABLE=1
+        )
+    message(WARNING "Tabby: Extremely high memory usage when profiler is enabled")
+endif(TB_PROFILE)
+
+if(TB_HEADLESS)
+    target_compile_definitions(tabby_flags INTERFACE TB_HEADLESS=1)
+    add_compile_definitions(TB_HEADLESS=1)
+endif(TB_HEADLESS)
 
 set(ALSOFT_UTILS OFF CACHE BOOL "Build utility programs" FORCE)
 set(ALSOFT_NO_CONFIG_UTIL OFF CACHE BOOL "Disable building the alsoft-config utility" FORCE)
@@ -86,16 +111,63 @@ set(MSDF-ATLAS-GEN ${PROJECT_VENDOR_DIR}/msdf-atlas-gen)
 # ##############################################################################
 
 file(GLOB_RECURSE PROJECT_SOURCES 
-        "${PROJECT_SOURCE_DIR}/*.h"
-        "${PROJECT_SOURCE_DIR}/*.cpp"
+        ${PROJECT_SOURCE_DIR}/*.h
+        ${PROJECT_SOURCE_DIR}/*.cpp
         )
+
+list(FILTER PROJECT_SOURCES EXCLUDE REGEX ".*/Platforms/.*")
 
 # # Additional project sources (vendors, etc.)
 list(APPEND PROJECT_SOURCES
-        "${ENTT}/entt.hpp"
-        "${STB}/stb_image.h"
-        "${STB}/stb_image.cpp"
+        ${ENTT}/entt.hpp
+        ${STB}/stb_image.h
+        ${STB}/stb_image.cpp
         )
+
+
+
+if (TB_HEADLESS)
+    list(APPEND PROJECT_SOURCES
+        ${PROJECT_SOURCE_DIR}/Platforms/Null/NullPlatformInput.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Null/NullPlatformUtils.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Null/NullPlatformWindow.cpp
+        )
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    list(APPEND PROJECT_SOURCES
+        ${PROJECT_SOURCE_DIR}/Platforms/Windows/WindowsInput.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Windows/WindowsPlatformUtils.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Windows/WindowsWindow.cpp
+        )
+
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND PROJECT_SOURCES
+        ${PROJECT_SOURCE_DIR}/Platforms/Linux/LinuxInput.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Linux/LinuxPlatformUtils.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Linux/LinuxWindow.cpp
+        )
+
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    list(APPEND PROJECT_SOURCES
+        ${PROJECT_SOURCE_DIR}/Platforms/MacOS/MacOSInput.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/MacOS/MacOSPlatformUtils.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/MacOS/MacOSPlatformUtils.mm
+        ${PROJECT_SOURCE_DIR}/Platforms/MacOS/MacOSWindow.cpp
+        )
+
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    list(APPEND PROJECT_SOURCES
+        ${PROJECT_SOURCE_DIR}/Platforms/Web/WebInput.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Web/WebPlatformUtils.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Web/WebWindow.cpp
+        )
+
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Android")
+    list(APPEND PROJECT_SOURCES
+        ${PROJECT_SOURCE_DIR}/Platforms/Android/AndroidInput.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Android/AndroidPlatformUtils.cpp
+        ${PROJECT_SOURCE_DIR}/Platforms/Android/AndroidWindow.cpp
+        )
+endif()
 
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
@@ -276,16 +348,6 @@ elseif (ANDROID)
         SDL2::SDL2main
         )
 endif()
-
-if(TB_DIST)
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build utility programs" FORCE)
-    set(TB_PROFILE OFF CACHE BOOL "" FORCE)
-endif(TB_DIST)
-
-if(TB_PROFILE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTB_PROFILE=1 -DTRACY_ENABLE=1")
-    message(WARNING "Tabby: Extremely high memory usage when profiler is enabled")
-endif(TB_PROFILE)
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_DEBUG=1 -DTRACY_ENABLE=1")

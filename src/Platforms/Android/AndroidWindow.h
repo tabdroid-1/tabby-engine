@@ -1,6 +1,4 @@
 #pragma once
-
-#ifdef TB_PLATFORM_ANDROID
 #include <Tabby/Renderer/GraphicsContext.h>
 #include <Tabby/Core/Window.h>
 
@@ -30,7 +28,7 @@ public:
 
     void SetMinSize(uint32_t minWidth, uint32_t minHeight) override;
 
-    virtual void* GetNativeWindow() const { return m_Window; }
+    virtual void* GetNativeWindow() const override { return m_Window; }
 
 private:
     virtual void Init(const WindowProps& props);
@@ -55,5 +53,3 @@ private:
 };
 
 }
-
-#endif

@@ -1,6 +1,10 @@
 #include <tbpch.h>
 #include <Tabby/Core/Window.h>
 
+#ifdef TB_HEADLESS
+#include <Platforms/Null/NullPlatformWindow.h>
+#endif // TB_HEADLESS
+
 #ifdef TB_PLATFORM_WINDOWS
 #include <Platforms/Windows/WindowsWindow.h>
 #elif defined(TB_PLATFORM_LINUX)
@@ -16,6 +20,11 @@
 namespace Tabby {
 Scope<Window> Window::Create(const WindowProps& props)
 {
+
+#ifdef TB_HEADLESS
+    return CreateScope<NullPlatformWindow>(props);
+#endif // TB_HEADLESS
+
 #ifdef TB_PLATFORM_WINDOWS
     return CreateScope<WindowsWindow>(props);
 #elif defined(TB_PLATFORM_LINUX)

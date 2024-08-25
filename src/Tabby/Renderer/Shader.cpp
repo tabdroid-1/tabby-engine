@@ -2,6 +2,7 @@
 #include <Drivers/gles3/OpenGLES3Shader.h>
 #include <Drivers/gl46/OpenGL46Shader.h>
 #include <Drivers/gl33/OpenGL33Shader.h>
+#include <Drivers/null/NullAPIShader.h>
 #include <Tabby/Renderer/Renderer.h>
 #include <Tabby/Renderer/Shader.h>
 
@@ -12,9 +13,8 @@ Shared<Shader> Shader::Create(const std::string& filepath)
     TB_PROFILE_SCOPE_NAME("Tabby::Shader::Create");
 
     switch (Renderer::GetAPI()) {
-    case RendererAPI::API::None:
-        TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
-        return nullptr;
+    case RendererAPI::API::Null:
+        return CreateShared<NullAPIShader>(filepath);
     case RendererAPI::API::OpenGL46:
         return CreateShared<OpenGL46Shader>(filepath);
     case RendererAPI::API::OpenGL33:
@@ -32,9 +32,8 @@ Shared<Shader> Shader::Create(const std::string& name, const std::string& vertex
     TB_PROFILE_SCOPE_NAME("Tabby::Shader::Create");
 
     switch (Renderer::GetAPI()) {
-    case RendererAPI::API::None:
-        TB_CORE_ASSERT_TAGGED(false, "RendererAPI::None is currently not supported!");
-        return nullptr;
+    case RendererAPI::API::Null:
+        return CreateShared<NullAPIShader>(name, vertexSrc, fragmentSrc);
     case RendererAPI::API::OpenGL46:
         return CreateShared<OpenGL46Shader>(name, vertexSrc, fragmentSrc);
     case RendererAPI::API::OpenGL33:

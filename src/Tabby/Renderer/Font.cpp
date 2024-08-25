@@ -62,8 +62,7 @@ static AssetHandle CreateAndCacheFontAtlas(const std::string& fontName, float fo
 Font::Font(const std::string name, AssetHandle handle, Buffer data)
     : m_Data(CreateShared<MSDFData>())
 {
-    TB_PROFILE_SCOPE_NAME("Tabby::Font::Constructor");
-
+#ifndef TB_HEADLESS
     Handle = handle;
     Type = AssetType::TABBY_FONT;
 
@@ -155,6 +154,8 @@ Font::Font(const std::string name, AssetHandle handle, Buffer data)
 
     msdfgen::destroyFont(font);
     msdfgen::deinitializeFreetype(ft);
+
+#endif // !TB_HEADLESS
 }
 
 Font::~Font()

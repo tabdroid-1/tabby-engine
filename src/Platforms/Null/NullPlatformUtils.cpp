@@ -19,15 +19,11 @@ double Time::GetTime()
 
 std::string FileDialogs::OpenFile(const char* filter)
 {
-    TB_PROFILE_SCOPE_NAME("Tabby::FileDialogs::OpenFile");
-
     return std::string();
 }
 
 std::string FileDialogs::SaveFile(const char* filter)
 {
-    TB_PROFILE_SCOPE_NAME("Tabby::FileDialogs::SaveFile");
-
     return std::string();
 }
 

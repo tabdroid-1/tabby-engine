@@ -1,9 +1,14 @@
+Version: 25-08-2024_4 Alpha
+Changes:
+- Headless mode
+
+--------------------------------------------------------------------------------------
+
 Version: 25-08-2024_3 Alpha
 Changes:
 - Added idiot proofed transform component 
 
 --------------------------------------------------------------------------------------
-
 
 Version: 25-08-2024_2 Alpha
 Changes:

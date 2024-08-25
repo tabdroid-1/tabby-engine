@@ -3,6 +3,7 @@
 #include <Drivers/gles3/OpenGLES3Context.h>
 #include <Drivers/gl46/OpenGL46Context.h>
 #include <Drivers/gl33/OpenGL33Context.h>
+#include <Drivers/null/NullAPIContext.h>
 #include <Tabby/Renderer/Renderer.h>
 
 namespace Tabby {
@@ -12,9 +13,8 @@ Scope<GraphicsContext> GraphicsContext::Create(void* window)
     TB_PROFILE_SCOPE_NAME("Tabby::GraphicsContext::Create");
 
     switch (Renderer::GetAPI()) {
-    case RendererAPI::API::None:
-        TB_CORE_ASSERT_TAGGED(false, "No renderer API selected.");
-        return nullptr;
+    case RendererAPI::API::Null:
+        return CreateScope<NullAPIContext>(static_cast<SDL_Window*>(window));
     case RendererAPI::API::OpenGL46:
         return CreateScope<OpenGL46Context>(static_cast<SDL_Window*>(window));
     case RendererAPI::API::OpenGL33:

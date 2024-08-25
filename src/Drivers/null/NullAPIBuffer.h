@@ -4,11 +4,11 @@
 
 namespace Tabby {
 
-class OpenGL33VertexBuffer : public VertexBuffer {
+class NullAPIVertexBuffer : public VertexBuffer {
 public:
-    OpenGL33VertexBuffer(uint32_t size);
-    OpenGL33VertexBuffer(float* vertices, uint32_t size);
-    virtual ~OpenGL33VertexBuffer();
+    NullAPIVertexBuffer(uint32_t size);
+    NullAPIVertexBuffer(float* vertices, uint32_t size);
+    virtual ~NullAPIVertexBuffer();
 
     virtual void Bind() const override;
     virtual void Unbind() const override;
@@ -24,19 +24,15 @@ private:
     BufferLayout m_Layout;
 };
 
-class OpenGL33IndexBuffer : public IndexBuffer {
+class NullAPIIndexBuffer : public IndexBuffer {
 public:
-    OpenGL33IndexBuffer(uint32_t* indices, uint32_t count);
-    virtual ~OpenGL33IndexBuffer();
+    NullAPIIndexBuffer(uint32_t* indices, uint32_t count);
+    virtual ~NullAPIIndexBuffer();
 
     virtual void Bind() const override;
     virtual void Unbind() const override;
 
-    virtual uint32_t GetCount() const override { return m_Count; }
-
-private:
-    uint32_t m_RendererID;
-    uint32_t m_Count;
+    virtual uint32_t GetCount() const override { return 0; }
 };
 
 }

@@ -18,37 +18,31 @@ Application::Application(const ApplicationSpecification& specification)
     s_Instance = this;
     m_Specification = specification;
 
-    switch (specification.RendererAPI) {
-    case ApplicationSpecification::RendererAPI::OpenGL46:
-        RendererAPI::s_API = RendererAPI::API::OpenGL46;
-        break;
-    case ApplicationSpecification::RendererAPI::OpenGL33:
-        RendererAPI::s_API = RendererAPI::API::OpenGL33;
-        break;
-    case ApplicationSpecification::RendererAPI::OpenGLES3:
-        RendererAPI::s_API = RendererAPI::API::OpenGLES3;
-        break;
-    default:
-        TB_CORE_ASSERT(false);
-    }
-
     if (!m_Specification.WorkingDirectory.empty()) {
         FileSystem::SetWorkingDirectory(m_Specification.WorkingDirectory);
     }
 
     ParseEngineConfig();
 
+#ifdef TB_HEADLESS
+    RendererAPI::s_API = RendererAPI::API::Null;
+    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::Null;
+
     m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight, m_Specification.FullscreenMode, m_Specification.Resizable, m_Specification.VSync));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
-    Renderer::Init();
+#endif // TB_HEADLESS
     AudioEngine::Init();
+    Renderer::Init();
+
+#ifndef TB_HEADLESS
     Input::Init();
 
     m_ImGuiLayer = new ImGuiLayer();
     PushOverlay(m_ImGuiLayer);
 
     m_Console = new ConsolePanel();
+#endif // TB_HEADLESS
 }
 
 Application::~Application()
@@ -116,7 +110,6 @@ void Application::OnEvent(Event& e)
 
 void Application::Run()
 {
-
 #ifdef TB_PLATFORM_WEB
     if (m_Running) {
 #else
@@ -129,7 +122,9 @@ void Application::Run()
         Time::SetDeltaTime(time - s_Instance->m_LastFrameTime);
         s_Instance->m_LastFrameTime = time;
 
+#ifndef TB_HEADLESS
         Input::Update();
+#endif
 
         s_Instance->ExecuteMainThreadQueue();
 
@@ -143,6 +138,7 @@ void Application::Run()
                     layer->OnUpdate();
             }
 
+#ifndef TB_HEADLESS
             s_Instance->m_ImGuiLayer->Begin();
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackOnImGuiRender");
@@ -154,12 +150,14 @@ void Application::Run()
             s_Instance->m_Console->Draw();
 
             s_Instance->m_ImGuiLayer->End();
+#endif
         }
 
+#ifndef TB_HEADLESS
         Input::s_Instance->m_MouseScrollDelta = { 0.0f, 0.0f };
         s_Instance->m_Window->OnUpdate();
-
         ProcessApplicationSpec();
+#endif
 
         // Framerate limiter. this will do nothing if maxFPS is 0.
         if (s_Instance->m_Specification.MaxFPS > 0.0) {

@@ -1,4 +1,3 @@
-#ifdef TB_PLATFORM_ANDROID
 #include <tbpch.h>
 #include <Tabby/Core/Events/ApplicationEvent.h>
 #include <Platforms/Android/AndroidWindow.h>
@@ -243,5 +242,3 @@ uint8_t AndroidWindow::GetFullscreenMode() const
     return m_Data.FullscreenMode;
 }
 }
-
-#endif

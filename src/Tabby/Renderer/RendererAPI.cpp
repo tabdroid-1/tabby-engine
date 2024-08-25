@@ -2,6 +2,7 @@
 #include <Drivers/gles3/OpenGLES3RendererAPI.h>
 #include <Drivers/gl46/OpenGL46RendererAPI.h>
 #include <Drivers/gl33/OpenGL33RendererAPI.h>
+#include <Drivers/null/NullAPIRendererAPI.h>
 #include <Tabby/Renderer/RendererAPI.h>
 
 namespace Tabby {
@@ -13,9 +14,8 @@ Scope<RendererAPI> RendererAPI::Create()
     TB_PROFILE_SCOPE_NAME("Tabby::RendererAPI::Create");
 
     switch (s_API) {
-    case RendererAPI::API::None:
-        TB_CORE_ASSERT_TAGGED(false, "No renderer API selected.");
-        return nullptr;
+    case RendererAPI::API::Null:
+        return CreateScope<NullAPIRendererAPI>();
     case RendererAPI::API::OpenGL46:
         return CreateScope<OpenGL46RendererAPI>();
     case RendererAPI::API::OpenGL33:

@@ -1,4 +1,3 @@
-#ifdef TB_PLATFORM_LINUX
 #include <tbpch.h>
 #include <Tabby/Utils/PlatformUtils.h>
 #include <Tabby/Core/Time/Time.h>
@@ -297,5 +296,3 @@ std::string FileDialogs::SaveFile(const char* filter)
 }
 
 }
-
-#endif

@@ -1,4 +1,3 @@
-#ifdef TB_PLATFORM_LINUX
 #include <tbpch.h>
 #include <Tabby/Core/Events/ApplicationEvent.h>
 #include <Tabby/Core/Events/MouseEvent.h>
@@ -262,5 +261,3 @@ uint8_t LinuxWindow::GetFullscreenMode() const
     return m_Data.FullscreenMode;
 }
 }
-
-#endif

@@ -560,12 +560,14 @@ void World::Update()
 
     if (s_Instance->m_CurrentCamera) {
 
+#ifndef TB_HEADLESS
         Renderer2D::BeginScene(*s_Instance->m_CurrentCamera, *s_Instance->m_CurrentCameraTransform);
 
         for (const auto& draw : s_Instance->m_DrawSystems)
             draw(s_Instance->m_EntityRegistry);
 
         Renderer2D::EndScene();
+#endif
     }
 }
 

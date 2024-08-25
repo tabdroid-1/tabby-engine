@@ -198,6 +198,8 @@ void GLTFLoader::LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>
                 tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gl33/Renderer3D_MeshUnlit.glsl");
             else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3)
                 tabbyMaterial = CreateShared<Material>("UnlitMaterial", "shaders/gles3/Renderer3D_MeshUnlit.glsl");
+            else if (Renderer::GetAPI() == RendererAPI::API::Null)
+                tabbyMaterial = CreateShared<Material>("UnlitMaterial", "");
 
             if (it->materialIndex.has_value()) {
                 // materialUniformsIndex = it->materialIndex.value() + 1; // Adjust for default material

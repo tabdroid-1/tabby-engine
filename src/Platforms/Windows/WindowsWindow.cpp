@@ -1,4 +1,3 @@
-#ifdef TB_PLATFORM_WINDOWS
 #include <tbpch.h>
 #include <Tabby/Core/Events/ApplicationEvent.h>
 #include <Platforms/Windows/WindowsWindow.h>
@@ -250,5 +249,3 @@ uint8_t WindowsWindow::GetFullscreenMode() const
     return m_Data.FullscreenMode;
 }
 }
-
-#endif
