@@ -129,11 +129,13 @@ void Application::Run()
         Time::SetDeltaTime(time - s_Instance->m_LastFrameTime);
         s_Instance->m_LastFrameTime = time;
 
+        Input::Update();
+
         s_Instance->ExecuteMainThreadQueue();
 
         if (!s_Instance->m_Minimized && Time::GetDeltaTime() < 200.0f) { // ts < 200  because ts is really high number in first frame
-            // and that breaks the phyiscs and some other stuff.
-            // this happens because m_LastFrameTime is 0 in first frame.
+                                                                         // and that breaks the phyiscs and some other stuff.
+                                                                         // this happens because m_LastFrameTime is 0 in first frame.
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackUpdate");
 
@@ -154,7 +156,7 @@ void Application::Run()
             s_Instance->m_ImGuiLayer->End();
         }
 
-        Input::s_Instance->m_MouseScrollDelta = { 0, 0 };
+        Input::s_Instance->m_MouseScrollDelta = { 0.0f, 0.0f };
         s_Instance->m_Window->OnUpdate();
 
         ProcessApplicationSpec();

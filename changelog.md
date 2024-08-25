@@ -1,3 +1,15 @@
+Version: 25-08-2024_2 Alpha
+Changes:
+- Added 
+    - GetKeyDown(only return true if key pressed and holding it will return false)
+    - GetKeyUp(only return true if key released)
+    - GetKey(return true if key is pressed no matter what)
+    - GetMouseButtonDown(same as key but for mouse button)
+    - GetMouseButtonUp(same as key but for mouse button)
+    - GetMouseButton(same as key but for mouse button)
+
+--------------------------------------------------------------------------------------
+
 Version: 25-08-2024_1 Alpha
 Changes:
 - Fixed extremely large quantity of typos in AudioEngine and AudioSource. Also fixed audio not coming through right direction.
