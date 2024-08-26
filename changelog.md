@@ -1,3 +1,9 @@
+Version: 26-08-2024_1 Alpha
+Changes:
+- Some dependencies are now submodules. 
+
+--------------------------------------------------------------------------------------
+
 Version: 25-08-2024_4 Alpha
 Changes:
 - Headless mode
