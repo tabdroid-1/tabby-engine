@@ -1,7 +1,7 @@
 #include <tbpch.h>
 #include <Tabby/Core/Window.h>
 
-#ifdef TB_HEADLESS
+#if TB_HEADLESS
 #include <Platforms/Null/NullPlatformWindow.h>
 #endif // TB_HEADLESS
 
@@ -21,7 +21,7 @@ namespace Tabby {
 Scope<Window> Window::Create(const WindowProps& props)
 {
 
-#ifdef TB_HEADLESS
+#if TB_HEADLESS
     return CreateScope<NullPlatformWindow>(props);
 #endif // TB_HEADLESS
 

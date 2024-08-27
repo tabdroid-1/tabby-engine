@@ -108,8 +108,8 @@ private:
 
     float m_FixedUpdateAccumulator = 0;
 
-    Camera* m_CurrentCamera;
-    const Matrix4* m_CurrentCameraTransform;
+    Camera* m_CurrentCamera = nullptr;
+    const Matrix4* m_CurrentCameraTransform = nullptr;
 
     enki::TaskScheduler m_TaskScheduler;
     entt::registry m_EntityRegistry;

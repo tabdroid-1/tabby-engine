@@ -558,9 +558,9 @@ void World::Update()
         }
     }
 
-    if (s_Instance->m_CurrentCamera) {
+    if (s_Instance->m_CurrentCamera && s_Instance->m_CurrentCameraTransform) {
 
-#ifndef TB_HEADLESS
+#if !TB_HEADLESS
         Renderer2D::BeginScene(*s_Instance->m_CurrentCamera, *s_Instance->m_CurrentCameraTransform);
 
         for (const auto& draw : s_Instance->m_DrawSystems)

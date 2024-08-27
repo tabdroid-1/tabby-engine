@@ -49,6 +49,7 @@ void AudioSource::Play()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::Play");
 
+#if !TB_HEADLESS
     AudioEngine::m_MusicMixerLock.lock();
     if (!m_Music) {
         TB_CORE_ERROR("AudioSource's music is null/not set!");
@@ -59,12 +60,14 @@ void AudioSource::Play()
     alSourcePlay(m_SourceID);
     CHECK_AL_ERRORS();
     AudioEngine::m_MusicMixerLock.unlock();
+#endif
 }
 
 void AudioSource::Pause()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::Pause");
 
+#if !TB_HEADLESS
     AudioEngine::m_MusicMixerLock.lock();
     if (!m_Music) {
         TB_CORE_ERROR("AudioSource's music is null/not set!");
@@ -75,6 +78,7 @@ void AudioSource::Pause()
     alSourcePause(m_SourceID);
     CHECK_AL_ERRORS();
     AudioEngine::m_MusicMixerLock.unlock();
+#endif
 }
 
 void AudioSource::TogglePlay()
@@ -96,6 +100,7 @@ bool AudioSource::IsPlaying()
 
 void AudioSource::SetAudio(AssetHandle audioHandle)
 {
+#if !TB_HEADLESS
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::SetAudio");
 
     AudioEngine::m_MusicMixerLock.lock();
@@ -113,24 +118,28 @@ void AudioSource::SetAudio(AssetHandle audioHandle)
     UpdateBuffer();
 
     AudioEngine::m_MusicMixerLock.unlock();
+#endif
 }
 
 void AudioSource::UnsetAudio()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UnsetAudio");
 
+#if !TB_HEADLESS
     AudioEngine::m_MusicMixerLock.lock();
     alSourcei(m_SourceID, AL_BUFFER, (int)NULL);
     CHECK_AL_ERRORS();
     m_Cursor = 0;
 
     AudioEngine::m_MusicMixerLock.unlock();
+#endif
 }
 
 void AudioSource::UpdateBuffer()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UpdateBuffer");
 
+#if !TB_HEADLESS
     alSourceStop(m_SourceID);
     CHECK_AL_ERRORS();
     alSourcei(m_SourceID, AL_BUFFER, (int)NULL);
@@ -161,12 +170,14 @@ void AudioSource::UpdateBuffer()
     }
     alSourceQueueBuffers(m_SourceID, buffer_count, m_BufferIDs.data());
     CHECK_AL_ERRORS();
+#endif
 }
 
 void AudioSource::UpdatePlayer()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AudioSource::UpdatePlayer");
 
+#if !TB_HEADLESS
     if (!m_Music)
         return;
 
@@ -212,6 +223,7 @@ void AudioSource::UpdatePlayer()
         else if (buffer_size < MUSIC_BUFFER_SIZE && m_Loop) // Using openal looping, same makes buffer loop. Which is not what we want
             m_Cursor = 0;
     }
+#endif
 }
 
 float AudioSource::GetPitch()

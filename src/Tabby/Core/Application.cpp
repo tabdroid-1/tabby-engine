@@ -24,18 +24,18 @@ Application::Application(const ApplicationSpecification& specification)
 
     ParseEngineConfig();
 
-#ifdef TB_HEADLESS
+#if TB_HEADLESS
     RendererAPI::s_API = RendererAPI::API::Null;
     GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::Null;
+#endif // TB_HEADLESS
 
     m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight, m_Specification.FullscreenMode, m_Specification.Resizable, m_Specification.VSync));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
-#endif // TB_HEADLESS
     AudioEngine::Init();
     Renderer::Init();
 
-#ifndef TB_HEADLESS
+#if !TB_HEADLESS
     Input::Init();
 
     m_ImGuiLayer = new ImGuiLayer();
@@ -122,7 +122,7 @@ void Application::Run()
         Time::SetDeltaTime(time - s_Instance->m_LastFrameTime);
         s_Instance->m_LastFrameTime = time;
 
-#ifndef TB_HEADLESS
+#if !TB_HEADLESS
         Input::Update();
 #endif
 
@@ -138,7 +138,7 @@ void Application::Run()
                     layer->OnUpdate();
             }
 
-#ifndef TB_HEADLESS
+#if !TB_HEADLESS
             s_Instance->m_ImGuiLayer->Begin();
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackOnImGuiRender");
@@ -153,7 +153,7 @@ void Application::Run()
 #endif
         }
 
-#ifndef TB_HEADLESS
+#if !TB_HEADLESS
         Input::s_Instance->m_MouseScrollDelta = { 0.0f, 0.0f };
         s_Instance->m_Window->OnUpdate();
         ProcessApplicationSpec();

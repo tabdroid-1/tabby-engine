@@ -221,6 +221,7 @@ void AudioEngine::EnginePollingThread()
 
     TB_PROFILE_SET_THREAD_NAME("Tabby::AudioEngine");
 
+#if !TB_HEADLESS
     while (!m_ShouldThreadClose) {
         TB_PROFILE_FRAME();
 
@@ -239,6 +240,7 @@ void AudioEngine::EnginePollingThread()
         static constexpr int UPDATE_FRAME_MS = 1000 / UPDATES_PER_SECOND;
         std::this_thread::sleep_for(std::chrono::milliseconds(UPDATE_FRAME_MS));
     }
+#endif // !TB_HEADLESS
 }
 
 }

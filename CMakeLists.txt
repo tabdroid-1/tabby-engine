@@ -20,6 +20,7 @@ endif()
 option(TB_DIST "Enable distrubition build" OFF)
 option(TB_PROFILE "Enable profiling" OFF)
 option(TB_HEADLESS "Enable headless mode" OFF)
+option(TB_NETWORKING "Enable networking" OFF)
 
 add_library(tabby_flags INTERFACE)
 
@@ -43,6 +44,9 @@ endif(TB_PROFILE)
 if(TB_HEADLESS)
     target_compile_definitions(tabby_flags INTERFACE TB_HEADLESS=1)
     add_compile_definitions(TB_HEADLESS=1)
+else()
+    target_compile_definitions(tabby_flags INTERFACE TB_HEADLESS=0)
+    add_compile_definitions(TB_HEADLESS=0)
 endif(TB_HEADLESS)
 
 set(ALSOFT_UTILS OFF CACHE BOOL "Build utility programs" FORCE)
@@ -54,7 +58,7 @@ set(ALSOFT_INSTALL_CONFIG CACHE BOOL "Install alsoft.conf sample configuration f
 set(ALSOFT_INSTALL_HRTF_DATA CACHE BOOL "Install HRTF data files" FORCE)
 set(ALSOFT_INSTALL_AMBDEC_PRESETS CACHE BOOL "Install AmbDec preset files" FORCE)
 set(ALSOFT_INSTALL_EXAMPLES BOOL "Install example programs (alplay, alstream, ...)" FORCE)
-# set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 set(SDL_SHARED OFF CACHE BOOL "Build a shared version of the library" FORCE)
 set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
 set(SDL_TEST OFF CACHE BOOL "Build the SDL2_test library" FORCE)
@@ -105,6 +109,7 @@ set(FASTGLTF ${PROJECT_VENDOR_DIR}/fastgltf)
 set(IMGUIZMO ${PROJECT_VENDOR_DIR}/imguizmo)
 set(OPENAL ${PROJECT_VENDOR_DIR}/openal-soft)
 set(MSDF-ATLAS-GEN ${PROJECT_VENDOR_DIR}/msdf-atlas-gen)
+set(GAME-NETWORKING-SOCKETS ${PROJECT_VENDOR_DIR}/GameNetworkingSockets)
 
 # ##############################################################################
 # Project executable setup
@@ -154,13 +159,6 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         ${PROJECT_SOURCE_DIR}/Platforms/MacOS/MacOSWindow.cpp
         )
 
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    list(APPEND PROJECT_SOURCES
-        ${PROJECT_SOURCE_DIR}/Platforms/Web/WebInput.cpp
-        ${PROJECT_SOURCE_DIR}/Platforms/Web/WebPlatformUtils.cpp
-        ${PROJECT_SOURCE_DIR}/Platforms/Web/WebWindow.cpp
-        )
-
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Android")
     list(APPEND PROJECT_SOURCES
         ${PROJECT_SOURCE_DIR}/Platforms/Android/AndroidInput.cpp
@@ -172,6 +170,9 @@ endif()
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
+if (TB_NETWORKING)
+target_include_directories(${PROJECT_NAME} PUBLIC ${GAME-NETWORKING-SOCKETS}/include) 
+endif (TB_NETWORKING)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${FASTGLTF}/include) 
@@ -192,24 +193,47 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${STB})
 # ####################
 # Add Subdirectories
 # ####################
-
+if (NOT TARGET fastgltf)
 add_subdirectory(${GLM})
+endif()
+if (NOT TARGET SDL2-static)
 add_subdirectory(${SDL2})
+endif()
+if (NOT TARGET imgui)
 add_subdirectory(${IMGUI})
+endif()
+if (NOT TARGET box2d)
 add_subdirectory(${BOX2D})
+endif()
+if (NOT TARGET tracy)
 add_subdirectory(${TRACY})
+endif()
+if (NOT TARGET enkiTS)
 add_subdirectory(${ENKITS})
+endif()
+if (NOT TARGET spdlog)
 add_subdirectory(${SPDLOG})
+endif()
+if (NOT TARGET imguizmo)
 add_subdirectory(${IMGUIZMO})
+endif()
+if (NOT TARGET fastgltf)
 add_subdirectory(${FASTGLTF})
+endif()
+if (NOT TARGET msdf-atlas-gen)
 add_subdirectory(${MSDF-ATLAS-GEN})
+endif()
+if (TB_NETWORKING AND NOT TARGET GameNetworkingSockets)
+    add_subdirectory(${GAME-NETWORKING-SOCKETS})
+    target_link_libraries(${PROJECT_NAME} PRIVATE GameNetworkingSockets::static)
+endif ()
 
 
 if(NOT EMSCRIPTEN AND NOT UNIX)
     add_subdirectory(${OPENAL})
 endif()
 
-if (WIN32)
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
     if (MSVC)
         target_compile_options(${PROJECT_NAME} PRIVATE /experimental:c11atomics console)
@@ -238,20 +262,11 @@ if (WIN32)
 
     message(STATUS "Generating scripts for Windows")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
-        glm
-        imgui
-        box2d
-        tracy 
-        enkiTS
-        fastgltf
-        imguizmo
         OpenAL::OpenAL
-        msdf-atlas-gen 
         SDL2::SDL2main
-        # spdlog::spdlog
         SDL2::SDL2-static
         )
-elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
     find_package(OpenAL REQUIRED STATIC)
     target_link_options(${PROJECT_NAME} PUBLIC -ludev)
@@ -261,93 +276,43 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
 
     message(STATUS "Generating scripts for Linux")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
-        glm
-        tracy 
-        imgui
-        box2d
         spdlog
-        enkiTS
-        imguizmo
-        fastgltf
-        msdf-atlas-gen 
         PkgConfig::GTK4
         ${OPENAL_LIBRARY}
         SDL2::SDL2-static
         )
-elseif (APPLE)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     message(STATUS "Generating scripts for Mac")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
-        glm
-        tracy 
-        imgui
-        box2d
         spdlog
-        enkiTS
-        fastgltf
-        imguizmo
-        msdf-atlas-gen 
+        OpenAL::OpenAL
         SDL2::SDL2-static
         )
-elseif (EMSCRIPTEN)
-    add_compile_definitions("__EMSCRIPTEN__")
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sGL_PREINITIALIZED_CONTEXT=1)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sOFFSCREEN_FRAMEBUFFER=1)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sMIN_WEBGL_VERSION=2)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sMAX_WEBGL_VERSION=2)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sEXIT_RUNTIME=1)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sMODULARIZE=1)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sUSE_SDL=2)
-    # target_link_options(${PROJECT_NAME} PUBLIC -sUSE_SDL=2)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sFORCE_FILESYSTEM=1)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sFETCH=1)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sASYNCIFY)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sASSERTIONS=1)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sINVOKE_RUN=0)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -O2)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -FULL_ES3=1)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sMIN_FIREFOX_VERSION=79)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sMIN_SAFARI_VERSION=150000)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sMIN_IE_VERSION=0x7FFFFFFF)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -sMIN_CHROME_VERSION=80)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -lGL)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -lopenal)
-    # target_compile_options(${PROJECT_NAME} PUBLIC -lSDL2)
-
-    target_link_options(${PROJECT_NAME} PUBLIC -pthread)
-    target_compile_options(${PROJECT_NAME} PUBLIC -pthread)
-
-    message(STATUS "Generating scripts for EMSCRIPTEN")
-    target_link_libraries(${PROJECT_NAME} PRIVATE 
-        glm
-        imgui
-        box2d
-        tracy 
-        spdlog
-        imguizmo
-        fastgltf
-        msdf-atlas-gen 
-        # SDL2::SDL2main
-        SDL2::SDL2-static
-        )
-elseif (ANDROID)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Android")
     message(STATUS "Generating scripts for Android")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         log
-        glm
         EGL
-        imgui
-        box2d
-        enkiTS
         spdlog
         GLESv2
         GLESv3
         android
-        imguizmo
-        fastgltf
         SDL2::SDL2
         SDL2::SDL2main
         )
 endif()
+
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+    glm
+    imgui
+    box2d
+    tracy 
+    enkiTS
+    imguizmo
+    fastgltf
+    msdf-atlas-gen 
+    )
+
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_DEBUG=1 -DTRACY_ENABLE=1")

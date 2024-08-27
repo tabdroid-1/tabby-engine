@@ -1,3 +1,10 @@
+Version: 28-08-2024_1 Alpha
+Changes:
+- Added GameNetworkignSocket(can be disabled). 
+- Fixed crash when there is no camera.
+
+--------------------------------------------------------------------------------------
+
 Version: 26-08-2024_1 Alpha
 Changes:
 - Some dependencies are now submodules. 
