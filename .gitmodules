@@ -17,3 +17,6 @@
 [submodule "vendor/GameNetworkingSockets"]
 	path = vendor/GameNetworkingSockets
 	url = https://github.com/ValveSoftware/GameNetworkingSockets.git
+[submodule "vendor/volk"]
+	path = vendor/volk
+	url = https://github.com/zeux/volk.git

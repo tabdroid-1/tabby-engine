@@ -42,7 +42,7 @@ public:
     static void OnStart();
     static void OnStop();
 
-    static void AddSystem(Schedule schedule, const std::function<void(entt::registry&)>& function);
+    static void AddSystem(Schedule schedule, const std::function<void()>& function);
 
     template <typename T, typename... Args>
     static T& AddResource(Args&&... args)
@@ -118,26 +118,26 @@ private:
     std::unordered_map<std::type_index, std::any> m_Resources;
 
     // Called onece on application startup
-    std::vector<std::function<void(entt::registry&)>> m_PreStartupSystems;
-    std::vector<std::function<void(entt::registry&)>> m_StartupSystems;
-    std::vector<std::function<void(entt::registry&)>> m_PostStartupSystems;
+    std::vector<std::function<void()>> m_PreStartupSystems;
+    std::vector<std::function<void()>> m_StartupSystems;
+    std::vector<std::function<void()>> m_PostStartupSystems;
 
     // Called every frame
     // std::vector<std::function<void(entt::registry&)>> m_FirstSystems;
-    std::vector<std::function<void(entt::registry&)>> m_PreUpdateSystems;
-    std::vector<std::function<void(entt::registry&)>> m_UpdateSystems;
-    std::vector<std::function<void(entt::registry&)>> m_PostUpdateSystems;
+    std::vector<std::function<void()>> m_PreUpdateSystems;
+    std::vector<std::function<void()>> m_UpdateSystems;
+    std::vector<std::function<void()>> m_PostUpdateSystems;
     // std::vector<std::function<void(entt::registry&)>> m_LastSystems;
 
     // Called fixed update
     // std::vector<std::function<void(entt::registry&)>> m_FixedFirstSystems;
-    std::vector<std::function<void(entt::registry&)>> m_FixedPreUpdateSystems;
-    std::vector<std::function<void(entt::registry&)>> m_FixedUpdateSystems;
-    std::vector<std::function<void(entt::registry&)>> m_FixedPostUpdateSystems;
+    std::vector<std::function<void()>> m_FixedPreUpdateSystems;
+    std::vector<std::function<void()>> m_FixedUpdateSystems;
+    std::vector<std::function<void()>> m_FixedPostUpdateSystems;
     // std::vector<std::function<void(entt::registry&)>> m_FixedLastSystems;
 
     // Called everyupdate
-    std::vector<std::function<void(entt::registry&)>> m_DrawSystems;
+    std::vector<std::function<void()>> m_DrawSystems;
 
 private:
     inline static World* s_Instance;

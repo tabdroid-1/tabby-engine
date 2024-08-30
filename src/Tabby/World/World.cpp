@@ -91,7 +91,7 @@ void World::Init()
 
         s_Instance->m_TaskScheduler.Initialize((int)(enki::GetNumHardwareThreads() * 0.75f));
 
-        AddSystem(Schedule::PreUpdate, [](entt::registry&) {
+        AddSystem(Schedule::PreUpdate, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::PreUpdate::UpdatePhysics2DWorld");
             Physics2D::UpdateWorld();
 
@@ -129,7 +129,7 @@ void World::Init()
             tasks.clear();
         });
 
-        AddSystem(Schedule::PostUpdate, [](entt::registry&) {
+        AddSystem(Schedule::PostUpdate, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera");
 
             auto view = World::GetRegistry().view<TransformComponent, CameraComponent>();
@@ -144,7 +144,7 @@ void World::Init()
                 }
             }
         });
-        AddSystem(Schedule::PostUpdate, [](entt::registry& registry) {
+        AddSystem(Schedule::PostUpdate, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::UpdateAudioSource");
             auto view = World::GetRegistry().view<TransformComponent, AudioSourceComponent>();
 
@@ -175,7 +175,7 @@ void World::Init()
             tasks.clear();
         });
 
-        AddSystem(Schedule::PostUpdate, [](entt::registry& registry) {
+        AddSystem(Schedule::PostUpdate, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::UpdateAudioListener");
 
             int numberOfListener = 0;
@@ -194,8 +194,8 @@ void World::Init()
                     AudioEngine::SetPosition(transform.GetWorldPosition());
                     AudioEngine::SetOrientation(lookVector, upVector);
 
-                    if (registry.any_of<Rigidbody2DComponent>(entity)) {
-                        auto& rb = registry.get<Rigidbody2DComponent>(entity);
+                    if (World::GetRegistry().any_of<Rigidbody2DComponent>(entity)) {
+                        auto& rb = World::GetRegistry().get<Rigidbody2DComponent>(entity);
 
                         AudioEngine::SetVelocity({ rb.GetVelocity().x, rb.GetVelocity().y, 0 });
                     }
@@ -211,7 +211,7 @@ void World::Init()
             }
         });
 
-        AddSystem(Schedule::Draw, [](entt::registry&) {
+        AddSystem(Schedule::Draw, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle");
             auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
 
@@ -223,7 +223,7 @@ void World::Init()
             }
         });
 
-        AddSystem(Schedule::Draw, [](entt::registry&) {
+        AddSystem(Schedule::Draw, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites");
 
             World::GetRegistry().sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs) {
@@ -243,7 +243,7 @@ void World::Init()
             }
         });
 
-        AddSystem(Schedule::Draw, [](entt::registry&) {
+        AddSystem(Schedule::Draw, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF");
             auto view = World::GetRegistry().view<TransformComponent, MeshComponent>();
             for (auto entity : view) {
@@ -258,7 +258,7 @@ void World::Init()
             }
         });
 
-        AddSystem(Schedule::Draw, [](entt::registry&) {
+        AddSystem(Schedule::Draw, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderText");
 
             auto view = GetRegistry().view<TransformComponent, TextComponent>();
@@ -271,7 +271,7 @@ void World::Init()
             }
         });
 
-        AddSystem(Schedule::Draw, [](entt::registry&) {
+        AddSystem(Schedule::Draw, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::OnUpdate::RenderScene::DebugDraw");
 
             Debug::ProcessDrawCalls();
@@ -319,7 +319,7 @@ static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Enti
     CopyComponentIfExists<Component...>(dst, src);
 }
 
-void World::AddSystem(Schedule schedule, const std::function<void(entt::registry&)>& function)
+void World::AddSystem(Schedule schedule, const std::function<void()>& function)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::World::AddSystem");
 
@@ -496,13 +496,13 @@ void World::OnStart()
     UpdateEntityTransforms();
 
     for (const auto& preStartup : s_Instance->m_PreStartupSystems)
-        preStartup(s_Instance->m_EntityRegistry);
+        preStartup();
 
     for (const auto& startup : s_Instance->m_StartupSystems)
-        startup(s_Instance->m_EntityRegistry);
+        startup();
 
     for (const auto& postStartup : s_Instance->m_PostStartupSystems)
-        postStartup(s_Instance->m_EntityRegistry);
+        postStartup();
 }
 
 void World::OnStop()
@@ -531,13 +531,13 @@ void World::Update()
         UpdateEntityTransforms();
 
         for (const auto& preUpdate : s_Instance->m_PreUpdateSystems)
-            preUpdate(s_Instance->m_EntityRegistry);
+            preUpdate();
 
         for (const auto& update : s_Instance->m_UpdateSystems)
-            update(s_Instance->m_EntityRegistry);
+            update();
 
         for (const auto& postUpdate : s_Instance->m_PostUpdateSystems)
-            postUpdate(s_Instance->m_EntityRegistry);
+            postUpdate();
 
         double fixedTimeStep = 1.0 / Application::GetSpecification().FixedUpdateRate;
 
@@ -546,13 +546,13 @@ void World::Update()
         while (s_Instance->m_FixedUpdateAccumulator >= fixedTimeStep) {
 
             for (const auto& fixedPreUpdate : s_Instance->m_FixedPreUpdateSystems)
-                fixedPreUpdate(s_Instance->m_EntityRegistry);
+                fixedPreUpdate();
 
             for (const auto& fixedUpdate : s_Instance->m_FixedUpdateSystems)
-                fixedUpdate(s_Instance->m_EntityRegistry);
+                fixedUpdate();
 
             for (const auto& fixedPostUpdate : s_Instance->m_FixedPostUpdateSystems)
-                fixedPostUpdate(s_Instance->m_EntityRegistry);
+                fixedPostUpdate();
 
             s_Instance->m_FixedUpdateAccumulator -= fixedTimeStep;
         }
@@ -564,7 +564,7 @@ void World::Update()
         Renderer2D::BeginScene(*s_Instance->m_CurrentCamera, *s_Instance->m_CurrentCameraTransform);
 
         for (const auto& draw : s_Instance->m_DrawSystems)
-            draw(s_Instance->m_EntityRegistry);
+            draw();
 
         Renderer2D::EndScene();
 #endif
