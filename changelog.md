@@ -1,3 +1,9 @@
+Version: 02-09-2024_1 Alpha
+Changes:
+- Initial renderer refactor. 
+
+--------------------------------------------------------------------------------------
+
 Version: 28-08-2024_1 Alpha
 Changes:
 - Added GameNetworkignSocket(can be disabled). 

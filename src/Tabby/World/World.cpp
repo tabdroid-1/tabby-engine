@@ -1,14 +1,14 @@
 #include <Tabby/Physics/2D/Physics2D.h>
-#include <Tabby/Renderer/Renderer2D.h>
+// #include <Tabby/Renderer/Renderer2D.h>
 #include <Tabby/Asset/AssetManager.h>
 #include <Tabby/Audio/AudioEngine.h>
 #include <Tabby/Audio/AudioSource.h>
 #include <Tabby/Core/Application.h>
 #include <Tabby/Core/Time/Time.h>
-#include <Tabby/Renderer/Mesh.h>
+// #include <Tabby/Renderer/Mesh.h>
 #include <Tabby/World/Entity.h>
 #include <Tabby/World/World.h>
-#include <Tabby/Debug/Debug.h>
+// #include <Tabby/Debug/Debug.h>
 #include <Tabby/Math/Math.h>
 
 #include <glm/gtx/quaternion.hpp>
@@ -138,10 +138,10 @@ void World::Init()
                 TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera::Iteration");
                 auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 
-                if (camera.Primary) {
-                    World::SetCurrentCamera(&camera.Camera, &transform.GetWorldTransform());
-                    break;
-                }
+                // if (camera.Primary) {
+                //     World::SetCurrentCamera(&camera.Camera, &transform.GetWorldTransform());
+                //     break;
+                // }
             }
         });
         AddSystem(Schedule::PostUpdate, []() {
@@ -219,7 +219,7 @@ void World::Init()
                 TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle::Iteration");
 
                 auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-                Renderer2D::DrawCircle(transform.GetWorldTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+                // Renderer2D::DrawCircle(transform.GetWorldTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
             }
         });
 
@@ -239,7 +239,7 @@ void World::Init()
                 auto transform = World::GetRegistry().get<TransformComponent>(entity);
                 auto sprite = World::GetRegistry().get<SpriteRendererComponent>(entity);
 
-                Renderer2D::DrawSprite(transform.GetWorldTransform(), sprite, (int)entity);
+                // Renderer2D::DrawSprite(transform.GetWorldTransform(), sprite, (int)entity);
             }
         });
 
@@ -251,10 +251,10 @@ void World::Init()
 
                 auto [transform, mC] = view.get<TransformComponent, MeshComponent>(entity);
 
-                if (mC.m_Mesh) {
-                    mC.m_Mesh->SetTransform(transform.GetWorldTransform());
-                    mC.m_Mesh->Render();
-                }
+                // if (mC.m_Mesh) {
+                //     mC.m_Mesh->SetTransform(transform.GetWorldTransform());
+                //     mC.m_Mesh->Render();
+                // }
             }
         });
 
@@ -267,14 +267,14 @@ void World::Init()
 
                 auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
 
-                Renderer2D::DrawString(text.TextString, transform.GetWorldTransform(), text, (int)entity);
+                // Renderer2D::DrawString(text.TextString, transform.GetWorldTransform(), text, (int)entity);
             }
         });
 
         AddSystem(Schedule::Draw, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::OnUpdate::RenderScene::DebugDraw");
 
-            Debug::ProcessDrawCalls();
+            // Debug::ProcessDrawCalls();
         });
     }
 }
@@ -561,12 +561,12 @@ void World::Update()
     if (s_Instance->m_CurrentCamera && s_Instance->m_CurrentCameraTransform) {
 
 #if !TB_HEADLESS
-        Renderer2D::BeginScene(*s_Instance->m_CurrentCamera, *s_Instance->m_CurrentCameraTransform);
-
-        for (const auto& draw : s_Instance->m_DrawSystems)
-            draw();
-
-        Renderer2D::EndScene();
+        // Renderer2D::BeginScene(*s_Instance->m_CurrentCamera, *s_Instance->m_CurrentCameraTransform);
+        //
+        // for (const auto& draw : s_Instance->m_DrawSystems)
+        //     draw();
+        //
+        // Renderer2D::EndScene();
 #endif
     }
 }
@@ -585,8 +585,8 @@ void World::OnViewportResize(uint32_t width, uint32_t height)
     auto view = GetRegistry().view<CameraComponent>();
     for (auto entity : view) {
         auto& cameraComponent = view.get<CameraComponent>(entity);
-        if (!cameraComponent.FixedAspectRatio)
-            cameraComponent.Camera.SetViewportSize(width, height);
+        // if (!cameraComponent.FixedAspectRatio)
+        // cameraComponent.Camera.SetViewportSize(width, height);
     }
 }
 
@@ -635,8 +635,8 @@ void World::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& co
 {
     TB_PROFILE_SCOPE_NAME("Tabby::World::OnComponentAdded<CameraComponent>");
 
-    if (s_Instance->m_ViewportWidth > 0 && s_Instance->m_ViewportHeight > 0)
-        component.Camera.SetViewportSize(s_Instance->m_ViewportWidth, s_Instance->m_ViewportHeight);
+    // if (s_Instance->m_ViewportWidth > 0 && s_Instance->m_ViewportHeight > 0)
+    //     component.Camera.SetViewportSize(s_Instance->m_ViewportWidth, s_Instance->m_ViewportHeight);
 }
 
 template <>

@@ -2,15 +2,12 @@
 
 namespace Tabby {
 
-	class GraphicsContext
-	{
-	public:
-		virtual ~GraphicsContext() = default;
+class GraphicsContext {
+public:
+    static Shared<GraphicsContext> Create();
 
-		virtual void Init() = 0;
-		virtual void SwapBuffers() = 0;
-
-		static Scope<GraphicsContext> Create(void* window);
-	};
+    virtual void Destroy() = 0;
+    // virtual Shared<Swapchain> GetSwapchain() = 0;
+};
 
 }

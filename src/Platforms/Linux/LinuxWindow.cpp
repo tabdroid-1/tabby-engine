@@ -55,7 +55,9 @@ void LinuxWindow::Init(const WindowProps& props)
     {
         TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::Init::SDL_CreateWindow");
 
-        if (Renderer::GetAPI() == RendererAPI::API::OpenGL46) {
+        SDL_WindowFlags window_flags = SDL_WINDOW_SHOWN;
+
+        if (Renderer::GetAPI() == Renderer::API::OpenGL46) {
 
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -64,7 +66,8 @@ void LinuxWindow::Init(const WindowProps& props)
 #if defined(TB_DEBUG)
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 #endif
-        } else if (Renderer::GetAPI() == RendererAPI::API::OpenGL33) {
+            window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_OPENGL);
+        } else if (Renderer::GetAPI() == Renderer::API::OpenGL33) {
 
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -73,7 +76,8 @@ void LinuxWindow::Init(const WindowProps& props)
 #if defined(TB_DEBUG)
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 #endif
-        } else if (Renderer::GetAPI() == RendererAPI::API::OpenGLES3) {
+            window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_OPENGL);
+        } else if (Renderer::GetAPI() == Renderer::API::OpenGLES3) {
 
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -82,18 +86,19 @@ void LinuxWindow::Init(const WindowProps& props)
 #if defined(TB_DEBUG)
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 #endif
+            window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_OPENGL);
+        } else if (Renderer::GetAPI() == Renderer::API::Vulkan) {
+            window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_VULKAN);
         }
+
         m_Window = SDL_CreateWindow(
             m_Data.Title.c_str(),
             SDL_WINDOWPOS_CENTERED,
             SDL_WINDOWPOS_CENTERED,
             props.Width, props.Height,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+            window_flags);
         ++s_SDLWindowCount;
     }
-
-    m_Context = GraphicsContext::Create(m_Window);
-    m_Context->Init();
 
     SDL_SetWindowData(m_Window, "WindowData", &m_Data);
     SetVSync(props.VSync);
@@ -122,7 +127,7 @@ void LinuxWindow::OnUpdate()
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
 
-        ImGui_ImplSDL2_ProcessEvent(&event);
+        // ImGui_ImplSDL2_ProcessEvent(&event);
         switch (event.type) {
         case SDL_WINDOWEVENT: {
             if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
@@ -189,8 +194,6 @@ void LinuxWindow::OnUpdate()
         }
         }
     }
-
-    m_Context->SwapBuffers();
 }
 
 void LinuxWindow::SetVSync(bool enabled)

@@ -33,7 +33,12 @@ Application::Application(const ApplicationSpecification& specification)
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
     AudioEngine::Init();
-    Renderer::Init();
+
+    RendererConfig renderer_config = {};
+    renderer_config.main_window = m_Window.get();
+    renderer_config.frames_in_flight = 2;
+    renderer_config.vsync = false;
+    Renderer::Init(renderer_config);
 
 #if !TB_HEADLESS
     Input::Init();
@@ -139,17 +144,17 @@ void Application::Run()
             }
 
 #if !TB_HEADLESS
-            s_Instance->m_ImGuiLayer->Begin();
-            {
-                TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackOnImGuiRender");
-
-                for (Layer* layer : s_Instance->m_LayerStack)
-                    layer->OnImGuiRender();
-            }
-
-            s_Instance->m_Console->Draw();
-
-            s_Instance->m_ImGuiLayer->End();
+            // s_Instance->m_ImGuiLayer->Begin();
+            // {
+            //     TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackOnImGuiRender");
+            //
+            //     for (Layer* layer : s_Instance->m_LayerStack)
+            //         layer->OnImGuiRender();
+            // }
+            //
+            // s_Instance->m_Console->Draw();
+            //
+            // s_Instance->m_ImGuiLayer->End();
 #endif
         }
 
@@ -207,7 +212,7 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
     }
 
     m_Minimized = false;
-    Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+    // Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
     return false;
 }
@@ -268,15 +273,15 @@ void Application::ParseEngineConfig()
                 option = line.substr(offset, line.size());
 
                 if (option == "gles3") {
-                    RendererAPI::s_API = RendererAPI::API::OpenGLES3;
+                    Renderer::s_API = Renderer::API::OpenGLES3;
                     GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGLES3;
 
                 } else if (option == "gl33") {
-                    RendererAPI::s_API = RendererAPI::API::OpenGL33;
+                    Renderer::s_API = Renderer::API::OpenGL33;
                     GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGL33;
 
                 } else if (option == "gl46") {
-                    RendererAPI::s_API = RendererAPI::API::OpenGL46;
+                    Renderer::s_API = Renderer::API::OpenGL46;
                     GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGL46;
 
                 } else

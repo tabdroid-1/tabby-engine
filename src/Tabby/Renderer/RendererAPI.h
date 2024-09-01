@@ -1,42 +1,48 @@
 #pragma once
-#include <Tabby/Renderer/VertexArray.h>
-
-#include <glm/glm.hpp>
 
 namespace Tabby {
+struct RendererConfig;
 
 class RendererAPI {
 public:
-    enum class API {
-        Null = 0,
-        OpenGL46 = 1,
-        OpenGL33 = 2,
-        OpenGLES3 = 3
-    };
+    RendererAPI() {};
+    virtual ~RendererAPI() {};
 
-public:
-    virtual ~RendererAPI() = default;
-
-    virtual void Init() = 0;
-    virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
-    virtual void SetClearColor(const glm::vec4& color) = 0;
-    virtual void Clear() = 0;
-
-    virtual void DrawIndexed(const Shared<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
-    virtual void DrawLines(const Shared<VertexArray>& vertexArray, uint32_t vertexCount) = 0;
-
-    virtual void EnableDepthTest(bool enable) = 0;
-    virtual void EnableAlphaBlending(bool enable) = 0;
-
-    virtual void SetLineWidth(float width) = 0;
-
-    static API GetAPI() { return s_API; }
-    static Scope<RendererAPI> Create();
+    virtual RendererConfig GetConfig() const = 0;
+    // virtual uint32 GetCurrentFrameIndex() const = 0;
+    // virtual uint32 GetDeviceMinimalUniformBufferAlignment() const = 0;
+    // virtual uint32 GetDeviceMinimalStorageBufferAlignment() const = 0;
+    // virtual uint32 GetDeviceOptimalTaskWorkGroupSize() const = 0;
+    // virtual uint32 GetDeviceOptimalMeshWorkGroupSize() const = 0;
+    // virtual uint32 GetDeviceOptimalComputeWorkGroupSize() const = 0;
+    // virtual Shared<Swapchain> GetSwapchain() = 0;
+    // virtual Shared<DeviceCmdBuffer> GetCmdBuffer() = 0;
+    //
+    // virtual void BeginFrame() = 0;
+    // virtual void EndFrame() = 0;
+    // virtual void BeginRender(const std::vector<Shared<Image>> attachments, uvec3 render_area, ivec2 render_offset, fvec4 clear_color) = 0;
+    // virtual void EndRender(Shared<Image> target) = 0;
+    // virtual void WaitDevice() = 0;
+    // virtual void BindSet(Shared<DescriptorSet> set, Shared<Pipeline> pipeline, uint8 index) = 0;
+    // virtual void CopyToSwapchain(Shared<Image> image) = 0;
+    // virtual void InsertBarrier(const PipelineBarrierInfo& barrier) = 0;
+    //
+    // virtual void BeginCommandRecord() = 0;
+    // virtual void EndCommandRecord() = 0;
+    // virtual void ExecuteCurrentCommands() = 0;
+    //
+    // virtual void ClearImage(Shared<Image> image, const fvec4& value) = 0;
+    // virtual void RenderMeshTasks(Shared<Pipeline> pipeline, const glm::uvec3& dimensions, MiscData data) = 0;
+    // virtual void RenderMeshTasksIndirect(Shared<Pipeline> pipeline, Shared<DeviceBuffer> params, MiscData data) = 0;
+    // virtual void RenderQuad(Shared<Pipeline> pipeline, MiscData data) = 0;
+    // virtual void RenderQuad(Shared<Pipeline> pipeline, uint32 amount, MiscData data) = 0;
+    // virtual void DispatchCompute(Shared<Pipeline> pipeline, const glm::uvec3& dimensions, MiscData data) = 0;
+    // virtual void RenderUnindexed(Shared<Pipeline> pipeline, Shared<DeviceBuffer> vertex_buffer, MiscData data) = 0;
+    //
+    // virtual void RenderImGui() = 0;
+    //
 
 private:
-    static API s_API;
-
-    friend class Application;
 };
 
-}
+};

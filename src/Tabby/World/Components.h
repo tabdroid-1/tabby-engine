@@ -1,7 +1,8 @@
 #pragma once
 #include <tbpch.h>
-#include <Tabby/Renderer/Camera.h>
-#include <Tabby/Renderer/Font.h>
+#include <Tabby/Foundation/Types.h>
+// #include <Tabby/Renderer/Camera.h>
+// #include <Tabby/Renderer/Font.h>
 
 #include <box2d/box2d.h>
 #include <entt.hpp>
@@ -105,7 +106,7 @@ struct CircleRendererComponent {
 };
 
 struct CameraComponent {
-    Tabby::Camera Camera;
+    // Tabby::Camera Camera;
     bool Primary = true; // TODO: think about moving to Scene
     bool FixedAspectRatio = false;
 
