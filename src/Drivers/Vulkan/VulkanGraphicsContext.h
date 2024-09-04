@@ -7,6 +7,7 @@
 namespace Tabby {
 
 class VulkanDevice;
+class VulkanShader;
 class VulkanSwapchain;
 class VulkanDebugUtils;
 
@@ -35,6 +36,7 @@ private:
     Shared<VulkanDevice> m_Device = nullptr;
     Shared<VulkanDebugUtils> m_DebugUtils = nullptr;
     Shared<VulkanSwapchain> m_Swapchain = nullptr;
+    Shared<VulkanShader> m_Shader = nullptr;
 };
 
 }

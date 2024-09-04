@@ -32,31 +32,43 @@ public:
     void DestroySurface();
     void DestroySwapchain();
 
-    // void BeginFrame();
-    // void EndFrame();
-    //
-    // VkSurfaceKHR RawSurface() const { return m_Surface; }
-    // VkSwapchainKHR RawSwapchain() const { return m_Swapchain; }
-    //
-    // bool IsVSync() const { return m_Specification.vsync; };
-    // void SetVSync(bool vsync);
-    //
-    // SwapchainSpecification GetSpecification() { return m_Specification; }
+    void BeginFrame();
+    void EndFrame();
+
+    VkSurfaceKHR RawSurface() const { return m_Surface; }
+    VkSwapchainKHR RawSwapchain() const { return m_Swapchain; }
+
+    bool IsVSync() const { return m_Specification.vsync; };
+    void SetVSync(bool vsync);
+
+    SwapchainSpecification GetSpecification() { return m_Specification; }
     // uint32_t GetCurrentFrameIndex() const { return m_CurrentFrameIndex; }
-    //
+
     // SwapchainSemaphores GetSemaphores() const { return m_Semaphores[m_CurrentFrameIndex]; }
     // VkFence GetCurrentFence() const { return m_Fences[m_CurrentFrameIndex]; }
     // Shared<Image> GetCurrentImage() { return ShareAs<Image>(m_Images[m_CurrentImageIndex]); };
 
 private:
     SwapchainSpecification m_Specification;
+    VkSurfaceKHR m_Surface;
     VkSwapchainKHR m_Swapchain;
-    VkFormat m_SwapchainImageFormat;
 
+    VkSurfaceCapabilitiesKHR m_SurfaceCapabilities;
+    VkPresentModeKHR m_CurrentPresentMode;
+    VkSurfaceFormatKHR m_SurfaceFormat;
     std::vector<VkImage> m_SwapchainImages;
     std::vector<VkImageView> m_SwapchainImageViews;
-    VkExtent2D m_SwapchainExtent;
-    VkSurfaceKHR m_Surface;
+    bool m_SupportsMailboxPresentation;
+    const uint32_t m_SwachainImageCount = 3;
+
+    // SwapchainSpecification m_Specification;
+    // VkSwapchainKHR m_Swapchain;
+    // VkFormat m_SwapchainImageFormat;
+    //
+    // std::vector<VkImage> m_SwapchainImages;
+    // std::vector<VkImageView> m_SwapchainImageViews;
+    // VkExtent2D m_SwapchainExtent;
+    // VkSurfaceKHR m_Surface;
     // VkSwapchainKHR m_Swapchain;
     //
     // VkSurfaceFormatKHR m_SurfaceFormat;

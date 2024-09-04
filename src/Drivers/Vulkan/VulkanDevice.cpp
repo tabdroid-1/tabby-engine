@@ -237,13 +237,6 @@ VulkanDevice::VulkanDevice(Shared<VulkanPhysicalDevice> physical_device, const V
     VK_CHECK_RESULT(vkCreateDevice(m_PhysicalDevice->Raw(), &device_create_info, nullptr, &m_Device));
     vkGetDeviceQueue(m_Device, m_PhysicalDevice->GetQueueFamilyIndices().graphics, 0, &m_GeneralQueue);
     vkGetDeviceQueue(m_Device, m_PhysicalDevice->GetQueueFamilyIndices().compute, 0, &m_AsyncComputeQueue);
-
-    // VkCommandPoolCreateInfo cmd_pool_create_info = {};
-    // cmd_pool_create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    // cmd_pool_create_info.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilyIndices().graphics;
-    // cmd_pool_create_info.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
-    //
-    // VK_CHECK_RESULT(vkCreateCommandPool(m_Device, &cmd_pool_create_info, nullptr, &m_CmdPool));
 }
 
 VulkanDevice::~VulkanDevice()
@@ -261,24 +254,9 @@ std::vector<const char*> VulkanDevice::GetRequiredExtensions()
 {
     std::vector<const char*> extensions;
 
-    //     if (m_PhysicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME)) {
-    //         extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-    //     }
-    //     if (m_PhysicalDevice->IsExtensionSupported(VK_EXT_INDEX_TYPE_UINT8_EXTENSION_NAME)) {
-    //         extensions.push_back(VK_EXT_INDEX_TYPE_UINT8_EXTENSION_NAME);
-    //     }
-    //     TB_CORE_ASSERT_TAGGED(m_PhysicalDevice->IsExtensionSupported(VK_EXT_MESH_SHADER_EXTENSION_NAME), "Mesh shading is not supported, aborting execution");
-    //     extensions.push_back(VK_EXT_MESH_SHADER_EXTENSION_NAME);
-    //
-    // #if TB_DEBUG
-    //     if (m_PhysicalDevice->IsExtensionSupported(VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME)) {
-    //         extensions.push_back(VK_KHR_SHADER_NON_SEMANTIC_INFO_EXTENSION_NAME);
-    //     }
-    // #endif
-    //
-    //     if (m_PhysicalDevice->IsExtensionSupported(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME)) {
-    //         extensions.push_back(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
-    //     }
+    if (m_PhysicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME)) {
+        extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    }
 
     TB_CORE_TRACE("Enabled Vulkan device extensions:");
     for (auto& ext : extensions) {

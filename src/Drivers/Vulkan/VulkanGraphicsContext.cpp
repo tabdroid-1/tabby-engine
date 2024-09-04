@@ -4,6 +4,7 @@
 #include <Drivers/Vulkan/VulkanGraphicsContext.h>
 #include <Drivers/Vulkan/VulkanDebugUtils.h>
 #include <Drivers/Vulkan/VulkanSwapchain.h>
+#include <Drivers/Vulkan/VulkanShader.h>
 #include <Drivers/Vulkan/VulkanDevice.h>
 #include <Drivers/Vulkan/VulkanCommon.h>
 #include <Tabby/Foundation/Types.h>
@@ -12,6 +13,27 @@
 #include <vk_mem_alloc.h>
 #include <SDL_vulkan.h>
 #include <SDL.h>
+
+#if defined(__ANDROID__)
+#define VK_USE_PLATFORM_ANDROID_KHR
+#endif
+
+#if defined(__APPLE__)
+#define VK_USE_PLATFORM_IOS_MVK
+#define VK_USE_PLATFORM_MACOS_MVK
+#define VK_USE_PLATFORM_METAL_EXT
+#endif
+
+#if defined(WIN32)
+#define VK_USE_PLATFORM_WIN32_KHR
+#endif
+
+#if defined(__linux__)
+#define VK_USE_PLATFORM_WAYLAND_KHR
+#define VK_USE_PLATFORM_XCB_KHR
+#define VK_USE_PLATFORM_XLIB_KHR
+#define VK_USE_PLATFORM_XLIB_XRANDR_EXT
+#endif
 
 namespace Tabby {
 
@@ -70,22 +92,25 @@ VulkanGraphicsContext::VulkanGraphicsContext(const RendererConfig& config)
     device_features.shaderInt16 = true;
 
     Shared<VulkanPhysicalDevice> device = VulkanPhysicalDevice::Select(this);
-    m_Device = std::make_shared<VulkanDevice>(device, std::forward<VkPhysicalDeviceFeatures>(device_features));
+    m_Device = CreateShared<VulkanDevice>(device, std::forward<VkPhysicalDeviceFeatures>(device_features));
     volkLoadDevice(m_Device->Raw());
 
     SDL_Window* window_handle = (SDL_Window*)config.main_window;
-    IntVector2 window_size = {};
-    SDL_GetWindowSize(window_handle, &window_size.x, &window_size.y);
+    IntVector2 swapchain_extent = {};
+    SDL_Vulkan_GetDrawableSize(window_handle, &swapchain_extent.x, &swapchain_extent.y);
 
     SwapchainSpecification swapchain_spec = {};
     swapchain_spec.main_window = config.main_window;
     swapchain_spec.frames_in_flight = config.frames_in_flight;
-    swapchain_spec.extent = window_size;
+    swapchain_spec.extent = swapchain_extent;
     swapchain_spec.vsync = config.vsync;
 
-    // m_Swapchain = std::make_shared<VulkanSwapchain>(swapchain_spec);
-    // m_Swapchain->CreateSurface(swapchain_spec);
-    // m_Swapchain->CreateSwapchain(swapchain_spec);
+    m_Swapchain = CreateShared<VulkanSwapchain>(swapchain_spec);
+    m_Swapchain->CreateSurface(swapchain_spec);
+    m_Swapchain->CreateSwapchain(swapchain_spec);
+
+    std::vector<std::filesystem::path> files = { "assets/shaders/vulkan/test_vert.spv", "assets/shaders/vulkan/test_frag.spv" };
+    m_Shader = CreateShared<VulkanShader>(files);
 
     // VulkanMemoryAllocator::Init();
 }
