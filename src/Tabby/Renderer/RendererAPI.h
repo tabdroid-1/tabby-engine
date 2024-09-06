@@ -18,8 +18,8 @@ public:
     // virtual Shared<Swapchain> GetSwapchain() = 0;
     // virtual Shared<DeviceCmdBuffer> GetCmdBuffer() = 0;
     //
-    // virtual void BeginFrame() = 0;
-    // virtual void EndFrame() = 0;
+    virtual void BeginFrame() = 0;
+    virtual void EndFrame() = 0;
     // virtual void BeginRender(const std::vector<Shared<Image>> attachments, uvec3 render_area, ivec2 render_offset, fvec4 clear_color) = 0;
     // virtual void EndRender(Shared<Image> target) = 0;
     // virtual void WaitDevice() = 0;
@@ -38,9 +38,9 @@ public:
     // virtual void RenderQuad(Shared<Pipeline> pipeline, uint32 amount, MiscData data) = 0;
     // virtual void DispatchCompute(Shared<Pipeline> pipeline, const glm::uvec3& dimensions, MiscData data) = 0;
     // virtual void RenderUnindexed(Shared<Pipeline> pipeline, Shared<DeviceBuffer> vertex_buffer, MiscData data) = 0;
-    //
-    // virtual void RenderImGui() = 0;
-    //
+
+    virtual void Render() = 0;
+    virtual void RenderImGui() = 0;
 
 private:
 };

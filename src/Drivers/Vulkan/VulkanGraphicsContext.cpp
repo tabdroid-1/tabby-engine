@@ -14,27 +14,6 @@
 #include <SDL_vulkan.h>
 #include <SDL.h>
 
-#if defined(__ANDROID__)
-#define VK_USE_PLATFORM_ANDROID_KHR
-#endif
-
-#if defined(__APPLE__)
-#define VK_USE_PLATFORM_IOS_MVK
-#define VK_USE_PLATFORM_MACOS_MVK
-#define VK_USE_PLATFORM_METAL_EXT
-#endif
-
-#if defined(WIN32)
-#define VK_USE_PLATFORM_WIN32_KHR
-#endif
-
-#if defined(__linux__)
-#define VK_USE_PLATFORM_WAYLAND_KHR
-#define VK_USE_PLATFORM_XCB_KHR
-#define VK_USE_PLATFORM_XLIB_KHR
-#define VK_USE_PLATFORM_XLIB_XRANDR_EXT
-#endif
-
 namespace Tabby {
 
 VulkanGraphicsContext::VulkanGraphicsContext(const RendererConfig& config)
@@ -109,7 +88,7 @@ VulkanGraphicsContext::VulkanGraphicsContext(const RendererConfig& config)
     m_Swapchain->CreateSurface(swapchain_spec);
     m_Swapchain->CreateSwapchain(swapchain_spec);
 
-    std::vector<std::filesystem::path> files = { "assets/shaders/vulkan/test_vert.spv", "assets/shaders/vulkan/test_frag.spv" };
+    std::vector<std::filesystem::path> files = { "shaders/vulkan/test_vert.spv", "shaders/vulkan/test_frag.spv" };
     m_Shader = CreateShared<VulkanShader>(files);
 
     // VulkanMemoryAllocator::Init();
@@ -124,8 +103,9 @@ void VulkanGraphicsContext::Destroy()
 {
     vkDeviceWaitIdle(m_Device->Raw());
     // VulkanMemoryAllocator::Destroy();
-    // m_Swapchain->DestroySwapchain();
-    // m_Swapchain->DestroySurface();
+    m_Shader->Destroy();
+    m_Swapchain->DestroySwapchain();
+    m_Swapchain->DestroySurface();
     m_Device->Destroy();
 #if TB_DEBUG
     m_DebugUtils->Destroy(this);

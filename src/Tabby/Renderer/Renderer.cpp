@@ -4,6 +4,10 @@
 
 namespace Tabby {
 
+struct RendererInternalData {
+    std::vector<Renderer::RenderFunction> cmd_list;
+} s_InternalData;
+
 void Renderer::Init(const RendererConfig& config)
 {
     s_RendererAPI = new VulkanRendererAPI(config);
@@ -19,21 +23,21 @@ RendererConfig Renderer::GetConfig()
     return s_RendererAPI->GetConfig();
 }
 
-// void Renderer::Submit(RenderFunction func)
-// {
-//     s_InternalData.cmd_generation_function_list.push_back(func);
-// }
-//
-// void Renderer::BeginFrame()
-// {
-//     s_RendererAPI->BeginFrame();
-// }
-//
-// void Renderer::EndFrame()
-// {
-//     s_RendererAPI->EndFrame();
-// }
-//
+void Renderer::Submit(RenderFunction func)
+{
+    s_InternalData.cmd_list.push_back(func);
+}
+
+void Renderer::BeginFrame()
+{
+    s_RendererAPI->BeginFrame();
+}
+
+void Renderer::EndFrame()
+{
+    s_RendererAPI->EndFrame();
+}
+
 // void Renderer::BeginRender(const std::vector<Shared<Image>> attachments, uvec3 render_area, ivec2 offset, fvec4 clear_value)
 // {
 //     s_RendererAPI->BeginRender(attachments, render_area, offset, clear_value);
@@ -148,31 +152,10 @@ RendererConfig Renderer::GetConfig()
 // {
 // }
 //
-// void Renderer::Render()
-// {
-//     Renderer::Submit([=]() mutable {
-//         auto swapchain_image = GetSwapchainImage();
-//
-//         swapchain_image->SetLayout(
-//             GetCmdBuffer(),
-//             ImageLayout::PRESENT_SRC,
-//             PipelineStage::COLOR_ATTACHMENT_OUTPUT,
-//             PipelineStage::ALL_COMMANDS,
-//             (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE,
-//             (BitMask)PipelineAccess::MEMORY_READ);
-//     });
-//     s_RendererAPI->EndCommandRecord();
-//     s_RendererAPI->ExecuteCurrentCommands();
-//
-//     auto function_list = std::move(s_InternalData.cmd_generation_function_list);
-//
-//     // JobSystem* js = JobSystem::Get();
-//     // js->Execute([function_list = std::move(s_InternalData.cmd_generation_function_list)]() {
-//     for (auto& func : function_list) {
-//         func();
-//     }
-//     //});
-// }
+void Renderer::Render()
+{
+    s_RendererAPI->Render();
+}
 //
 // void Renderer::RenderImGui()
 // {

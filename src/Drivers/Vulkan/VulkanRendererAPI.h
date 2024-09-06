@@ -6,6 +6,9 @@
 
 namespace Tabby {
 
+class VulkanDeviceCmdBuffer;
+class VulkanRenderPass;
+
 class VulkanRendererAPI : public RendererAPI {
 public:
     VulkanRendererAPI(const RendererConfig& config);
@@ -21,8 +24,8 @@ public:
     // Shared<DeviceCmdBuffer> GetCmdBuffer() override { return m_CurrentCmdBuffer; };
     // Shared<Swapchain> GetSwapchain() override { return m_Swapchain; };
     //
-    // void BeginFrame() override;
-    // void EndFrame() override;
+    void BeginFrame() override;
+    void EndFrame() override;
     // void BeginRender(const std::vector<Shared<Image>> attachments, uvec3 render_area, ivec2 render_offset, fvec4 clear_color) override;
     // void EndRender(Shared<Image> target) override;
     // void WaitDevice() override;
@@ -38,11 +41,12 @@ public:
     // void DispatchCompute(Shared<Pipeline> pipeline, const glm::uvec3& dimensions, MiscData data) override;
     // void RenderUnindexed(Shared<Pipeline> pipeline, Shared<DeviceBuffer> vertex_buffer, MiscData data) override;
     //
-    // void RenderImGui() override;
+    void Render() override;
+    void RenderImGui() override;
     //
-    // void BeginCommandRecord() override;
-    // void EndCommandRecord() override;
-    // void ExecuteCurrentCommands() override;
+    void BeginCommandRecord();
+    void EndCommandRecord();
+    void ExecuteCurrentCommands();
     // static std::vector<VkDescriptorSet> AllocateDescriptorSets(VkDescriptorSetLayout layout, uint32 count);
     // static void FreeDescriptorSets(std::vector<VkDescriptorSet> sets);
 
@@ -52,10 +56,9 @@ private:
     Shared<VulkanGraphicsContext> m_GraphicsContext;
     Shared<VulkanDevice> m_Device;
     Shared<VulkanSwapchain> m_Swapchain;
-    //
-    // std::vector<Shared<VulkanDeviceCmdBuffer>> m_CmdBuffers;
-    // Shared<VulkanDeviceCmdBuffer> m_CurrentCmdBuffer;
-    //
+    Shared<VulkanDeviceCmdBuffer> m_CmdBuffer;
+    Shared<VulkanRenderPass> m_RenderPass;
+
     // static VkDescriptorPool s_DescriptorPool;
 
     std::shared_mutex m_Mutex;

@@ -38,10 +38,10 @@ public:
     // static Shared<DeviceCmdBuffer> GetCmdBuffer();
     //
     // static void LoadShaderPack();
-    // static void Submit(RenderFunction func);
-    //
-    // static void BeginFrame();
-    // static void EndFrame();
+    static void Submit(RenderFunction func);
+
+    static void BeginFrame();
+    static void EndFrame();
     // static void BeginRender(const std::vector<Shared<Image>> attachments, uvec3 render_area, ivec2 offset, fvec4 clear_value);
     // static void EndRender(Shared<Image> target);
     // static void WaitDevice(); // to be used ONLY while shutting down the engine.
@@ -57,8 +57,8 @@ public:
     // static void DispatchCompute(Shared<Pipeline> pipeline, const glm::uvec3& dimensions, MiscData data);
     // static void RenderUnindexed(Shared<Pipeline> pipeline, Shared<DeviceBuffer> vertex_buffer, MiscData data);
     //
-    // static void Render();
-    // static void RenderImGui();
+    static void Render();
+    static void RenderImGui();
 
     static API GetAPI() { return s_API; }
 

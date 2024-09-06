@@ -9,6 +9,8 @@
 namespace Tabby {
 
 VulkanSwapchain::VulkanSwapchain(const SwapchainSpecification& spec)
+    : m_Specification(spec)
+    , m_Swapchain(VK_NULL_HANDLE)
 {
 }
 
@@ -59,6 +61,7 @@ void VulkanSwapchain::CreateSwapchain(const SwapchainSpecification& spec)
     auto device = VulkanGraphicsContext::Get()->GetDevice();
 
     m_Specification = spec;
+    // m_Semaphores.reserve(spec.frames_in_flight);
 
     if (m_Swapchain) [[likely]] {
         vkDestroySwapchainKHR(device->Raw(), m_Swapchain, nullptr);
@@ -74,6 +77,8 @@ void VulkanSwapchain::CreateSwapchain(const SwapchainSpecification& spec)
 
     extent.x = std::clamp(extent.x, surface_capabilities.minImageExtent.width, surface_capabilities.maxImageExtent.width);
     extent.y = std::clamp(extent.y, surface_capabilities.minImageExtent.height, surface_capabilities.maxImageExtent.height);
+
+    m_Specification.extent = extent;
 
     VkSwapchainCreateInfoKHR swapchain_create_info = {};
     swapchain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -119,40 +124,32 @@ void VulkanSwapchain::CreateSwapchain(const SwapchainSpecification& spec)
         image_view_create_info.subresourceRange.levelCount = 1;
 
         VK_CHECK_RESULT(vkCreateImageView(device->Raw(), &image_view_create_info, nullptr, &m_SwapchainImageViews[i]));
-
-        // ImageSpecification swapchain_image_spec = {};
-        // swapchain_image_spec.extent = { (uint32)m_Specification.extent.x, (uint32)m_Specification.extent.y, 1 };
-        // swapchain_image_spec.usage = ImageUsage::RENDER_TARGET;
-        // swapchain_image_spec.type = ImageType::TYPE_2D;
-        // swapchain_image_spec.format = convert(m_SurfaceFormat.format);
-        //
-        // m_Images.push_back(std::make_shared<VulkanImage>(swapchain_image_spec, image, image_view));
-        //
-        // VkImageMemoryBarrier image_memory_barrier = {};
-        // image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        // image_memory_barrier.image = m_SwapchainImages[i];
-        // image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        // image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-        // image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        // image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        // image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        // image_memory_barrier.subresourceRange.baseArrayLayer = 0;
-        // image_memory_barrier.subresourceRange.layerCount = 1;
-        // image_memory_barrier.subresourceRange.baseMipLevel = 0;
-        // image_memory_barrier.subresourceRange.levelCount = 1;
-        //
-        // vkCmdPipelineBarrier(
-        //     image_layout_transition_command_buffer,
-        //     VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-        //     VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-        //     0,
-        //     0,
-        //     nullptr,
-        //     0,
-        //     nullptr,
-        //     1,
-        //     &image_memory_barrier);
     }
+
+    // CREATE RENDERPASS
+
+    VkSemaphoreCreateInfo semaphore_create_info = {};
+    semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkSemaphore render_semaphore;
+    VkSemaphore present_semaphore;
+
+    VK_CHECK_RESULT(vkCreateSemaphore(device->Raw(), &semaphore_create_info, nullptr, &render_semaphore));
+    VK_CHECK_RESULT(vkCreateSemaphore(device->Raw(), &semaphore_create_info, nullptr, &present_semaphore));
+    m_Semaphore = { render_semaphore, present_semaphore };
+
+    VkFenceCreateInfo fence_create_info = {};
+    fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fence_create_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+    VK_CHECK_RESULT(vkCreateFence(device->Raw(), &fence_create_info, nullptr, &m_Fence));
+
+    TB_CORE_TRACE(
+        "Created renderer swapchain. Spec - extent: {0}x{1}, VSync: {2}, image count: {3}",
+        spec.extent.x,
+        spec.extent.y,
+        spec.vsync ? "on" : "off",
+        m_SwachainImageCount);
 }
 
 void VulkanSwapchain::DestroySurface()
@@ -168,21 +165,81 @@ void VulkanSwapchain::DestroySwapchain()
     Shared<VulkanDevice> device = VulkanGraphicsContext::Get()->GetDevice();
 
     vkDeviceWaitIdle(device->Raw());
+
     for (auto& image_view : m_SwapchainImageViews) {
         vkDestroyImageView(device->Raw(), image_view, nullptr);
     }
 
     vkDestroySwapchainKHR(device->Raw(), m_Swapchain, nullptr);
 
-    // for (auto& semaphores : m_Semaphores) {
-    //     vkDestroySemaphore(device->Raw(), semaphores.render_complete, nullptr);
-    //     vkDestroySemaphore(device->Raw(), semaphores.present_complete, nullptr);
-    // }
-    //
-    // for (auto& fence : m_Fences) {
-    //     vkDestroyFence(device->Raw(), fence, nullptr);
-    // }
+    vkDestroySemaphore(device->Raw(), m_Semaphore.render_complete, nullptr);
+    vkDestroySemaphore(device->Raw(), m_Semaphore.present_complete, nullptr);
+
+    vkDestroyFence(device->Raw(), m_Fence, nullptr);
 
     m_Swapchain = VK_NULL_HANDLE;
 }
+
+void VulkanSwapchain::WaitFence()
+{
+    Shared<VulkanDevice> device = VulkanGraphicsContext::Get()->GetDevice();
+
+    VK_CHECK_RESULT(vkWaitForFences(device->Raw(), 1, &m_Fence, VK_TRUE, UINT64_MAX));
+    VK_CHECK_RESULT(vkResetFences(device->Raw(), 1, &m_Fence));
+}
+
+void VulkanSwapchain::BeginFrame()
+{
+    Shared<VulkanDevice> device = VulkanGraphicsContext::Get()->GetDevice();
+
+    VkResult acquisition_result = vkAcquireNextImageKHR(
+        device->Raw(),
+        m_Swapchain,
+        UINT64_MAX,
+        m_Semaphore.present_complete,
+        VK_NULL_HANDLE,
+        &m_CurrentImageIndex);
+
+    if (acquisition_result == VK_ERROR_OUT_OF_DATE_KHR || acquisition_result == VK_SUBOPTIMAL_KHR) {
+        VkSurfaceCapabilitiesKHR surface_capabilities = {};
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->Raw(), m_Surface, &surface_capabilities);
+
+        SwapchainSpecification new_spec = GetSpecification();
+        new_spec.extent = { (int32_t)surface_capabilities.currentExtent.width, (int32_t)surface_capabilities.currentExtent.height };
+
+        vkQueueWaitIdle(device->GetAsyncComputeQueue());
+
+        CreateSwapchain(new_spec);
+    }
+}
+
+void VulkanSwapchain::EndFrame()
+{
+    Shared<VulkanDevice> device = VulkanGraphicsContext::Get()->GetDevice();
+
+    VkPresentInfoKHR present_info = {};
+    present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    present_info.pImageIndices = &m_CurrentImageIndex;
+    present_info.swapchainCount = 1;
+    present_info.pSwapchains = &m_Swapchain;
+    present_info.waitSemaphoreCount = 1;
+    present_info.pWaitSemaphores = &m_Semaphore.render_complete;
+    present_info.pResults = nullptr;
+
+    VkResult present_result = vkQueuePresentKHR(device->GetGeneralQueue(), &present_info);
+
+    if (present_result == VK_ERROR_OUT_OF_DATE_KHR || present_result == VK_SUBOPTIMAL_KHR) {
+        VkSurfaceCapabilitiesKHR surface_capabilities = {};
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->Raw(), m_Surface, &surface_capabilities);
+
+        SwapchainSpecification new_spec = GetSpecification();
+        new_spec.extent = { (int32_t)surface_capabilities.currentExtent.width, (int32_t)surface_capabilities.currentExtent.height };
+
+        vkQueueWaitIdle(device->GetGeneralQueue());
+
+        CreateSwapchain(new_spec);
+    }
+    m_CurrentFrameIndex = (m_CurrentImageIndex + 1) % m_Specification.frames_in_flight;
+}
+
 }

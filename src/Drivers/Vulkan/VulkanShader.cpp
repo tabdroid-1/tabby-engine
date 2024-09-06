@@ -1,4 +1,5 @@
 #include <Drivers/Vulkan/VulkanGraphicsContext.h>
+#include <Drivers/Vulkan/VulkanSwapchain.h>
 #include <Drivers/Vulkan/VulkanDevice.h>
 #include <Drivers/Vulkan/VulkanShader.h>
 
@@ -10,7 +11,7 @@ VulkanShader::VulkanShader(std::vector<std::filesystem::path> files)
 
     for (const auto& filePath : files) {
 
-        if (filePath.extension() != "spv")
+        if (filePath.extension() != ".spv")
             continue;
 
         std::ifstream file(filePath.string(), std::ios::ate | std::ios::binary);
@@ -18,6 +19,11 @@ VulkanShader::VulkanShader(std::vector<std::filesystem::path> files)
 
         size_t fileSize = (size_t)file.tellg();
         std::vector<char> code(fileSize);
+
+        file.seekg(0);
+        file.read(code.data(), fileSize);
+
+        file.close();
 
         VkShaderModule shader_module;
         VkShaderModuleCreateInfo shader_module_create_info {};
@@ -100,6 +106,23 @@ VulkanShader::VulkanShader(std::vector<std::filesystem::path> files)
     pipelineLayoutInfo.pushConstantRangeCount = 0;
 
     VK_CHECK_RESULT(vkCreatePipelineLayout(device->Raw(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout));
+
+    VkGraphicsPipelineCreateInfo pipelineInfo {};
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = m_StageCreateInfos.data();
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.pDynamicState = &dynamicState;
+    pipelineInfo.layout = m_PipelineLayout;
+    pipelineInfo.renderPass = VulkanGraphicsContext::Get()->GetSwapchain()->RawRenderPass();
+    pipelineInfo.subpass = 0;
+
+    VK_CHECK_RESULT(vkCreateGraphicsPipelines(device->Raw(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline));
 }
 
 VulkanShader::~VulkanShader()
@@ -110,6 +133,11 @@ void VulkanShader::Destroy()
 {
     auto device = VulkanGraphicsContext::Get()->GetDevice();
 
+    for (auto shaderModule : m_StageCreateInfos) {
+        vkDestroyShaderModule(device->Raw(), shaderModule.module, nullptr);
+    }
+
+    vkDestroyPipeline(device->Raw(), m_GraphicsPipeline, nullptr);
     vkDestroyPipelineLayout(device->Raw(), m_PipelineLayout, nullptr);
 }
 

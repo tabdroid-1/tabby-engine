@@ -15,6 +15,7 @@ public:
 private:
     std::vector<VkPipelineShaderStageCreateInfo> m_StageCreateInfos;
     VkPipelineLayout m_PipelineLayout;
+    VkPipeline m_GraphicsPipeline;
 };
 
 }

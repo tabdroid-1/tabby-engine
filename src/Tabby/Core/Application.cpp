@@ -29,6 +29,7 @@ Application::Application(const ApplicationSpecification& specification)
     GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::Null;
 #endif // TB_HEADLESS
 
+    Renderer::s_API = Renderer::API::Vulkan;
     m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight, m_Specification.FullscreenMode, m_Specification.Resizable, m_Specification.VSync));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 

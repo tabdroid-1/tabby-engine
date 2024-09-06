@@ -163,7 +163,6 @@ VulkanDevice::VulkanDevice(Shared<VulkanPhysicalDevice> physical_device, const V
     async_compute_queue_create_info.queueCount = 1;
     async_compute_queue_create_info.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilyIndices().compute;
 
-    // VkDeviceQueueCreateInfo queue_create_infos[2] = { general_queue_create_info, async_compute_queue_create_info };
     std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
     if (m_PhysicalDevice->GetQueueFamilyIndices().compute != m_PhysicalDevice->GetQueueFamilyIndices().graphics) {
         queue_create_infos.push_back(async_compute_queue_create_info);
@@ -178,52 +177,9 @@ VulkanDevice::VulkanDevice(Shared<VulkanPhysicalDevice> physical_device, const V
     }
     std::vector<const char*> enabled_extensions = GetRequiredExtensions();
 
-    VkPhysicalDeviceMeshShaderFeaturesEXT mesh_shading_enable_struct = {};
-    mesh_shading_enable_struct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT;
-    mesh_shading_enable_struct.meshShader = true;
-    mesh_shading_enable_struct.taskShader = true;
-    mesh_shading_enable_struct.meshShaderQueries = true;
-
-    VkPhysicalDeviceIndexTypeUint8FeaturesEXT uint8_index_feature_enable_struct = {};
-    uint8_index_feature_enable_struct.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT;
-    uint8_index_feature_enable_struct.pNext = &mesh_shading_enable_struct;
-    uint8_index_feature_enable_struct.indexTypeUint8 = true;
-
-    //     VkPhysicalDeviceVulkan11Features vulkan_1_1_features = {};
-    //     vulkan_1_1_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
-    //     vulkan_1_1_features.pNext = &uint8_index_feature_enable_struct;
-    //     vulkan_1_1_features.shaderDrawParameters = true;
-    //     vulkan_1_1_features.storageBuffer16BitAccess = true;
-    //
-    //     VkPhysicalDeviceVulkan12Features vulkan_1_2_features = {};
-    //     vulkan_1_2_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
-    //     vulkan_1_2_features.pNext = &vulkan_1_1_features;
-    //     vulkan_1_2_features.descriptorIndexing = true;
-    //     vulkan_1_2_features.shaderSampledImageArrayNonUniformIndexing = true;
-    //     vulkan_1_2_features.descriptorBindingPartiallyBound = true;
-    //     vulkan_1_2_features.runtimeDescriptorArray = true;
-    //     vulkan_1_2_features.scalarBlockLayout = true;
-    //     vulkan_1_2_features.bufferDeviceAddress = true;
-    // #if TB_DEBUG
-    //     vulkan_1_2_features.bufferDeviceAddressCaptureReplay = true;
-    // #endif
-    //     vulkan_1_2_features.drawIndirectCount = true;
-    //     vulkan_1_2_features.storageBuffer8BitAccess = true;
-    //     vulkan_1_2_features.shaderInt8 = true;
-    //     vulkan_1_2_features.storagePushConstant8 = true;
-    //     vulkan_1_2_features.shaderFloat16 = true;
-    //
-    //     VkPhysicalDeviceVulkan13Features vulkan_1_3_features = {};
-    //     vulkan_1_3_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
-    //     vulkan_1_3_features.pNext = &vulkan_1_2_features;
-    //     vulkan_1_3_features.dynamicRendering = true;
-    //     vulkan_1_3_features.maintenance4 = true;
-    //     vulkan_1_3_features.synchronization2 = true;
-    //
     VkPhysicalDeviceFeatures2 device_features2 = {};
     device_features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
     device_features2.features = features;
-    // device_features2.pNext = &vulkan_1_3_features;
 
     VkDeviceCreateInfo device_create_info = {};
     device_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -237,6 +193,13 @@ VulkanDevice::VulkanDevice(Shared<VulkanPhysicalDevice> physical_device, const V
     VK_CHECK_RESULT(vkCreateDevice(m_PhysicalDevice->Raw(), &device_create_info, nullptr, &m_Device));
     vkGetDeviceQueue(m_Device, m_PhysicalDevice->GetQueueFamilyIndices().graphics, 0, &m_GeneralQueue);
     vkGetDeviceQueue(m_Device, m_PhysicalDevice->GetQueueFamilyIndices().compute, 0, &m_AsyncComputeQueue);
+
+    VkCommandPoolCreateInfo cmd_pool_create_info = {};
+    cmd_pool_create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    cmd_pool_create_info.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilyIndices().graphics;
+    cmd_pool_create_info.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+
+    VK_CHECK_RESULT(vkCreateCommandPool(m_Device, &cmd_pool_create_info, nullptr, &m_CmdPool));
 }
 
 VulkanDevice::~VulkanDevice()
@@ -246,6 +209,7 @@ VulkanDevice::~VulkanDevice()
 
 void VulkanDevice::Destroy()
 {
+    vkDestroyCommandPool(m_Device, m_CmdPool, nullptr);
     vkDestroyDevice(m_Device, nullptr);
     m_Device = VK_NULL_HANDLE;
 }

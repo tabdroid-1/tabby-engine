@@ -9,6 +9,7 @@
 
 #include <backends/imgui_impl_sdl2.h>
 #include <SDL.h>
+#include <SDL_vulkan.h>
 
 namespace Tabby {
 
@@ -89,6 +90,7 @@ void LinuxWindow::Init(const WindowProps& props)
             window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_OPENGL);
         } else if (Renderer::GetAPI() == Renderer::API::Vulkan) {
             window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_VULKAN);
+            SDL_Vulkan_LoadLibrary(nullptr);
         }
 
         m_Window = SDL_CreateWindow(
@@ -115,6 +117,7 @@ void LinuxWindow::Shutdown()
     SDL_DestroyWindow(m_Window);
     --s_SDLWindowCount;
 
+    SDL_Vulkan_UnloadLibrary();
     if (s_SDLWindowCount == 0) {
         SDL_Quit();
     }

@@ -32,16 +32,22 @@ public:
     void DestroySurface();
     void DestroySwapchain();
 
+    void WaitFence();
     void BeginFrame();
     void EndFrame();
 
     VkSurfaceKHR RawSurface() const { return m_Surface; }
+    VkSurfaceFormatKHR RawSurfaceFormat() const { return m_SurfaceFormat; }
     VkSwapchainKHR RawSwapchain() const { return m_Swapchain; }
+    std::vector<VkImageView> RawImageViews() const { return m_SwapchainImageViews; }
 
     bool IsVSync() const { return m_Specification.vsync; };
     void SetVSync(bool vsync);
 
     SwapchainSpecification GetSpecification() { return m_Specification; }
+    SwapchainSemaphores GetSemaphores() const { return m_Semaphore; }
+    VkFence GetCurrentFence() const { return m_Fence; }
+
     // uint32_t GetCurrentFrameIndex() const { return m_CurrentFrameIndex; }
 
     // SwapchainSemaphores GetSemaphores() const { return m_Semaphores[m_CurrentFrameIndex]; }
@@ -60,6 +66,12 @@ private:
     std::vector<VkImageView> m_SwapchainImageViews;
     bool m_SupportsMailboxPresentation;
     const uint32_t m_SwachainImageCount = 3;
+
+    SwapchainSemaphores m_Semaphore;
+    VkFence m_Fence;
+
+    // std::vector<SwapchainSemaphores> m_Semaphores;
+    // std::vector<VkFence> m_Fences;
 
     // SwapchainSpecification m_Specification;
     // VkSwapchainKHR m_Swapchain;
@@ -82,8 +94,8 @@ private:
     //
     // const uint32 m_SwachainImageCount = 3;
     //
-    // uint32 m_CurrentFrameIndex = 0;
-    // uint32 m_CurrentImageIndex = 0;
+    uint32_t m_CurrentFrameIndex = 0;
+    uint32_t m_CurrentImageIndex = 0;
 };
 
 }

@@ -56,6 +56,7 @@ private:
     VkQueue m_GeneralQueue;
     VkQueue m_AsyncComputeQueue;
 
+    VkCommandPool m_CmdPool;
     std::shared_mutex m_Mutex;
 };
 
