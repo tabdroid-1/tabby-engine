@@ -3,6 +3,7 @@
 #include "VulkanCommon.h"
 
 namespace Tabby {
+class VulkanDeviceCmdBuffer;
 class VulkanGraphicsContext;
 
 struct QueueFamilyIndex {
@@ -45,6 +46,9 @@ public:
     std::shared_ptr<VulkanPhysicalDevice> GetPhysicalDevice() const { return m_PhysicalDevice; }
     VkQueue GetGraphicsQueue() const { return m_GraphicsQueue; }
     VkQueue GetPresentQueue() const { return m_PresentQueue; }
+
+    VulkanDeviceCmdBuffer AllocateTransientCmdBuffer();
+    void ExecuteTransientCmdBuffer(VulkanDeviceCmdBuffer cmd_buffer, bool wait = false) const;
 
 private:
     std::vector<const char*> GetRequiredExtensions();

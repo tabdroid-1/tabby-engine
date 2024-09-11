@@ -1,6 +1,7 @@
 #include <tbpch.h>
 
 #include "VulkanGraphicsContext.h"
+#include "VulkanDeviceCmdBuffer.h"
 #include "VulkanDevice.h"
 
 #include <SDL_vulkan.h>
@@ -201,6 +202,21 @@ void VulkanDevice::Destroy()
     vkDestroyCommandPool(m_Device, m_CmdPool, nullptr);
     vkDestroyDevice(m_Device, nullptr);
     m_Device = VK_NULL_HANDLE;
+}
+
+VulkanDeviceCmdBuffer VulkanDevice::AllocateTransientCmdBuffer()
+{
+    VulkanDeviceCmdBuffer cmd_buffer;
+    cmd_buffer.Begin();
+
+    return cmd_buffer;
+}
+
+void VulkanDevice::ExecuteTransientCmdBuffer(VulkanDeviceCmdBuffer cmd_buffer, bool wait /*= false*/) const
+{
+    cmd_buffer.End();
+    cmd_buffer.Execute(true); // TODO: make such feature that cmd buffer can be launched asynchronously and will be self-destroyed on work finished
+    cmd_buffer.Destroy();
 }
 
 std::vector<const char*> VulkanDevice::GetRequiredExtensions()

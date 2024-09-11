@@ -1,4 +1,5 @@
 #include "VulkanGraphicsContext.h"
+#include "VulkanDeviceCmdBuffer.h"
 #include "VulkanRenderPass.h"
 #include "VulkanSwapchain.h"
 #include "VulkanDevice.h"
@@ -60,6 +61,10 @@ void VulkanSwapchain::CreateSurface()
 void VulkanSwapchain::CreateSwapchain()
 {
     auto device = VulkanGraphicsContext::Get()->GetDevice();
+
+    if (m_Swapchain) [[likely]] {
+        vkDestroySwapchainKHR(device->Raw(), m_Swapchain, nullptr);
+    }
 
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->Raw(), m_Surface, &m_SurfaceCapabilities);
 
@@ -147,6 +152,13 @@ void VulkanSwapchain::CreateSwapchain()
     m_ImageViews.resize(m_Images.size());
 
     for (size_t i = 0; i < m_Images.size(); i++) {
+        if (m_ImageViews[i])
+            vkDestroyImageView(device->Raw(), m_ImageViews[i], nullptr);
+    }
+
+    VulkanDeviceCmdBuffer image_layout_transition_command_buffer = device->AllocateTransientCmdBuffer();
+
+    for (size_t i = 0; i < m_Images.size(); i++) {
         VkImageViewCreateInfo createInfo {};
         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         createInfo.image = m_Images[i];
@@ -166,7 +178,32 @@ void VulkanSwapchain::CreateSwapchain()
             != VK_SUCCESS) {
             throw std::runtime_error("failed to create image views!");
         }
+        VkImageMemoryBarrier image_memory_barrier = {};
+        image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        image_memory_barrier.image = m_Images[i];
+        image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        image_memory_barrier.subresourceRange.baseArrayLayer = 0;
+        image_memory_barrier.subresourceRange.layerCount = 1;
+        image_memory_barrier.subresourceRange.baseMipLevel = 0;
+        image_memory_barrier.subresourceRange.levelCount = 1;
+
+        vkCmdPipelineBarrier(
+            image_layout_transition_command_buffer,
+            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            0,
+            0,
+            nullptr,
+            0,
+            nullptr,
+            1,
+            &image_memory_barrier);
     }
+    device->ExecuteTransientCmdBuffer(image_layout_transition_command_buffer, true);
 
     if (m_Semaphores.size() != VulkanGraphicsContext::GetFramesInFlight()) {
 
@@ -230,6 +267,7 @@ void VulkanSwapchain::BeginFrame()
     auto device = VulkanGraphicsContext::Get()->GetDevice();
 
     VK_CHECK_RESULT(vkWaitForFences(device->Raw(), 1, &m_Fences[m_CurrentFrameIndex], VK_TRUE, UINT64_MAX));
+    VK_CHECK_RESULT(vkResetFences(device->Raw(), 1, &m_Fences[m_CurrentFrameIndex]));
 
     VkResult acquisition_result = vkAcquireNextImageKHR(
         device->Raw(),
@@ -251,17 +289,9 @@ void VulkanSwapchain::BeginFrame()
         new_spec.width = surface_capabilities.currentExtent.width;
         new_spec.height = surface_capabilities.currentExtent.height;
 
-        for (auto imageView : m_ImageViews) {
-            vkDestroyImageView(device->Raw(), imageView, nullptr);
-        }
-
-        vkDestroySwapchainKHR(device->Raw(), m_Swapchain, nullptr);
-
         CreateSwapchain();
         VulkanGraphicsContext::Get()->GetRenderPass()->CreateFramebuffer();
     }
-
-    VK_CHECK_RESULT(vkResetFences(device->Raw(), 1, &m_Fences[m_CurrentFrameIndex]));
 }
 
 void VulkanSwapchain::EndFrame()
@@ -290,12 +320,6 @@ void VulkanSwapchain::EndFrame()
         SwapchainSpecification new_spec = GetSpecification();
         new_spec.width = surface_capabilities.currentExtent.width;
         new_spec.height = surface_capabilities.currentExtent.height;
-
-        for (auto imageView : m_ImageViews) {
-            vkDestroyImageView(device->Raw(), imageView, nullptr);
-        }
-
-        vkDestroySwapchainKHR(device->Raw(), m_Swapchain, nullptr);
 
         CreateSwapchain();
         VulkanGraphicsContext::Get()->GetRenderPass()->CreateFramebuffer();
