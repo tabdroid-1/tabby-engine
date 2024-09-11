@@ -1,10 +1,20 @@
 #pragma once
 
+#include <Tabby/Foundation/Types.h>
+
 namespace Tabby {
 struct RendererConfig;
 
+class Image;
+
 class RendererAPI {
 public:
+    using RenderFunction = std::function<void()>;
+
+    struct RendererInternalData {
+        std::vector<RenderFunction> cmd_list;
+    } m_InternalData;
+
     RendererAPI() {};
     virtual ~RendererAPI() {};
 
@@ -18,11 +28,11 @@ public:
     // virtual Shared<Swapchain> GetSwapchain() = 0;
     // virtual Shared<DeviceCmdBuffer> GetCmdBuffer() = 0;
     //
-    virtual void BeginFrame() = 0;
-    virtual void EndFrame() = 0;
-    // virtual void BeginRender(const std::vector<Shared<Image>> attachments, uvec3 render_area, ivec2 render_offset, fvec4 clear_color) = 0;
+    // virtual void BeginFrame() = 0;
+    // virtual void EndFrame() = 0;
+    // virtual void BeginRender(const std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 offset, Vector4 clear_value) = 0;
     // virtual void EndRender(Shared<Image> target) = 0;
-    // virtual void WaitDevice() = 0;
+    virtual void WaitDevice() = 0;
     // virtual void BindSet(Shared<DescriptorSet> set, Shared<Pipeline> pipeline, uint8 index) = 0;
     // virtual void CopyToSwapchain(Shared<Image> image) = 0;
     // virtual void InsertBarrier(const PipelineBarrierInfo& barrier) = 0;

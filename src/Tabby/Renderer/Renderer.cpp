@@ -4,10 +4,6 @@
 
 namespace Tabby {
 
-struct RendererInternalData {
-    std::vector<Renderer::RenderFunction> cmd_list;
-} s_InternalData;
-
 void Renderer::Init(const RendererConfig& config)
 {
     s_RendererAPI = new VulkanRendererAPI(config);
@@ -23,22 +19,22 @@ RendererConfig Renderer::GetConfig()
     return s_RendererAPI->GetConfig();
 }
 
-void Renderer::Submit(RenderFunction func)
+void Renderer::Submit(RendererAPI::RenderFunction func)
 {
-    s_InternalData.cmd_list.push_back(func);
+    s_RendererAPI->m_InternalData.cmd_list.push_back(func);
 }
 
-void Renderer::BeginFrame()
-{
-    s_RendererAPI->BeginFrame();
-}
-
-void Renderer::EndFrame()
-{
-    s_RendererAPI->EndFrame();
-}
-
-// void Renderer::BeginRender(const std::vector<Shared<Image>> attachments, uvec3 render_area, ivec2 offset, fvec4 clear_value)
+// void Renderer::BeginFrame()
+// {
+//     s_RendererAPI->BeginFrame();
+// }
+//
+// void Renderer::EndFrame()
+// {
+//     s_RendererAPI->EndFrame();
+// }
+//
+// void Renderer::BeginRender(const std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 offset, Vector4 clear_value)
 // {
 //     s_RendererAPI->BeginRender(attachments, render_area, offset, clear_value);
 // }
@@ -47,12 +43,12 @@ void Renderer::EndFrame()
 // {
 //     s_RendererAPI->EndRender(target);
 // }
-//
-// void Renderer::WaitDevice()
-// {
-//     s_RendererAPI->WaitDevice();
-// }
-//
+
+void Renderer::WaitDevice()
+{
+    s_RendererAPI->WaitDevice();
+}
+
 // void Renderer::BindSet(Shared<DescriptorSet> set, Shared<Pipeline> pipeline, uint8 index)
 // {
 //     s_RendererAPI->BindSet(set, pipeline, index);
@@ -147,19 +143,19 @@ void Renderer::EndFrame()
 // {
 //     return s_InternalData.m_LinearSampler;
 // }
-//
-// void Renderer::LoadShaderPack()
-// {
-// }
-//
+
+void Renderer::LoadShaderPack()
+{
+}
+
 void Renderer::Render()
 {
     s_RendererAPI->Render();
 }
-//
-// void Renderer::RenderImGui()
-// {
-//     s_RendererAPI->RenderImGui();
-// }
+
+void Renderer::RenderImGui()
+{
+    s_RendererAPI->RenderImGui();
+}
 
 }

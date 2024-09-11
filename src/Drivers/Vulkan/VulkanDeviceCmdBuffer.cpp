@@ -1,47 +1,33 @@
-#include <Drivers/Vulkan/VulkanDeviceCmdBuffer.h>
-#include <Drivers/Vulkan/VulkanGraphicsContext.h>
-#include <Drivers/Vulkan/VulkanSwapchain.h>
-#include <Drivers/Vulkan/VulkanDevice.h>
+#include "VulkanDeviceCmdBuffer.h"
+#include "VulkanGraphicsContext.h"
+#include "VulkanDevice.h"
 
 namespace Tabby {
 
-VulkanDeviceCmdBuffer::VulkanDeviceCmdBuffer(DeviceCmdBufferLevel level, DeviceCmdBufferType buffer_type, DeviceCmdType cmd_type)
-    : m_Level(level)
-    , m_BufferType(buffer_type)
-    , m_CmdType(cmd_type)
+VulkanDeviceCmdBuffer::VulkanDeviceCmdBuffer()
 {
     auto device = VulkanGraphicsContext::Get()->GetDevice();
 
-    uint32_t queue_family_index = 0;
+    QueueFamilyIndex queueFamilyIndices = device->GetPhysicalDevice()->GetQueueFamilyIndices();
 
-    QueueFamilyIndex indices = device->GetPhysicalDevice()->GetQueueFamilyIndices();
+    VkCommandPoolCreateInfo poolInfo {};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphics.value();
 
-    switch (cmd_type) {
-    case DeviceCmdType::GENERAL:
-        queue_family_index = indices.graphics;
-        break;
-    case DeviceCmdType::ASYNC_COMPUTE:
-        queue_family_index = indices.compute;
-        break;
-    case DeviceCmdType::TRANSFER_DEDICATED:
-        queue_family_index = indices.transfer;
-        break;
+    if (vkCreateCommandPool(device->Raw(), &poolInfo, nullptr, &m_Pool) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create command pool!");
     }
 
-    VkCommandPoolCreateInfo cmd_pool_create_info = {};
-    cmd_pool_create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    cmd_pool_create_info.queueFamilyIndex = queue_family_index;
-    cmd_pool_create_info.flags = buffer_type == DeviceCmdBufferType::GENERAL ? VK_COMMAND_POOL_CREATE_TRANSIENT_BIT : 0;
+    VkCommandBufferAllocateInfo allocInfo {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = m_Pool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
 
-    VK_CHECK_RESULT(vkCreateCommandPool(device->Raw(), &cmd_pool_create_info, nullptr, &m_Pool));
-
-    VkCommandBufferAllocateInfo cmd_buffer_allocate_info = {};
-    cmd_buffer_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    cmd_buffer_allocate_info.commandPool = m_Pool;
-    cmd_buffer_allocate_info.commandBufferCount = 1;
-    cmd_buffer_allocate_info.level = m_Level == DeviceCmdBufferLevel::PRIMARY ? VK_COMMAND_BUFFER_LEVEL_PRIMARY : VK_COMMAND_BUFFER_LEVEL_SECONDARY;
-
-    VK_CHECK_RESULT(vkAllocateCommandBuffers(device->Raw(), &cmd_buffer_allocate_info, &m_Buffer));
+    if (vkAllocateCommandBuffers(device->Raw(), &allocInfo, &m_Buffer) != VK_SUCCESS) {
+        throw std::runtime_error("failed to allocate command buffers!");
+    }
 }
 
 VulkanDeviceCmdBuffer::~VulkanDeviceCmdBuffer()
@@ -56,12 +42,15 @@ void VulkanDeviceCmdBuffer::Destroy()
 
 void VulkanDeviceCmdBuffer::Begin()
 {
-    auto swapchain = VulkanGraphicsContext::Get()->GetSwapchain();
+    // VkCommandBufferBeginInfo cmd_buffer_begin_info = {};
+    // cmd_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    // cmd_buffer_begin_info.flags = m_BufferType == DeviceCmdBufferType::TRANSIENT ? VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT : 0;
+    // VK_CHECK_RESULT(vkBeginCommandBuffer(m_Buffer, &cmd_buffer_begin_info));
 
-    VkCommandBufferBeginInfo cmd_buffer_begin_info = {};
-    cmd_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    cmd_buffer_begin_info.flags = m_BufferType == DeviceCmdBufferType::TRANSIENT ? VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT : 0;
-    VK_CHECK_RESULT(vkBeginCommandBuffer(m_Buffer, &cmd_buffer_begin_info));
+    VkCommandBufferBeginInfo beginInfo {};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    VK_CHECK_RESULT(vkBeginCommandBuffer(m_Buffer, &beginInfo));
 }
 
 void VulkanDeviceCmdBuffer::End()
@@ -77,41 +66,40 @@ void VulkanDeviceCmdBuffer::Reset()
 
 void VulkanDeviceCmdBuffer::Execute(bool wait)
 {
-    auto device = VulkanGraphicsContext::Get()->GetDevice();
-
-    VkSubmitInfo submit_info = {};
-    submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submit_info.commandBufferCount = 1;
-    submit_info.pCommandBuffers = &m_Buffer;
-
-    VkQueue queue = VK_NULL_HANDLE;
-    switch (m_CmdType) {
-    case DeviceCmdType::GENERAL:
-        queue = device->GetGeneralQueue();
-        break;
-    case DeviceCmdType::ASYNC_COMPUTE:
-        queue = device->GetAsyncComputeQueue();
-        break;
-    case DeviceCmdType::TRANSFER_DEDICATED:
-        queue = device->GetGeneralQueue();
-        break;
-    }
-
-    VkFence fence = VK_NULL_HANDLE;
-    if (wait) {
-        VkFenceCreateInfo fence_create_info = {};
-        fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-        vkCreateFence(device->Raw(), &fence_create_info, nullptr, &fence);
-    }
-
-    m_SubmissionMutex.lock();
-    VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submit_info, fence));
-    m_SubmissionMutex.unlock();
-
-    if (wait) {
-        vkWaitForFences(device->Raw(), 1, &fence, VK_TRUE, UINT64_MAX);
-        vkDestroyFence(device->Raw(), fence, nullptr);
-    }
+    // auto device = VulkanGraphicsContext::Get()->GetDevice();
+    //
+    // VkSubmitInfo submit_info = {};
+    // submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    // submit_info.commandBufferCount = 1;
+    // submit_info.pCommandBuffers = &m_Buffer;
+    //
+    // VkQueue queue = VK_NULL_HANDLE;
+    // switch (m_CmdType) {
+    // case DeviceCmdType::GENERAL:
+    //     queue = device->GetGeneralQueue();
+    //     break;
+    // case DeviceCmdType::ASYNC_COMPUTE:
+    //     queue = device->GetAsyncComputeQueue();
+    //     break;
+    // case DeviceCmdType::TRANSFER_DEDICATED:
+    //     queue = device->GetGeneralQueue();
+    //     break;
+    // }
+    //
+    // VkFence fence = VK_NULL_HANDLE;
+    // if (wait) {
+    //     VkFenceCreateInfo fence_create_info = {};
+    //     fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    //     vkCreateFence(device->Raw(), &fence_create_info, nullptr, &fence);
+    // }
+    //
+    // m_SubmissionMutex.lock();
+    // VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submit_info, fence));
+    // m_SubmissionMutex.unlock();
+    //
+    // if (wait) {
+    //     vkWaitForFences(device->Raw(), 1, &fence, VK_TRUE, UINT64_MAX);
+    //     vkDestroyFence(device->Raw(), fence, nullptr);
+    // }
 }
-
 }

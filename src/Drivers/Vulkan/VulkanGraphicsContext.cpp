@@ -1,27 +1,22 @@
 #define VOLK_IMPLEMENTATION
 #include <volk.h>
 
-#include <Drivers/Vulkan/VulkanGraphicsContext.h>
-#include <Drivers/Vulkan/VulkanDebugUtils.h>
-#include <Drivers/Vulkan/VulkanSwapchain.h>
-#include <Drivers/Vulkan/VulkanShader.h>
-#include <Drivers/Vulkan/VulkanDevice.h>
-#include <Drivers/Vulkan/VulkanCommon.h>
-#include <Tabby/Foundation/Types.h>
+#include "VulkanGraphicsContext.h"
+#include "VulkanDebugUtil.h"
+#include "VulkanSwapchain.h"
+#include "VulkanRenderPass.h"
+#include "VulkanDevice.h"
+
 #include <Tabby/Core/Application.h>
 
-#include <vk_mem_alloc.h>
-#include <SDL_vulkan.h>
 #include <SDL.h>
+#include <SDL_vulkan.h>
 
 namespace Tabby {
 
-VulkanGraphicsContext::VulkanGraphicsContext(const RendererConfig& config)
+VulkanGraphicsContext::VulkanGraphicsContext()
 {
-    if (s_Instance) {
-        TB_CORE_ERROR("Graphics context is already initialized.");
-        return;
-    }
+    TB_CORE_ASSERT_TAGGED(!s_Instance, "Graphics context is already initialized.");
 
     s_Instance = this;
 
@@ -58,54 +53,39 @@ VulkanGraphicsContext::VulkanGraphicsContext(const RendererConfig& config)
     VK_CHECK_RESULT(vkCreateInstance(&createInfo, nullptr, &m_VulkanInstance));
     volkLoadInstance(m_VulkanInstance);
 
-#if TB_DEBUG
+#ifdef DEBUG
     m_DebugUtils = std::make_shared<VulkanDebugUtils>(this);
 #endif
 
     VkPhysicalDeviceFeatures device_features = {};
-    device_features.samplerAnisotropy = true;
-    device_features.geometryShader = true;
-    device_features.tessellationShader = true;
-    device_features.shaderInt64 = true;
-    device_features.wideLines = true;
-    device_features.shaderInt16 = true;
+    // device_features.samplerAnisotropy = true;
+    // device_features.geometryShader = true;
+    // device_features.tessellationShader = true;
+    // device_features.shaderInt64 = true;
+    // device_features.wideLines = true;
+    // device_features.shaderInt16 = true;
 
-    Shared<VulkanPhysicalDevice> device = VulkanPhysicalDevice::Select(this);
-    m_Device = CreateShared<VulkanDevice>(device, std::forward<VkPhysicalDeviceFeatures>(device_features));
+    std::shared_ptr<VulkanPhysicalDevice> device = VulkanPhysicalDevice::Select(this);
+    m_Device = std::make_shared<VulkanDevice>(device, std::forward<VkPhysicalDeviceFeatures>(device_features));
     volkLoadDevice(m_Device->Raw());
+    m_Swapchain = std::make_shared<VulkanSwapchain>();
+    m_Swapchain->CreateSurface();
+    m_Swapchain->CreateSwapchain();
 
-    SDL_Window* window_handle = (SDL_Window*)config.main_window;
-    IntVector2 swapchain_extent = {};
-    SDL_Vulkan_GetDrawableSize(window_handle, &swapchain_extent.x, &swapchain_extent.y);
-
-    SwapchainSpecification swapchain_spec = {};
-    swapchain_spec.main_window = config.main_window;
-    swapchain_spec.frames_in_flight = config.frames_in_flight;
-    swapchain_spec.extent = swapchain_extent;
-    swapchain_spec.vsync = config.vsync;
-
-    m_Swapchain = CreateShared<VulkanSwapchain>(swapchain_spec);
-    m_Swapchain->CreateSurface(swapchain_spec);
-    m_Swapchain->CreateSwapchain(swapchain_spec);
-
-    std::vector<std::filesystem::path> files = { "shaders/vulkan/test_vert.spv", "shaders/vulkan/test_frag.spv" };
-    m_Shader = CreateShared<VulkanShader>(files);
-
-    // VulkanMemoryAllocator::Init();
+    m_RenderPass = std::make_shared<VulkanRenderPass>();
+    m_RenderPass->CreateRenderPass();
+    m_RenderPass->CreateFramebuffer();
 }
 
-VulkanGraphicsContext::~VulkanGraphicsContext()
-{
-    Destroy();
-}
+VulkanGraphicsContext::~VulkanGraphicsContext() { Destroy(); }
 
 void VulkanGraphicsContext::Destroy()
 {
     vkDeviceWaitIdle(m_Device->Raw());
     // VulkanMemoryAllocator::Destroy();
-    m_Shader->Destroy();
+    m_RenderPass->DestroyFramebuffer();
+    m_RenderPass->DestroyRenderPass();
     m_Swapchain->DestroySwapchain();
-    m_Swapchain->DestroySurface();
     m_Device->Destroy();
 #if TB_DEBUG
     m_DebugUtils->Destroy(this);
@@ -122,7 +102,8 @@ std::vector<const char*> VulkanGraphicsContext::GetVulkanExtensions()
     sdl_extensions = new const char*[extension_count];
     SDL_Vulkan_GetInstanceExtensions((SDL_Window*)Application::GetWindow().GetNativeWindow(), &extension_count, sdl_extensions);
 
-    std::vector<const char*> extensions(sdl_extensions, sdl_extensions + extension_count);
+    std::vector<const char*> extensions(sdl_extensions,
+        sdl_extensions + extension_count);
 
 #ifdef TB_DEBUG
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);

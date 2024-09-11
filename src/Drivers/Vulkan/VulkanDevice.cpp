@@ -1,17 +1,18 @@
-#include <Drivers/Vulkan/VulkanGraphicsContext.h>
-#include <Drivers/Vulkan/VulkanDevice.h>
-#include <Tabby/Core/Application.h>
+#include <tbpch.h>
+
+#include "VulkanGraphicsContext.h"
+#include "VulkanDevice.h"
 
 #include <SDL_vulkan.h>
 #include <SDL.h>
-
-namespace Tabby {
 
 // ===============
 // PHYSICAL DEVICE
 // ===============
 
-Shared<VulkanPhysicalDevice> VulkanPhysicalDevice::Select(VulkanGraphicsContext* ctx)
+namespace Tabby {
+
+std::shared_ptr<VulkanPhysicalDevice> VulkanPhysicalDevice::Select(VulkanGraphicsContext* ctx)
 {
     return std::make_shared<VulkanPhysicalDevice>(ctx);
 }
@@ -76,16 +77,21 @@ VulkanPhysicalDevice::VulkanPhysicalDevice(VulkanGraphicsContext* ctx)
     std::vector<VkQueueFamilyProperties> queue_family_properties(queue_family_property_count);
     vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &queue_family_property_count, queue_family_properties.data());
 
-    m_Indices.size = queue_family_property_count;
-
     uint32_t queue_family_index = 0;
     for (auto& family_prop : queue_family_properties) {
         if (family_prop.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             m_Indices.graphics = queue_family_index;
-        } else if (family_prop.queueFlags & VK_QUEUE_COMPUTE_BIT) {
-            m_Indices.compute = queue_family_index;
-        } else if (family_prop.queueFlags & VK_QUEUE_TRANSFER_BIT) {
-            m_Indices.transfer = queue_family_index;
+        }
+
+        // VkBool32 presentSupport = false;
+        // vkGetPhysicalDeviceSurfaceSupportKHR(m_PhysicalDevice, queue_family_index, surface, &presentSupport);
+        //
+        // if (presentSupport) {
+        //     m_Indices.present = queue_family_index;
+        // }
+
+        if (m_Indices.isComplete()) {
+            break;
         }
 
         queue_family_index++;
@@ -102,8 +108,7 @@ VulkanPhysicalDevice::VulkanPhysicalDevice(VulkanGraphicsContext* ctx)
     m_DeviceProps.pNext = mesh_shader_properties;
 
     vkGetPhysicalDeviceProperties2(m_PhysicalDevice, &m_DeviceProps);
-
-    TB_CORE_TRACE("Selected Vulkan device: {0}", m_DeviceProps.properties.deviceName);
+    TB_CORE_TRACE("Selected Vulkan device: {}", m_DeviceProps.properties.deviceName);
 }
 
 VulkanPhysicalDevice::~VulkanPhysicalDevice()
@@ -132,7 +137,7 @@ bool VulkanPhysicalDevice::IsExtensionSupported(const std::string& extension) co
         }
     }
 
-    TB_CORE_ERROR("Vulkan device extension \"{0}\" is not supported!", extension.c_str());
+    TB_CORE_ERROR("Vulkan device extension is not supported!,extension.c_str()");
 
     return false;
 }
@@ -140,63 +145,47 @@ bool VulkanPhysicalDevice::IsExtensionSupported(const std::string& extension) co
 // ==============
 // LOGICAL DEVICE
 // ==============
-VulkanDevice::VulkanDevice(Shared<VulkanPhysicalDevice> physical_device, const VkPhysicalDeviceFeatures& features)
+VulkanDevice::VulkanDevice(std::shared_ptr<VulkanPhysicalDevice> physical_device, const VkPhysicalDeviceFeatures& features)
     : m_Device(VK_NULL_HANDLE)
     , m_PhysicalDevice(physical_device)
-    , m_GeneralQueue(VK_NULL_HANDLE)
-    , m_AsyncComputeQueue(VK_NULL_HANDLE)
+    , m_GraphicsQueue(VK_NULL_HANDLE)
+    , m_PresentQueue(VK_NULL_HANDLE)
 {
     const float prioriry = 1.0f;
 
     VkPhysicalDeviceFeatures supported_device_features = {};
     vkGetPhysicalDeviceFeatures(m_PhysicalDevice->Raw(), &supported_device_features);
 
-    VkDeviceQueueCreateInfo general_queue_create_info = {};
-    general_queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    general_queue_create_info.pQueuePriorities = &prioriry;
-    general_queue_create_info.queueCount = 1;
-    general_queue_create_info.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilyIndices().graphics;
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    std::set<uint32_t> uniqueQueueFamilies = { m_PhysicalDevice->GetQueueFamilyIndices().graphics.value(),
+        m_PhysicalDevice->GetQueueFamilyIndices().present.value() };
 
-    VkDeviceQueueCreateInfo async_compute_queue_create_info = {};
-    async_compute_queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    async_compute_queue_create_info.pQueuePriorities = &prioriry;
-    async_compute_queue_create_info.queueCount = 1;
-    async_compute_queue_create_info.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilyIndices().compute;
-
-    std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
-    if (m_PhysicalDevice->GetQueueFamilyIndices().compute != m_PhysicalDevice->GetQueueFamilyIndices().graphics) {
-        queue_create_infos.push_back(async_compute_queue_create_info);
-        queue_create_infos.push_back(general_queue_create_info);
-    } else {
-        if (m_PhysicalDevice->GetQueueFamilyIndices().size >= 2) {
-            general_queue_create_info.queueCount = 2;
-            queue_create_infos.push_back(general_queue_create_info);
-        } else {
-            queue_create_infos.push_back(general_queue_create_info);
-        }
+    float queuePriority = 1.0f;
+    for (uint32_t queueFamily : uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo {};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+        queueCreateInfos.push_back(queueCreateInfo);
     }
     std::vector<const char*> enabled_extensions = GetRequiredExtensions();
 
-    VkPhysicalDeviceFeatures2 device_features2 = {};
-    device_features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-    device_features2.features = features;
-
     VkDeviceCreateInfo device_create_info = {};
     device_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    device_create_info.pQueueCreateInfos = queue_create_infos.data();
-    device_create_info.queueCreateInfoCount = queue_create_infos.size();
+    device_create_info.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+    device_create_info.pQueueCreateInfos = queueCreateInfos.data();
     device_create_info.pEnabledFeatures = {};
     device_create_info.ppEnabledExtensionNames = enabled_extensions.data();
     device_create_info.enabledExtensionCount = enabled_extensions.size();
-    device_create_info.pNext = &device_features2;
 
     VK_CHECK_RESULT(vkCreateDevice(m_PhysicalDevice->Raw(), &device_create_info, nullptr, &m_Device));
-    vkGetDeviceQueue(m_Device, m_PhysicalDevice->GetQueueFamilyIndices().graphics, 0, &m_GeneralQueue);
-    vkGetDeviceQueue(m_Device, m_PhysicalDevice->GetQueueFamilyIndices().compute, 0, &m_AsyncComputeQueue);
+    vkGetDeviceQueue(m_Device, m_PhysicalDevice->GetQueueFamilyIndices().graphics.value(), 0, &m_GraphicsQueue);
+    vkGetDeviceQueue(m_Device, m_PhysicalDevice->GetQueueFamilyIndices().present.value(), 0, &m_PresentQueue);
 
     VkCommandPoolCreateInfo cmd_pool_create_info = {};
     cmd_pool_create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    cmd_pool_create_info.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilyIndices().graphics;
+    cmd_pool_create_info.queueFamilyIndex = m_PhysicalDevice->GetQueueFamilyIndices().graphics.value();
     cmd_pool_create_info.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
 
     VK_CHECK_RESULT(vkCreateCommandPool(m_Device, &cmd_pool_create_info, nullptr, &m_CmdPool));
@@ -204,7 +193,7 @@ VulkanDevice::VulkanDevice(Shared<VulkanPhysicalDevice> physical_device, const V
 
 VulkanDevice::~VulkanDevice()
 {
-    TB_CORE_ASSERT_TAGGED(!m_Device, "Vulkan device was not destroyed yet. Please, call VulkanDevice::Destroy().");
+    TB_CORE_ASSERT_TAGGED(false, "Vulkan device was not destroyed yet. Please, call VulkanDevice::Destroy().");
 }
 
 void VulkanDevice::Destroy()
@@ -224,10 +213,9 @@ std::vector<const char*> VulkanDevice::GetRequiredExtensions()
 
     TB_CORE_TRACE("Enabled Vulkan device extensions:");
     for (auto& ext : extensions) {
-        TB_CORE_TRACE("\t{0}", ext);
+        TB_CORE_TRACE("\t{}", ext);
     }
 
     return extensions;
 }
-
 }

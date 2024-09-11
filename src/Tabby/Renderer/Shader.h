@@ -3,9 +3,19 @@
 namespace Tabby {
 
 // TODO: Make this an asset
+
+enum class ShaderStage : uint8_t {
+    VERTEX,
+    TASK,
+    MESH,
+    FRAGMENT,
+    COMPUTE,
+    UNKNOWN
+};
+
 class Shader {
 public:
-    static Shared<Shader> Create(std::vector<std::filesystem::path> files);
+    static Shared<Shader> Create(std::map<ShaderStage, std::vector<uint8_t>> binaries);
     virtual ~Shader() {};
     virtual void Destroy() = 0;
 

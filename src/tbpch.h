@@ -38,6 +38,7 @@
 #include <any>
 #include <bit>
 #include <map>
+#include <set>
 
 #include <Tabby/Core/Base.h>
 #include <Tabby/Debug/Instrumentor.h>

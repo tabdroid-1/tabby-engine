@@ -1,28 +1,30 @@
-#pragma once
+#include "VulkanCommon.h"
 
 #include <Tabby/Renderer/GraphicsContext.h>
-#include <Drivers/Vulkan/VulkanCommon.h>
-#include <Tabby/Renderer/Renderer.h>
 
 namespace Tabby {
 
+class VulkanDeviceCmdBuffer;
+class VulkanRenderPass;
+class VulkanDebugUtils;
+class VulkanSwapchain;
 class VulkanDevice;
 class VulkanShader;
-class VulkanSwapchain;
-class VulkanDebugUtils;
 
 class VulkanGraphicsContext : public GraphicsContext {
 public:
-    VulkanGraphicsContext() {};
-    VulkanGraphicsContext(const RendererConfig& config);
+    VulkanGraphicsContext();
     ~VulkanGraphicsContext();
     void Destroy() override;
 
     static VulkanGraphicsContext* Get() { return s_Instance; }
 
     VkInstance GetVulkanInstance() const { return m_VulkanInstance; }
-    Shared<VulkanDevice> GetDevice() const { return m_Device; }
-    Shared<VulkanSwapchain> GetSwapchain() { return m_Swapchain; }
+    std::shared_ptr<VulkanDevice> GetDevice() const { return m_Device; }
+    std::shared_ptr<VulkanSwapchain> GetSwapchain() { return m_Swapchain; }
+    std::shared_ptr<VulkanRenderPass> GetRenderPass() { return m_RenderPass; }
+
+    static constexpr int GetFramesInFlight() { return 2; };
 
 private:
     static std::vector<const char*> GetVulkanExtensions();
@@ -33,10 +35,10 @@ private:
 
     VkInstance m_VulkanInstance = VK_NULL_HANDLE;
     VkDebugUtilsMessengerEXT m_DebugMessenger;
-    Shared<VulkanDevice> m_Device = nullptr;
-    Shared<VulkanDebugUtils> m_DebugUtils = nullptr;
-    Shared<VulkanSwapchain> m_Swapchain = nullptr;
-    Shared<VulkanShader> m_Shader = nullptr;
+    std::shared_ptr<VulkanDevice> m_Device = nullptr;
+    std::shared_ptr<VulkanDebugUtils> m_DebugUtils = nullptr;
+    std::shared_ptr<VulkanSwapchain> m_Swapchain = nullptr;
+    std::shared_ptr<VulkanRenderPass> m_RenderPass = nullptr;
 };
 
 }

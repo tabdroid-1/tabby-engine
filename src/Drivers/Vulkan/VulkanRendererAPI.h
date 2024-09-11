@@ -1,13 +1,16 @@
 #pragma once
 
-#include <Drivers/Vulkan/VulkanGraphicsContext.h>
 #include <Tabby/Renderer/RendererAPI.h>
 #include <Tabby/Renderer/Renderer.h>
 
 namespace Tabby {
 
+class VulkanGraphicsContext;
 class VulkanDeviceCmdBuffer;
 class VulkanRenderPass;
+class VulkanSwapchain;
+class VulkanDevice;
+class VulkanShader;
 
 class VulkanRendererAPI : public RendererAPI {
 public:
@@ -24,11 +27,11 @@ public:
     // Shared<DeviceCmdBuffer> GetCmdBuffer() override { return m_CurrentCmdBuffer; };
     // Shared<Swapchain> GetSwapchain() override { return m_Swapchain; };
     //
-    void BeginFrame() override;
-    void EndFrame() override;
-    // void BeginRender(const std::vector<Shared<Image>> attachments, uvec3 render_area, ivec2 render_offset, fvec4 clear_color) override;
+    // void BeginFrame() override;
+    // void EndFrame() override;
+    // void BeginRender(const std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 render_offset, Vector4 clear_color) override;
     // void EndRender(Shared<Image> target) override;
-    // void WaitDevice() override;
+    void WaitDevice() override;
     // void BindSet(Shared<DescriptorSet> set, Shared<Pipeline> pipeline, uint8 index) override;
     // void CopyToSwapchain(Shared<Image> image) override;
     // void InsertBarrier(const PipelineBarrierInfo& barrier) override;
@@ -43,10 +46,7 @@ public:
     //
     void Render() override;
     void RenderImGui() override;
-    //
-    void BeginCommandRecord();
-    void EndCommandRecord();
-    void ExecuteCurrentCommands();
+
     // static std::vector<VkDescriptorSet> AllocateDescriptorSets(VkDescriptorSetLayout layout, uint32 count);
     // static void FreeDescriptorSets(std::vector<VkDescriptorSet> sets);
 
@@ -56,8 +56,12 @@ private:
     Shared<VulkanGraphicsContext> m_GraphicsContext;
     Shared<VulkanDevice> m_Device;
     Shared<VulkanSwapchain> m_Swapchain;
-    Shared<VulkanDeviceCmdBuffer> m_CmdBuffer;
     Shared<VulkanRenderPass> m_RenderPass;
+    // NOTE: TEMP
+    Shared<VulkanShader> m_Shader;
+
+    std::vector<Shared<VulkanDeviceCmdBuffer>> m_CmdBuffers;
+    Shared<VulkanDeviceCmdBuffer> m_CurrentCmdBuffer;
 
     // static VkDescriptorPool s_DescriptorPool;
 

@@ -137,12 +137,15 @@ void Application::Run()
         if (!s_Instance->m_Minimized && Time::GetDeltaTime() < 200.0f) { // ts < 200  because ts is really high number in first frame
                                                                          // and that breaks the phyiscs and some other stuff.
                                                                          // this happens because m_LastFrameTime is 0 in first frame.
+
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackUpdate");
 
                 for (Layer* layer : s_Instance->m_LayerStack)
                     layer->OnUpdate();
             }
+
+            Renderer::Render();
 
 #if !TB_HEADLESS
             // s_Instance->m_ImGuiLayer->Begin();
@@ -165,7 +168,7 @@ void Application::Run()
         ProcessApplicationSpec();
 #endif
 
-        // Framerate limiter. this will do nothing if maxFPS is 0.
+        // Framerate limiter. this will do nothing if maxFPS is 0 or less.
         if (s_Instance->m_Specification.MaxFPS > 0.0) {
             TB_PROFILE_SCOPE_NAME("Tabby::Application::FramerateLimiter");
             double frameTime = Time::GetTime() - time;
@@ -177,6 +180,8 @@ void Application::Run()
             }
         }
     }
+
+    Renderer::WaitDevice();
 }
 
 void Application::ProcessApplicationSpec()
