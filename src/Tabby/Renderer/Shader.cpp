@@ -5,7 +5,7 @@
 
 namespace Tabby {
 
-Shared<Shader> Shader::Create(std::map<ShaderStage, std::vector<uint8_t>> binaries)
+Shared<Shader> Shader::Create(const ShaderSpecification& spec, std::map<ShaderStage, std::vector<uint32_t>> binaries)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Shader::Create");
 
@@ -14,7 +14,7 @@ Shared<Shader> Shader::Create(std::map<ShaderStage, std::vector<uint8_t>> binari
         // return CreateShared<NullAPIShader>(filepath);
         return nullptr;
     case Renderer::API::Vulkan:
-        return CreateShared<VulkanShader>(binaries);
+        return CreateShared<VulkanShader>(spec, binaries);
     case Renderer::API::OpenGL46:
         // return CreateShared<OpenGL46Shader>(filepath);
         return nullptr;

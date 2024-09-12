@@ -277,9 +277,8 @@ void VulkanSwapchain::BeginFrame()
         VK_NULL_HANDLE,
         &m_CurrentImageIndex);
 
-    if (acquisition_result == VK_ERROR_OUT_OF_DATE_KHR || acquisition_result == VK_SUBOPTIMAL_KHR) {
+    if (acquisition_result == VK_ERROR_OUT_OF_DATE_KHR) {
 
-        // vkQueueWaitIdle(device->GetGraphicsQueue());
         vkDeviceWaitIdle(device->Raw());
 
         VkSurfaceCapabilitiesKHR surface_capabilities = {};
@@ -291,6 +290,14 @@ void VulkanSwapchain::BeginFrame()
 
         CreateSwapchain();
         VulkanGraphicsContext::Get()->GetRenderPass()->CreateFramebuffer();
+
+        vkAcquireNextImageKHR(
+            device->Raw(),
+            m_Swapchain,
+            UINT64_MAX,
+            m_Semaphores[m_CurrentFrameIndex].present_complete,
+            VK_NULL_HANDLE,
+            &m_CurrentImageIndex);
     }
 }
 
@@ -311,7 +318,6 @@ void VulkanSwapchain::EndFrame()
 
     if (present_result == VK_ERROR_OUT_OF_DATE_KHR || present_result == VK_SUBOPTIMAL_KHR) {
 
-        // vkQueueWaitIdle(device->GetPresentQueue());
         vkDeviceWaitIdle(device->Raw());
 
         VkSurfaceCapabilitiesKHR surface_capabilities = {};

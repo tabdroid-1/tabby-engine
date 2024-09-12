@@ -6,6 +6,8 @@
 #include <Drivers/Vulkan/VulkanShader.h>
 #include <Drivers/Vulkan/VulkanDevice.h>
 
+#include <Tabby/Renderer/ShaderLibrary.h>
+
 #include <imgui.h>
 
 #include "backends/imgui_impl_vulkan.h"
@@ -46,13 +48,16 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
         buf = std::make_shared<VulkanDeviceCmdBuffer>();
     }
 
-    auto vertShaderCode = readFile("shaders/vulkan/test_vert.spv");
-    auto fragShaderCode = readFile("shaders/vulkan/test_frag.spv");
+    ShaderSpecification shader_spec;
+    shader_spec = ShaderSpecification::Default();
 
-    std::map<ShaderStage, std::vector<uint8_t>> binaries;
-    binaries[ShaderStage::VERTEX] = vertShaderCode;
-    binaries[ShaderStage::FRAGMENT] = fragShaderCode;
-    m_Shader = std::make_shared<VulkanShader>(binaries);
+    ShaderBufferLayoutElement element("inPosition", ShaderDataType::FLOAT2);
+    ShaderBufferLayoutElement element2("inColor", ShaderDataType::FLOAT3);
+    ShaderBufferLayout buffer_layout(std::vector { element, element2 });
+    shader_spec.input_layout = buffer_layout;
+
+    ShaderLibrary::LoadShader(shader_spec, "shaders/vulkan/test.glsl");
+    m_Shader = ShareAs<VulkanShader>(ShaderLibrary::GetShader("test.glsl"));
 }
 
 VulkanRendererAPI::~VulkanRendererAPI()

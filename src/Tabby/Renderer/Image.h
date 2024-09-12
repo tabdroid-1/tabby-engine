@@ -82,7 +82,7 @@ struct ImageSpecification {
 class Image : public AssetBase {
 public:
     static Shared<Image> Create(const ImageSpecification& spec, const AssetHandle& id = AssetHandle());
-    static Shared<Image> Create(const ImageSpecification& spec, const std::vector<char*> data, const AssetHandle& id = AssetHandle());
+    static Shared<Image> Create(const ImageSpecification& spec, Buffer data, const AssetHandle& id = AssetHandle());
 
     virtual ~Image() { }
 

@@ -9,7 +9,7 @@ Shared<Image> Image::Create(const ImageSpecification& spec, const AssetHandle& i
     return nullptr;
 }
 
-Shared<Image> Image::Create(const ImageSpecification& spec, const std::vector<char*> data, const AssetHandle& id)
+Shared<Image> Image::Create(const ImageSpecification& spec, Buffer data, const AssetHandle& id)
 {
     // return std::make_shared<VulkanImage>(spec, data, id);
     return nullptr;

@@ -1,4 +1,5 @@
 #include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Renderer/ShaderLibrary.h>
 
 #include <Drivers/Vulkan/VulkanRendererAPI.h>
 
@@ -6,11 +7,13 @@ namespace Tabby {
 
 void Renderer::Init(const RendererConfig& config)
 {
+    ShaderLibrary::Init();
     s_RendererAPI = new VulkanRendererAPI(config);
 }
 
 void Renderer::Shutdown()
 {
+    ShaderLibrary::Destroy();
     delete s_RendererAPI;
 }
 

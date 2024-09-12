@@ -90,6 +90,8 @@ set(SPDLOG_HEADER_ONLY OFF CACHE BOOL "" FORCE)
 set(VMA_ENABLE_INSTALL OFF CACHE BOOL "Install VulkanMemoryAllocator" FORCE)
 set(VK_BOOTSTRAP_TEST OFF CACHE BOOL "Test Vk-Bootstrap using Catch2 as well as build examples" FORCE)
 set(VK_BOOTSTRAP_INSTALL OFF CACHE BOOL "Enable installing of vk-bootstrap" FORCE)
+set(SHADERC_SKIP_TESTS ON CACHE BOOL "Skip building tests" FORCE)
+set(SHADERC_SKIP_EXAMPLES ON CACHE BOOL "Skip building examples" FORCE)
 
 set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_VENDOR_DIR "vendor")
@@ -113,6 +115,7 @@ set(FASTGLTF ${PROJECT_VENDOR_DIR}/fastgltf)
 set(IMGUIZMO ${PROJECT_VENDOR_DIR}/imguizmo)
 set(OPENAL ${PROJECT_VENDOR_DIR}/openal-soft)
 set(VK-BOOTSTRAP ${PROJECT_VENDOR_DIR}/vk-bootstrap)
+set(SPIRV-REFLECT ${PROJECT_VENDOR_DIR}/SPIRV-Reflect)
 set(MSDF-ATLAS-GEN ${PROJECT_VENDOR_DIR}/msdf-atlas-gen)
 set(VULKAN-MEMORY-ALLOCATOR ${PROJECT_VENDOR_DIR}/VulkanMemoryAllocator)
 set(GAME-NETWORKING-SOCKETS ${PROJECT_VENDOR_DIR}/GameNetworkingSockets)
@@ -195,6 +198,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${GLM})
 target_include_directories(${PROJECT_NAME} PRIVATE ${VULKAN-MEMORY-ALLOCATOR}/include) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${MSDF-ATLAS-GEN}/msdf-atlas-gen) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${VK-BOOTSTRAP}/src) 
+target_include_directories(${PROJECT_NAME} PRIVATE ${SPIRV-REFLECT}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLAD}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${VOLK}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${STB}) 
@@ -320,6 +324,8 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Android")
         )
 endif()
 
+pkg_check_modules(shaderc REQUIRED IMPORTED_TARGET shaderc)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     glm
     imgui
@@ -330,6 +336,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     fastgltf
     volk::volk
     msdf-atlas-gen 
+    PkgConfig::shaderc
     vk-bootstrap::vk-bootstrap
     GPUOpen::VulkanMemoryAllocator
     )
