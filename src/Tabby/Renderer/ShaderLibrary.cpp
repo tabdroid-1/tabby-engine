@@ -23,12 +23,17 @@ ShaderLibrary::~ShaderLibrary()
 
 void ShaderLibrary::Init()
 {
-    s_Instance = new ShaderLibrary;
+    if (!s_Instance) {
+        s_Instance = new ShaderLibrary;
+    }
 }
 
 void ShaderLibrary::Destroy()
 {
-    delete s_Instance;
+    if (s_Instance) {
+        UnloadAllShaders();
+        delete s_Instance;
+    }
 }
 
 bool ShaderLibrary::LoadShader(const ShaderSpecification& spec, const std::filesystem::path& path, const ShaderMacroTable& macros)
@@ -102,10 +107,24 @@ bool ShaderLibrary::UnloadShader(std::string name, const ShaderMacroTable& macro
         return false;
 
     // If there's no permutations of a specific shader left, delete entry from library.
-    if (!s_Instance->m_Library.at(name).size())
+    if (!s_Instance->m_Library.at(name).size()) {
+        for (auto& shader : s_Instance->m_Library.at(name)) {
+            shader.first->Destroy();
+        }
         s_Instance->m_Library.erase(name);
+    }
 
     return true;
+}
+
+void ShaderLibrary::UnloadAllShaders()
+{
+    for (auto& shaders : s_Instance->m_Library) {
+        for (auto& shader : shaders.second) {
+            shader.first->Destroy();
+        }
+    }
+    s_Instance->m_Library.clear();
 }
 
 bool ShaderLibrary::ReloadShader(std::filesystem::path name)

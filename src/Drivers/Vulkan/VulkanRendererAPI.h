@@ -7,6 +7,7 @@ namespace Tabby {
 
 class VulkanGraphicsContext;
 class VulkanDeviceCmdBuffer;
+class VulkanShaderBuffer;
 class VulkanRenderPass;
 class VulkanSwapchain;
 class VulkanDevice;
@@ -59,6 +60,8 @@ private:
     Shared<VulkanRenderPass> m_RenderPass;
     // NOTE: TEMP
     Shared<VulkanShader> m_Shader;
+    Shared<VulkanShaderBuffer> m_VertexBuffer;
+    Shared<VulkanShaderBuffer> m_IndexBuffer;
 
     std::vector<Shared<VulkanDeviceCmdBuffer>> m_CmdBuffers;
     Shared<VulkanDeviceCmdBuffer> m_CurrentCmdBuffer;

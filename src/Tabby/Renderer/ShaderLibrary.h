@@ -22,6 +22,9 @@ public:
     // @return true if shader was successfully unloaded from library and destroyed, false if no shader with such name was found
     static bool UnloadShader(std::string name, const ShaderMacroTable& macros = {});
 
+    //  @brief Destroys all shaders.
+    static void UnloadAllShaders();
+
     // @return true if shader was successfully found and recompiled, false if shader not found / contains errors in its code
     static bool ReloadShader(std::filesystem::path name);
 

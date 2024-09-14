@@ -66,40 +66,29 @@ void VulkanDeviceCmdBuffer::Reset()
 
 void VulkanDeviceCmdBuffer::Execute(bool wait)
 {
-    // auto device = VulkanGraphicsContext::Get()->GetDevice();
-    //
-    // VkSubmitInfo submit_info = {};
-    // submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    // submit_info.commandBufferCount = 1;
-    // submit_info.pCommandBuffers = &m_Buffer;
-    //
-    // VkQueue queue = VK_NULL_HANDLE;
-    // switch (m_CmdType) {
-    // case DeviceCmdType::GENERAL:
-    //     queue = device->GetGeneralQueue();
-    //     break;
-    // case DeviceCmdType::ASYNC_COMPUTE:
-    //     queue = device->GetAsyncComputeQueue();
-    //     break;
-    // case DeviceCmdType::TRANSFER_DEDICATED:
-    //     queue = device->GetGeneralQueue();
-    //     break;
-    // }
-    //
-    // VkFence fence = VK_NULL_HANDLE;
-    // if (wait) {
-    //     VkFenceCreateInfo fence_create_info = {};
-    //     fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    //     vkCreateFence(device->Raw(), &fence_create_info, nullptr, &fence);
-    // }
-    //
-    // m_SubmissionMutex.lock();
-    // VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submit_info, fence));
-    // m_SubmissionMutex.unlock();
-    //
-    // if (wait) {
-    //     vkWaitForFences(device->Raw(), 1, &fence, VK_TRUE, UINT64_MAX);
-    //     vkDestroyFence(device->Raw(), fence, nullptr);
-    // }
+    auto device = VulkanGraphicsContext::Get()->GetDevice();
+
+    VkSubmitInfo submit_info = {};
+    submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submit_info.commandBufferCount = 1;
+    submit_info.pCommandBuffers = &m_Buffer;
+
+    VkQueue queue = device->GetGraphicsQueue();
+
+    VkFence fence = VK_NULL_HANDLE;
+    if (wait) {
+        VkFenceCreateInfo fence_create_info = {};
+        fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        vkCreateFence(device->Raw(), &fence_create_info, nullptr, &fence);
+    }
+
+    m_SubmissionMutex.lock();
+    VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submit_info, fence));
+    m_SubmissionMutex.unlock();
+
+    if (wait) {
+        vkWaitForFences(device->Raw(), 1, &fence, VK_TRUE, UINT64_MAX);
+        vkDestroyFence(device->Raw(), fence, nullptr);
+    }
 }
 }

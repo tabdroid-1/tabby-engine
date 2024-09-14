@@ -2,11 +2,13 @@
 #include <volk.h>
 
 #include "VulkanGraphicsContext.h"
+#include "VulkanMemoryAllocator.h"
 #include "VulkanDebugUtil.h"
 #include "VulkanSwapchain.h"
 #include "VulkanRenderPass.h"
 #include "VulkanDevice.h"
 
+#include <Tabby/Renderer/ShaderLibrary.h>
 #include <Tabby/Core/Application.h>
 
 #include <SDL.h>
@@ -28,7 +30,7 @@ VulkanGraphicsContext::VulkanGraphicsContext()
     appInfo.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
     appInfo.pEngineName = "Tabby Engine";
     appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
+    appInfo.apiVersion = VK_API_VERSION_1_1;
 
     std::vector<const char*> extensions = GetVulkanExtensions();
     std::vector<const char*> layers = GetVulkanLayers();
@@ -75,6 +77,8 @@ VulkanGraphicsContext::VulkanGraphicsContext()
     m_RenderPass = std::make_shared<VulkanRenderPass>();
     m_RenderPass->CreateRenderPass();
     m_RenderPass->CreateFramebuffer();
+
+    VulkanMemoryAllocator::Init();
 }
 
 VulkanGraphicsContext::~VulkanGraphicsContext() { Destroy(); }
@@ -82,10 +86,12 @@ VulkanGraphicsContext::~VulkanGraphicsContext() { Destroy(); }
 void VulkanGraphicsContext::Destroy()
 {
     vkDeviceWaitIdle(m_Device->Raw());
-    // VulkanMemoryAllocator::Destroy();
+    VulkanMemoryAllocator::Destroy();
     m_RenderPass->DestroyFramebuffer();
     m_RenderPass->DestroyRenderPass();
     m_Swapchain->DestroySwapchain();
+    m_Swapchain->DestroySurface();
+    ShaderLibrary::UnloadAllShaders();
     m_Device->Destroy();
 #if TB_DEBUG
     m_DebugUtils->Destroy(this);

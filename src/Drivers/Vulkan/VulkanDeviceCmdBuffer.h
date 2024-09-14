@@ -33,6 +33,6 @@ private:
     // DeviceCmdBufferType m_BufferType;
     // DeviceCmdType m_CmdType;
 
-    // inline static std::shared_mutex m_SubmissionMutex;
+    inline static std::shared_mutex m_SubmissionMutex;
 };
 }

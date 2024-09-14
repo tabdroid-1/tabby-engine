@@ -257,8 +257,7 @@ void VulkanSwapchain::DestroySurface()
 {
     VulkanGraphicsContext* ctx = VulkanGraphicsContext::Get();
 
-    if (!m_Swapchain)
-        throw std::runtime_error("Attempted to destroy window surface, but associated swapchain was not destroyed yet");
+    TB_CORE_ASSERT_TAGGED(!m_Swapchain, "Attempted to destroy window surface, but associated swapchain was not destroyed yet");
     vkDestroySurfaceKHR(ctx->GetVulkanInstance(), m_Surface, nullptr);
 }
 

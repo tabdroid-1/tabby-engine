@@ -7,7 +7,7 @@
 
 namespace Tabby {
 
-shaderc_shader_kind convert(const ShaderStage& stage)
+shaderc_shader_kind shaderstage_to_shaderc(const ShaderStage& stage)
 {
     switch (stage) {
     case ShaderStage::VERTEX:
@@ -129,7 +129,7 @@ ShaderCompilationResult ShaderCompiler::Compile(std::string& source, const std::
     for (auto& stage_source : separated_sources) {
         shaderc::PreprocessedSourceCompilationResult preprocessing_result = m_Compiler.PreprocessGlsl(
             stage_source.second,
-            convert(stage_source.first),
+            shaderstage_to_shaderc(stage_source.first),
             filename.c_str(),
             local_options);
 
@@ -141,7 +141,7 @@ ShaderCompilationResult ShaderCompiler::Compile(std::string& source, const std::
 
         stage_source.second = std::string(preprocessing_result.begin());
 
-        shaderc::CompilationResult result = m_Compiler.CompileGlslToSpv(stage_source.second, convert(stage_source.first), filename.c_str(), local_options);
+        shaderc::CompilationResult result = m_Compiler.CompileGlslToSpv(stage_source.second, shaderstage_to_shaderc(stage_source.first), filename.c_str(), local_options);
         if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
             TB_CORE_ERROR("Failed to compile shader {0}.{1}:\n{2}", filename, Utils::ShaderStageToString(stage_source.first), result.GetErrorMessage());
             compilation_result.valid = false;

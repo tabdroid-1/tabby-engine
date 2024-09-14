@@ -1,5 +1,6 @@
 #include <Drivers/Vulkan/VulkanGraphicsContext.h>
 #include <Drivers/Vulkan/VulkanDeviceCmdBuffer.h>
+#include <Drivers/Vulkan/VulkanShaderBuffer.h>
 #include <Drivers/Vulkan/VulkanRendererAPI.h>
 #include <Drivers/Vulkan/VulkanRenderPass.h>
 #include <Drivers/Vulkan/VulkanSwapchain.h>
@@ -14,24 +15,28 @@
 
 namespace Tabby {
 
-static std::vector<uint8_t> readFile(const std::string& filename)
-{
-    std::ifstream file(filename, std::ios::ate | std::ios::binary);
+struct Vertex {
+    Vector2 position;
+    Vector3 color;
+};
 
-    if (!file.is_open()) {
-        throw std::runtime_error("failed to open file!");
-    }
+// const std::vector<Vector3> vertices = {
+//     { Vector3(-0.5f, -0.5f, 0.0f) },
+//     { Vector3(0.5f, -0.5f, 0.0f) },
+//     { Vector3(0.5f, 0.5f, 0.0f) },
+//     { Vector3(-0.5f, 0.5f, 0.0f) }
+// };
 
-    size_t fileSize = (size_t)file.tellg();
-    std::vector<uint8_t> buffer(fileSize);
+const std::vector<Vertex> vertices = {
+    { { -0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
+    { { 0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f } },
+    { { 0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f } },
+    { { -0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f } }
+};
 
-    file.seekg(0);
-    file.read(reinterpret_cast<char*>(buffer.data()), fileSize);
-
-    file.close();
-
-    return buffer;
-}
+const std::vector<uint16_t> indices = {
+    0, 1, 2, 2, 3, 0
+};
 
 VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     : m_Config(config)
@@ -58,11 +63,43 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
 
     ShaderLibrary::LoadShader(shader_spec, "shaders/vulkan/test.glsl");
     m_Shader = ShareAs<VulkanShader>(ShaderLibrary::GetShader("test.glsl"));
+
+    // std::vector<byte> vertex_data(icosphere_data.first.size() * sizeof(glm::vec3));
+    // memcpy(vertex_data.data(), icosphere_data.first.data(), vertex_data.size());
+
+    Buffer data;
+    data.Allocate(vertices.size() * sizeof(Vertex));
+    memcpy(data.Data, vertices.data(), vertices.size() * sizeof(Vertex));
+
+    ShaderBufferSpecification buffer_spec = {};
+    buffer_spec.buffer_usage = ShaderBufferUsage::VERTEX_BUFFER;
+    buffer_spec.heap = ShaderBufferMemoryHeap::DEVICE;
+    buffer_spec.memory_usage = ShaderBufferMemoryUsage::NO_HOST_ACCESS;
+    // buffer_spec.memory_usage = ShaderBufferMemoryUsage::COHERENT_WRITE;
+    buffer_spec.size = data.Size;
+
+    m_VertexBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
+    data.Release();
+
+    data.Allocate(indices.size() * sizeof(uint16_t));
+    memcpy(data.Data, indices.data(), indices.size() * sizeof(uint16_t));
+    buffer_spec.buffer_usage = ShaderBufferUsage::INDEX_BUFFER;
+    buffer_spec.heap = ShaderBufferMemoryHeap::DEVICE;
+    buffer_spec.memory_usage = ShaderBufferMemoryUsage::NO_HOST_ACCESS;
+    // buffer_spec.memory_usage = ShaderBufferMemoryUsage::COHERENT_WRITE;
+    buffer_spec.size = data.Size;
+    buffer_spec.flags |= (uint64_t)ShaderBufferFlags::INDEX_TYPE_UINT16;
+
+    m_IndexBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
+    data.Release();
 }
 
 VulkanRendererAPI::~VulkanRendererAPI()
 {
     vkDeviceWaitIdle(m_Device->Raw());
+    m_VertexBuffer->Destroy();
+    m_IndexBuffer->Destroy();
+
     for (auto& cmd_buffer : m_CmdBuffers)
         cmd_buffer->Destroy();
 }
@@ -75,9 +112,16 @@ void VulkanRendererAPI::Render()
     m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Begin();
     m_GraphicsContext->GetRenderPass()->Begin(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw());
 
-    vkCmdBindPipeline(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Shader->RawPipeline());
+    VkBuffer vertexBuffers[] = { m_VertexBuffer->Raw() };
+    VkDeviceSize offsets[] = { 0 };
 
-    vkCmdDraw(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 3, 1, 0, 0);
+    vkCmdBindPipeline(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Shader->RawPipeline());
+    vkCmdBindVertexBuffers(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 0, 1, vertexBuffers, offsets);
+
+    vkCmdBindIndexBuffer(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), m_IndexBuffer->Raw(), 0, VK_INDEX_TYPE_UINT16);
+
+    vkCmdDrawIndexed(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+    // vkCmdDraw(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 6, 1, 0, 0);
 
     m_GraphicsContext->GetRenderPass()->End(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw());
     m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->End();
@@ -127,5 +171,4 @@ void VulkanRendererAPI::WaitDevice()
 {
     vkDeviceWaitIdle(m_Device->Raw());
 }
-
 }

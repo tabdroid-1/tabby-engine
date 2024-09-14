@@ -114,14 +114,6 @@ VulkanPhysicalDevice::VulkanPhysicalDevice(VulkanGraphicsContext* ctx)
 
 VulkanPhysicalDevice::~VulkanPhysicalDevice()
 {
-    void* node = &m_DeviceProps;
-    while (node != nullptr) {
-        intptr_t offset_ptr = ((intptr_t)node + 4); // offsetting to pNext
-        void* next_node = (void*)offset_ptr;
-
-        delete node;
-        node = next_node;
-    }
 }
 
 bool VulkanPhysicalDevice::IsExtensionSupported(const std::string& extension) const
@@ -194,7 +186,7 @@ VulkanDevice::VulkanDevice(std::shared_ptr<VulkanPhysicalDevice> physical_device
 
 VulkanDevice::~VulkanDevice()
 {
-    TB_CORE_ASSERT_TAGGED(false, "Vulkan device was not destroyed yet. Please, call VulkanDevice::Destroy().");
+    TB_CORE_ASSERT_TAGGED(m_Device == VK_NULL_HANDLE, "Vulkan device was not destroyed yet. Please, call VulkanDevice::Destroy().");
 }
 
 void VulkanDevice::Destroy()
