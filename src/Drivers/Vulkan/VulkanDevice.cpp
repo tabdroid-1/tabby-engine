@@ -219,6 +219,12 @@ std::vector<const char*> VulkanDevice::GetRequiredExtensions()
         extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     }
 
+#
+#ifdef TB_PLATFORM_MACOS
+    extensions.emplace_back("VK_KHR_portability_subset");
+    // extensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
+#endif
+
     TB_CORE_TRACE("Enabled Vulkan device extensions:");
     for (auto& ext : extensions) {
         TB_CORE_TRACE("\t{}", ext);

@@ -6,6 +6,8 @@ project(tabby
     LANGUAGES CXX
 )
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(APPLE)
     message(STATUS "Including Objective-C++ for APPLE")
@@ -25,7 +27,7 @@ option(TB_NETWORKING "Enable networking" OFF)
 add_library(tabby_flags INTERFACE)
 
 if(TB_DIST)
-    # set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build utility programs" FORCE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build utility programs" FORCE)
     set(TB_PROFILE OFF CACHE BOOL "" FORCE)
 endif(TB_DIST)
 
@@ -88,8 +90,6 @@ set(MSDFGEN_INSTALL  OFF CACHE BOOL "Generate installation target" FORCE)
 set(MSDFGEN_DYNAMIC_RUNTIME OFF CACHE BOOL "Link dynamic runtime library instead of static" FORCE)
 set(SPDLOG_HEADER_ONLY OFF CACHE BOOL "" FORCE)
 set(VMA_ENABLE_INSTALL OFF CACHE BOOL "Install VulkanMemoryAllocator" FORCE)
-set(VK_BOOTSTRAP_TEST OFF CACHE BOOL "Test Vk-Bootstrap using Catch2 as well as build examples" FORCE)
-set(VK_BOOTSTRAP_INSTALL OFF CACHE BOOL "Enable installing of vk-bootstrap" FORCE)
 set(SHADERC_SKIP_TESTS ON CACHE BOOL "Skip building tests" FORCE)
 set(SHADERC_SKIP_EXAMPLES ON CACHE BOOL "Skip building examples" FORCE)
 
@@ -105,7 +105,6 @@ set(STB ${PROJECT_VENDOR_DIR}/stb)
 set(SDL2 ${PROJECT_VENDOR_DIR}/SDL2)
 set(GLAD ${PROJECT_VENDOR_DIR}/glad)
 set(ENTT ${PROJECT_VENDOR_DIR}/entt)
-set(VOLK ${PROJECT_VENDOR_DIR}/volk)
 set(BOX2D ${PROJECT_VENDOR_DIR}/box2d)
 set(TRACY ${PROJECT_VENDOR_DIR}/tracy)
 set(IMGUI ${PROJECT_VENDOR_DIR}/imgui)
@@ -114,7 +113,7 @@ set(SPDLOG ${PROJECT_VENDOR_DIR}/spdlog)
 set(FASTGLTF ${PROJECT_VENDOR_DIR}/fastgltf)
 set(IMGUIZMO ${PROJECT_VENDOR_DIR}/imguizmo)
 set(OPENAL ${PROJECT_VENDOR_DIR}/openal-soft)
-set(VK-BOOTSTRAP ${PROJECT_VENDOR_DIR}/vk-bootstrap)
+set(METAL-CPP ${PROJECT_VENDOR_DIR}/metal-cpp)
 set(SPIRV-REFLECT ${PROJECT_VENDOR_DIR}/SPIRV-Reflect)
 set(MSDF-ATLAS-GEN ${PROJECT_VENDOR_DIR}/msdf-atlas-gen)
 set(VULKAN-MEMORY-ALLOCATOR ${PROJECT_VENDOR_DIR}/VulkanMemoryAllocator)
@@ -197,10 +196,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${STB})
 target_include_directories(${PROJECT_NAME} PUBLIC ${GLM}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${VULKAN-MEMORY-ALLOCATOR}/include) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${MSDF-ATLAS-GEN}/msdf-atlas-gen) 
-target_include_directories(${PROJECT_NAME} PRIVATE ${VK-BOOTSTRAP}/src) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${SPIRV-REFLECT}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLAD}) 
-target_include_directories(${PROJECT_NAME} PRIVATE ${VOLK}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${STB}) 
 
 # ####################
@@ -211,9 +208,6 @@ if (NOT TARGET fastgltf)
 endif()
 if (NOT TARGET SDL2-static)
     add_subdirectory(${SDL2})
-endif()
-if (NOT TARGET volk)
-    add_subdirectory(${VOLK})
 endif()
 if (NOT TARGET imgui)
     add_subdirectory(${IMGUI})
@@ -235,9 +229,6 @@ if (NOT TARGET imguizmo)
 endif()
 if (NOT TARGET fastgltf)
     add_subdirectory(${FASTGLTF})
-endif()
-if (NOT TARGET vk-bootstrap::vk-bootstrap)
-    add_subdirectory(${VK-BOOTSTRAP})
 endif()
 if (NOT TARGET msdf-atlas-gen)
     add_subdirectory(${MSDF-ATLAS-GEN})
@@ -302,13 +293,44 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
         PkgConfig::GTK4
         ${OPENAL_LIBRARY}
         SDL2::SDL2-static
+        PkgConfig::shaderc
         )
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+
+    find_package(PkgConfig REQUIRED)
+    find_package(OpenAL REQUIRED STATIC)
+    find_package(Vulkan REQUIRED)
+    pkg_check_modules(shaderc REQUIRED IMPORTED_TARGET shaderc)
+
+    find_package(SDL2 REQUIRED)
+
+    if(Vulkan_INCLUDE_DIRS)
+        message("Using Vulkan_INCLUDE_DIRS from FindVulkan module")
+        target_include_directories(${PROJECT_NAME} PRIVATE ${Vulkan_INCLUDE_DIRS}) 
+    elseif(DEFINED ENV{VULKAN_SDK})
+        message("Using VULKAN_SDK environment variable")
+        target_include_directories(${PROJECT_NAME} PRIVATE $ENV{VULKAN_SDK}/include) 
+    endif()
+
+    add_definitions(-DVK_USE_PLATFORM_IOS_MVK)
+    add_definitions(-DVK_USE_PLATFORM_MACOS_MVK)
+    add_definitions(-DVK_USE_PLATFORM_METAL_EXT)
+
     message(STATUS "Generating scripts for Mac")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
+        "-framework QuartzCore" 
+        "-framework Metal" 
+        "-framework Foundation" 
+        "-framework IOSurface" 
+        "-framework CoreGraphics" 
+        "-framework IOKit" 
+        "-framework AppKit" 
         spdlog
         OpenAL::OpenAL
         SDL2::SDL2-static
+        SDL2::SDL2main
+        PkgConfig::shaderc
+        Vulkan::Vulkan
         )
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Android")
     message(STATUS "Generating scripts for Android")
@@ -324,7 +346,7 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Android")
         )
 endif()
 
-pkg_check_modules(shaderc REQUIRED IMPORTED_TARGET shaderc)
+
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     glm
@@ -334,17 +356,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     enkiTS
     imguizmo
     fastgltf
-    volk::volk
     msdf-atlas-gen 
-    PkgConfig::shaderc
-    vk-bootstrap::vk-bootstrap
     GPUOpen::VulkanMemoryAllocator
     )
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_NO_PROTOTYPES=1")
-
-if(CMAKE_BUILD_TYPE MATCHES "Debug")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_DEBUG=1 -DTRACY_ENABLE=1")
 endif()
 

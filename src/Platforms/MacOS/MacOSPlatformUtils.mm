@@ -36,8 +36,8 @@ std::string FileDialogs::SaveFile(const char* filter)
         // Sets modal properties before window is shown
         // The window type specifically is a NSSavePanel
         NSSavePanel* panel = [NSSavePanel savePanel];
-        panel.title = @"Save Scene As...";
-        panel.nameFieldStringValue = @"Scene1.rc";
+        panel.title = @"Save As...";
+        // panel.nameFieldStringValue = @"";
         panel.showsHiddenFiles = YES;
         panel.canCreateDirectories = YES;
 
@@ -54,12 +54,13 @@ std::string FileDialogs::SaveFile(const char* filter)
         }
     }
 }
-.\" void FileDialogs::OpenExplorer(const char *path) {
-    .\"     //convert input path to NSString
-    .\"     NSString *convertedString = [[NSString alloc] initWithCString: path encoding:NSUTF8StringEncoding];
-    .\"     //convert NSString to NSURL filepath for NSWorkspace to open in finder
-    .\"     NSURL *xmlURL =[NSURL fileURLWithPath: convertedString];
-    .\"     // create NSWorkspace panel
-    .\"     [[NSWorkspace sharedWorkspace] openURL:xmlURL];
-    .\" }
+//\" void FileDialogs::OpenExplorer(const char *path) {
+//    .\"     //convert input path to NSString
+//
+//    .\"     NSString *convertedString = [[NSString alloc] initWithCString: path encoding:NSUTF8StringEncoding];
+//    .\"     //convert NSString to NSURL filepath for NSWorkspace to open in finder
+//    .\"     NSURL *xmlURL =[NSURL fileURLWithPath: convertedString];
+//    .\"     // create NSWorkspace panel
+//    .\"     [[NSWorkspace sharedWorkspace] openURL:xmlURL];
+//    .\" }
 }

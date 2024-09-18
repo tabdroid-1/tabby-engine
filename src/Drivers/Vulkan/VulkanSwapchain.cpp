@@ -1,3 +1,4 @@
+#include "Tabby/Core/Assert.h"
 #include "VulkanGraphicsContext.h"
 #include "VulkanDeviceCmdBuffer.h"
 #include "VulkanRenderPass.h"
@@ -26,9 +27,7 @@ void VulkanSwapchain::CreateSurface()
 
     VulkanGraphicsContext* ctx = VulkanGraphicsContext::Get();
     bool success = SDL_Vulkan_CreateSurface((SDL_Window*)Application::GetWindow().GetNativeWindow(), ctx->GetVulkanInstance(), &m_Surface);
-    if (!success) {
-        throw std::runtime_error("failed to create window surface!");
-    }
+    TB_CORE_ASSERT_TAGGED(success, "Failed to create window surface!");
 
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->Raw(), m_Surface, &m_SurfaceCapabilities);
 
@@ -96,7 +95,8 @@ void VulkanSwapchain::CreateSwapchain()
 
     int width, height;
 
-    SDL_Vulkan_GetDrawableSize((SDL_Window*)Application::GetWindow().GetNativeWindow(), &width, &height);
+    // SDL_Vulkan_GetDrawableSize((SDL_Window*)Application::GetWindow().GetNativeWindow(), &width, &height);
+    SDL_GetWindowSizeInPixels((SDL_Window*)Application::GetWindow().GetNativeWindow(), &width, &height);
 
     VkExtent2D actualExtent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
 

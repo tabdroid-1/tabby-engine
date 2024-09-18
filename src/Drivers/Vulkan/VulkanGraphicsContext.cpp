@@ -1,5 +1,7 @@
+#ifndef TB_PLATFORM_MACOS
 #define VOLK_IMPLEMENTATION
 #include <volk.h>
+#endif // !TB_PLATFORM_MACOS
 
 #include "VulkanGraphicsContext.h"
 #include "VulkanMemoryAllocator.h"
@@ -13,6 +15,7 @@
 
 #include <SDL.h>
 #include <SDL_vulkan.h>
+#include <MoltenVK/mvk_vulkan.h>
 
 namespace Tabby {
 
@@ -22,7 +25,9 @@ VulkanGraphicsContext::VulkanGraphicsContext()
 
     s_Instance = this;
 
+#ifndef TB_PLATFORM_MACOS
     volkInitialize();
+#endif // !TB_PLATFORM_MACOS
 
     VkApplicationInfo appInfo {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -53,7 +58,9 @@ VulkanGraphicsContext::VulkanGraphicsContext()
     createInfo.ppEnabledExtensionNames = extensions.data();
 
     VK_CHECK_RESULT(vkCreateInstance(&createInfo, nullptr, &m_VulkanInstance));
+#ifndef TB_PLATFORM_MACOS
     volkLoadInstance(m_VulkanInstance);
+#endif // !TB_PLATFORM_MACOS
 
 #ifdef DEBUG
     m_DebugUtils = std::make_shared<VulkanDebugUtils>(this);
@@ -69,7 +76,10 @@ VulkanGraphicsContext::VulkanGraphicsContext()
 
     std::shared_ptr<VulkanPhysicalDevice> device = VulkanPhysicalDevice::Select(this);
     m_Device = std::make_shared<VulkanDevice>(device, std::forward<VkPhysicalDeviceFeatures>(device_features));
+
+#ifndef TB_PLATFORM_MACOS
     volkLoadDevice(m_Device->Raw());
+#endif // !TB_PLATFORM_MACOS
     m_Swapchain = std::make_shared<VulkanSwapchain>();
     m_Swapchain->CreateSurface();
     m_Swapchain->CreateSwapchain();
@@ -97,7 +107,9 @@ void VulkanGraphicsContext::Destroy()
     m_DebugUtils->Destroy(this);
 #endif // TB_DEBUG
     vkDestroyInstance(m_VulkanInstance, nullptr);
+#ifndef TB_PLATFORM_MACOS
     volkFinalize();
+#endif // !TB_PLATFORM_MACOS
 }
 
 std::vector<const char*> VulkanGraphicsContext::GetVulkanExtensions()
@@ -114,6 +126,10 @@ std::vector<const char*> VulkanGraphicsContext::GetVulkanExtensions()
 #ifdef TB_DEBUG
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif // TB_DEBUG
+
+#ifdef TB_PLATFORM_MACOS
+    extensions.push_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
+#endif
 
     extensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 

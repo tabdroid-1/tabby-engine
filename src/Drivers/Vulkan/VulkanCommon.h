@@ -3,7 +3,9 @@
 #include <tbpch.h>
 #include <Tabby/Foundation/Types.h>
 
-#include <volk.h>
+// #include <volk.h>
+
+#include <vulkan/vulkan.h>
 
 namespace Tabby {
 
@@ -28,11 +30,11 @@ namespace Util {
 #define VK_USE_PLATFORM_ANDROID_KHR
 #endif
 
-#if defined(__APPLE__)
-#define VK_USE_PLATFORM_IOS_MVK
-#define VK_USE_PLATFORM_MACOS_MVK
-#define VK_USE_PLATFORM_METAL_EXT
-#endif
+// #if defined(__APPLE__)
+// #define VK_USE_PLATFORM_IOS_MVK
+// #define VK_USE_PLATFORM_MACOS_MVK
+// #define VK_USE_PLATFORM_METAL_EXT
+// #endif
 
 #if defined(WIN32)
 #define VK_USE_PLATFORM_WIN32_KHR

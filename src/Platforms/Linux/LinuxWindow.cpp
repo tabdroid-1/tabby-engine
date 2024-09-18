@@ -203,6 +203,8 @@ void LinuxWindow::SetVSync(bool enabled)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::SetVSync");
 
+    // TODO:: Vulkan
+
     if (enabled)
         SDL_GL_SetSwapInterval(1);
     else

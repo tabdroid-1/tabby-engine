@@ -71,15 +71,15 @@ VulkanShaderBuffer::VulkanShaderBuffer(const ShaderBufferSpecification& spec, Bu
 
     m_Allocation = alloc->AllocateBuffer(&buffer_create_info, vma_flags, &m_Buffer);
 
-#if TB_DEBUG
-    VkDebugUtilsObjectNameInfoEXT name_info = {};
-    name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
-    name_info.objectType = VK_OBJECT_TYPE_BUFFER;
-    name_info.objectHandle = (uint64_t)m_Buffer;
-    name_info.pObjectName = spec.debug_name.c_str();
-
-    vkSetDebugUtilsObjectNameEXT(VulkanGraphicsContext::Get()->GetDevice()->Raw(), &name_info);
-#endif
+    // #if TB_DEBUG
+    //     VkDebugUtilsObjectNameInfoEXT name_info = {};
+    //     name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+    //     name_info.objectType = VK_OBJECT_TYPE_BUFFER;
+    //     name_info.objectHandle = (uint64_t)m_Buffer;
+    //     name_info.pObjectName = spec.debug_name.c_str();
+    //
+    //     vkSetDebugUtilsObjectNameEXT(VulkanGraphicsContext::Get()->GetDevice()->Raw(), &name_info);
+    // #endif
 
     if (data.Data)
         this->UploadData(0, data);
