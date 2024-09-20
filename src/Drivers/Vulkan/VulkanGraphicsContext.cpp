@@ -1,8 +1,3 @@
-#ifndef TB_PLATFORM_MACOS
-#define VOLK_IMPLEMENTATION
-#include <volk.h>
-#endif // !TB_PLATFORM_MACOS
-
 #include "VulkanGraphicsContext.h"
 #include "VulkanMemoryAllocator.h"
 #include "VulkanDebugUtil.h"
@@ -25,10 +20,6 @@ VulkanGraphicsContext::VulkanGraphicsContext()
 
     s_Instance = this;
 
-#ifndef TB_PLATFORM_MACOS
-    volkInitialize();
-#endif // !TB_PLATFORM_MACOS
-
     VkApplicationInfo appInfo {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Tabby Engine App";
@@ -50,7 +41,7 @@ VulkanGraphicsContext::VulkanGraphicsContext()
     createInfo.pApplicationInfo = &appInfo;
     createInfo.enabledLayerCount = layers.size();
     createInfo.ppEnabledLayerNames = layers.data();
-#ifdef TB_PLATFORM_MACOS
+#if defined(TB_PLATFORM_MACOS) || defined(TB_PLATFORM_ANDROID)
     extensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
     createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
 #endif
@@ -58,28 +49,16 @@ VulkanGraphicsContext::VulkanGraphicsContext()
     createInfo.ppEnabledExtensionNames = extensions.data();
 
     VK_CHECK_RESULT(vkCreateInstance(&createInfo, nullptr, &m_VulkanInstance));
-#ifndef TB_PLATFORM_MACOS
-    volkLoadInstance(m_VulkanInstance);
-#endif // !TB_PLATFORM_MACOS
 
 #ifdef DEBUG
     m_DebugUtils = std::make_shared<VulkanDebugUtils>(this);
 #endif
 
     VkPhysicalDeviceFeatures device_features = {};
-    // device_features.samplerAnisotropy = true;
-    // device_features.geometryShader = true;
-    // device_features.tessellationShader = true;
-    // device_features.shaderInt64 = true;
-    // device_features.wideLines = true;
-    // device_features.shaderInt16 = true;
 
     std::shared_ptr<VulkanPhysicalDevice> device = VulkanPhysicalDevice::Select(this);
     m_Device = std::make_shared<VulkanDevice>(device, std::forward<VkPhysicalDeviceFeatures>(device_features));
 
-#ifndef TB_PLATFORM_MACOS
-    volkLoadDevice(m_Device->Raw());
-#endif // !TB_PLATFORM_MACOS
     m_Swapchain = std::make_shared<VulkanSwapchain>();
     m_Swapchain->CreateSurface();
     m_Swapchain->CreateSwapchain();
@@ -107,9 +86,6 @@ void VulkanGraphicsContext::Destroy()
     m_DebugUtils->Destroy(this);
 #endif // TB_DEBUG
     vkDestroyInstance(m_VulkanInstance, nullptr);
-#ifndef TB_PLATFORM_MACOS
-    volkFinalize();
-#endif // !TB_PLATFORM_MACOS
 }
 
 std::vector<const char*> VulkanGraphicsContext::GetVulkanExtensions()
@@ -126,10 +102,6 @@ std::vector<const char*> VulkanGraphicsContext::GetVulkanExtensions()
 #ifdef TB_DEBUG
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif // TB_DEBUG
-
-#ifdef TB_PLATFORM_MACOS
-    extensions.push_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
-#endif
 
     extensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 

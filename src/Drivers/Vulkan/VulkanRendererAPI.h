@@ -1,7 +1,11 @@
 #pragma once
 
+#include "Drivers/Vulkan/VulkanDescriptorSet.h"
+#include <Drivers/Vulkan/VulkanCommon.h>
+#include <Tabby/Foundation/Types.h>
 #include <Tabby/Renderer/RendererAPI.h>
 #include <Tabby/Renderer/Renderer.h>
+#include <vulkan/vulkan_core.h>
 
 namespace Tabby {
 
@@ -12,6 +16,10 @@ class VulkanRenderPass;
 class VulkanSwapchain;
 class VulkanDevice;
 class VulkanShader;
+
+struct Uniform {
+    Vector2 position;
+};
 
 class VulkanRendererAPI : public RendererAPI {
 public:
@@ -48,8 +56,8 @@ public:
     void Render() override;
     void RenderImGui() override;
 
-    // static std::vector<VkDescriptorSet> AllocateDescriptorSets(VkDescriptorSetLayout layout, uint32 count);
-    // static void FreeDescriptorSets(std::vector<VkDescriptorSet> sets);
+    static std::vector<VkDescriptorSet> AllocateDescriptorSets(VkDescriptorSetLayout layout, uint32_t count);
+    static void FreeDescriptorSets(std::vector<VkDescriptorSet> sets);
 
 private:
     RendererConfig m_Config;
@@ -58,17 +66,19 @@ private:
     Shared<VulkanDevice> m_Device;
     Shared<VulkanSwapchain> m_Swapchain;
     Shared<VulkanRenderPass> m_RenderPass;
+
+    std::vector<Shared<VulkanDeviceCmdBuffer>> m_CmdBuffers;
+    Shared<VulkanDeviceCmdBuffer> m_CurrentCmdBuffer;
+    std::shared_mutex m_Mutex;
+
+    inline static VkDescriptorPool s_DescriptorPool = VK_NULL_HANDLE;
+
     // NOTE: TEMP
     Shared<VulkanShader> m_Shader;
     Shared<VulkanShaderBuffer> m_VertexBuffer;
     Shared<VulkanShaderBuffer> m_IndexBuffer;
-
-    std::vector<Shared<VulkanDeviceCmdBuffer>> m_CmdBuffers;
-    Shared<VulkanDeviceCmdBuffer> m_CurrentCmdBuffer;
-
-    // static VkDescriptorPool s_DescriptorPool;
-
-    std::shared_mutex m_Mutex;
+    Shared<VulkanShaderBuffer> m_UniformBuffer;
+    Shared<VulkanDescriptorSet> m_DescriptionSet;
 };
 
 }

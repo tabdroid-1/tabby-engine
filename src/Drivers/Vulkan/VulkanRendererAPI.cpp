@@ -6,11 +6,16 @@
 #include <Drivers/Vulkan/VulkanSwapchain.h>
 #include <Drivers/Vulkan/VulkanShader.h>
 #include <Drivers/Vulkan/VulkanDevice.h>
+#include <Tabby/Core/Input/Input.h>
 
 #include <Tabby/Renderer/ShaderLibrary.h>
 
 #include <imgui.h>
+#include <vulkan/vulkan_core.h>
 
+#include "Drivers/Vulkan/VulkanDescriptorSet.h"
+#include "Tabby/Core/Base.h"
+#include "Tabby/Core/Input/KeyCode.h"
 #include "backends/imgui_impl_vulkan.h"
 
 namespace Tabby {
@@ -38,6 +43,8 @@ const std::vector<uint16_t> indices = {
     0, 1, 2, 2, 3, 0
 };
 
+Uniform m_UniformBufferData = { { 0.0f, 0.0f } };
+
 VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     : m_Config(config)
 {
@@ -51,6 +58,28 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
 
     for (auto& buf : m_CmdBuffers) {
         buf = std::make_shared<VulkanDeviceCmdBuffer>();
+    }
+    if (s_DescriptorPool == VK_NULL_HANDLE) {
+        uint32_t descriptor_count = UINT16_MAX * config.frames_in_flight;
+
+        std::vector<VkDescriptorPoolSize> pool_sizes = {
+            { VK_DESCRIPTOR_TYPE_SAMPLER, descriptor_count },
+            { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, descriptor_count },
+            { VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, descriptor_count },
+            { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, descriptor_count },
+            { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, descriptor_count },
+            { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, descriptor_count },
+            { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, descriptor_count }
+        };
+
+        VkDescriptorPoolCreateInfo descriptor_pool_create_info = {};
+        descriptor_pool_create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        descriptor_pool_create_info.maxSets = 1000;
+        descriptor_pool_create_info.poolSizeCount = pool_sizes.size();
+        descriptor_pool_create_info.pPoolSizes = pool_sizes.data();
+        descriptor_pool_create_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+
+        vkCreateDescriptorPool(m_Device->Raw(), &descriptor_pool_create_info, nullptr, &s_DescriptorPool);
     }
 
     ShaderSpecification shader_spec;
@@ -75,7 +104,6 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     buffer_spec.buffer_usage = ShaderBufferUsage::VERTEX_BUFFER;
     buffer_spec.heap = ShaderBufferMemoryHeap::DEVICE;
     buffer_spec.memory_usage = ShaderBufferMemoryUsage::NO_HOST_ACCESS;
-    // buffer_spec.memory_usage = ShaderBufferMemoryUsage::COHERENT_WRITE;
     buffer_spec.size = data.Size;
 
     m_VertexBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
@@ -86,12 +114,24 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     buffer_spec.buffer_usage = ShaderBufferUsage::INDEX_BUFFER;
     buffer_spec.heap = ShaderBufferMemoryHeap::DEVICE;
     buffer_spec.memory_usage = ShaderBufferMemoryUsage::NO_HOST_ACCESS;
-    // buffer_spec.memory_usage = ShaderBufferMemoryUsage::COHERENT_WRITE;
     buffer_spec.size = data.Size;
     buffer_spec.flags |= (uint64_t)ShaderBufferFlags::INDEX_TYPE_UINT16;
 
     m_IndexBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
     data.Release();
+
+    data.Allocate(sizeof(Uniform));
+    memcpy(data.Data, &m_UniformBufferData, sizeof(m_UniformBufferData));
+    buffer_spec.buffer_usage = ShaderBufferUsage::UNIFORM_BUFFER;
+    buffer_spec.heap = ShaderBufferMemoryHeap::HOST;
+    buffer_spec.memory_usage = ShaderBufferMemoryUsage::COHERENT_WRITE;
+    buffer_spec.size = data.Size;
+
+    m_UniformBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
+    data.Release();
+
+    m_DescriptionSet = CreateShared<VulkanDescriptorSet>(m_Shader->GetLayouts()[0]);
+    m_DescriptionSet->Write(0, 0, m_UniformBuffer, data.Size, 0);
 }
 
 VulkanRendererAPI::~VulkanRendererAPI()
@@ -102,15 +142,41 @@ VulkanRendererAPI::~VulkanRendererAPI()
 
     for (auto& cmd_buffer : m_CmdBuffers)
         cmd_buffer->Destroy();
+
+    vkDestroyDescriptorPool(m_Device->Raw(), s_DescriptorPool, nullptr);
 }
 
 void VulkanRendererAPI::Render()
 {
+    m_UniformBufferData.position = { 0.0f, 0.0f };
+    if (Input::GetKey(Key::A))
+        m_UniformBufferData.position.x--;
+    if (Input::GetKey(Key::D))
+        m_UniformBufferData.position.x++;
+
+    if (Input::GetKey(Key::S))
+        m_UniformBufferData.position.y++;
+    if (Input::GetKey(Key::W))
+        m_UniformBufferData.position.y--;
+
+    Buffer data;
+    data.Allocate(sizeof(Uniform));
+    memcpy(data.Data, &m_UniformBufferData, sizeof(Uniform));
+
+    m_UniformBuffer->UploadData(0, data);
+
+    // m_DescriptionSet->Write(0, 0, m_UniformBuffer, data.Size, 0);
+    data.Release();
 
     m_GraphicsContext->GetSwapchain()->BeginFrame();
+    m_CurrentCmdBuffer = m_CmdBuffers[m_Swapchain->GetCurrentFrameIndex()];
     m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Reset();
     m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Begin();
     m_GraphicsContext->GetRenderPass()->Begin(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw());
+
+    VkPipelineBindPoint bind_point = VK_PIPELINE_BIND_POINT_GRAPHICS;
+
+    VkDescriptorSet raw_set = m_DescriptionSet->Raw();
 
     VkBuffer vertexBuffers[] = { m_VertexBuffer->Raw() };
     VkDeviceSize offsets[] = { 0 };
@@ -119,6 +185,8 @@ void VulkanRendererAPI::Render()
     vkCmdBindVertexBuffers(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 0, 1, vertexBuffers, offsets);
 
     vkCmdBindIndexBuffer(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), m_IndexBuffer->Raw(), 0, VK_INDEX_TYPE_UINT16);
+
+    vkCmdBindDescriptorSets(m_CurrentCmdBuffer->Raw(), bind_point, m_Shader->RawPipelineLayout(), 0, 1, &raw_set, 0, nullptr);
 
     vkCmdDrawIndexed(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
     // vkCmdDraw(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 6, 1, 0, 0);
@@ -170,5 +238,33 @@ void VulkanRendererAPI::RenderImGui()
 void VulkanRendererAPI::WaitDevice()
 {
     vkDeviceWaitIdle(m_Device->Raw());
+}
+
+std::vector<VkDescriptorSet> VulkanRendererAPI::AllocateDescriptorSets(VkDescriptorSetLayout layout, uint32_t count)
+{
+    auto device = VulkanGraphicsContext::Get()->GetDevice();
+
+    std::vector<VkDescriptorSet> sets(count);
+    sets.resize(count);
+
+    VkDescriptorSetAllocateInfo allocate_info = {};
+    allocate_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocate_info.descriptorPool = s_DescriptorPool;
+    allocate_info.descriptorSetCount = count;
+    allocate_info.pSetLayouts = &layout;
+
+    if (vkAllocateDescriptorSets(device->Raw(), &allocate_info, sets.data()) != VK_SUCCESS) {
+        TB_CORE_ERROR("Failed to allocate descriptor set. Possible issue: too many allocated descriptor sets.");
+        return std::vector<VkDescriptorSet>(0);
+    };
+
+    return sets;
+}
+
+void VulkanRendererAPI::FreeDescriptorSets(std::vector<VkDescriptorSet> sets)
+{
+    auto device = VulkanGraphicsContext::Get()->GetDevice();
+
+    VK_CHECK_RESULT(vkFreeDescriptorSets(device->Raw(), s_DescriptorPool, sets.size(), sets.data()));
 }
 }

@@ -1,10 +1,13 @@
-#include "VulkanGraphicsContext.h"
-#include "VulkanDeviceCmdBuffer.h"
-#include "VulkanShaderBuffer.h"
-#include "VulkanSwapchain.h"
-#include "VulkanDevice.h"
-
-#include "VulkanMemoryAllocator.h"
+#include "Tabby/Core/Assert.h"
+#include "Tabby/Core/Base.h"
+#include <Drivers/Vulkan/VulkanMemoryAllocator.h>
+#include <Drivers/Vulkan/VulkanGraphicsContext.h>
+#include <Drivers/Vulkan/VulkanDeviceCmdBuffer.h>
+#include <Drivers/Vulkan/VulkanDescriptorSet.h>
+#include <Drivers/Vulkan/VulkanShaderBuffer.h>
+#include <Drivers/Vulkan/VulkanSwapchain.h>
+#include <Drivers/Vulkan/VulkanDevice.h>
+#include <Drivers/Vulkan/VulkanShader.h>
 
 namespace Tabby {
 
@@ -127,8 +130,8 @@ void VulkanShaderBuffer::UploadData(uint64_t offset, Buffer data)
 
         VkBufferCopy buffer_copy = {};
         buffer_copy.size = data.Size;
-        // buffer_copy.srcOffset = 0;
-        // buffer_copy.dstOffset = 0;
+        buffer_copy.srcOffset = 0;
+        buffer_copy.dstOffset = 0;
 
         VulkanDeviceCmdBuffer cmd_buffer = device->AllocateTransientCmdBuffer();
 
@@ -206,5 +209,4 @@ void VulkanShaderBuffer::Clear(Shared<VulkanDeviceCmdBuffer> cmd_buffer, uint64_
     Shared<VulkanDeviceCmdBuffer> device_cmd_buffer = ShareAs<VulkanDeviceCmdBuffer>(cmd_buffer);
     vkCmdFillBuffer(device_cmd_buffer->Raw(), m_Buffer, offset, size, value);
 }
-
 }

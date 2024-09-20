@@ -12,6 +12,7 @@ public:
     ~VulkanShader();
 
     VkPipeline RawPipeline() const { return m_Pipeline; }
+    VkPipelineLayout RawPipelineLayout() const { return m_PipelineLayout; }
     std::vector<VkPipelineShaderStageCreateInfo> GetCreateInfos() const { return m_StageCreateInfos; }
     std::vector<VkDescriptorSetLayout> GetLayouts() const { return m_SetLayouts; }
     std::vector<VkPushConstantRange> GetRanges() const { return m_Ranges; }

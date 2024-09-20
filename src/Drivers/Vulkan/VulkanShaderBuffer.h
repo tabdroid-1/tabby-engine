@@ -26,6 +26,7 @@ constexpr VkIndexType ExtractIndexType(BitMask buffer_flags)
 }
 
 class VulkanDeviceCmdBuffer;
+class VulkanDescriptorSet;
 
 class VulkanShaderBuffer : public ShaderBuffer {
 public:
@@ -40,8 +41,6 @@ public:
     uint64_t GetDeviceAddress();
     uint64_t GetPerFrameSize();
     uint64_t GetFrameOffset();
-    // uint64_t GetPerFrameSize() { return m_Specification.size / VulkanGraphicsContext::GetFramesInFlight(); }
-    // uint64_t GetFrameOffset() { return VulkanGraphicsContext::Get()->GetSwapchain()->GetCurrentFrameIndex() * GetPerFrameSize(); }
     VmaAllocation RawAllocation() const { return m_Allocation; }
     void* GetAdditionalData() const { return m_Data; }
 
