@@ -130,8 +130,16 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     m_UniformBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
     data.Release();
 
-    m_DescriptionSet = CreateShared<VulkanDescriptorSet>(m_Shader->GetLayouts()[0]);
-    m_DescriptionSet->Write(0, 0, m_UniformBuffer, data.Size, 0);
+    VulkanDescriptorBinding binding0;
+    binding0.type = VulkanDescriptorBindingType::UNIFORM_BUFFER;
+    binding0.binding = 0;
+    binding0.array_count = 1;
+
+    VulkanDescriptorSetSpecification descriptorset_spec;
+    descriptorset_spec.bindings.push_back(binding0);
+
+    m_DescriptionSet = CreateShared<VulkanDescriptorSet>(descriptorset_spec);
+    m_DescriptionSet->Write(0, 0, m_UniformBuffer, sizeof(Uniform), 0);
 }
 
 VulkanRendererAPI::~VulkanRendererAPI()
@@ -139,6 +147,8 @@ VulkanRendererAPI::~VulkanRendererAPI()
     vkDeviceWaitIdle(m_Device->Raw());
     m_VertexBuffer->Destroy();
     m_IndexBuffer->Destroy();
+    m_UniformBuffer->Destroy();
+    m_DescriptionSet->Destroy();
 
     for (auto& cmd_buffer : m_CmdBuffers)
         cmd_buffer->Destroy();
@@ -165,7 +175,6 @@ void VulkanRendererAPI::Render()
 
     m_UniformBuffer->UploadData(0, data);
 
-    // m_DescriptionSet->Write(0, 0, m_UniformBuffer, data.Size, 0);
     data.Release();
 
     m_GraphicsContext->GetSwapchain()->BeginFrame();

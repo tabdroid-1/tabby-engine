@@ -89,29 +89,21 @@ VulkanDescriptorSet::VulkanDescriptorSet(const VulkanDescriptorSetSpecification&
     m_DescriptorSet = set[0];
 }
 
-VulkanDescriptorSet::VulkanDescriptorSet(VkDescriptorSetLayout layer)
-    : m_DescriptorSet(VK_NULL_HANDLE)
-    , m_Layout(layer)
-{
-    auto device = VulkanGraphicsContext::Get()->GetDevice();
-
-    std::vector<VkDescriptorSet> set = VulkanRendererAPI::AllocateDescriptorSets(m_Layout, 1);
-    m_DescriptorSet = set[0];
-}
-
 VulkanDescriptorSet::~VulkanDescriptorSet()
 {
-    auto device = VulkanGraphicsContext::Get()->GetDevice();
-    vkDestroyDescriptorSetLayout(device->Raw(), m_Layout, nullptr);
-    VulkanRendererAPI::FreeDescriptorSets({ m_DescriptorSet });
+
+    if (m_Layout != VK_NULL_HANDLE)
+        Destroy();
 }
 
 void VulkanDescriptorSet::Destroy()
 {
     auto device = VulkanGraphicsContext::Get()->GetDevice();
     VulkanRendererAPI::FreeDescriptorSets({ m_DescriptorSet });
-    if (m_Layout != VK_NULL_HANDLE)
+    if (m_Layout != VK_NULL_HANDLE) {
         vkDestroyDescriptorSetLayout(device->Raw(), m_Layout, nullptr);
+        m_Layout = VK_NULL_HANDLE;
+    }
 }
 
 // void VulkanDescriptorSet::Write(uint16 binding, uint16 array_element, Shared<Image> image, Shared<ImageSampler> sampler)
@@ -180,5 +172,4 @@ void VulkanDescriptorSet::Write(uint16_t binding, uint16_t array_element, Shared
 
     vkUpdateDescriptorSets(device->Raw(), 1, &write_descriptor_set, 0, nullptr);
 }
-
 }

@@ -31,7 +31,6 @@ void ShaderLibrary::Init()
 void ShaderLibrary::Destroy()
 {
     if (s_Instance) {
-        UnloadAllShaders();
         delete s_Instance;
     }
 }
@@ -115,16 +114,6 @@ bool ShaderLibrary::UnloadShader(std::string name, const ShaderMacroTable& macro
     }
 
     return true;
-}
-
-void ShaderLibrary::UnloadAllShaders()
-{
-    for (auto& shaders : s_Instance->m_Library) {
-        for (auto& shader : shaders.second) {
-            shader.first->Destroy();
-        }
-    }
-    s_Instance->m_Library.clear();
 }
 
 bool ShaderLibrary::ReloadShader(std::filesystem::path name)

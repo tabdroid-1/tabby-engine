@@ -37,7 +37,6 @@ struct VulkanDescriptorSetSpecification {
 class VulkanDescriptorSet {
 public:
     VulkanDescriptorSet(const VulkanDescriptorSetSpecification& spec);
-    VulkanDescriptorSet(VkDescriptorSetLayout layout);
     ~VulkanDescriptorSet();
 
     void Destroy();

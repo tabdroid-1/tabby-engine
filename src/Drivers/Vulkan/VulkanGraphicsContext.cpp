@@ -80,7 +80,6 @@ void VulkanGraphicsContext::Destroy()
     m_RenderPass->DestroyRenderPass();
     m_Swapchain->DestroySwapchain();
     m_Swapchain->DestroySurface();
-    ShaderLibrary::UnloadAllShaders();
     m_Device->Destroy();
 #if TB_DEBUG
     m_DebugUtils->Destroy(this);
