@@ -34,6 +34,9 @@ struct VulkanDescriptorSetSpecification {
     std::vector<VulkanDescriptorBinding> bindings;
 };
 
+class Image;
+class ImageSampler;
+
 class VulkanDescriptorSet {
 public:
     VulkanDescriptorSet(const VulkanDescriptorSetSpecification& spec);
@@ -44,7 +47,7 @@ public:
     VkDescriptorSet Raw() const { return m_DescriptorSet; }
     VkDescriptorSetLayout RawLayout() const { return m_Layout; }
 
-    // void Write(uint16 binding, uint16 array_element, Shared<Image> image, Shared<ImageSampler> sampler) override;
+    void Write(uint16_t binding, uint16_t array_element, Shared<Image> image, Shared<ImageSampler> sampler);
     void Write(uint16_t binding, uint16_t array_element, ShaderBuffer* buffer, uint64_t size, uint64_t offset);
     void Write(uint16_t binding, uint16_t array_element, Shared<ShaderBuffer> buffer, uint64_t size, uint64_t offset);
 

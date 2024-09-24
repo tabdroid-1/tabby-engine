@@ -1,4 +1,5 @@
 #include "VulkanDeviceCmdBuffer.h"
+#include "Drivers/Vulkan/VulkanCommon.h"
 #include "VulkanGraphicsContext.h"
 #include "VulkanDevice.h"
 
@@ -15,9 +16,7 @@ VulkanDeviceCmdBuffer::VulkanDeviceCmdBuffer()
     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     poolInfo.queueFamilyIndex = queueFamilyIndices.graphics.value();
 
-    if (vkCreateCommandPool(device->Raw(), &poolInfo, nullptr, &m_Pool) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create command pool!");
-    }
+    VK_CHECK_RESULT(vkCreateCommandPool(device->Raw(), &poolInfo, nullptr, &m_Pool));
 
     VkCommandBufferAllocateInfo allocInfo {};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -25,9 +24,7 @@ VulkanDeviceCmdBuffer::VulkanDeviceCmdBuffer()
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = 1;
 
-    if (vkAllocateCommandBuffers(device->Raw(), &allocInfo, &m_Buffer) != VK_SUCCESS) {
-        throw std::runtime_error("failed to allocate command buffers!");
-    }
+    VK_CHECK_RESULT(vkAllocateCommandBuffers(device->Raw(), &allocInfo, &m_Buffer));
 }
 
 VulkanDeviceCmdBuffer::~VulkanDeviceCmdBuffer()

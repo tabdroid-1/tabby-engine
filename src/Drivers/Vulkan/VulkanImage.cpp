@@ -1,4 +1,3 @@
-#include "Tabby/Foundation/Types.h"
 #include <Drivers/Vulkan/VulkanDeviceCmdBuffer.h>
 #include <Drivers/Vulkan/VulkanGraphicsContext.h>
 #include <Drivers/Vulkan/VulkanMemoryAllocator.h>
@@ -39,27 +38,26 @@ VulkanImage::VulkanImage(const ImageSpecification& spec, AssetHandle id)
         break;
     default:
         TB_CORE_ASSERT(false);
-        this->CreateTexture();
         break;
     }
 
 #if TB_DEBUG
 
-    VkDebugUtilsObjectNameInfoEXT name_info = {};
-    name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
-    name_info.objectType = VK_OBJECT_TYPE_IMAGE;
-    name_info.objectHandle = (uint64_t)m_Image;
-    name_info.pObjectName = spec.debug_name.c_str();
-
-    vkSetDebugUtilsObjectNameEXT(VulkanGraphicsContext::Get()->GetDevice()->Raw(), &name_info);
-
-    VkDebugUtilsObjectNameInfoEXT view_name_info = {};
-    view_name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
-    view_name_info.objectType = VK_OBJECT_TYPE_IMAGE_VIEW;
-    view_name_info.objectHandle = (uint64_t)m_ImageView;
-    view_name_info.pObjectName = fmt::format("{} view", spec.debug_name.c_str()).c_str();
-
-    vkSetDebugUtilsObjectNameEXT(VulkanGraphicsContext::Get()->GetDevice()->Raw(), &view_name_info);
+    // VkDebugUtilsObjectNameInfoEXT name_info = {};
+    // name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+    // name_info.objectType = VK_OBJECT_TYPE_IMAGE;
+    // name_info.objectHandle = (uint64_t)m_Image;
+    // name_info.pObjectName = spec.debug_name.c_str();
+    //
+    // vkSetDebugUtilsObjectNameEXT(VulkanGraphicsContext::Get()->GetDevice()->Raw(), &name_info);
+    //
+    // VkDebugUtilsObjectNameInfoEXT view_name_info = {};
+    // view_name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+    // view_name_info.objectType = VK_OBJECT_TYPE_IMAGE_VIEW;
+    // view_name_info.objectHandle = (uint64_t)m_ImageView;
+    // view_name_info.pObjectName = fmt::format("{} view", spec.debug_name.c_str()).c_str();
+    //
+    // vkSetDebugUtilsObjectNameEXT(VulkanGraphicsContext::Get()->GetDevice()->Raw(), &view_name_info);
 
 #endif // TB_DEBUG
 }
@@ -69,16 +67,6 @@ VulkanImage::VulkanImage(const ImageSpecification& spec, VkImage image, VkImageV
 {
     m_CreatedFromRaw = true;
     this->CreateFromRaw(spec, image, view);
-}
-
-VulkanImage::VulkanImage(std::filesystem::path path)
-    : VulkanImage()
-{
-}
-
-VulkanImage::VulkanImage(const ImageSpecification& spec, const std::vector<char> data, const AssetHandle& id)
-    : VulkanImage()
-{
 }
 
 VulkanImage::~VulkanImage()
@@ -99,37 +87,37 @@ void VulkanImage::Destroy()
     m_ImageView = VK_NULL_HANDLE;
 }
 
-// void VulkanImage::SetLayout(Shared<VulkanDeviceCmdBuffer> cmd_buffer, ImageLayout new_layout, PipelineStage src_stage, PipelineStage dst_stage, BitMask src_access, BitMask dst_access)
-// {
-//     Shared<VulkanDeviceCmdBuffer> vk_cmd_buffer = ShareAs<VulkanDeviceCmdBuffer>(cmd_buffer);
-//
-//     VkImageMemoryBarrier2 image_memory_barrier = {};
-//     image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
-//     image_memory_barrier.image = m_Image;
-//     image_memory_barrier.oldLayout = (VkImageLayout)m_CurrentLayout;
-//     image_memory_barrier.newLayout = (VkImageLayout)new_layout;
-//     image_memory_barrier.srcStageMask = (BitMask)src_stage;
-//     image_memory_barrier.dstStageMask = (BitMask)dst_stage;
-//     image_memory_barrier.srcAccessMask = (VkAccessFlags)src_access;
-//     image_memory_barrier.dstAccessMask = (VkAccessFlags)dst_access;
-//     image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-//     image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-//     image_memory_barrier.subresourceRange.aspectMask = m_Specification.usage == ImageUsage::DEPTH_BUFFER ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
-//     image_memory_barrier.subresourceRange.baseArrayLayer = 0;
-//     image_memory_barrier.subresourceRange.layerCount = 1;
-//     image_memory_barrier.subresourceRange.baseMipLevel = 0;
-//     image_memory_barrier.subresourceRange.levelCount = 1;
-//
-//     VkDependencyInfo dep_info = {};
-//     dep_info.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
-//     dep_info.imageMemoryBarrierCount = 1;
-//     dep_info.pImageMemoryBarriers = &image_memory_barrier;
-//
-//     vkCmdPipelineBarrier2(vk_cmd_buffer->Raw(),
-//         &dep_info);
-//
-//     m_CurrentLayout = new_layout;
-// }
+void VulkanImage::SetLayout(Shared<VulkanDeviceCmdBuffer> cmd_buffer, ImageLayout new_layout, PipelineStage src_stage, PipelineStage dst_stage, BitMask src_access, BitMask dst_access)
+{
+    Shared<VulkanDeviceCmdBuffer> vk_cmd_buffer = ShareAs<VulkanDeviceCmdBuffer>(cmd_buffer);
+
+    VkImageMemoryBarrier2 image_memory_barrier = {};
+    image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
+    image_memory_barrier.image = m_Image;
+    image_memory_barrier.oldLayout = (VkImageLayout)m_CurrentLayout;
+    image_memory_barrier.newLayout = (VkImageLayout)new_layout;
+    image_memory_barrier.srcStageMask = (BitMask)src_stage;
+    image_memory_barrier.dstStageMask = (BitMask)dst_stage;
+    image_memory_barrier.srcAccessMask = (VkAccessFlags)src_access;
+    image_memory_barrier.dstAccessMask = (VkAccessFlags)dst_access;
+    image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    image_memory_barrier.subresourceRange.aspectMask = m_Specification.usage == ImageUsage::DEPTH_BUFFER ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
+    image_memory_barrier.subresourceRange.baseArrayLayer = 0;
+    image_memory_barrier.subresourceRange.layerCount = 1;
+    image_memory_barrier.subresourceRange.baseMipLevel = 0;
+    image_memory_barrier.subresourceRange.levelCount = 1;
+
+    VkDependencyInfo dep_info = {};
+    dep_info.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+    dep_info.imageMemoryBarrierCount = 1;
+    dep_info.pImageMemoryBarriers = &image_memory_barrier;
+
+    vkCmdPipelineBarrier2(vk_cmd_buffer->Raw(),
+        &dep_info);
+
+    m_CurrentLayout = new_layout;
+}
 
 void VulkanImage::CreateTexture()
 {
@@ -141,7 +129,9 @@ void VulkanImage::CreateTexture()
     texture_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
     texture_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     texture_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    texture_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+    texture_create_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT
+        | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+        | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
     texture_create_info.arrayLayers = 1;
     texture_create_info.mipLevels = m_Specification.mip_levels;
     texture_create_info.extent = { m_Specification.extent.x, m_Specification.extent.y, 1 };
@@ -149,13 +139,22 @@ void VulkanImage::CreateTexture()
     auto allocator = VulkanMemoryAllocator::Get();
     m_Allocation = allocator->AllocateImage(&texture_create_info, 0, &m_Image);
 
+    size_t finalSize = 0;
+
+    for (size_t i = 0; i < m_Specification.mip_levels; ++i) {
+        VkDeviceSize mipmapLevelSize { m_Specification.extent.x >> i };
+        mipmapLevelSize *= m_Specification.extent.y >> i;
+        finalSize += mipmapLevelSize;
+    }
+    finalSize *= 4;
+
     ShaderBufferSpecification staging_buffer_spec = {};
-    staging_buffer_spec.size = m_Specification.pixels.size();
+    staging_buffer_spec.size = finalSize;
     staging_buffer_spec.memory_usage = ShaderBufferMemoryUsage::COHERENT_WRITE;
     staging_buffer_spec.buffer_usage = ShaderBufferUsage::STAGING_BUFFER;
 
     Buffer data;
-    data.Size = m_Specification.pixels.size();
+    data.Size = m_Specification.pixels.size() * 4;
     data.Data = m_Specification.pixels.data();
 
     VulkanShaderBuffer staging_buffer(staging_buffer_spec, data);
@@ -182,9 +181,11 @@ void VulkanImage::CreateTexture()
         VK_PIPELINE_STAGE_TRANSFER_BIT,
         VK_PIPELINE_STAGE_TRANSFER_BIT,
         0,
+
         0,
         nullptr,
         0,
+
         nullptr,
         1,
         &barrier);
@@ -303,10 +304,7 @@ void VulkanImage::CreateRenderTarget()
 
     VK_CHECK_RESULT(vkCreateImageView(device->Raw(), &image_view_create_info, nullptr, &m_ImageView));
 
-    Shared<VulkanDeviceCmdBuffer> cmd_buffer = VulkanDeviceCmdBuffer::Create(
-        DeviceCmdBufferLevel::PRIMARY,
-        DeviceCmdBufferType::TRANSIENT,
-        DeviceCmdType::GENERAL);
+    Shared<VulkanDeviceCmdBuffer> cmd_buffer = CreateShared<VulkanDeviceCmdBuffer>();
 
     cmd_buffer->Begin();
     SetLayout(
@@ -358,10 +356,24 @@ void VulkanImage::CreateDepthBuffer()
 
     VK_CHECK_RESULT(vkCreateImageView(device->Raw(), &image_view_create_info, nullptr, &m_ImageView));
 
-    Shared<DeviceCmdBuffer> cmd_buffer = DeviceCmdBuffer::Create(
-        DeviceCmdBufferLevel::PRIMARY,
-        DeviceCmdBufferType::TRANSIENT,
-        DeviceCmdType::GENERAL);
+    // Shared<DeviceCmdBuffer> cmd_buffer = DeviceCmdBuffer::Create(
+    //     DeviceCmdBufferLevel::PRIMARY,
+    //     DeviceCmdBufferType::TRANSIENT,
+    //     DeviceCmdType::GENERAL);
+    //
+    // cmd_buffer->Begin();
+    // SetLayout(
+    //     cmd_buffer,
+    //     ImageLayout::DEPTH_STENCIL_ATTACHMENT,
+    //     PipelineStage::TOP_OF_PIPE,
+    //     PipelineStage::COLOR_ATTACHMENT_OUTPUT,
+    //     (BitMask)PipelineAccess::NONE,
+    //     (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE);
+    // cmd_buffer->End();
+    // cmd_buffer->Execute(true);
+    // cmd_buffer->Destroy();
+
+    Shared<VulkanDeviceCmdBuffer> cmd_buffer = CreateShared<VulkanDeviceCmdBuffer>();
 
     cmd_buffer->Begin();
     SetLayout(
@@ -402,7 +414,7 @@ VulkanImageSampler::VulkanImageSampler(const ImageSamplerSpecification& spec)
     sampler_create_info.addressModeV = convert(spec.address_mode);
     sampler_create_info.addressModeW = convert(spec.address_mode);
     sampler_create_info.anisotropyEnable = spec.anisotropic_filtering_level == 1.0f ? VK_FALSE : VK_TRUE;
-    sampler_create_info.maxAnisotropy = (float32)spec.anisotropic_filtering_level;
+    sampler_create_info.maxAnisotropy = (float)spec.anisotropic_filtering_level;
     sampler_create_info.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
     sampler_create_info.unnormalizedCoordinates = VK_FALSE;
     sampler_create_info.compareEnable = VK_FALSE;

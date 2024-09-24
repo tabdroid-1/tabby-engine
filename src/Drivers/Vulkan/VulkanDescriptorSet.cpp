@@ -3,6 +3,7 @@
 #include <Drivers/Vulkan/VulkanShaderBuffer.h>
 #include <Drivers/Vulkan/VulkanRendererAPI.h>
 #include <Drivers/Vulkan/VulkanDevice.h>
+#include <Drivers/Vulkan/VulkanImage.h>
 #include <Tabby/Renderer/ShaderBuffer.h>
 #include <vulkan/vulkan_core.h>
 
@@ -106,28 +107,28 @@ void VulkanDescriptorSet::Destroy()
     }
 }
 
-// void VulkanDescriptorSet::Write(uint16 binding, uint16 array_element, Shared<Image> image, Shared<ImageSampler> sampler)
-// {
-//     auto device = VulkanGraphicsContext::Get()->GetDevice();
-//     Shared<VulkanImage> vk_image = ShareAs<VulkanImage>(image);
-//     Shared<VulkanImageSampler> vk_sampler = ShareAs<VulkanImageSampler>(sampler);
-//
-//     VkDescriptorImageInfo descriptor_image_info = {};
-//     descriptor_image_info.imageView = vk_image->RawView();
-//     descriptor_image_info.sampler = vk_sampler->Raw();
-//     descriptor_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-//
-//     VkWriteDescriptorSet write_descriptor_set = {};
-//     write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-//     write_descriptor_set.dstSet = m_DescriptorSet;
-//     write_descriptor_set.dstBinding = binding;
-//     write_descriptor_set.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-//     write_descriptor_set.dstArrayElement = array_element;
-//     write_descriptor_set.descriptorCount = 1;
-//     write_descriptor_set.pImageInfo = &descriptor_image_info;
-//
-//     vkUpdateDescriptorSets(device->Raw(), 1, &write_descriptor_set, 0, nullptr);
-// }
+void VulkanDescriptorSet::Write(uint16_t binding, uint16_t array_element, Shared<Image> image, Shared<ImageSampler> sampler)
+{
+    auto device = VulkanGraphicsContext::Get()->GetDevice();
+    Shared<VulkanImage> vk_image = ShareAs<VulkanImage>(image);
+    Shared<VulkanImageSampler> vk_sampler = ShareAs<VulkanImageSampler>(sampler);
+
+    VkDescriptorImageInfo descriptor_image_info = {};
+    descriptor_image_info.imageView = vk_image->RawView();
+    descriptor_image_info.sampler = vk_sampler->Raw();
+    descriptor_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+    VkWriteDescriptorSet write_descriptor_set = {};
+    write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    write_descriptor_set.dstSet = m_DescriptorSet;
+    write_descriptor_set.dstBinding = binding;
+    write_descriptor_set.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    write_descriptor_set.dstArrayElement = array_element;
+    write_descriptor_set.descriptorCount = 1;
+    write_descriptor_set.pImageInfo = &descriptor_image_info;
+
+    vkUpdateDescriptorSets(device->Raw(), 1, &write_descriptor_set, 0, nullptr);
+}
 
 void VulkanDescriptorSet::Write(uint16_t binding, uint16_t array_element, ShaderBuffer* buffer, uint64_t size, uint64_t offset)
 {

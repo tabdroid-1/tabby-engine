@@ -29,6 +29,9 @@ using Matrix2 = glm::mat2;
 using Matrix3 = glm::mat3;
 using Matrix4 = glm::mat4;
 
+using RGB32 = glm::u8vec3;
+using RGBA32 = glm::u8vec4;
+
 using Quaternion = glm::quat;
 
 struct Sphere {

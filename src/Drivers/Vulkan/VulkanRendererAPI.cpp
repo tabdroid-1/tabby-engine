@@ -4,18 +4,16 @@
 #include <Drivers/Vulkan/VulkanRendererAPI.h>
 #include <Drivers/Vulkan/VulkanRenderPass.h>
 #include <Drivers/Vulkan/VulkanSwapchain.h>
+#include <Drivers/Vulkan/VulkanPipeline.h>
 #include <Drivers/Vulkan/VulkanShader.h>
 #include <Drivers/Vulkan/VulkanDevice.h>
-#include <Tabby/Core/Input/Input.h>
 
 #include <Tabby/Renderer/ShaderLibrary.h>
+#include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Core/Input/Input.h>
 
 #include <imgui.h>
-#include <vulkan/vulkan_core.h>
 
-#include "Drivers/Vulkan/VulkanDescriptorSet.h"
-#include "Tabby/Core/Base.h"
-#include "Tabby/Core/Input/KeyCode.h"
 #include "backends/imgui_impl_vulkan.h"
 
 namespace Tabby {
@@ -23,6 +21,7 @@ namespace Tabby {
 struct Vertex {
     Vector2 position;
     Vector3 color;
+    Vector2 texCoord;
 };
 
 // const std::vector<Vector3> vertices = {
@@ -33,10 +32,10 @@ struct Vertex {
 // };
 
 const std::vector<Vertex> vertices = {
-    { { -0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
-    { { 0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f } },
-    { { 0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f } },
-    { { -0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f } }
+    { { -0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } },
+    { { 0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f } },
+    { { 0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } },
+    { { -0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }
 };
 
 const std::vector<uint16_t> indices = {
@@ -85,9 +84,10 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     ShaderSpecification shader_spec;
     shader_spec = ShaderSpecification::Default();
 
-    ShaderBufferLayoutElement element("inPosition", ShaderDataType::FLOAT2);
-    ShaderBufferLayoutElement element2("inColor", ShaderDataType::FLOAT3);
-    ShaderBufferLayout buffer_layout(std::vector { element, element2 });
+    ShaderBufferLayoutElement element0("inPosition", ShaderDataType::FLOAT2);
+    ShaderBufferLayoutElement element1("inColor", ShaderDataType::FLOAT3);
+    ShaderBufferLayoutElement element2("inColor", ShaderDataType::FLOAT2);
+    ShaderBufferLayout buffer_layout(std::vector { element0, element1, element2 });
     shader_spec.input_layout = buffer_layout;
 
     ShaderLibrary::LoadShader(shader_spec, "shaders/vulkan/test.glsl");
@@ -130,16 +130,37 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     m_UniformBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
     data.Release();
 
+    auto image_asset_handle = AssetManager::LoadAssetSource("textures/Tabby.png");
+    m_Image = AssetManager::GetAsset<Image>(image_asset_handle);
+
+    ImageSamplerSpecification sampler_spec = {};
+    sampler_spec.min_filtering_mode = SamplerFilteringMode::LINEAR;
+    sampler_spec.mag_filtering_mode = SamplerFilteringMode::NEAREST;
+    sampler_spec.mipmap_filtering_mode = SamplerFilteringMode::LINEAR;
+    sampler_spec.address_mode = SamplerAddressMode::REPEAT;
+    sampler_spec.min_lod = 0.0f;
+    sampler_spec.max_lod = 1000.0f;
+    sampler_spec.lod_bias = 0.0f;
+    sampler_spec.anisotropic_filtering_level = 16;
+
+    m_ImageSampler = ImageSampler::Create(sampler_spec);
+
     VulkanDescriptorBinding binding0;
     binding0.type = VulkanDescriptorBindingType::UNIFORM_BUFFER;
     binding0.binding = 0;
     binding0.array_count = 1;
 
+    VulkanDescriptorBinding binding1;
+    binding1.type = VulkanDescriptorBindingType::SAMPLED_IMAGE;
+    binding1.binding = 1;
+    binding1.array_count = 1;
+
     VulkanDescriptorSetSpecification descriptorset_spec;
-    descriptorset_spec.bindings.push_back(binding0);
+    descriptorset_spec.bindings = { binding0, binding1 };
 
     m_DescriptionSet = CreateShared<VulkanDescriptorSet>(descriptorset_spec);
     m_DescriptionSet->Write(0, 0, m_UniformBuffer, sizeof(Uniform), 0);
+    m_DescriptionSet->Write(1, 0, m_Image, m_ImageSampler);
 }
 
 VulkanRendererAPI::~VulkanRendererAPI()

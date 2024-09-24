@@ -82,78 +82,75 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::ImportImageSource");
 
-    TB_CORE_ASSERT_TAGGED(false, "Not implemented");
+    // TB_CORE_ASSERT_TAGGED(false, "Not implemented");
+    //
+    // return 0;
+    if (m_UUIDs.find(path.string()) != m_UUIDs.end())
+        return m_UUIDs.at(path.string());
 
-    return 0;
-    // if (m_UUIDs.find(path.string()) != m_UUIDs.end())
-    //     return m_UUIDs.at(path.string());
-    //
-    // Buffer data;
-    // int image_width, image_height, channels;
-    //
-    // {
-    //     TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::ImportImageSource::Read");
-    //     stbi_set_flip_vertically_on_load(true);
-    //     std::vector<unsigned char> imageData;
-    //
-    //     SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
-    //     if (rw != nullptr) {
-    //         Sint64 size = SDL_RWsize(rw);
-    //
-    //         if (size > 0) {
-    //             imageData.resize(size);
-    //             Sint64 bytesRead = SDL_RWread(rw, imageData.data(), 1, size);
-    //             if (bytesRead != size) {
-    //                 // Handle read error
-    //                 TB_CORE_ERROR("Error reading file {0}", path);
-    //                 imageData.clear(); // Clear the imageData to indicate an error
-    //             }
-    //         }
-    //
-    //         SDL_RWclose(rw);
-    //     } else {
-    //         // Handle file open error
-    //         TB_CORE_ERROR("Could not open file {0}", path);
-    //     }
-    //
-    //     data.Data = stbi_load_from_memory(imageData.data(), static_cast<int>(imageData.size()), &image_width, &image_height, &channels, 4);
-    //     channels = 4;
-    //
-    //     if (data.Data == nullptr) {
-    //         TB_CORE_ERROR("TextureImporter::ImportTextureSource - Could not load texture from filepath: {}", path.string());
-    //     }
-    // }
-    //
-    // data.Size = image_width * image_height * channels;
-    //
-    // // Configure file header
-    // // AssetFileHeader file_header = {};
-    // // file_header.header_size = sizeof(AssetFileHeader);
-    // // file_header.asset_type = AssetType::IMAGE_SRC;
-    // // file_header.subresources_size = 0;
-    // // file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
-    //
-    // // Compute metadata for subresources
-    // // std::array<AssetFileSubresourceMetadata, 16> subresources_metadata = {};
-    //
-    // TextureSpecification texture_spec = {};
-    // texture_spec.Format = ImageFormat::RGBA8;
-    // texture_spec.Width = image_width;
-    // texture_spec.Height = image_height;
-    // texture_spec.type = ImageType::TYPE_2D;
-    // texture_spec.usage = ImageUsage::TEXTURE;
-    // texture_spec.array_layers = 1;
-    // texture_spec.path = path;
-    // texture_spec.UnpackAlignment = 4;
-    // texture_spec.GenerateMips = false;
-    //
-    // Shared<Texture> image = Texture::Create(texture_spec, handle, data);
-    // data.Release();
-    //
-    // m_AssetRegistry.emplace(image->Handle, image);
-    // m_UUIDs.emplace(path.string(), image->Handle);
-    //
-    // return image->Handle;
+    std::vector<byte> image_data;
+    int image_width, image_height, channels;
+
+    {
+        TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::ImportImageSource::Read");
+        stbi_set_flip_vertically_on_load(true);
+        std::vector<unsigned char> image_source;
+
+        SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
+        if (rw != nullptr) {
+            Sint64 size = SDL_RWsize(rw);
+
+            if (size > 0) {
+                image_source.resize(size);
+                Sint64 bytesRead = SDL_RWread(rw, image_source.data(), 1, size);
+                if (bytesRead != size) {
+                    // Handle read error
+                    TB_CORE_ERROR("Error reading file {0}", path);
+                    image_source.clear(); // Clear the imageData to indicate an error
+                }
+            }
+
+            SDL_RWclose(rw);
+        } else {
+            // Handle file open error
+            TB_CORE_ERROR("Could not open file {0}", path);
+        }
+
+        byte* raw_image_data = stbi_load_from_memory(image_source.data(), static_cast<int>(image_source.size()), &image_width, &image_height, &channels, 4);
+
+        image_data.assign(raw_image_data, raw_image_data + (image_width * image_height));
+        channels = 4;
+
+        if (image_data.empty()) {
+            TB_CORE_ERROR("TextureImporter::ImportTextureSource - Could not load texture from filepath: {}", path.string());
+        }
+    }
+
+    // Configure file header
+    // AssetFileHeader file_header = {};
+    // file_header.header_size = sizeof(AssetFileHeader);
+    // file_header.asset_type = AssetType::IMAGE_SRC;
+    // file_header.subresources_size = 0;
+    // file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
+
+    // Compute metadata for subresources
+    // std::array<AssetFileSubresourceMetadata, 16> subresources_metadata = {};
+    ImageSpecification texture_spec = {};
+    texture_spec.pixels = std::move(image_data);
+    texture_spec.format = ImageFormat::RGBA32_UNORM;
+    texture_spec.type = ImageType::TYPE_2D;
+    texture_spec.usage = ImageUsage::TEXTURE;
+    texture_spec.extent = { (uint32_t)image_width, (uint32_t)image_height, 1 };
+    texture_spec.array_layers = 1;
+    texture_spec.mip_levels = Utils::ComputeNumMipLevelsBC7(image_width, image_height) + 1;
+    texture_spec.path = path;
+
+    Shared<Image> image = Image::Create(texture_spec, handle);
+
+    m_AssetRegistry.emplace(image->Handle, image);
+    m_UUIDs.emplace(path.string(), image->Handle);
+
+    return image->Handle;
 }
 
 AssetHandle AssetManager::ImportFontSource(std::filesystem::path path, AssetHandle handle)

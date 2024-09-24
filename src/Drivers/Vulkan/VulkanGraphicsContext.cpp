@@ -55,6 +55,7 @@ VulkanGraphicsContext::VulkanGraphicsContext()
 #endif
 
     VkPhysicalDeviceFeatures device_features = {};
+    device_features.samplerAnisotropy = true;
 
     std::shared_ptr<VulkanPhysicalDevice> device = VulkanPhysicalDevice::Select(this);
     m_Device = std::make_shared<VulkanDevice>(device, std::forward<VkPhysicalDeviceFeatures>(device_features));

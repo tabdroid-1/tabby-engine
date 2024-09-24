@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Drivers/Vulkan/VulkanDescriptorSet.h"
+#include "Tabby/Renderer/Image.h"
 #include <Drivers/Vulkan/VulkanCommon.h>
 #include <Tabby/Foundation/Types.h>
 #include <Tabby/Renderer/RendererAPI.h>
@@ -79,6 +80,9 @@ private:
     Shared<VulkanShaderBuffer> m_IndexBuffer;
     Shared<VulkanShaderBuffer> m_UniformBuffer;
     Shared<VulkanDescriptorSet> m_DescriptionSet;
+
+    Shared<Image> m_Image;
+    Shared<ImageSampler> m_ImageSampler;
 };
 
 }

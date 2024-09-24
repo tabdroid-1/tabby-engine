@@ -168,7 +168,7 @@ VulkanDevice::VulkanDevice(std::shared_ptr<VulkanPhysicalDevice> physical_device
     device_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     device_create_info.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     device_create_info.pQueueCreateInfos = queueCreateInfos.data();
-    device_create_info.pEnabledFeatures = {};
+    device_create_info.pEnabledFeatures = &features;
     device_create_info.ppEnabledExtensionNames = enabled_extensions.data();
     device_create_info.enabledExtensionCount = enabled_extensions.size();
 

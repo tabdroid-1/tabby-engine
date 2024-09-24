@@ -1,10 +1,12 @@
 #pragma once
 
+#include <Drivers/Vulkan/VulkanCommon.h>
+
 #include <Tabby/Renderer/Shader.h>
 
-#include "VulkanCommon.h"
-
 namespace Tabby {
+
+class VulkanPipeline;
 
 class VulkanShader : public Shader {
 public:
@@ -13,6 +15,8 @@ public:
 
     VkPipeline RawPipeline() const { return m_Pipeline; }
     VkPipelineLayout RawPipelineLayout() const { return m_PipelineLayout; }
+
+    // Shared<VulkanPipeline> GetPipeline() { return m_Pipeline; }
     std::vector<VkPipelineShaderStageCreateInfo> GetCreateInfos() const { return m_StageCreateInfos; }
     std::vector<VkDescriptorSetLayout> GetLayouts() const { return m_SetLayouts; }
     std::vector<VkPushConstantRange> GetRanges() const { return m_Ranges; }
@@ -31,6 +35,8 @@ private:
 
 private:
     ShaderSpecification m_Specification;
+
+    // Shared<VulkanPipeline> m_Pipeline;
 
     std::vector<VkPipelineShaderStageCreateInfo> m_StageCreateInfos;
     std::vector<VkDescriptorSetLayout> m_SetLayouts;

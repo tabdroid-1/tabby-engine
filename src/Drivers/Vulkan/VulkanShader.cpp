@@ -1,10 +1,14 @@
-#include "VulkanRenderPass.h"
-#include "VulkanSwapchain.h"
-#include "VulkanShader.h"
-#include "VulkanDevice.h"
-#include "VulkanImage.h"
+#include <Drivers/Vulkan/VulkanRenderPass.h>
+#include <Drivers/Vulkan/VulkanSwapchain.h>
+#include <Drivers/Vulkan/VulkanPipeline.h>
+#include <Drivers/Vulkan/VulkanShader.h>
+#include <Drivers/Vulkan/VulkanDevice.h>
+#include <Drivers/Vulkan/VulkanImage.h>
 
+#include "Tabby/Core/Base.h"
+#include "Tabby/Renderer/Pipeline.h"
 #include "VulkanGraphicsContext.h"
+#include "glm/ext/scalar_constants.hpp"
 
 #include <spirv_reflect.c>
 
@@ -314,6 +318,16 @@ VulkanShader::VulkanShader(const ShaderSpecification& spec, std::map<ShaderStage
         }
     }
 
+    // VulkanPipelineSpecification pipeline_spec = VulkanPipelineSpecification::Default();
+    // pipeline_spec.shader = this;
+    // pipeline_spec.input_layout = m_Specification.input_layout;
+    //
+    // if (binaries.find(ShaderStage::COMPUTE) != binaries.end()) {
+    //     pipeline_spec.type = PipelineType::COMPUTE;
+    // }
+    //
+    // m_Pipeline = CreateShared<VulkanPipeline>(pipeline_spec);
+
     if (binaries.find(ShaderStage::VERTEX) != binaries.end() || binaries.find(ShaderStage::FRAGMENT) != binaries.end()) {
         CreateGraphicsPipeline();
     } else {
@@ -340,6 +354,7 @@ void VulkanShader::Destroy()
     for (auto& stage : m_StageCreateInfos)
         stage.module = VK_NULL_HANDLE;
 
+    // m_Pipeline->Destroy();
     vkDestroyPipeline(device->Raw(), m_Pipeline, nullptr);
     vkDestroyPipelineLayout(device->Raw(), m_PipelineLayout, nullptr);
 }
