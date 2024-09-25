@@ -50,6 +50,7 @@ struct ShaderBufferSpecification {
 class ShaderBuffer {
 public:
     static Shared<ShaderBuffer> Create(const ShaderBufferSpecification& spec, Buffer data = Buffer());
+    static Shared<ShaderBuffer> Create(const ShaderBufferSpecification& spec, void* data, uint64_t data_size);
 
     virtual ~ShaderBuffer() {};
 
@@ -57,6 +58,7 @@ public:
 
     virtual ShaderBufferSpecification GetSpecification() const = 0;
 
+    virtual void UploadData(uint64_t offset, void* data, uint64_t data_size) = 0;
     virtual void UploadData(uint64_t offset, Buffer data) = 0;
 };
 

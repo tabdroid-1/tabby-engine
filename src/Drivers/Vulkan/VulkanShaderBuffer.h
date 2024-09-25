@@ -31,6 +31,7 @@ class VulkanDescriptorSet;
 class VulkanShaderBuffer : public ShaderBuffer {
 public:
     VulkanShaderBuffer(const ShaderBufferSpecification& spec, Buffer data = Buffer());
+    VulkanShaderBuffer(const ShaderBufferSpecification& spec, void* data, uint64_t data_size);
     ~VulkanShaderBuffer();
 
     void Destroy() override;
@@ -45,6 +46,7 @@ public:
     void* GetAdditionalData() const { return m_Data; }
 
     void UploadData(uint64_t offset, Buffer data) override;
+    void UploadData(uint64_t offset, void* data, uint64_t data_size) override;
     void CopyRegionTo(Shared<VulkanDeviceCmdBuffer> cmd_buffer, Shared<ShaderBuffer> dst_buffer, uint64_t src_offset, uint64_t dst_offset, uint64_t size);
     void Clear(Shared<VulkanDeviceCmdBuffer> cmd_buffer, uint64_t offset, uint64_t size, uint32_t value);
 

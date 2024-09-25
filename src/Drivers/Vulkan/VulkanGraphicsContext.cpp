@@ -10,7 +10,6 @@
 
 #include <SDL.h>
 #include <SDL_vulkan.h>
-#include <MoltenVK/mvk_vulkan.h>
 
 namespace Tabby {
 

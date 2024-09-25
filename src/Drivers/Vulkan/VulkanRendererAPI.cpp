@@ -19,30 +19,44 @@
 namespace Tabby {
 
 struct Vertex {
-    Vector2 position;
+    Vector3 position;
     Vector3 color;
     Vector2 texCoord;
 };
 
-// const std::vector<Vector3> vertices = {
-//     { Vector3(-0.5f, -0.5f, 0.0f) },
-//     { Vector3(0.5f, -0.5f, 0.0f) },
-//     { Vector3(0.5f, 0.5f, 0.0f) },
-//     { Vector3(-0.5f, 0.5f, 0.0f) }
+// const std::vector<Vertex> vertices = {
+//     { { -0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } },
+//     { { 0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f } },
+//     { { 0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } },
+//     { { -0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }
+// };
+//
+// const std::vector<uint16_t> indices = {
+//     0, 1, 2, 2, 3, 0
 // };
 
 const std::vector<Vertex> vertices = {
-    { { -0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } },
-    { { 0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f } },
-    { { 0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } },
-    { { -0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }
+    { { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } },
+    { { 0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f } },
+    { { 0.5f, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f } },
+    { { -0.5f, 0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } },
+
+    { { -0.5f, -0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } },
+    { { 0.5f, -0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f } },
+    { { 0.5f, 0.5f, -0.5f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f } },
+    { { -0.5f, 0.5f, -0.5f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } }
 };
 
 const std::vector<uint16_t> indices = {
-    0, 1, 2, 2, 3, 0
+    0, 1, 2, 2, 3, 0,
+    4, 5, 6, 6, 7, 4
 };
 
-Uniform m_UniformBufferData = { { 0.0f, 0.0f } };
+struct Uniform {
+    Matrix4 model;
+    Matrix4 view;
+    Matrix4 proj;
+};
 
 VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     : m_Config(config)
@@ -84,7 +98,7 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     ShaderSpecification shader_spec;
     shader_spec = ShaderSpecification::Default();
 
-    ShaderBufferLayoutElement element0("inPosition", ShaderDataType::FLOAT2);
+    ShaderBufferLayoutElement element0("inPosition", ShaderDataType::FLOAT3);
     ShaderBufferLayoutElement element1("inColor", ShaderDataType::FLOAT3);
     ShaderBufferLayoutElement element2("inColor", ShaderDataType::FLOAT2);
     ShaderBufferLayout buffer_layout(std::vector { element0, element1, element2 });
@@ -92,9 +106,6 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
 
     ShaderLibrary::LoadShader(shader_spec, "shaders/vulkan/test.glsl");
     m_Shader = ShareAs<VulkanShader>(ShaderLibrary::GetShader("test.glsl"));
-
-    // std::vector<byte> vertex_data(icosphere_data.first.size() * sizeof(glm::vec3));
-    // memcpy(vertex_data.data(), icosphere_data.first.data(), vertex_data.size());
 
     Buffer data;
     data.Allocate(vertices.size() * sizeof(Vertex));
@@ -121,7 +132,7 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     data.Release();
 
     data.Allocate(sizeof(Uniform));
-    memcpy(data.Data, &m_UniformBufferData, sizeof(m_UniformBufferData));
+    // memcpy(data.Data, nullptr, sizeof(m_UniformBufferData));
     buffer_spec.buffer_usage = ShaderBufferUsage::UNIFORM_BUFFER;
     buffer_spec.heap = ShaderBufferMemoryHeap::HOST;
     buffer_spec.memory_usage = ShaderBufferMemoryUsage::COHERENT_WRITE;
@@ -179,20 +190,20 @@ VulkanRendererAPI::~VulkanRendererAPI()
 
 void VulkanRendererAPI::Render()
 {
-    m_UniformBufferData.position = { 0.0f, 0.0f };
-    if (Input::GetKey(Key::A))
-        m_UniformBufferData.position.x--;
-    if (Input::GetKey(Key::D))
-        m_UniformBufferData.position.x++;
+    static auto startTime = std::chrono::high_resolution_clock::now();
 
-    if (Input::GetKey(Key::S))
-        m_UniformBufferData.position.y++;
-    if (Input::GetKey(Key::W))
-        m_UniformBufferData.position.y--;
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    Uniform ubo {};
+    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.proj = glm::perspective(glm::radians(45.0f), VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().width / (float)VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().height, 0.1f, 10.0f);
+    ubo.proj[1][1] *= 1;
 
     Buffer data;
     data.Allocate(sizeof(Uniform));
-    memcpy(data.Data, &m_UniformBufferData, sizeof(Uniform));
+    memcpy(data.Data, &ubo, sizeof(Uniform));
 
     m_UniformBuffer->UploadData(0, data);
 

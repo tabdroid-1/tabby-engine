@@ -9,4 +9,9 @@ Shared<ShaderBuffer> ShaderBuffer::Create(const ShaderBufferSpecification& spec,
     return CreateShared<VulkanShaderBuffer>(spec, data);
 }
 
+Shared<ShaderBuffer> ShaderBuffer::Create(const ShaderBufferSpecification& spec, void* data, uint64_t data_size)
+{
+    return CreateShared<VulkanShaderBuffer>(spec, data, data_size);
+}
+
 }

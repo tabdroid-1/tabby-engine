@@ -18,10 +18,6 @@ class VulkanSwapchain;
 class VulkanDevice;
 class VulkanShader;
 
-struct Uniform {
-    Vector2 position;
-};
-
 class VulkanRendererAPI : public RendererAPI {
 public:
     VulkanRendererAPI(const RendererConfig& config);

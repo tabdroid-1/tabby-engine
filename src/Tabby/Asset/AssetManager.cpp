@@ -1,4 +1,6 @@
+#include <Tabby/Asset/AssetCompressor.h>
 #include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Renderer/Renderer.h>
 #include <Tabby/Asset/AssetFile.h>
 #include <Tabby/Renderer/Image.h>
 // #include <Tabby/Renderer/Font.h>
@@ -81,19 +83,17 @@ AssetHandle AssetManager::ImportMeshSource(std::filesystem::path path, AssetHand
 AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHandle handle)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::ImportImageSource");
-
-    // TB_CORE_ASSERT_TAGGED(false, "Not implemented");
-    //
-    // return 0;
     if (m_UUIDs.find(path.string()) != m_UUIDs.end())
         return m_UUIDs.at(path.string());
 
-    std::vector<byte> image_data;
+    std::vector<RGBA32> image_data;
     int image_width, image_height, channels;
 
     {
         TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::ImportImageSource::Read");
-        stbi_set_flip_vertically_on_load(true);
+
+        if (Renderer::GetAPI() != Renderer::API::Vulkan)
+            stbi_set_flip_vertically_on_load(true);
         std::vector<unsigned char> image_source;
 
         SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
@@ -116,7 +116,7 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
             TB_CORE_ERROR("Could not open file {0}", path);
         }
 
-        byte* raw_image_data = stbi_load_from_memory(image_source.data(), static_cast<int>(image_source.size()), &image_width, &image_height, &channels, 4);
+        RGBA32* raw_image_data = (RGBA32*)stbi_load_from_memory(image_source.data(), static_cast<int>(image_source.size()), &image_width, &image_height, &channels, 4);
 
         image_data.assign(raw_image_data, raw_image_data + (image_width * image_height));
         channels = 4;
@@ -125,18 +125,15 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
             TB_CORE_ERROR("TextureImporter::ImportTextureSource - Could not load texture from filepath: {}", path.string());
         }
     }
+    // Generate mip map
+    std::vector<RGBA32> full_image_data = AssetCompressor::GenerateMipMaps(image_data, image_width, image_height);
 
-    // Configure file header
-    // AssetFileHeader file_header = {};
-    // file_header.header_size = sizeof(AssetFileHeader);
-    // file_header.asset_type = AssetType::IMAGE_SRC;
-    // file_header.subresources_size = 0;
-    // file_header.additional_data = (uint64_t)image_width | (uint64_t)image_height << 32;
+    std::vector<byte> raw(full_image_data.size() * sizeof(RGBA32));
+    memcpy(raw.data(), full_image_data.data(), full_image_data.size() * sizeof(RGBA32));
+    full_image_data.clear();
 
-    // Compute metadata for subresources
-    // std::array<AssetFileSubresourceMetadata, 16> subresources_metadata = {};
     ImageSpecification texture_spec = {};
-    texture_spec.pixels = std::move(image_data);
+    texture_spec.pixels = std::move(raw);
     texture_spec.format = ImageFormat::RGBA32_UNORM;
     texture_spec.type = ImageType::TYPE_2D;
     texture_spec.usage = ImageUsage::TEXTURE;

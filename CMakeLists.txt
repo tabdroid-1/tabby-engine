@@ -286,6 +286,7 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GTK4 REQUIRED IMPORTED_TARGET gtk4)
+    pkg_check_modules(shaderc REQUIRED IMPORTED_TARGET shaderc)
 
     message(STATUS "Generating scripts for Linux")
     target_link_libraries(${PROJECT_NAME} PRIVATE 

@@ -100,6 +100,25 @@ namespace Utils {
         return storage_req;
     }
 
+    inline uint32_t ComputeMipLevelsStorage(uint32_t pixel_size, uint16_t image_width, uint16_t image_height)
+    {
+        uint32_t mip_levels_req = log2(std::min(image_width, image_height)) - 2;
+
+        uint32_t current_width = image_width;
+        uint32_t current_height = image_height;
+
+        uint32_t storage_req = current_width * current_height * pixel_size;
+
+        for (int i = 1; i < mip_levels_req + 1; i++) {
+            uint32_t req_storage_for_current_mip = (current_width / 2) * (current_height / 2);
+            storage_req += req_storage_for_current_mip * pixel_size;
+            current_width /= 2;
+            current_height /= 2;
+        }
+
+        return storage_req;
+    }
+
 }
 
 }
