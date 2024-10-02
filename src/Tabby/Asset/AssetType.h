@@ -13,6 +13,7 @@ enum class AssetType : uint8_t {
     TABBY_MODEL,
     TABBY_IMAGE,
     TABBY_AUDIO,
+    TABBY_MATERIAL,
     UNKNOWN
 };
 

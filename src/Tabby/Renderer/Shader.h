@@ -56,12 +56,15 @@ public:
     virtual void Destroy() = 0;
 
     UUID GetID() const { return m_ID; }
+    uint32_t GetVertexBufferSize() const { return m_VertexBufferSize; }
 
     // virtual void RestoreShaderModule(std::filesystem::path path) = 0;
 
     bool operator==(Shared<Shader> other) { return m_ID == other->m_ID; }
 
 protected:
+    uint32_t m_VertexBufferSize = 0;
+
     UUID m_ID;
 };
 

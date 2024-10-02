@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Drivers/Vulkan/VulkanDescriptorSet.h>
 #include <Drivers/Vulkan/VulkanCommon.h>
 
 #include <Tabby/Renderer/Shader.h>
@@ -8,85 +9,36 @@ namespace Tabby {
 
 class VulkanPipeline;
 
+struct VulkanDescriptorInfo {
+    std::vector<uint32_t> binding_sizes;
+    std::vector<std::string> binding_names;
+    std::vector<VulkanDescriptorBinding> bindings;
+};
+
 class VulkanShader : public Shader {
 public:
     VulkanShader(const ShaderSpecification& spec, std::map<ShaderStage, std::vector<uint32_t>> binaries);
     ~VulkanShader();
 
-    VkPipeline RawPipeline() const { return m_Pipeline; }
-    VkPipelineLayout RawPipelineLayout() const { return m_PipelineLayout; }
-
-    // Shared<VulkanPipeline> GetPipeline() { return m_Pipeline; }
+    Shared<VulkanPipeline> GetPipeline() { return m_Pipeline; }
+    std::vector<VulkanDescriptorInfo> GetDescriptorInfos() const { return m_DescriptorInfos; }
     std::vector<VkPipelineShaderStageCreateInfo> GetCreateInfos() const { return m_StageCreateInfos; }
     std::vector<VkDescriptorSetLayout> GetLayouts() const { return m_SetLayouts; }
     std::vector<VkPushConstantRange> GetRanges() const { return m_Ranges; }
     void Destroy() override;
 
-    /*
-     *	@brief returns status of "dirty" bit. It indicates if shader is still valid. It may be invalid due to several reasons:
-     *	unsuccessful reflection, reload required etc.
-     */
-
-    // void RestoreShaderModule(std::filesystem::path path) override;
-
-private:
-    void CreateGraphicsPipeline();
-    void CreateComputePipeline();
-
 private:
     ShaderSpecification m_Specification;
 
-    // Shared<VulkanPipeline> m_Pipeline;
+    Shared<VulkanPipeline> m_Pipeline;
+
+    std::vector<ShaderDataType> m_VertexInputLayout;
+    std::vector<VulkanDescriptorInfo> m_DescriptorInfos;
 
     std::vector<VkPipelineShaderStageCreateInfo> m_StageCreateInfos;
     std::vector<VkDescriptorSetLayout> m_SetLayouts;
     std::vector<VkPushConstantRange> m_Ranges;
-    VkPipelineLayout m_PipelineLayout;
-    VkPipeline m_Pipeline;
     bool m_Dirty = false;
 };
 
 }
-
-// #pragma once
-//
-// #include "VulkanCommon.h"
-//
-// #include <Tabby/Renderer/Shader.h>
-//
-// namespace Tabby {
-//
-// class VulkanPipeline;
-//
-// class VulkanShader : public Shader {
-// public:
-//     VulkanShader(std::map<ShaderStage, std::vector<uint8_t>> binaries);
-//     ~VulkanShader();
-//
-//     std::vector<VkPipelineShaderStageCreateInfo> GetCreateInfos() const { return m_StageCreateInfos; }
-//     std::vector<VkDescriptorSetLayout> GetLayouts() const { return m_SetLayouts; }
-//     std::vector<VkPushConstantRange> GetRanges() const { return m_Ranges; }
-//
-//     VkPipeline RawPipeline() const { return m_Pipeline; }
-//
-//     void Destroy();
-//
-//     /*
-//      *	@brief returns status of "dirty" bit. It indicates if shader is still valid. It may be invalid due to several reasons:
-//      *	unsuccessful reflection, reload required etc.
-//      */
-//
-//     void RestoreShaderModule(const std::string& path);
-//
-// private:
-//     // std::shared_ptr<VulkanPipeline> m_Pipeline;
-//
-//     VkPipelineLayout m_PipelineLayout;
-//     VkPipeline m_Pipeline;
-//
-//     std::vector<VkPipelineShaderStageCreateInfo> m_StageCreateInfos;
-//     std::vector<VkDescriptorSetLayout> m_SetLayouts;
-//     std::vector<VkPushConstantRange> m_Ranges;
-//     bool m_Dirty = false;
-// };
-// }

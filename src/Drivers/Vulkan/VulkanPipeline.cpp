@@ -111,11 +111,7 @@ VulkanPipeline::VulkanPipeline(const VulkanPipelineSpecification& spec)
     case PipelineType::COMPUTE:
         CreateCompute();
         break;
-    // case PipelineType::RAY_TRACING:
-    //     std::unreachable();
-    //     break;
     default:
-        // std::unreachable();
         TB_CORE_ASSERT(false);
         break;
     }
@@ -123,9 +119,8 @@ VulkanPipeline::VulkanPipeline(const VulkanPipelineSpecification& spec)
 
 VulkanPipeline::~VulkanPipeline()
 {
-    auto device = VulkanGraphicsContext::Get()->GetDevice();
-    vkDestroyPipelineLayout(device->Raw(), m_PipelineLayout, nullptr);
-    vkDestroyPipeline(device->Raw(), m_Pipeline, nullptr);
+    if (m_Pipeline != VK_NULL_HANDLE)
+        Destroy();
 }
 
 void VulkanPipeline::Destroy()
@@ -133,6 +128,8 @@ void VulkanPipeline::Destroy()
     auto device = VulkanGraphicsContext::Get()->GetDevice();
     vkDestroyPipeline(device->Raw(), m_Pipeline, nullptr);
     vkDestroyPipelineLayout(device->Raw(), m_PipelineLayout, nullptr);
+    m_Pipeline = VK_NULL_HANDLE;
+    m_PipelineLayout = VK_NULL_HANDLE;
 }
 
 void VulkanPipeline::CreateGraphics()
@@ -233,7 +230,7 @@ void VulkanPipeline::CreateGraphics()
         state.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
         state.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
         state.alphaBlendOp = VK_BLEND_OP_ADD;
-        state.colorWriteMask = VK_COLOR_COMPONENT_FLAG_BITS_MAX_ENUM;
+        state.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     }
 
     VkPipelineColorBlendStateCreateInfo color_blend_state = {};
@@ -242,12 +239,16 @@ void VulkanPipeline::CreateGraphics()
     color_blend_state.pAttachments = blend_states.data();
     color_blend_state.logicOpEnable = VK_FALSE;
     color_blend_state.logicOp = VK_LOGIC_OP_COPY;
+    color_blend_state.blendConstants[0] = 0.0f;
+    color_blend_state.blendConstants[1] = 0.0f;
+    color_blend_state.blendConstants[2] = 0.0f;
+    color_blend_state.blendConstants[3] = 0.0f;
 
     VkPipelineDepthStencilStateCreateInfo depth_stencil_state = {};
     depth_stencil_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
     depth_stencil_state.depthTestEnable = m_Specification.depth_test_enable;
     depth_stencil_state.depthWriteEnable = m_Specification.depth_test_enable;
-    depth_stencil_state.depthCompareOp = VK_COMPARE_OP_GREATER_OR_EQUAL;
+    depth_stencil_state.depthCompareOp = VK_COMPARE_OP_LESS;
     depth_stencil_state.depthBoundsTestEnable = VK_FALSE;
     depth_stencil_state.stencilTestEnable = VK_FALSE;
 
@@ -282,17 +283,6 @@ void VulkanPipeline::CreateGraphics()
 
     VK_CHECK_RESULT(vkCreatePipelineLayout(device->Raw(), &pipeline_layout_create_info, nullptr, &m_PipelineLayout));
 
-    std::vector<VkFormat> formats;
-    for (const auto& format : m_Specification.output_attachments_formats)
-        formats.push_back(convert(format));
-
-    VkPipelineRenderingCreateInfo pipeline_rendering = {};
-    pipeline_rendering.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
-    pipeline_rendering.colorAttachmentCount = formats.size();
-    pipeline_rendering.pColorAttachmentFormats = formats.data();
-    // HACK: I assume that D32_SFLOAT is chosen format. More proper way to do it is to request depth image format from pipeline spec or swapchain
-    pipeline_rendering.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT;
-
     std::vector<VkPipelineShaderStageCreateInfo> stage_infos = vk_shader->GetCreateInfos();
 
     VkGraphicsPipelineCreateInfo graphics_pipeline_create_info = {};
@@ -310,6 +300,8 @@ void VulkanPipeline::CreateGraphics()
     graphics_pipeline_create_info.layout = m_PipelineLayout;
     graphics_pipeline_create_info.pViewportState = &viewport_state;
     graphics_pipeline_create_info.renderPass = VulkanGraphicsContext::Get()->GetRenderPass()->Raw();
+    graphics_pipeline_create_info.subpass = 0;
+    graphics_pipeline_create_info.basePipelineHandle = VK_NULL_HANDLE;
 
     VkResult result = vkCreateGraphicsPipelines(device->Raw(), VK_NULL_HANDLE, 1, &graphics_pipeline_create_info, nullptr, &m_Pipeline);
     if (result != VK_SUCCESS) {

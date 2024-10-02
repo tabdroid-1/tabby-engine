@@ -2,6 +2,7 @@
 #include "VulkanRenderPass.h"
 #include "VulkanSwapchain.h"
 #include "VulkanDevice.h"
+#include "VulkanImage.h"
 
 namespace Tabby {
 
@@ -29,27 +30,43 @@ void VulkanRenderPass::CreateRenderPass()
     colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
+    VkAttachmentDescription depthAttachment {};
+    depthAttachment.format = VK_FORMAT_D32_SFLOAT_S8_UINT;
+    depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
     VkAttachmentReference colorAttachmentRef {};
     colorAttachmentRef.attachment = 0;
     colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    VkAttachmentReference depthAttachmentRef {};
+    depthAttachmentRef.attachment = 1;
+    depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
     VkSubpassDescription subpass {};
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments = &colorAttachmentRef;
+    subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
     VkSubpassDependency dependency {};
     dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
     dependency.dstSubpass = 0;
-    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
     dependency.srcAccessMask = 0;
-    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
+    std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
     VkRenderPassCreateInfo renderPassInfo {};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    renderPassInfo.attachmentCount = 1;
-    renderPassInfo.pAttachments = &colorAttachment;
+    renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+    renderPassInfo.pAttachments = attachments.data();
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
     renderPassInfo.dependencyCount = 1;
@@ -67,21 +84,32 @@ void VulkanRenderPass::CreateFramebuffer()
     auto device = VulkanGraphicsContext::Get()->GetDevice();
     auto swapchain = VulkanGraphicsContext::Get()->GetSwapchain();
 
+    if (m_DepthStencilBuffer)
+        m_DepthStencilBuffer->Destroy();
+
     for (auto framebuffer : m_SwapchainFramebuffers) {
         vkDestroyFramebuffer(device->Raw(), framebuffer, nullptr);
     }
+
+    ImageSpecification depthbuffer_spec = ImageSpecification::Default();
+    depthbuffer_spec.extent = { swapchain->RawExtend().width, swapchain->RawExtend().height, 1 };
+    depthbuffer_spec.usage = ImageUsage::DEPTH_BUFFER;
+    depthbuffer_spec.format = ImageFormat::D32_S8;
+    m_DepthStencilBuffer = Image::Create(depthbuffer_spec);
 
     m_SwapchainFramebuffers.clear();
     m_SwapchainFramebuffers.resize(swapchain->RawImageViews().size());
 
     for (size_t i = 0; i < swapchain->RawImageViews().size(); i++) {
-        VkImageView attachments[] = { swapchain->RawImageViews()[i] };
+        std::vector<VkImageView> attachments = {
+            swapchain->RawImageViews()[i], ShareAs<VulkanImage>(m_DepthStencilBuffer)->RawView()
+        };
 
         VkFramebufferCreateInfo framebufferInfo {};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = m_RenderPass;
-        framebufferInfo.attachmentCount = 1;
-        framebufferInfo.pAttachments = attachments;
+        framebufferInfo.attachmentCount = attachments.size();
+        framebufferInfo.pAttachments = attachments.data();
         framebufferInfo.width = swapchain->RawExtend().width;
         framebufferInfo.height = swapchain->RawExtend().height;
         framebufferInfo.layers = 1;
@@ -101,6 +129,8 @@ void VulkanRenderPass::DestroyFramebuffer()
 {
     auto device = VulkanGraphicsContext::Get()->GetDevice();
 
+    m_DepthStencilBuffer->Destroy();
+
     for (auto framebuffer : m_SwapchainFramebuffers) {
         vkDestroyFramebuffer(device->Raw(), framebuffer, nullptr);
     }
@@ -119,34 +149,15 @@ void VulkanRenderPass::Begin(VkCommandBuffer commandBuffer)
     renderPassInfo.renderArea.extent = { (uint32_t)swapchain->RawExtend().width, (uint32_t)swapchain->RawExtend().height };
 
     if (renderPassInfo.renderArea.extent.width != m_WindowSize.width || renderPassInfo.renderArea.extent.height != m_WindowSize.height) {
-        //
-        //     for (auto framebuffer : m_SwapchainFramebuffers) {
-        //         vkDestroyFramebuffer(device->Raw(), framebuffer, nullptr);
-        //     }
-        //
-        //     m_SwapchainFramebuffers.clear();
-        //     m_SwapchainFramebuffers.resize(swapchain->RawImageViews().size());
-        //     for (size_t i = 0; i < swapchain->RawImageViews().size(); i++) {
-        //         VkImageView attachments[] = { swapchain->RawImageViews()[i] };
-        //
-        //         VkFramebufferCreateInfo framebufferInfo {};
-        //         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        //         framebufferInfo.renderPass = m_RenderPass;
-        //         framebufferInfo.attachmentCount = 1;
-        //         framebufferInfo.pAttachments = attachments;
-        //         framebufferInfo.width = swapchain->RawExtend().width;
-        //         framebufferInfo.height = swapchain->RawExtend().height;
-        //         framebufferInfo.layers = 1;
-        //
-        //         VK_CHECK_RESULT(vkCreateFramebuffer(device->Raw(), &framebufferInfo, nullptr, &m_SwapchainFramebuffers[i]));
-        //     }
-        //
         m_WindowSize = { swapchain->RawExtend().width, swapchain->RawExtend().height };
     }
 
-    VkClearValue clearColor = { { { 0.0f, 0.0f, 0.0f, 1.0f } } };
-    renderPassInfo.clearValueCount = 1;
-    renderPassInfo.pClearValues = &clearColor;
+    std::array<VkClearValue, 2> clear_values {};
+    clear_values[0].color = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+    clear_values[1].depthStencil = { 1.0f, 0 };
+
+    renderPassInfo.clearValueCount = clear_values.size();
+    renderPassInfo.pClearValues = clear_values.data();
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 

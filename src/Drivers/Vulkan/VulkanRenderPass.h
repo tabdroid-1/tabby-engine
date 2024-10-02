@@ -1,8 +1,10 @@
 #pragma once
 
-#include "VulkanCommon.h"
+#include <Drivers/Vulkan/VulkanCommon.h>
 
 namespace Tabby {
+
+class Image;
 
 class VulkanRenderPass {
 public:
@@ -22,6 +24,7 @@ public:
 
 private:
     std::vector<VkFramebuffer> m_SwapchainFramebuffers;
+    Shared<Image> m_DepthStencilBuffer;
     VkRenderPass m_RenderPass;
 
     VkExtent2D m_WindowSize;

@@ -5,12 +5,15 @@
 #include <Drivers/Vulkan/VulkanRenderPass.h>
 #include <Drivers/Vulkan/VulkanSwapchain.h>
 #include <Drivers/Vulkan/VulkanPipeline.h>
+#include <Drivers/Vulkan/VulkanMaterial.h>
 #include <Drivers/Vulkan/VulkanShader.h>
 #include <Drivers/Vulkan/VulkanDevice.h>
 
 #include <Tabby/Renderer/ShaderLibrary.h>
 #include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Asset/GLTFLoader.h>
 #include <Tabby/Core/Input/Input.h>
+#include <Tabby/Renderer/Mesh.h>
 
 #include <imgui.h>
 
@@ -23,17 +26,6 @@ struct Vertex {
     Vector3 color;
     Vector2 texCoord;
 };
-
-// const std::vector<Vertex> vertices = {
-//     { { -0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } },
-//     { { 0.5f, -0.5f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f } },
-//     { { 0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } },
-//     { { -0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }
-// };
-//
-// const std::vector<uint16_t> indices = {
-//     0, 1, 2, 2, 3, 0
-// };
 
 const std::vector<Vertex> vertices = {
     { { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } },
@@ -57,6 +49,7 @@ struct Uniform {
     Matrix4 view;
     Matrix4 proj;
 };
+std::vector<GLTFLoader::EntityGLTFMeshData> meshes;
 
 VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     : m_Config(config)
@@ -95,52 +88,6 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
         vkCreateDescriptorPool(m_Device->Raw(), &descriptor_pool_create_info, nullptr, &s_DescriptorPool);
     }
 
-    ShaderSpecification shader_spec;
-    shader_spec = ShaderSpecification::Default();
-
-    ShaderBufferLayoutElement element0("inPosition", ShaderDataType::FLOAT3);
-    ShaderBufferLayoutElement element1("inColor", ShaderDataType::FLOAT3);
-    ShaderBufferLayoutElement element2("inColor", ShaderDataType::FLOAT2);
-    ShaderBufferLayout buffer_layout(std::vector { element0, element1, element2 });
-    shader_spec.input_layout = buffer_layout;
-
-    ShaderLibrary::LoadShader(shader_spec, "shaders/vulkan/test.glsl");
-    m_Shader = ShareAs<VulkanShader>(ShaderLibrary::GetShader("test.glsl"));
-
-    Buffer data;
-    data.Allocate(vertices.size() * sizeof(Vertex));
-    memcpy(data.Data, vertices.data(), vertices.size() * sizeof(Vertex));
-
-    ShaderBufferSpecification buffer_spec = {};
-    buffer_spec.buffer_usage = ShaderBufferUsage::VERTEX_BUFFER;
-    buffer_spec.heap = ShaderBufferMemoryHeap::DEVICE;
-    buffer_spec.memory_usage = ShaderBufferMemoryUsage::NO_HOST_ACCESS;
-    buffer_spec.size = data.Size;
-
-    m_VertexBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
-    data.Release();
-
-    data.Allocate(indices.size() * sizeof(uint16_t));
-    memcpy(data.Data, indices.data(), indices.size() * sizeof(uint16_t));
-    buffer_spec.buffer_usage = ShaderBufferUsage::INDEX_BUFFER;
-    buffer_spec.heap = ShaderBufferMemoryHeap::DEVICE;
-    buffer_spec.memory_usage = ShaderBufferMemoryUsage::NO_HOST_ACCESS;
-    buffer_spec.size = data.Size;
-    buffer_spec.flags |= (uint64_t)ShaderBufferFlags::INDEX_TYPE_UINT16;
-
-    m_IndexBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
-    data.Release();
-
-    data.Allocate(sizeof(Uniform));
-    // memcpy(data.Data, nullptr, sizeof(m_UniformBufferData));
-    buffer_spec.buffer_usage = ShaderBufferUsage::UNIFORM_BUFFER;
-    buffer_spec.heap = ShaderBufferMemoryHeap::HOST;
-    buffer_spec.memory_usage = ShaderBufferMemoryUsage::COHERENT_WRITE;
-    buffer_spec.size = data.Size;
-
-    m_UniformBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
-    data.Release();
-
     auto image_asset_handle = AssetManager::LoadAssetSource("textures/Tabby.png");
     m_Image = AssetManager::GetAsset<Image>(image_asset_handle);
 
@@ -156,31 +103,134 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
 
     m_ImageSampler = ImageSampler::Create(sampler_spec);
 
-    VulkanDescriptorBinding binding0;
-    binding0.type = VulkanDescriptorBindingType::UNIFORM_BUFFER;
-    binding0.binding = 0;
-    binding0.array_count = 1;
+    ShaderSpecification shader_spec = ShaderSpecification::Default();
+    shader_spec.culling_mode = PipelineCullingMode::NONE;
+    shader_spec.output_attachments_formats = { ImageFormat::RGBA32_UNORM };
 
-    VulkanDescriptorBinding binding1;
-    binding1.type = VulkanDescriptorBindingType::SAMPLED_IMAGE;
-    binding1.binding = 1;
-    binding1.array_count = 1;
+    // ShaderBufferLayoutElement element0("inPosition", ShaderDataType::FLOAT3);
+    // ShaderBufferLayoutElement element1("inColor", ShaderDataType::FLOAT3);
+    // ShaderBufferLayoutElement element2("inColor", ShaderDataType::FLOAT2);
+    // ShaderBufferLayout buffer_layout(std::vector { element0, element1, element2 });
+    // shader_spec.input_layout = buffer_layout;
 
-    VulkanDescriptorSetSpecification descriptorset_spec;
-    descriptorset_spec.bindings = { binding0, binding1 };
+    ShaderLibrary::LoadShader(shader_spec, "shaders/vulkan/test.glsl");
+    m_Shader = ShareAs<VulkanShader>(ShaderLibrary::GetShader("test.glsl"));
 
-    m_DescriptionSet = CreateShared<VulkanDescriptorSet>(descriptorset_spec);
-    m_DescriptionSet->Write(0, 0, m_UniformBuffer, sizeof(Uniform), 0);
-    m_DescriptionSet->Write(1, 0, m_Image, m_ImageSampler);
+    MaterialSpecification mat_spec;
+    mat_spec.name = "test_mat";
+    mat_spec.shader = m_Shader;
+
+    m_Material = Material::Create(mat_spec);
+
+    // MeshSpecification mesh_spec;
+    // mesh_spec.name = "test_mesh";
+    // mesh_spec.material = m_Material;
+    //
+    // Buffer vertex_data;
+    // vertex_data.Allocate(vertices.size() * sizeof(Vertex));
+    // memcpy(vertex_data.Data, vertices.data(), vertices.size() * sizeof(Vertex));
+    //
+    // mesh_spec.vertex_data = vertex_data;
+    //
+    // Buffer index_data;
+    // index_data.Allocate(indices.size() * sizeof(uint16_t));
+    // memcpy(index_data.Data, indices.data(), indices.size() * sizeof(uint16_t));
+    //
+    // mesh_spec.index_data = index_data;
+    //
+    // m_Mesh = CreateShared<Mesh>(mesh_spec);
+    //
+    // m_Material->UploadData("texSampler", 0, m_Image, m_ImageSampler);
+
+    meshes = GLTFLoader::Parse("scenes/sponza-small/sponza.gltf");
+
+    for (auto& data : meshes) {
+        if (!data.mesh)
+            continue;
+
+        data.mesh->SetMaterial(m_Material);
+        for (auto& image : data.images) {
+            data.mesh->GetMaterial()->UploadData("texSampler", 0, image.second, m_ImageSampler);
+        }
+    }
+
+    // Buffer data;
+    // data.Allocate(vertices.size() * sizeof(Vertex));
+    // memcpy(data.Data, vertices.data(), vertices.size() * sizeof(Vertex));
+    //
+    // TB_CORE_INFO("MANUAL: {}", sizeof(Matrix4));
+    // ShaderBufferSpecification buffer_spec = {};
+    // buffer_spec.buffer_usage = ShaderBufferUsage::VERTEX_BUFFER;
+    // buffer_spec.heap = ShaderBufferMemoryHeap::DEVICE;
+    // buffer_spec.memory_usage = ShaderBufferMemoryUsage::NO_HOST_ACCESS;
+    // buffer_spec.size = data.Size;
+    //
+    // m_VertexBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
+    // data.Release();
+    //
+    // data.Allocate(indices.size() * sizeof(uint16_t));
+    // memcpy(data.Data, indices.data(), indices.size() * sizeof(uint16_t));
+    // buffer_spec.buffer_usage = ShaderBufferUsage::INDEX_BUFFER;
+    // buffer_spec.heap = ShaderBufferMemoryHeap::DEVICE;
+    // buffer_spec.memory_usage = ShaderBufferMemoryUsage::NO_HOST_ACCESS;
+    // buffer_spec.size = data.Size;
+    // buffer_spec.flags |= (uint64_t)ShaderBufferFlags::INDEX_TYPE_UINT16;
+    //
+    // m_IndexBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
+    // data.Release();
+    //
+    // data.Allocate(sizeof(Uniform));
+    // // memcpy(data.Data, nullptr, sizeof(m_UniformBufferData));
+    // buffer_spec.buffer_usage = ShaderBufferUsage::UNIFORM_BUFFER;
+    // buffer_spec.heap = ShaderBufferMemoryHeap::HOST;
+    // buffer_spec.memory_usage = ShaderBufferMemoryUsage::COHERENT_WRITE;
+    // buffer_spec.size = data.Size;
+    //
+    // m_UniformBuffer = ShareAs<VulkanShaderBuffer>(ShaderBuffer::Create(buffer_spec, data));
+    // data.Release();
+    //
+    // auto image_asset_handle = AssetManager::LoadAssetSource("textures/Tabby.png");
+    // m_Image = AssetManager::GetAsset<Image>(image_asset_handle);
+    //
+    // ImageSamplerSpecification sampler_spec = {};
+    // sampler_spec.min_filtering_mode = SamplerFilteringMode::LINEAR;
+    // sampler_spec.mag_filtering_mode = SamplerFilteringMode::NEAREST;
+    // sampler_spec.mipmap_filtering_mode = SamplerFilteringMode::LINEAR;
+    // sampler_spec.address_mode = SamplerAddressMode::REPEAT;
+    // sampler_spec.min_lod = 0.0f;
+    // sampler_spec.max_lod = 1000.0f;
+    // sampler_spec.lod_bias = 0.0f;
+    // sampler_spec.anisotropic_filtering_level = 16;
+    //
+    // m_ImageSampler = ImageSampler::Create(sampler_spec);
+    //
+    // VulkanDescriptorBinding binding0;
+    // binding0.type = VulkanDescriptorBindingType::UNIFORM_BUFFER;
+    // binding0.binding = 0;
+    // binding0.array_count = 1;
+    //
+    // VulkanDescriptorBinding binding1;
+    // binding1.type = VulkanDescriptorBindingType::SAMPLED_IMAGE;
+    // binding1.binding = 1;
+    // binding1.array_count = 1;
+    //
+    // VulkanDescriptorSetSpecification descriptorset_spec;
+    // descriptorset_spec.bindings = { binding0, binding1 };
+    //
+    // m_DescriptionSet = CreateShared<VulkanDescriptorSet>(descriptorset_spec);
+    // m_DescriptionSet->Write(0, 0, m_UniformBuffer, sizeof(Uniform), 0);
+    // m_DescriptionSet->Write(1, 0, m_Image, m_ImageSampler);
 }
 
 VulkanRendererAPI::~VulkanRendererAPI()
 {
     vkDeviceWaitIdle(m_Device->Raw());
-    m_VertexBuffer->Destroy();
-    m_IndexBuffer->Destroy();
-    m_UniformBuffer->Destroy();
-    m_DescriptionSet->Destroy();
+    // m_VertexBuffer->Destroy();
+    // m_IndexBuffer->Destroy();
+    // m_UniformBuffer->Destroy();
+    // m_DescriptionSet->Destroy();
+    m_ImageSampler->Destroy();
+    m_Mesh->Destroy();
 
     for (auto& cmd_buffer : m_CmdBuffers)
         cmd_buffer->Destroy();
@@ -198,16 +248,11 @@ void VulkanRendererAPI::Render()
     Uniform ubo {};
     ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.proj = glm::perspective(glm::radians(45.0f), VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().width / (float)VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().height, 0.1f, 10.0f);
-    ubo.proj[1][1] *= 1;
+    // ubo.view = glm::rotate(ubo.view, time * glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    ubo.proj = glm::perspective(glm::radians(45.0f), VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().width / (float)VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().height, 0.1f, 1000.0f);
+    ubo.proj[1][1] *= -1;
 
-    Buffer data;
-    data.Allocate(sizeof(Uniform));
-    memcpy(data.Data, &ubo, sizeof(Uniform));
-
-    m_UniformBuffer->UploadData(0, data);
-
-    data.Release();
+    m_Material->UploadData("ubo", 0, &ubo, sizeof(Uniform));
 
     m_GraphicsContext->GetSwapchain()->BeginFrame();
     m_CurrentCmdBuffer = m_CmdBuffers[m_Swapchain->GetCurrentFrameIndex()];
@@ -215,22 +260,53 @@ void VulkanRendererAPI::Render()
     m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Begin();
     m_GraphicsContext->GetRenderPass()->Begin(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw());
 
-    VkPipelineBindPoint bind_point = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    // VkPipelineBindPoint bind_point = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    //
+    // std::vector<VkDescriptorSet> raw_set;
+    //
+    // for (auto& descriptor : ShareAs<VulkanMaterial>(m_Mesh->GetMaterial())->GetDescriptorSets()) {
+    //     raw_set.push_back(descriptor->Raw());
+    // }
+    //
+    // VkBuffer vertexBuffers[] = { ShareAs<VulkanShaderBuffer>(m_Mesh->GetVertexBuffer())->Raw() };
+    // VkDeviceSize offsets[] = { 0 };
+    //
+    // vkCmdBindPipeline(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Shader->GetPipeline()->Raw());
+    // vkCmdBindVertexBuffers(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 0, 1, vertexBuffers, offsets);
+    //
+    // vkCmdBindIndexBuffer(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), ShareAs<VulkanShaderBuffer>(m_Mesh->GetIndexBuffer())->Raw(), 0, VK_INDEX_TYPE_UINT16);
+    //
+    // vkCmdBindDescriptorSets(m_CurrentCmdBuffer->Raw(), bind_point, m_Shader->GetPipeline()->RawLayout(), 0, raw_set.size(), raw_set.data(), 0, nullptr);
+    //
+    // vkCmdDrawIndexed(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), m_Mesh->TotalIndexCount(), 1, 0, 0, 0);
+    // // vkCmdDraw(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 6, 1, 0, 0);
 
-    VkDescriptorSet raw_set = m_DescriptionSet->Raw();
+    for (const auto& mesh_data : meshes) {
 
-    VkBuffer vertexBuffers[] = { m_VertexBuffer->Raw() };
-    VkDeviceSize offsets[] = { 0 };
+        if (!mesh_data.mesh)
+            continue;
 
-    vkCmdBindPipeline(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Shader->RawPipeline());
-    vkCmdBindVertexBuffers(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 0, 1, vertexBuffers, offsets);
+        VkPipelineBindPoint bind_point = VK_PIPELINE_BIND_POINT_GRAPHICS;
 
-    vkCmdBindIndexBuffer(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), m_IndexBuffer->Raw(), 0, VK_INDEX_TYPE_UINT16);
+        std::vector<VkDescriptorSet> raw_set;
 
-    vkCmdBindDescriptorSets(m_CurrentCmdBuffer->Raw(), bind_point, m_Shader->RawPipelineLayout(), 0, 1, &raw_set, 0, nullptr);
+        for (auto& descriptor : ShareAs<VulkanMaterial>(mesh_data.mesh->GetMaterial())->GetDescriptorSets()) {
+            raw_set.push_back(descriptor->Raw());
+        }
 
-    vkCmdDrawIndexed(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
-    // vkCmdDraw(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 6, 1, 0, 0);
+        VkBuffer vertexBuffers[] = { ShareAs<VulkanShaderBuffer>(mesh_data.mesh->GetVertexBuffer())->Raw() };
+        VkDeviceSize offsets[] = { 0 };
+
+        vkCmdBindPipeline(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, ShareAs<VulkanShader>(mesh_data.mesh->GetMaterial()->GetShader())->GetPipeline()->Raw());
+        vkCmdBindVertexBuffers(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 0, 1, vertexBuffers, offsets);
+
+        vkCmdBindIndexBuffer(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), ShareAs<VulkanShaderBuffer>(mesh_data.mesh->GetIndexBuffer())->Raw(), 0, VK_INDEX_TYPE_UINT16);
+
+        vkCmdBindDescriptorSets(m_CurrentCmdBuffer->Raw(), bind_point, ShareAs<VulkanShader>(mesh_data.mesh->GetMaterial()->GetShader())->GetPipeline()->RawLayout(), 0, raw_set.size(), raw_set.data(), 0, nullptr);
+
+        vkCmdDrawIndexed(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), mesh_data.mesh->TotalIndexCount(), 1, 0, 0, 0);
+        // vkCmdDraw(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 6, 1, 0, 0);
+    }
 
     m_GraphicsContext->GetRenderPass()->End(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw());
     m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->End();

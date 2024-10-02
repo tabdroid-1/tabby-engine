@@ -37,7 +37,8 @@ enum class ImageFormat : uint8_t {
     RGB32_HDR,
     RGBA64_HDR,
     RGBA128_HDR,
-    D32,
+    // D32,
+    D32_S8,
     BC1,
     BC5,
     BC6h,
@@ -61,9 +62,6 @@ struct ImageSpecification {
     ImageType type = ImageType::TYPE_2D;
     uint8_t array_layers = 1;
     uint8_t mip_levels = 1;
-#ifdef TB_DEBUG
-    std::string debug_name;
-#endif
 
     static ImageSpecification Default()
     {

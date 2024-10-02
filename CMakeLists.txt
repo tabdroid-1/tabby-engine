@@ -364,6 +364,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_DEBUG=1 -DTRACY_ENABLE=1")
+    add_compile_options(
+      "$<$<CONFIG:DEBUG>:-O0;-g3;-ggdb>"
+    )
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")

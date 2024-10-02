@@ -17,6 +17,8 @@ class VulkanRenderPass;
 class VulkanSwapchain;
 class VulkanDevice;
 class VulkanShader;
+class Material;
+class Mesh;
 
 class VulkanRendererAPI : public RendererAPI {
 public:
@@ -72,10 +74,13 @@ private:
 
     // NOTE: TEMP
     Shared<VulkanShader> m_Shader;
-    Shared<VulkanShaderBuffer> m_VertexBuffer;
-    Shared<VulkanShaderBuffer> m_IndexBuffer;
-    Shared<VulkanShaderBuffer> m_UniformBuffer;
-    Shared<VulkanDescriptorSet> m_DescriptionSet;
+    // Shared<VulkanShaderBuffer> m_VertexBuffer;
+    // Shared<VulkanShaderBuffer> m_IndexBuffer;
+    // Shared<VulkanShaderBuffer> m_UniformBuffer;
+    // Shared<VulkanDescriptorSet> m_DescriptionSet;
+
+    Shared<Material> m_Material;
+    Shared<Mesh> m_Mesh;
 
     Shared<Image> m_Image;
     Shared<ImageSampler> m_ImageSampler;

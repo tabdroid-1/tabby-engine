@@ -59,6 +59,8 @@ VulkanGraphicsContext::VulkanGraphicsContext()
     std::shared_ptr<VulkanPhysicalDevice> device = VulkanPhysicalDevice::Select(this);
     m_Device = std::make_shared<VulkanDevice>(device, std::forward<VkPhysicalDeviceFeatures>(device_features));
 
+    VulkanMemoryAllocator::Init();
+
     m_Swapchain = std::make_shared<VulkanSwapchain>();
     m_Swapchain->CreateSurface();
     m_Swapchain->CreateSwapchain();
@@ -66,8 +68,6 @@ VulkanGraphicsContext::VulkanGraphicsContext()
     m_RenderPass = std::make_shared<VulkanRenderPass>();
     m_RenderPass->CreateRenderPass();
     m_RenderPass->CreateFramebuffer();
-
-    VulkanMemoryAllocator::Init();
 }
 
 VulkanGraphicsContext::~VulkanGraphicsContext() { Destroy(); }
@@ -75,8 +75,8 @@ VulkanGraphicsContext::~VulkanGraphicsContext() { Destroy(); }
 void VulkanGraphicsContext::Destroy()
 {
     vkDeviceWaitIdle(m_Device->Raw());
-    VulkanMemoryAllocator::Destroy();
     m_RenderPass->DestroyFramebuffer();
+    VulkanMemoryAllocator::Destroy();
     m_RenderPass->DestroyRenderPass();
     m_Swapchain->DestroySwapchain();
     m_Swapchain->DestroySurface();

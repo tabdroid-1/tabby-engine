@@ -7,16 +7,30 @@
 namespace Tabby {
 
 class Mesh;
-class Texture;
+class Image;
 
-class GLTFLoader {
+struct GLTFLoader {
 public:
-    static void Parse(const std::filesystem::path& filePath);
+    struct EntityGLTFMeshData {
+        Shared<Mesh> mesh;
+        std::unordered_map<std::string, Shared<Image>> images;
+
+        Vector4 base_color_factor;
+        float alpha_cutoff = 0.f;
+        uint32_t flags = 0;
+        Vector2 padding;
+    };
+
+    //                        Node name    Meshes assigned to node
+    static std::vector<EntityGLTFMeshData> Parse(const std::filesystem::path& filePath);
 
 private:
-    GLTFLoader() { }
+    struct Vertex {
+        Vector3 position;
+        Vector2 uv;
+    };
 
-    enum MaterialUniformFlags : std::uint32_t {
+    enum MaterialUniformFlags : uint32_t {
         None = 0 << 0,
         HasAlbedoMap = 1 << 0,
         HasNormalMap = 2 << 0,
@@ -24,17 +38,15 @@ private:
         HasOcclusionMap = 4 << 0,
     };
 
-    struct MaterialUniforms {
-        Vector4 baseColorFactor;
-        float alphaCutoff = 0.f;
-        uint32_t flags = 0;
-
-        Vector2 padding;
+    struct GLTFParserData {
+        fastgltf::Asset fastgltf_asset;
+        std::vector<Shared<Image>> images;
+        std::vector<EntityGLTFMeshData> materials;
     };
 
-    static void LoadImages(fastgltf::Asset& asset, std::vector<Shared<Texture>>& images);
-    static void LoadMaterials(fastgltf::Asset& asset, std::vector<MaterialUniforms>& materials);
-    static void LoadMeshes(fastgltf::Asset& asset, std::vector<Shared<Texture>>& images, std::vector<MaterialUniforms>& materials);
+    static void LoadImages(GLTFParserData& data);
+    static void LoadMaterials(GLTFParserData& data);
+    static void LoadMeshes(GLTFParserData& data);
 };
 
 }

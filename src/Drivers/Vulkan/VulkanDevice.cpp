@@ -144,7 +144,6 @@ VulkanDevice::VulkanDevice(std::shared_ptr<VulkanPhysicalDevice> physical_device
     , m_GraphicsQueue(VK_NULL_HANDLE)
     , m_PresentQueue(VK_NULL_HANDLE)
 {
-    const float prioriry = 1.0f;
 
     VkPhysicalDeviceFeatures supported_device_features = {};
     vkGetPhysicalDeviceFeatures(m_PhysicalDevice->Raw(), &supported_device_features);

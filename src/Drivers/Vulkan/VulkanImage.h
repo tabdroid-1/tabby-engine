@@ -33,8 +33,8 @@ constexpr VkFormat convert(const ImageFormat& format)
         return VK_FORMAT_R16G16B16A16_SFLOAT;
     case ImageFormat::RGBA128_HDR:
         return VK_FORMAT_R32G32B32A32_SFLOAT;
-    case ImageFormat::D32:
-        return VK_FORMAT_D32_SFLOAT;
+    case ImageFormat::D32_S8:
+        return VK_FORMAT_D32_SFLOAT_S8_UINT;
     case ImageFormat::BC7:
         return VK_FORMAT_BC7_UNORM_BLOCK;
     case ImageFormat::BC1:
@@ -74,8 +74,8 @@ constexpr ImageFormat convert(const VkFormat& format)
         return ImageFormat::RGBA64_HDR;
     case VK_FORMAT_R32G32B32A32_SFLOAT:
         return ImageFormat::RGBA128_HDR;
-    case VK_FORMAT_D32_SFLOAT:
-        return ImageFormat::D32;
+    case VK_FORMAT_D32_SFLOAT_S8_UINT:
+        return ImageFormat::D32_S8;
     case VK_FORMAT_R16G16B16_SFLOAT:
         return ImageFormat::RGBA64_SFLOAT;
     case VK_FORMAT_R8G8B8_UNORM:

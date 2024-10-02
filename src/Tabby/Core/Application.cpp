@@ -33,7 +33,7 @@ Application::Application(const ApplicationSpecification& specification)
     m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight, m_Specification.FullscreenMode, m_Specification.Resizable, m_Specification.VSync));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
-    AudioEngine::Init();
+    // AudioEngine::Init();
 
     RendererConfig renderer_config = {};
     renderer_config.main_window = m_Window.get();
@@ -55,10 +55,9 @@ Application::~Application()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Application::Destructor");
 
-    AudioEngine::Shutdown();
-    Renderer::Shutdown();
-
+    // AudioEngine::Shutdown();
     AssetManager::FullUnload();
+    Renderer::Shutdown();
 }
 
 void Application::PushLayer(Layer* layer)
