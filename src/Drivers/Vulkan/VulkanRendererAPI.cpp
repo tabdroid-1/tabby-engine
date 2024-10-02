@@ -116,12 +116,6 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     ShaderLibrary::LoadShader(shader_spec, "shaders/vulkan/test.glsl");
     m_Shader = ShareAs<VulkanShader>(ShaderLibrary::GetShader("test.glsl"));
 
-    MaterialSpecification mat_spec;
-    mat_spec.name = "test_mat";
-    mat_spec.shader = m_Shader;
-
-    m_Material = Material::Create(mat_spec);
-
     // MeshSpecification mesh_spec;
     // mesh_spec.name = "test_mesh";
     // mesh_spec.material = m_Material;
@@ -148,7 +142,13 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
         if (!data.mesh)
             continue;
 
-        data.mesh->SetMaterial(m_Material);
+        MaterialSpecification mat_spec;
+        mat_spec.name = "test_mat";
+        mat_spec.shader = m_Shader;
+
+        Shared<Material> material = Material::Create(mat_spec);
+
+        data.mesh->SetMaterial(material);
         for (auto& image : data.images) {
             data.mesh->GetMaterial()->UploadData("texSampler", 0, image.second, m_ImageSampler);
         }
@@ -246,13 +246,15 @@ void VulkanRendererAPI::Render()
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
     Uniform ubo {};
-    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    // ubo.view = glm::rotate(ubo.view, time * glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(20.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.model = glm::rotate(ubo.model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    ubo.model = glm::scale(ubo.model, { 3.0f, 3.0f, 3.0f });
+    ubo.view = Matrix4(1.0f);
+    ubo.view = glm::translate(ubo.view, { 0.0f, -0.5f, 0.0f });
+    // ubo.view = glm::lookAt(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.view = glm::rotate(ubo.view, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     ubo.proj = glm::perspective(glm::radians(45.0f), VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().width / (float)VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().height, 0.1f, 1000.0f);
     ubo.proj[1][1] *= -1;
-
-    m_Material->UploadData("ubo", 0, &ubo, sizeof(Uniform));
 
     m_GraphicsContext->GetSwapchain()->BeginFrame();
     m_CurrentCmdBuffer = m_CmdBuffers[m_Swapchain->GetCurrentFrameIndex()];
@@ -286,6 +288,8 @@ void VulkanRendererAPI::Render()
         if (!mesh_data.mesh)
             continue;
 
+        mesh_data.mesh->GetMaterial()->UploadData("ubo", 0, &ubo, sizeof(Uniform));
+
         VkPipelineBindPoint bind_point = VK_PIPELINE_BIND_POINT_GRAPHICS;
 
         std::vector<VkDescriptorSet> raw_set;
@@ -300,7 +304,7 @@ void VulkanRendererAPI::Render()
         vkCmdBindPipeline(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, ShareAs<VulkanShader>(mesh_data.mesh->GetMaterial()->GetShader())->GetPipeline()->Raw());
         vkCmdBindVertexBuffers(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), 0, 1, vertexBuffers, offsets);
 
-        vkCmdBindIndexBuffer(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), ShareAs<VulkanShaderBuffer>(mesh_data.mesh->GetIndexBuffer())->Raw(), 0, VK_INDEX_TYPE_UINT16);
+        vkCmdBindIndexBuffer(m_CmdBuffers[m_GraphicsContext->GetSwapchain()->GetCurrentFrameIndex()]->Raw(), ShareAs<VulkanShaderBuffer>(mesh_data.mesh->GetIndexBuffer())->Raw(), 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdBindDescriptorSets(m_CurrentCmdBuffer->Raw(), bind_point, ShareAs<VulkanShader>(mesh_data.mesh->GetMaterial()->GetShader())->GetPipeline()->RawLayout(), 0, raw_set.size(), raw_set.data(), 0, nullptr);
 

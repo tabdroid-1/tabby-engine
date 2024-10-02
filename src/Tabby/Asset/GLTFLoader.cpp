@@ -248,11 +248,11 @@ void GLTFLoader::LoadMeshes(GLTFParserData& data)
 
             fastgltf::copyFromAccessor<std::uint32_t>(data.fastgltf_asset, indexAccessor, (std::uint32_t*)meshIndices.data());
 
-            mesh_spec.vertex_data.Data = (uint8_t*)meshVertices.data();
-            mesh_spec.vertex_data.Size = meshVertices.size() * sizeof(Vertex);
+            mesh_spec.vertex_data = meshVertices.data();
+            mesh_spec.vertex_data_size = meshVertices.size() * sizeof(Vertex);
 
-            mesh_spec.index_data.Data = (uint8_t*)meshIndices.data();
-            mesh_spec.index_data.Size = meshIndices.size() * sizeof(uint32_t);
+            mesh_spec.index_data = meshIndices.data();
+            mesh_spec.index_data_size = meshIndices.size() * sizeof(uint32_t);
             mesh_spec.index_type = MeshIndexType::UINT32;
 
             auto tabbyMesh = CreateShared<Mesh>(mesh_spec);

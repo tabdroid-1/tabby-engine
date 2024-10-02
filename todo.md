@@ -35,7 +35,8 @@ Todo
     - <s>Multithreading </s> Multithreaded some World systems since 20-08-2024_1 Alpha
     - <s>Deal with all compiler warnings.</s> Done since 20-08-2024_1 Alpha
     - Use submodules for depencencies.
-    - Drop emscripten support. Its not worth it.
+    - Drop emscripten support. Its not worth it. maybe.
+    - create multiple buffers depending on the size of frames in flight to prefent "flickering".
 
 
 - Low priority

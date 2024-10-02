@@ -79,7 +79,6 @@ private:
     // Shared<VulkanShaderBuffer> m_UniformBuffer;
     // Shared<VulkanDescriptorSet> m_DescriptionSet;
 
-    Shared<Material> m_Material;
     Shared<Mesh> m_Mesh;
 
     Shared<Image> m_Image;
