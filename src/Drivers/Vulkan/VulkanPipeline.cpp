@@ -204,11 +204,13 @@ void VulkanPipeline::CreateGraphics()
     rasterization_state.cullMode = convert(m_Specification.culling_mode);
     rasterization_state.frontFace = convert(m_Specification.front_face);
 
-    Vector2 current_swapchain_extent = { VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().width,
-        VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().height };
+    // Vector2 current_swapchain_extent = { VulkanGraphicsContext::Get()->GetSwapchain()->RawExtend().width,
+    //     VulkanGraphicsContext::Get()->GetSwapchain()->GetSpecification().extent.};
+
+    UIntVector2 current_swapchain_extent = VulkanGraphicsContext::Get()->GetSwapchain()->GetSpecification().extent;
 
     VkViewport viewport = {};
-    viewport = { 0, current_swapchain_extent.y, current_swapchain_extent.x, -current_swapchain_extent.y, 0.0f, 1.0f };
+    viewport = { 0, (float)current_swapchain_extent.y, (float)current_swapchain_extent.x, (float)-current_swapchain_extent.y, 0.0f, 1.0f };
 
     VkRect2D scissor = {};
     scissor.extent = { (uint32_t)current_swapchain_extent.x, (uint32_t)current_swapchain_extent.y };

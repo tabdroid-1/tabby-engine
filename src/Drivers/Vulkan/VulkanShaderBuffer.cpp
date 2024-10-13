@@ -182,6 +182,7 @@ void VulkanShaderBuffer::UploadData(uint64_t offset, void* data, uint64_t data_s
             nullptr);
 
         device->ExecuteTransientCmdBuffer(cmd_buffer);
+        staging_buffer.Destroy();
     } else {
         VulkanMemoryAllocator* allocator = VulkanMemoryAllocator::Get();
         void* memory = allocator->MapMemory(m_Allocation);

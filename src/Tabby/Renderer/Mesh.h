@@ -8,10 +8,10 @@ namespace Tabby {
 class ShaderBuffer;
 class Material;
 
-enum class MeshIndexType {
-    UINT8 = 0,
-    UINT16,
-    UINT32,
+enum class MeshFlags : BitMask {
+    INDEX_TYPE_UINT8 = BIT(0),
+    INDEX_TYPE_UINT16 = BIT(1),
+    INDEX_TYPE_UINT32 = BIT(2),
 };
 
 struct MeshSpecification {
@@ -21,7 +21,7 @@ struct MeshSpecification {
     void* index_data;
     size_t index_data_size;
     Shared<Material> material;
-    MeshIndexType index_type = MeshIndexType::UINT16;
+    BitMask flags;
 };
 
 class Mesh : public AssetBase {
@@ -35,6 +35,7 @@ public:
     Shared<Material> GetMaterial();
 
     const std::string& GetName();
+    const MeshSpecification& GetSpecification();
     Shared<ShaderBuffer> GetVertexBuffer();
     Shared<ShaderBuffer> GetIndexBuffer();
     uint32_t TotalIndexCount();

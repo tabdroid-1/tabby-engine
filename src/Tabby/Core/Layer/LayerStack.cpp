@@ -6,7 +6,18 @@ LayerStack::~LayerStack()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::LayerStack::Destructor");
 
+    Destroy();
+}
+
+void LayerStack::Destroy()
+{
+    TB_PROFILE_SCOPE_NAME("Tabby::LayerStack::Destroy");
+
     for (Layer* layer : m_Layers) {
+
+        if (!layer)
+            continue;
+
         layer->OnDetach();
         delete layer;
     }

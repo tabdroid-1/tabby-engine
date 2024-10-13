@@ -4,6 +4,8 @@
 
 namespace Tabby {
 
+class Image;
+
 class AssetManager {
 public:
     AssetManager();
@@ -24,6 +26,8 @@ public:
     static const AssetHandle GetHandle(std::filesystem::path path) { return m_UUIDs.at(path.string()); }
     static const auto* GetAssetRegistry() { return &m_AssetRegistry; }
 
+    static const Shared<Image> GetMissingTexture();
+
 private:
     static AssetHandle ImportMeshSource(std::filesystem::path path, AssetHandle handle);
     static AssetHandle ImportImageSource(std::filesystem::path path, AssetHandle handle);
@@ -34,6 +38,8 @@ private:
     inline static std::unordered_map<AssetHandle, Shared<AssetBase>> m_AssetRegistry;
     inline static std::unordered_map<std::string, UUID> m_UUIDs;
     inline static std::shared_mutex m_Mutex;
+
+    inline static Shared<Image> m_MissingTextureImage;
 };
 
 }

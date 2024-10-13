@@ -21,7 +21,7 @@ void VulkanRenderPass::CreateRenderPass()
     auto swapchain = VulkanGraphicsContext::Get()->GetSwapchain();
 
     VkAttachmentDescription colorAttachment {};
-    colorAttachment.format = swapchain->RawImageFormat();
+    colorAttachment.format = convert(swapchain->GetCurrentImage()->GetSpecification().format);
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -76,7 +76,7 @@ void VulkanRenderPass::CreateRenderPass()
         throw std::runtime_error("failed to create render pass!");
     }
 
-    m_WindowSize = { swapchain->RawExtend().width, swapchain->RawExtend().height };
+    m_WindowSize = { swapchain->GetSpecification().extent.x, swapchain->GetSpecification().extent.y };
 }
 
 void VulkanRenderPass::CreateFramebuffer()
@@ -92,17 +92,17 @@ void VulkanRenderPass::CreateFramebuffer()
     }
 
     ImageSpecification depthbuffer_spec = ImageSpecification::Default();
-    depthbuffer_spec.extent = { swapchain->RawExtend().width, swapchain->RawExtend().height, 1 };
+    depthbuffer_spec.extent = { swapchain->GetSpecification().extent, 0 };
     depthbuffer_spec.usage = ImageUsage::DEPTH_BUFFER;
     depthbuffer_spec.format = ImageFormat::D32_S8;
     m_DepthStencilBuffer = Image::Create(depthbuffer_spec);
 
     m_SwapchainFramebuffers.clear();
-    m_SwapchainFramebuffers.resize(swapchain->RawImageViews().size());
+    m_SwapchainFramebuffers.resize(swapchain->GetImages().size());
 
-    for (size_t i = 0; i < swapchain->RawImageViews().size(); i++) {
+    for (size_t i = 0; i < swapchain->GetImages().size(); i++) {
         std::vector<VkImageView> attachments = {
-            swapchain->RawImageViews()[i], ShareAs<VulkanImage>(m_DepthStencilBuffer)->RawView()
+            swapchain->GetImages()[i]->RawView(), ShareAs<VulkanImage>(m_DepthStencilBuffer)->RawView()
         };
 
         VkFramebufferCreateInfo framebufferInfo {};
@@ -110,8 +110,8 @@ void VulkanRenderPass::CreateFramebuffer()
         framebufferInfo.renderPass = m_RenderPass;
         framebufferInfo.attachmentCount = attachments.size();
         framebufferInfo.pAttachments = attachments.data();
-        framebufferInfo.width = swapchain->RawExtend().width;
-        framebufferInfo.height = swapchain->RawExtend().height;
+        framebufferInfo.width = swapchain->GetSpecification().extent.x;
+        framebufferInfo.height = swapchain->GetSpecification().extent.y;
         framebufferInfo.layers = 1;
 
         VK_CHECK_RESULT(vkCreateFramebuffer(device->Raw(), &framebufferInfo, nullptr, &m_SwapchainFramebuffers[i]));
@@ -146,10 +146,10 @@ void VulkanRenderPass::Begin(VkCommandBuffer commandBuffer)
     renderPassInfo.renderPass = m_RenderPass;
     renderPassInfo.framebuffer = m_SwapchainFramebuffers[swapchain->GetCurrentImageIndex()];
     renderPassInfo.renderArea.offset = { 0, 0 };
-    renderPassInfo.renderArea.extent = { (uint32_t)swapchain->RawExtend().width, (uint32_t)swapchain->RawExtend().height };
+    renderPassInfo.renderArea.extent = { swapchain->GetSpecification().extent.x, swapchain->GetSpecification().extent.y };
 
     if (renderPassInfo.renderArea.extent.width != m_WindowSize.width || renderPassInfo.renderArea.extent.height != m_WindowSize.height) {
-        m_WindowSize = { swapchain->RawExtend().width, swapchain->RawExtend().height };
+        m_WindowSize = { swapchain->GetSpecification().extent.x, swapchain->GetSpecification().extent.y };
     }
 
     std::array<VkClearValue, 2> clear_values {};
@@ -164,15 +164,15 @@ void VulkanRenderPass::Begin(VkCommandBuffer commandBuffer)
     VkViewport viewport {};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = (float)swapchain->RawExtend().width;
-    viewport.height = (float)swapchain->RawExtend().height;
+    viewport.width = (float)swapchain->GetSpecification().extent.x;
+    viewport.height = (float)swapchain->GetSpecification().extent.y;
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor {};
     scissor.offset = { 0, 0 };
-    scissor.extent = { (uint32_t)swapchain->RawExtend().width, (uint32_t)swapchain->RawExtend().height };
+    scissor.extent = { swapchain->GetSpecification().extent.x, swapchain->GetSpecification().extent.y };
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 }
 

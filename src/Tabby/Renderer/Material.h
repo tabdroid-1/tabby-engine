@@ -9,6 +9,41 @@ class Image;
 class ShaderBuffer;
 class ImageSampler;
 
+struct MaterialData {
+    MaterialData(const std::string& name, uint64_t offset, void* data, uint64_t size)
+        : type(Type::Uniform)
+        , name(name)
+        , offset(offset)
+        , data(data)
+        , data_size(size)
+    {
+    }
+
+    MaterialData(const std::string& name, uint16_t array_element, Shared<Image> img, Shared<ImageSampler> samp)
+        : type(Type::Image)
+        , name(name)
+        , array_element(array_element)
+        , image(img)
+        , sampler(samp)
+    {
+    }
+
+    enum class Type {
+        Uniform,
+        Image
+    } type;
+
+    std::string name;
+
+    uint64_t offset;
+    void* data;
+    uint64_t data_size;
+
+    uint16_t array_element;
+    Shared<Image> image;
+    Shared<ImageSampler> sampler;
+};
+
 struct MaterialSpecification {
     std::string name;
     Shared<Shader> shader;

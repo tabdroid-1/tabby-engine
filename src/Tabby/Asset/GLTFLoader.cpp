@@ -24,7 +24,7 @@
 
 namespace Tabby {
 
-std::vector<GLTFLoader::EntityGLTFMeshData> GLTFLoader::Parse(const std::filesystem::path& filePath)
+GLTFLoader::GLTFData GLTFLoader::Parse(const std::filesystem::path& filePath)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::GLTFLoader::Parse");
 
@@ -57,7 +57,7 @@ std::vector<GLTFLoader::EntityGLTFMeshData> GLTFLoader::Parse(const std::filesys
     LoadMaterials(data);
     LoadMeshes(data);
 
-    return data.materials;
+    return { data.meshes, data.materials, data.mesh_data, data.images };
 }
 
 void GLTFLoader::LoadImages(GLTFParserData& data)
@@ -104,6 +104,8 @@ void GLTFLoader::LoadImages(GLTFParserData& data)
 
                            AssetHandle handle;
                            imageptr = Image::Create(texture_spec, handle);
+
+                           AssetManager::RegisterAsset(imageptr, handle);
                        },
                        [&](fastgltf::sources::BufferView& view) {
                            auto& bufferView = data.fastgltf_asset.bufferViews[view.bufferViewIndex];
@@ -137,6 +139,8 @@ void GLTFLoader::LoadImages(GLTFParserData& data)
 
                                               AssetHandle handle;
                                               imageptr = Image::Create(texture_spec, handle);
+
+                                              AssetManager::RegisterAsset(imageptr, handle);
                                           } },
                                buffer.data);
                        },
@@ -158,16 +162,16 @@ void GLTFLoader::LoadMaterials(GLTFParserData& data)
 
         uniforms.base_color_factor = Vector4(material.pbrData.baseColorFactor.x(), material.pbrData.baseColorFactor.y(), material.pbrData.baseColorFactor.z(), material.pbrData.baseColorFactor.w());
         if (material.pbrData.baseColorTexture.has_value())
-            uniforms.flags |= MaterialUniformFlags::HasAlbedoMap;
+            uniforms.flags |= (uint64_t)MaterialUniformFlags::HasAlbedoMap;
 
         if (material.normalTexture.has_value())
-            uniforms.flags |= MaterialUniformFlags::HasNormalMap;
+            uniforms.flags |= (uint64_t)MaterialUniformFlags::HasNormalMap;
 
         if (material.pbrData.metallicRoughnessTexture.has_value())
-            uniforms.flags |= MaterialUniformFlags::HasRoughnessMap;
+            uniforms.flags |= (uint64_t)MaterialUniformFlags::HasRoughnessMap;
 
         if (material.occlusionTexture.has_value())
-            uniforms.flags |= MaterialUniformFlags::HasOcclusionMap;
+            uniforms.flags |= (uint64_t)MaterialUniformFlags::HasOcclusionMap;
 
         data.materials.emplace_back(uniforms);
     }
@@ -180,14 +184,16 @@ void GLTFLoader::LoadMeshes(GLTFParserData& data)
     std::vector<std::pair<uint32_t, Shared<Mesh>>> tabbyMeshes;
 
     int meshID = 0;
-    int primitiveID = 0;
 
+    data.mesh_data.resize(data.fastgltf_asset.meshes.size());
     for (auto& mesh : data.fastgltf_asset.meshes) {
+        int primitiveID = 0;
 
+        data.mesh_data[meshID].primitives.resize(mesh.primitives.size());
         for (auto it = mesh.primitives.begin(); it != mesh.primitives.end(); ++it) {
 
             MeshSpecification mesh_spec;
-            mesh_spec.name = mesh.name;
+            mesh_spec.name = std::string(mesh.name) + "_" + std::to_string(primitiveID);
 
             auto* positionIt = it->findAttribute("POSITION");
             TB_CORE_ASSERT(positionIt != it->attributes.end()); // A mesh primitive is required to hold the POSITION attribute.
@@ -196,21 +202,23 @@ void GLTFLoader::LoadMeshes(GLTFParserData& data)
             std::size_t baseColorTexcoordIndex;
 
             if (it->materialIndex.has_value()) {
+                data.mesh_data[meshID].primitives[primitiveID].material_index = it->materialIndex.value();
+
                 auto& material = data.fastgltf_asset.materials[it->materialIndex.value()];
 
                 auto& baseColorTexture = material.pbrData.baseColorTexture;
                 if (baseColorTexture.has_value()) {
                     auto& texture = data.fastgltf_asset.textures[baseColorTexture->textureIndex];
-                    if (!texture.imageIndex.has_value())
-                        return;
 
-                    auto test = data.images[texture.imageIndex.value()];
-                    data.materials[primitiveID].images["albedo"] = data.images[texture.imageIndex.value()];
+                    if (texture.imageIndex.has_value()) {
 
-                    if (baseColorTexture->transform && baseColorTexture->transform->texCoordIndex.has_value()) {
-                        baseColorTexcoordIndex = baseColorTexture->transform->texCoordIndex.value();
-                    } else {
-                        baseColorTexcoordIndex = material.pbrData.baseColorTexture->texCoordIndex;
+                        data.mesh_data[meshID].primitives[primitiveID].images["albedo"] = data.images[texture.imageIndex.value()];
+
+                        if (baseColorTexture->transform && baseColorTexture->transform->texCoordIndex.has_value()) {
+                            baseColorTexcoordIndex = baseColorTexture->transform->texCoordIndex.value();
+                        } else {
+                            baseColorTexcoordIndex = material.pbrData.baseColorTexture->texCoordIndex;
+                        }
                     }
                 }
             }
@@ -253,12 +261,12 @@ void GLTFLoader::LoadMeshes(GLTFParserData& data)
 
             mesh_spec.index_data = meshIndices.data();
             mesh_spec.index_data_size = meshIndices.size() * sizeof(uint32_t);
-            mesh_spec.index_type = MeshIndexType::UINT32;
+            mesh_spec.flags |= (uint64_t)MeshFlags::INDEX_TYPE_UINT32;
 
             auto tabbyMesh = CreateShared<Mesh>(mesh_spec);
 
-            data.materials[primitiveID].mesh = tabbyMesh;
-            tabbyMeshes.push_back(std::make_pair(meshID, tabbyMesh));
+            data.mesh_data[meshID].primitives[primitiveID].primitive = tabbyMesh;
+            data.meshes.push_back(std::make_pair(meshID, tabbyMesh));
 
             primitiveID++;
         }

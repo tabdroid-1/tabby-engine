@@ -37,8 +37,14 @@
 // -----------------------------------
 //
 // --- Renderer ----------------------
+#include <Tabby/Renderer/ShaderBufferLayout.h>
+#include <Tabby/Renderer/ShaderLibrary.h>
+#include <Tabby/Renderer/ShaderBuffer.h>
+#include <Tabby/Renderer/Material.h>
 #include <Tabby/Renderer/Renderer.h>
+#include <Tabby/Renderer/Shader.h>
 #include <Tabby/Renderer/Image.h>
+#include <Tabby/Renderer/Mesh.h>
 // -----------------------------------
 //
 // --- Audio -------------------------

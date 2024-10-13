@@ -71,6 +71,42 @@ AssetHandle AssetManager::RegisterAsset(Shared<AssetBase> asset, const AssetHand
     return id;
 }
 
+const Shared<Image> AssetManager::GetMissingTexture()
+{
+
+    if (!m_MissingTextureImage) [[likely]] {
+
+        std::vector<RGBA32> image_data;
+        image_data.push_back({ 255, 0, 220, 255 });
+        image_data.push_back({ 1, 0, 1, 255 });
+        image_data.push_back({ 1, 0, 1, 255 });
+        image_data.push_back({ 255, 0, 220, 255 });
+
+        std::vector<RGBA32> full_image_data = AssetCompressor::GenerateMipMaps(image_data, 2, 2);
+
+        std::vector<byte> raw(full_image_data.size() * sizeof(RGBA32));
+        memcpy(raw.data(), full_image_data.data(), full_image_data.size() * sizeof(RGBA32));
+        full_image_data.clear();
+
+        ImageSpecification texture_spec = {};
+        texture_spec.pixels = std::move(raw);
+        texture_spec.format = ImageFormat::RGBA32_UNORM;
+        texture_spec.type = ImageType::TYPE_2D;
+        texture_spec.usage = ImageUsage::TEXTURE;
+        texture_spec.extent = { 2, 2, 1 };
+        texture_spec.array_layers = 1;
+        texture_spec.mip_levels = Utils::ComputeNumMipLevelsBC7(2, 2) + 1;
+        texture_spec.path = "bin_image";
+
+        AssetHandle handle;
+        m_MissingTextureImage = Image::Create(texture_spec, handle);
+
+        AssetManager::RegisterAsset(m_MissingTextureImage, handle);
+    }
+
+    return m_MissingTextureImage;
+}
+
 AssetHandle AssetManager::ImportMeshSource(std::filesystem::path path, AssetHandle handle)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::ImportMeshSource");
@@ -107,6 +143,7 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
                     // Handle read error
                     TB_CORE_ERROR("Error reading file {0}", path);
                     image_source.clear(); // Clear the imageData to indicate an error
+                    return m_MissingTextureImage->Handle;
                 }
             }
 
@@ -114,6 +151,7 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
         } else {
             // Handle file open error
             TB_CORE_ERROR("Could not open file {0}", path);
+            return m_MissingTextureImage->Handle;
         }
 
         RGBA32* raw_image_data = (RGBA32*)stbi_load_from_memory(image_source.data(), static_cast<int>(image_source.size()), &image_width, &image_height, &channels, 4);
@@ -123,6 +161,8 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
 
         if (image_data.empty()) {
             TB_CORE_ERROR("TextureImporter::ImportTextureSource - Could not load texture from filepath: {}", path.string());
+
+            return m_MissingTextureImage->Handle;
         }
     }
     // Generate mip map

@@ -1,6 +1,7 @@
 #include "VulkanCommon.h"
 
 #include <Tabby/Renderer/GraphicsContext.h>
+#include <Tabby/Renderer/Renderer.h>
 
 namespace Tabby {
 
@@ -13,7 +14,8 @@ class VulkanShader;
 
 class VulkanGraphicsContext : public GraphicsContext {
 public:
-    VulkanGraphicsContext();
+    VulkanGraphicsContext() {};
+    VulkanGraphicsContext(const RendererConfig& config);
     ~VulkanGraphicsContext();
     void Destroy() override;
 

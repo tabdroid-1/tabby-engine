@@ -139,6 +139,7 @@ void MacOSWindow::OnUpdate()
             if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                 m_Data.Width = event.window.data1;
                 m_Data.Height = event.window.data2;
+
                 WindowResizeEvent resizeEvent(m_Data.Width, m_Data.Height);
                 m_Data.EventCallback(resizeEvent);
             }

@@ -55,6 +55,8 @@ Application::~Application()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::Application::Destructor");
 
+    m_LayerStack.Destroy();
+
     // AudioEngine::Shutdown();
     AssetManager::FullUnload();
     Renderer::Shutdown();
@@ -137,6 +139,7 @@ void Application::Run()
                                                                          // and that breaks the phyiscs and some other stuff.
                                                                          // this happens because m_LastFrameTime is 0 in first frame.
 
+            Renderer::BeginFrame();
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackUpdate");
 
@@ -145,15 +148,16 @@ void Application::Run()
             }
 
             Renderer::Render();
+            Renderer::EndFrame();
 
 #if !TB_HEADLESS
             // s_Instance->m_ImGuiLayer->Begin();
             // {
-            //     TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackOnImGuiRender");
+            //     TB_PROFILE_SCOPE_NAME("Tabby::Application::La			Renderer::BeginFrame();yerStackOnImGuiRender");
             //
             //     for (Layer* layer : s_Instance->m_LayerStack)
             //         layer->OnImGuiRender();
-            // }
+            // }			Renderer::BeginFrame();
             //
             // s_Instance->m_Console->Draw();
             //

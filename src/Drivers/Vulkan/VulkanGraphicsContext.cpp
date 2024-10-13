@@ -13,7 +13,7 @@
 
 namespace Tabby {
 
-VulkanGraphicsContext::VulkanGraphicsContext()
+VulkanGraphicsContext::VulkanGraphicsContext(const RendererConfig& config)
 {
     TB_CORE_ASSERT_TAGGED(!s_Instance, "Graphics context is already initialized.");
 
@@ -61,7 +61,13 @@ VulkanGraphicsContext::VulkanGraphicsContext()
 
     VulkanMemoryAllocator::Init();
 
-    m_Swapchain = std::make_shared<VulkanSwapchain>();
+    SwapchainSpecification swapchain_spec = {};
+    swapchain_spec.main_window = config.main_window;
+    swapchain_spec.frames_in_flight = config.frames_in_flight;
+    swapchain_spec.extent = { config.main_window->GetWidth(), config.main_window->GetHeight() };
+    swapchain_spec.vsync = config.vsync;
+
+    m_Swapchain = std::make_shared<VulkanSwapchain>(swapchain_spec);
     m_Swapchain->CreateSurface();
     m_Swapchain->CreateSwapchain();
 

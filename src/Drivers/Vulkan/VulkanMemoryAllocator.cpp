@@ -7,7 +7,7 @@
 
 #include <Tabby/Utils/Utils.h>
 
-#define TB_TRACE_DEVICE_ALLOCATIONS 0
+#define TB_TRACE_DEVICE_ALLOCATIONS 1
 
 namespace Tabby {
 
