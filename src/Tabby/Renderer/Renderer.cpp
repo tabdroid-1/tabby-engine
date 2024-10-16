@@ -19,7 +19,7 @@ void Renderer::Init(const RendererConfig& config)
 
     Tabby::ImageSamplerSpecification sampler_spec = {};
     sampler_spec.min_filtering_mode = Tabby::SamplerFilteringMode::LINEAR;
-    sampler_spec.mag_filtering_mode = Tabby::SamplerFilteringMode::NEAREST;
+    sampler_spec.mag_filtering_mode = Tabby::SamplerFilteringMode::LINEAR;
     sampler_spec.mipmap_filtering_mode = Tabby::SamplerFilteringMode::LINEAR;
     sampler_spec.address_mode = Tabby::SamplerAddressMode::REPEAT;
     sampler_spec.min_lod = 0.0f;
@@ -29,7 +29,7 @@ void Renderer::Init(const RendererConfig& config)
 
     s_InternalData.m_LinearSampler = ImageSampler::Create(sampler_spec);
 
-    sampler_spec.min_filtering_mode = Tabby::SamplerFilteringMode::NEAREST;
+    sampler_spec.mag_filtering_mode = Tabby::SamplerFilteringMode::NEAREST;
     s_InternalData.m_NearestSampler = ImageSampler::Create(sampler_spec);
 }
 
@@ -84,10 +84,10 @@ void Renderer::RenderTasks(Shared<Shader> shader, uint32_t vertex_count, Buffer 
     s_RendererAPI->RenderTasks(shader, vertex_count, data);
 }
 
-// uint32 Renderer::GetCurrentFrameIndex()
-// {
-//     return s_RendererAPI->GetCurrentFrameIndex();
-// }
+uint32_t Renderer::GetCurrentFrameIndex()
+{
+    return s_RendererAPI->GetCurrentFrameIndex();
+}
 
 Shared<ImageSampler> Renderer::GetNearestSampler()
 {

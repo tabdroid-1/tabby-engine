@@ -46,7 +46,7 @@ VulkanPhysicalDevice::VulkanPhysicalDevice(VulkanGraphicsContext* ctx)
             device_scores[index] += 50;
             break;
         case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-            device_scores[index] += 5;
+            device_scores[index] += 15;
             break;
         default:
             break;

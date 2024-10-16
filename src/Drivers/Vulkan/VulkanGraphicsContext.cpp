@@ -73,7 +73,6 @@ VulkanGraphicsContext::VulkanGraphicsContext(const RendererConfig& config)
 
     m_RenderPass = std::make_shared<VulkanRenderPass>();
     m_RenderPass->CreateRenderPass();
-    m_RenderPass->CreateFramebuffer();
 }
 
 VulkanGraphicsContext::~VulkanGraphicsContext() { Destroy(); }
@@ -81,9 +80,8 @@ VulkanGraphicsContext::~VulkanGraphicsContext() { Destroy(); }
 void VulkanGraphicsContext::Destroy()
 {
     vkDeviceWaitIdle(m_Device->Raw());
-    m_RenderPass->DestroyFramebuffer();
+    m_RenderPass->Destroy();
     VulkanMemoryAllocator::Destroy();
-    m_RenderPass->DestroyRenderPass();
     m_Swapchain->DestroySwapchain();
     m_Swapchain->DestroySurface();
     m_Device->Destroy();

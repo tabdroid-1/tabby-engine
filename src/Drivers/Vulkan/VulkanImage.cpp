@@ -91,28 +91,59 @@ void VulkanImage::SetLayout(Shared<VulkanDeviceCmdBuffer> cmd_buffer, ImageLayou
 {
     Shared<VulkanDeviceCmdBuffer> vk_cmd_buffer = ShareAs<VulkanDeviceCmdBuffer>(cmd_buffer);
 
-    VkImageMemoryBarrier image_memory_barrier {};
+    VkImageMemoryBarrier image_memory_barrier = {};
     image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    image_memory_barrier.image = m_Image;
     image_memory_barrier.oldLayout = (VkImageLayout)m_CurrentLayout;
     image_memory_barrier.newLayout = (VkImageLayout)new_layout;
+    image_memory_barrier.srcAccessMask = (VkAccessFlags)src_access;
+    image_memory_barrier.dstAccessMask = (VkAccessFlags)dst_access;
     image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    image_memory_barrier.image = m_Image;
-    image_memory_barrier.subresourceRange.aspectMask = m_Specification.usage == ImageUsage::DEPTH_BUFFER ? VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
-    image_memory_barrier.subresourceRange.baseMipLevel = 0;
-    image_memory_barrier.subresourceRange.levelCount = 1;
+    image_memory_barrier.subresourceRange.aspectMask = m_Specification.usage == ImageUsage::DEPTH_BUFFER ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
     image_memory_barrier.subresourceRange.baseArrayLayer = 0;
     image_memory_barrier.subresourceRange.layerCount = 1;
+    image_memory_barrier.subresourceRange.baseMipLevel = 0;
+    image_memory_barrier.subresourceRange.levelCount = 1;
 
     vkCmdPipelineBarrier(
-        cmd_buffer->Raw(),
-        (BitMask)src_stage, (BitMask)dst_stage,
+        vk_cmd_buffer->Raw(),
+        (VkPipelineStageFlags)src_stage,
+        (VkPipelineStageFlags)dst_stage,
         0,
-        0, nullptr,
-        0, nullptr,
-        1, &image_memory_barrier);
+        0,
+        nullptr,
+        0,
+        nullptr,
+        1,
+        &image_memory_barrier);
 
     m_CurrentLayout = new_layout;
+
+    // Shared<VulkanDeviceCmdBuffer> vk_cmd_buffer = ShareAs<VulkanDeviceCmdBuffer>(cmd_buffer);
+    //
+    // VkImageMemoryBarrier image_memory_barrier {};
+    // image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    // image_memory_barrier.oldLayout = (VkImageLayout)m_CurrentLayout;
+    // image_memory_barrier.newLayout = (VkImageLayout)new_layout;
+    // image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    // image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    // image_memory_barrier.image = m_Image;
+    // image_memory_barrier.subresourceRange.aspectMask = m_Specification.usage == ImageUsage::DEPTH_BUFFER ? VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
+    // image_memory_barrier.subresourceRange.baseMipLevel = 0;
+    // image_memory_barrier.subresourceRange.levelCount = 1;
+    // image_memory_barrier.subresourceRange.baseArrayLayer = 0;
+    // image_memory_barrier.subresourceRange.layerCount = 1;
+    //
+    // vkCmdPipelineBarrier(
+    //     cmd_buffer->Raw(),
+    //     (BitMask)src_stage, (BitMask)dst_stage,
+    //     0,
+    //     0, nullptr,
+    //     0, nullptr,
+    //     1, &image_memory_barrier);
+    //
+    // m_CurrentLayout = new_layout;
 }
 
 void VulkanImage::CreateTexture()

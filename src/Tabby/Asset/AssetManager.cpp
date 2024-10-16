@@ -74,9 +74,10 @@ AssetHandle AssetManager::RegisterAsset(Shared<AssetBase> asset, const AssetHand
 const Shared<Image> AssetManager::GetMissingTexture()
 {
 
-    if (!m_MissingTextureImage) [[likely]] {
+    if (!m_MissingTextureImage) [[unlikely]] {
 
         std::vector<RGBA32> image_data;
+        image_data.reserve(4);
         image_data.push_back({ 255, 0, 220, 255 });
         image_data.push_back({ 1, 0, 1, 255 });
         image_data.push_back({ 1, 0, 1, 255 });
@@ -158,6 +159,8 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
 
         image_data.assign(raw_image_data, raw_image_data + (image_width * image_height));
         channels = 4;
+
+        delete raw_image_data;
 
         if (image_data.empty()) {
             TB_CORE_ERROR("TextureImporter::ImportTextureSource - Could not load texture from filepath: {}", path.string());

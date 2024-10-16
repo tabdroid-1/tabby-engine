@@ -164,6 +164,8 @@ void VulkanSwapchain::CreateSwapchain()
         image_memory_barrier.subresourceRange.layerCount = 1;
         image_memory_barrier.subresourceRange.baseMipLevel = 0;
         image_memory_barrier.subresourceRange.levelCount = 1;
+        // image_memory_barrier.srcAccessMask = 0;
+        // image_memory_barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
 
         vkCmdPipelineBarrier(
             image_layout_transition_command_buffer,
@@ -309,6 +311,9 @@ void VulkanSwapchain::EndFrame()
         m_Specification.extent = { (int)surface_capabilities.currentExtent.width, (int)surface_capabilities.currentExtent.height };
 
         vkQueueWaitIdle(device->GetGraphicsQueue());
+
+        SwapchainSpecification new_spec = GetSpecification();
+        new_spec.extent = { surface_capabilities.currentExtent.width, surface_capabilities.currentExtent.height };
 
         CreateSwapchain();
     }

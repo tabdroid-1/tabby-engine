@@ -26,7 +26,7 @@ public:
     ~VulkanRendererAPI() override;
 
     RendererConfig GetConfig() const override { return m_Config; }
-    // uint32 GetCurrentFrameIndex() const override { return m_Swapchain->GetCurrentFrameIndex(); }
+    uint32_t GetCurrentFrameIndex() const override;
     // uint32 GetDeviceMinimalUniformBufferAlignment() const override;
     // uint32 GetDeviceMinimalStorageBufferAlignment() const override;
     // uint32 GetDeviceOptimalTaskWorkGroupSize() const override;

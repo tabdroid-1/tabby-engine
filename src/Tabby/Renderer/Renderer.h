@@ -29,7 +29,7 @@ public:
     static void Shutdown();
 
     static RendererConfig GetConfig();
-    // static uint32 GetCurrentFrameIndex();
+    static uint32_t GetCurrentFrameIndex();
     static Shared<ImageSampler> GetNearestSampler();
     static Shared<ImageSampler> GetLinearSampler();
 

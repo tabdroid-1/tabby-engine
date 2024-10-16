@@ -86,11 +86,15 @@ void GLTFLoader::LoadImages(GLTFParserData& data)
                            std::vector<RGBA32> image_data;
                            image_data.assign(raw_image_data, raw_image_data + (image_width * image_height));
 
-                           std::vector<RGBA32> full_image_data = AssetCompressor::GenerateMipMaps(image_data, image_width, image_height);
+                           // std::vector<RGBA32> full_image_data = AssetCompressor::GenerateMipMaps(image_data, image_width, image_height);
+                           //
+                           // std::vector<byte> raw(full_image_data.size() * sizeof(RGBA32));
+                           // memcpy(raw.data(), full_image_data.data(), full_image_data.size() * sizeof(RGBA32));
+                           // full_image_data.clear();
 
-                           std::vector<byte> raw(full_image_data.size() * sizeof(RGBA32));
-                           memcpy(raw.data(), full_image_data.data(), full_image_data.size() * sizeof(RGBA32));
-                           full_image_data.clear();
+                           std::vector<byte> raw(image_data.size() * sizeof(RGBA32));
+                           memcpy(raw.data(), image_data.data(), image_data.size() * sizeof(RGBA32));
+                           image_data.clear();
 
                            ImageSpecification texture_spec = {};
                            texture_spec.pixels = std::move(raw);

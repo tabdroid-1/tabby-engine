@@ -19,7 +19,7 @@ public:
     virtual ~RendererAPI() {};
 
     virtual RendererConfig GetConfig() const = 0;
-    // virtual uint32 GetCurrentFrameIndex() const = 0;
+    virtual uint32_t GetCurrentFrameIndex() const = 0;
     // virtual uint32 GetDeviceMinimalUniformBufferAlignment() const = 0;
     // virtual uint32 GetDeviceMinimalStorageBufferAlignment() const = 0;
     // virtual uint32 GetDeviceOptimalTaskWorkGroupSize() const = 0;
