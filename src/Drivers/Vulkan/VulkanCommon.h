@@ -21,6 +21,7 @@ namespace Tabby {
 #else
 #define VK_CHECK_RESULT(fn) fn
 #endif
+
 namespace Util {
     const std::string VkResultToString(VkResult result);
 

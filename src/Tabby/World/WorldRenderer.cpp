@@ -15,7 +15,7 @@ WorldRenderer::WorldRenderer()
     ImageSpecification attachment_spec = ImageSpecification::Default();
     attachment_spec.usage = ImageUsage::RENDER_TARGET;
     attachment_spec.extent = { Application::GetWindow().GetWidth(), Application::GetWindow().GetHeight(), 1 };
-    attachment_spec.format = ImageFormat::RGB32_HDR;
+    attachment_spec.format = ImageFormat::RGBA32_UNORM;
     for (int i = 0; i < 2; i++)
         m_RendererOutputs.push_back(Image::Create(attachment_spec));
 
@@ -43,7 +43,7 @@ void WorldRenderer::BeginScene()
 {
     m_CurrectMainRenderTarget = m_RendererOutputs[Renderer::GetCurrentFrameIndex()];
     m_CurrentDepthAttachment = m_DepthAttachments[Renderer::GetCurrentFrameIndex()];
-    Renderer::BeginRender({ m_CurrectMainRenderTarget, m_CurrentDepthAttachment }, m_CurrectMainRenderTarget->GetSpecification().extent, { 0, 0 }, { 1.0f, 1.0f, 1.0f, 0.0f });
+    Renderer::BeginRender({ m_CurrectMainRenderTarget, m_CurrentDepthAttachment }, m_CurrectMainRenderTarget->GetSpecification().extent, { 0, 0 }, { 0.2f, 0.2f, 0.2f, 1.0f });
 }
 
 void WorldRenderer::EndScene()

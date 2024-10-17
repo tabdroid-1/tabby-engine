@@ -22,7 +22,7 @@ VulkanMemoryAllocator::VulkanMemoryAllocator()
     vulkan_functions.vkGetDeviceProcAddr = vkGetDeviceProcAddr;
 
     VmaAllocatorCreateInfo allocator_create_info = {};
-    allocator_create_info.vulkanApiVersion = VK_API_VERSION_1_1;
+    allocator_create_info.vulkanApiVersion = VK_API_VERSION_1_2;
     allocator_create_info.instance = vk_context->GetVulkanInstance();
     allocator_create_info.physicalDevice = vk_context->GetDevice()->GetPhysicalDevice()->Raw();
     allocator_create_info.device = vk_context->GetDevice()->Raw();

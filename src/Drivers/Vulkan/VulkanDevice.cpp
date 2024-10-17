@@ -100,13 +100,8 @@ VulkanPhysicalDevice::VulkanPhysicalDevice(VulkanGraphicsContext* ctx)
 
     m_Indices.present = m_Indices.graphics;
 
-    // Fetch and preferred work group size for mesh shading
-    VkPhysicalDeviceMeshShaderPropertiesEXT* mesh_shader_properties = new VkPhysicalDeviceMeshShaderPropertiesEXT {};
-    mesh_shader_properties->sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_EXT;
-
     m_DeviceProps = {};
     m_DeviceProps.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-    m_DeviceProps.pNext = mesh_shader_properties;
 
     vkGetPhysicalDeviceProperties2(m_PhysicalDevice, &m_DeviceProps);
     TB_CORE_TRACE("Selected Vulkan device: {}", m_DeviceProps.properties.deviceName);
@@ -163,8 +158,22 @@ VulkanDevice::VulkanDevice(std::shared_ptr<VulkanPhysicalDevice> physical_device
     }
     std::vector<const char*> enabled_extensions = GetRequiredExtensions();
 
+    VkPhysicalDeviceSynchronization2FeaturesKHR sync2Features = {};
+    sync2Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR;
+    sync2Features.synchronization2 = VK_TRUE;
+
+    VkPhysicalDeviceFeatures2 deviceFeatures2 = {};
+    deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+    deviceFeatures2.pNext = &sync2Features;
+
+    VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamic_rendering_feature;
+    dynamic_rendering_feature.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR;
+    dynamic_rendering_feature.pNext = &deviceFeatures2;
+    dynamic_rendering_feature.dynamicRendering = VK_TRUE;
+
     VkDeviceCreateInfo device_create_info = {};
     device_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    device_create_info.pNext = &dynamic_rendering_feature;
     device_create_info.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     device_create_info.pQueueCreateInfos = queueCreateInfos.data();
     device_create_info.pEnabledFeatures = &features;
@@ -218,10 +227,16 @@ std::vector<const char*> VulkanDevice::GetRequiredExtensions()
         extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     }
 
-#
+    if (m_PhysicalDevice->IsExtensionSupported(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME)) {
+        extensions.push_back(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
+    }
+
+    if (m_PhysicalDevice->IsExtensionSupported(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME)) {
+        extensions.push_back(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
+    }
+
 #ifdef TB_PLATFORM_MACOS
     extensions.emplace_back("VK_KHR_portability_subset");
-    // extensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
 #endif
 
     TB_CORE_TRACE("Enabled Vulkan device extensions:");

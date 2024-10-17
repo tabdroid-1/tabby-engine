@@ -33,6 +33,11 @@ void Renderer::Init(const RendererConfig& config)
     s_InternalData.m_NearestSampler = ImageSampler::Create(sampler_spec);
 }
 
+void Renderer::Submit(RenderFunction func)
+{
+    s_RendererAPI->Submit(func);
+}
+
 void Renderer::Shutdown()
 {
     ShaderLibrary::Destroy();

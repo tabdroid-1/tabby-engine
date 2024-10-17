@@ -11,10 +11,10 @@ class Image;
 class Shader;
 class ShaderBuffer;
 
+using RenderFunction = std::function<void()>;
+
 class RendererAPI {
 public:
-    using RenderFunction = std::function<void()>;
-
     RendererAPI() {};
     virtual ~RendererAPI() {};
 

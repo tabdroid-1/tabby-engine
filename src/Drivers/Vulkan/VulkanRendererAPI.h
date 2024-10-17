@@ -13,7 +13,6 @@ namespace Tabby {
 class VulkanGraphicsContext;
 class VulkanDeviceCmdBuffer;
 class VulkanShaderBuffer;
-class VulkanRenderPass;
 class VulkanSwapchain;
 class VulkanDevice;
 class VulkanShader;
@@ -63,12 +62,14 @@ public:
     static void FreeDescriptorSets(std::vector<VkDescriptorSet> sets);
 
 private:
+    inline static PFN_vkCmdBeginRenderingKHR vkCmdBeginRenderingKHR;
+    inline static PFN_vkCmdEndRenderingKHR vkCmdEndRenderingKHR;
+
     RendererConfig m_Config;
 
     Shared<VulkanGraphicsContext> m_GraphicsContext;
     Shared<VulkanDevice> m_Device;
     Shared<VulkanSwapchain> m_Swapchain;
-    Shared<VulkanRenderPass> m_RenderPass;
 
     std::vector<Shared<VulkanDeviceCmdBuffer>> m_CmdBuffers;
     Shared<VulkanDeviceCmdBuffer> m_CurrentCmdBuffer;

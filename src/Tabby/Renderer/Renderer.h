@@ -35,6 +35,8 @@ public:
 
     static void LoadShaderPack();
 
+    static void Submit(RenderFunction func);
+
     static void BeginFrame();
     static void EndFrame();
     static void BeginRender(const std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 offset, Vector4 clear_value);

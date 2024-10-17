@@ -4,7 +4,8 @@
 #include <Tabby/UI/Panels/Console/Console.h>
 #include <Tabby/Core/Events/MouseEvent.h>
 #include <Tabby/Core/Layer/LayerStack.h>
-#include <Tabby/UI/ImGui/ImGuiLayer.h>
+#include <Tabby/Renderer/UI/ImGuiRenderer.h>
+// #include <Tabby/UI/ImGui/ImGuiLayer.h>
 #include <Tabby/Core/Events/Event.h>
 #include <Tabby/Core/Window.h>
 
@@ -61,7 +62,7 @@ public:
 
     static Window& GetWindow() { return *s_Instance->m_Window; }
     static ConsolePanel* GetConsole() { return s_Instance->m_Console; }
-    static ImGuiLayer& GetImGuiLayer() { return *s_Instance->m_ImGuiLayer; }
+    // static ImGuiLayer& GetImGuiLayer() { return *s_Instance->m_ImGuiLayer; }
     static ApplicationSpecification& GetSpecification() { return s_Instance->m_Specification; }
 
     static void SubmitToMainThread(const std::function<void()>& function);
@@ -81,7 +82,8 @@ private:
 private:
     ApplicationSpecification m_Specification;
     Scope<Window> m_Window;
-    ImGuiLayer* m_ImGuiLayer;
+    // ImGuiLayer* m_ImGuiLayer;
+    ImGuiRenderer* m_ImGuiRenderer;
     LayerStack m_LayerStack;
 
     double m_LastFrameTime = 0.0f;

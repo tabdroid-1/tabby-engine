@@ -97,7 +97,7 @@ const Shared<Image> AssetManager::GetMissingTexture()
         texture_spec.extent = { 2, 2, 1 };
         texture_spec.array_layers = 1;
         texture_spec.mip_levels = Utils::ComputeNumMipLevelsBC7(2, 2) + 1;
-        texture_spec.path = "bin_image";
+        texture_spec.path = "bin_missing_image";
 
         AssetHandle handle;
         m_MissingTextureImage = Image::Create(texture_spec, handle);
@@ -141,16 +141,14 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
                 image_source.resize(size);
                 Sint64 bytesRead = SDL_RWread(rw, image_source.data(), 1, size);
                 if (bytesRead != size) {
-                    // Handle read error
                     TB_CORE_ERROR("Error reading file {0}", path);
-                    image_source.clear(); // Clear the imageData to indicate an error
+                    image_source.clear();
                     return m_MissingTextureImage->Handle;
                 }
             }
 
             SDL_RWclose(rw);
         } else {
-            // Handle file open error
             TB_CORE_ERROR("Could not open file {0}", path);
             return m_MissingTextureImage->Handle;
         }

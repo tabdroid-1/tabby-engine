@@ -6,7 +6,6 @@
 namespace Tabby {
 
 class VulkanDeviceCmdBuffer;
-class VulkanRenderPass;
 class VulkanDebugUtils;
 class VulkanSwapchain;
 class VulkanDevice;
@@ -24,9 +23,11 @@ public:
     VkInstance GetVulkanInstance() const { return m_VulkanInstance; }
     std::shared_ptr<VulkanDevice> GetDevice() const { return m_Device; }
     std::shared_ptr<VulkanSwapchain> GetSwapchain() { return m_Swapchain; }
-    std::shared_ptr<VulkanRenderPass> GetRenderPass() { return m_RenderPass; }
+    // std::shared_ptr<VulkanRenderPass> GetRenderPass() { return m_RenderPass; }
 
     static constexpr int GetFramesInFlight() { return 2; };
+
+    inline static PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR;
 
 private:
     static std::vector<const char*> GetVulkanExtensions();
@@ -40,7 +41,7 @@ private:
     std::shared_ptr<VulkanDevice> m_Device = nullptr;
     std::shared_ptr<VulkanDebugUtils> m_DebugUtils = nullptr;
     std::shared_ptr<VulkanSwapchain> m_Swapchain = nullptr;
-    std::shared_ptr<VulkanRenderPass> m_RenderPass = nullptr;
+    // std::shared_ptr<VulkanRenderPass> m_RenderPass = nullptr;
 };
 
 }

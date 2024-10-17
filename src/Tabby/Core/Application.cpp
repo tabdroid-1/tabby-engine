@@ -41,11 +41,14 @@ Application::Application(const ApplicationSpecification& specification)
     renderer_config.vsync = false;
     Renderer::Init(renderer_config);
 
+    m_ImGuiRenderer = ImGuiRenderer::Create();
+    m_ImGuiRenderer->Launch(m_Window->GetNativeWindow());
+
 #if !TB_HEADLESS
     Input::Init();
 
-    m_ImGuiLayer = new ImGuiLayer();
-    PushOverlay(m_ImGuiLayer);
+    // m_ImGuiLayer = new ImGuiLayer();
+    // PushOverlay(m_ImGuiLayer);
 
     m_Console = new ConsolePanel();
 #endif // TB_HEADLESS
@@ -147,22 +150,22 @@ void Application::Run()
                     layer->OnUpdate();
             }
 
+#if !TB_HEADLESS
+            s_Instance->m_ImGuiRenderer->BeginFrame();
+            {
+                TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackOnImGuiRender");
+
+                for (Layer* layer : s_Instance->m_LayerStack)
+                    layer->OnImGuiRender();
+            }
+
+            s_Instance->m_Console->Draw();
+
+            s_Instance->m_ImGuiRenderer->EndFrame();
+#endif
+
             Renderer::Render();
             Renderer::EndFrame();
-
-#if !TB_HEADLESS
-            // s_Instance->m_ImGuiLayer->Begin();
-            // {
-            //     TB_PROFILE_SCOPE_NAME("Tabby::Application::La			Renderer::BeginFrame();yerStackOnImGuiRender");
-            //
-            //     for (Layer* layer : s_Instance->m_LayerStack)
-            //         layer->OnImGuiRender();
-            // }			Renderer::BeginFrame();
-            //
-            // s_Instance->m_Console->Draw();
-            //
-            // s_Instance->m_ImGuiLayer->End();
-#endif
         }
 
 #if !TB_HEADLESS
