@@ -62,7 +62,7 @@ public:
 
     static Window& GetWindow() { return *s_Instance->m_Window; }
     static ConsolePanel* GetConsole() { return s_Instance->m_Console; }
-    // static ImGuiLayer& GetImGuiLayer() { return *s_Instance->m_ImGuiLayer; }
+    static ImGuiRenderer* GetImGuiRenderer() { return s_Instance->m_ImGuiRenderer; }
     static ApplicationSpecification& GetSpecification() { return s_Instance->m_Specification; }
 
     static void SubmitToMainThread(const std::function<void()>& function);

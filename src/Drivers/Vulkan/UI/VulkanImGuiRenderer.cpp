@@ -1,12 +1,13 @@
 #include <Drivers/Vulkan/UI/VulkanImGuiRenderer.h>
-
 #include <Drivers/Vulkan/VulkanDeviceCmdBuffer.h>
 #include <Drivers/Vulkan/VulkanGraphicsContext.h>
+#include <Drivers/Vulkan/VulkanSwapchain.h>
 #include <Drivers/Vulkan/VulkanDevice.h>
 #include <Drivers/Vulkan/VulkanImage.h>
 
 #include "backends/imgui_impl_vulkan.h"
 #include "backends/imgui_impl_sdl2.h"
+#include <Tabby/Core/Application.h>
 #include <ImGuizmo.h>
 
 namespace Tabby {
@@ -14,6 +15,51 @@ namespace Tabby {
 static VkDescriptorPool pool = VK_NULL_HANDLE;
 
 static std::unordered_map<UUID, VkDescriptorSet> imgui_image_descriptor_sets;
+
+static VkRenderPass createDummyRenderPass()
+{
+    VkAttachmentDescription color_attachment;
+    color_attachment.format = VK_FORMAT_R8G8B8A8_UNORM;
+    color_attachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    color_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    color_attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    color_attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    color_attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    color_attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    color_attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+    VkAttachmentReference color_attachment_ref = {};
+    color_attachment_ref.attachment = 0;
+    color_attachment_ref.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    VkSubpassDescription subpass = {};
+    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &color_attachment_ref;
+
+    VkSubpassDependency dependency = {};
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcAccessMask = 0;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+    VkRenderPassCreateInfo render_pass_info = {};
+    render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    render_pass_info.attachmentCount = 1;
+    render_pass_info.pAttachments = &color_attachment;
+    render_pass_info.subpassCount = 1;
+    render_pass_info.pSubpasses = &subpass;
+    render_pass_info.dependencyCount = 1;
+    render_pass_info.pDependencies = &dependency;
+
+    VkRenderPass dummy_render_pass = nullptr;
+
+    VK_CHECK_RESULT(vkCreateRenderPass(VulkanGraphicsContext::Get()->GetDevice()->Raw(), &render_pass_info, nullptr, &dummy_render_pass))
+
+    return dummy_render_pass;
+}
 
 VulkanImGuiRenderer::VulkanImGuiRenderer()
 {
@@ -28,6 +74,7 @@ void VulkanImGuiRenderer::Launch(void* window_handle)
     TB_CORE_INFO("Launching ImGui renderer...");
     auto device = VulkanGraphicsContext::Get()->GetDevice();
     auto context = VulkanGraphicsContext::Get();
+    auto swapchain = VulkanGraphicsContext::Get()->GetSwapchain();
     auto sdl_window = (SDL_Window*)window_handle;
 
     VkDescriptorPoolSize pool_sizes[] = {
@@ -121,24 +168,9 @@ void VulkanImGuiRenderer::Launch(void* window_handle)
     style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
     style.GrabRounding = style.FrameRounding = 2.3f;
 
-    // Setted ImGui styles
-
-    VkInstance inst = context->GetVulkanInstance();
-
-    // ImGui_ImplVulkan_LoadFunctions([](const char* function_name, void* vk_instance) { return vkGetInstanceProcAddr(volkGetLoadedInstance(), function_name); },
-    //     &inst);
-
-    // Loaded vulkan functions for imgui renderer
     ImGui_ImplSDL2_InitForVulkan(sdl_window);
 
-    // Initialized ImGui SDL implementation for Vulkan
-
-    VkFormat format[1] = { VK_FORMAT_B8G8R8A8_UNORM };
-
-    VkPipelineRenderingCreateInfo pipeline_rendering_create_info = {};
-    pipeline_rendering_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
-    pipeline_rendering_create_info.colorAttachmentCount = 1;
-    pipeline_rendering_create_info.pColorAttachmentFormats = format;
+    VkRenderPass dummy_render_pass = createDummyRenderPass();
 
     ImGui_ImplVulkan_InitInfo init_info = {};
     init_info.Instance = context->GetVulkanInstance();
@@ -150,16 +182,28 @@ void VulkanImGuiRenderer::Launch(void* window_handle)
     init_info.MinImageCount = Renderer::GetConfig().frames_in_flight;
     init_info.ImageCount = Renderer::GetConfig().frames_in_flight;
     init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
-    init_info.UseDynamicRendering = true;
-    init_info.PipelineRenderingCreateInfo = pipeline_rendering_create_info;
+    init_info.UseDynamicRendering = false;
+    init_info.RenderPass = dummy_render_pass;
 
     ImGui_ImplVulkan_Init(&init_info);
 
-    // OMNIFORCE_CORE_TRACE("[ImGuiRenderer]: Min image count: {} | image count: {}", init_info.MinImageCount, init_info.ImageCount);
+    vkDestroyRenderPass(device->Raw(), dummy_render_pass, nullptr);
 
     // m_MainFont = io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 16);
 
     ImGui_ImplVulkan_CreateFontsTexture();
+
+    m_FrameImages.resize(VulkanGraphicsContext::GetFramesInFlight());
+
+    for (int i = 0; i < m_FrameImages.size(); i++) {
+
+        ImageSpecification attachment_spec = ImageSpecification::Default();
+        attachment_spec.usage = ImageUsage::RENDER_TARGET;
+        attachment_spec.extent = { Application::GetWindow().GetWidth(), Application::GetWindow().GetHeight(), 1 };
+        attachment_spec.format = ImageFormat::RGBA32_UNORM;
+
+        m_FrameImages[i] = ShareAs<VulkanImage>(Image::Create(attachment_spec));
+    }
 }
 
 void VulkanImGuiRenderer::Destroy()

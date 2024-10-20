@@ -1,12 +1,10 @@
 #pragma once
 
-#include "Drivers/Vulkan/VulkanDescriptorSet.h"
-#include "Tabby/Renderer/Image.h"
+#include <Drivers/Vulkan/VulkanDescriptorSet.h>
+#include <Drivers/Vulkan/VulkanRenderPass.h>
 #include <Drivers/Vulkan/VulkanCommon.h>
-#include <Tabby/Foundation/Types.h>
 #include <Tabby/Renderer/RendererAPI.h>
 #include <Tabby/Renderer/Renderer.h>
-#include <vulkan/vulkan_core.h>
 
 namespace Tabby {
 
@@ -36,11 +34,11 @@ public:
     //
     void BeginFrame() override;
     void EndFrame() override;
-    void BeginRender(const std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 render_offset, Vector4 clear_color) override;
+    void BeginRender(std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 render_offset, Vector4 clear_color) override;
     void EndRender(Shared<Image> target) override;
     void WaitDevice() override;
     // void BindSet(Shared<DescriptorSet> set, Shared<Pipeline> pipeline, uint8 index) override;
-    // void CopyToSwapchain(Shared<Image> image) override;
+    void CopyToSwapchain(Shared<Image> image);
     // void InsertBarrier(const PipelineBarrierInfo& barrier) override;
 
     void BeginCommandRecord() override;
@@ -62,14 +60,20 @@ public:
     static void FreeDescriptorSets(std::vector<VkDescriptorSet> sets);
 
 private:
-    inline static PFN_vkCmdBeginRenderingKHR vkCmdBeginRenderingKHR;
-    inline static PFN_vkCmdEndRenderingKHR vkCmdEndRenderingKHR;
+    struct VulkanRendererAPIRenderPassInfo {
+        VulkanRenderPassSpecification spec;
+        Shared<VulkanRenderPass> render_pass;
+    };
 
+private:
     RendererConfig m_Config;
 
     Shared<VulkanGraphicsContext> m_GraphicsContext;
     Shared<VulkanDevice> m_Device;
     Shared<VulkanSwapchain> m_Swapchain;
+
+    std::vector<VulkanRendererAPIRenderPassInfo> m_RenderPassInfos;
+    VulkanRendererAPIRenderPassInfo m_CurrentRenderPass;
 
     std::vector<Shared<VulkanDeviceCmdBuffer>> m_CmdBuffers;
     Shared<VulkanDeviceCmdBuffer> m_CurrentCmdBuffer;

@@ -24,7 +24,7 @@ VulkanGraphicsContext::VulkanGraphicsContext(const RendererConfig& config)
     appInfo.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
     appInfo.pEngineName = "Tabby Engine";
     appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
-    appInfo.apiVersion = VK_API_VERSION_1_2;
+    appInfo.apiVersion = VK_API_VERSION_1_1;
 
     std::vector<const char*> extensions = GetVulkanExtensions();
     std::vector<const char*> layers = GetVulkanLayers();

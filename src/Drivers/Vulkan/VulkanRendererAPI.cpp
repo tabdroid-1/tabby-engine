@@ -1,7 +1,9 @@
+#include <Drivers/Vulkan/UI/VulkanImGuiRenderer.h>
 #include <Drivers/Vulkan/VulkanGraphicsContext.h>
 #include <Drivers/Vulkan/VulkanDeviceCmdBuffer.h>
 #include <Drivers/Vulkan/VulkanShaderBuffer.h>
 #include <Drivers/Vulkan/VulkanRendererAPI.h>
+#include <Drivers/Vulkan/VulkanRenderPass.h>
 #include <Drivers/Vulkan/VulkanSwapchain.h>
 #include <Drivers/Vulkan/VulkanPipeline.h>
 #include <Drivers/Vulkan/VulkanMaterial.h>
@@ -11,6 +13,7 @@
 
 #include <Tabby/Renderer/ShaderLibrary.h>
 #include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Core/Application.h>
 #include <Tabby/Asset/GLTFLoader.h>
 #include <Tabby/Core/Input/Input.h>
 #include <Tabby/Renderer/Mesh.h>
@@ -31,9 +34,6 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
     m_Swapchain = m_GraphicsContext->GetSwapchain();
 
     m_CmdBuffers.resize(m_GraphicsContext->GetFramesInFlight());
-
-    vkCmdBeginRenderingKHR = reinterpret_cast<PFN_vkCmdBeginRenderingKHR>(vkGetDeviceProcAddr(m_Device->Raw(), "vkCmdBeginRenderingKHR"));
-    vkCmdEndRenderingKHR = reinterpret_cast<PFN_vkCmdEndRenderingKHR>(vkGetDeviceProcAddr(m_Device->Raw(), "vkCmdEndRenderingKHR"));
 
     for (auto& buf : m_CmdBuffers) {
         buf = std::make_shared<VulkanDeviceCmdBuffer>();
@@ -166,10 +166,13 @@ void VulkanRendererAPI::RenderTasks(Shared<Mesh> mesh, std::vector<MaterialData>
         if (!mesh)
             return;
 
-        auto shader = ShareAs<VulkanShader>(mesh->GetMaterial()->GetShader());
+        auto pipeline = ShareAs<VulkanShader>(mesh->GetMaterial()->GetShader())->GetPipeline();
         auto vertex_buffer = ShareAs<VulkanShaderBuffer>(mesh->GetVertexBuffer());
         auto index_buffer = ShareAs<VulkanShaderBuffer>(mesh->GetIndexBuffer());
         auto material = ShareAs<VulkanMaterial>(mesh->GetMaterial());
+
+        if (pipeline->GetCurrentRenderPass() != m_CurrentRenderPass.render_pass || pipeline->Raw() == VK_NULL_HANDLE)
+            pipeline->Create(m_CurrentRenderPass.render_pass);
 
         for (auto& element : elements) {
             if (element.type == MaterialData::Type::Uniform) {
@@ -188,7 +191,7 @@ void VulkanRendererAPI::RenderTasks(Shared<Mesh> mesh, std::vector<MaterialData>
         }
 
         if (data.Size) {
-            vkCmdPushConstants(m_CurrentCmdBuffer->Raw(), shader->GetPipeline()->RawLayout(), VK_SHADER_STAGE_ALL, 0, data.Size, data.Data);
+            vkCmdPushConstants(m_CurrentCmdBuffer->Raw(), pipeline->RawLayout(), VK_SHADER_STAGE_ALL, 0, data.Size, data.Data);
             delete[] data.Data;
         }
 
@@ -201,10 +204,10 @@ void VulkanRendererAPI::RenderTasks(Shared<Mesh> mesh, std::vector<MaterialData>
         if (mesh->GetSpecification().flags & (uint64_t)MeshFlags::INDEX_TYPE_UINT32)
             index_type = VK_INDEX_TYPE_UINT32;
 
-        vkCmdBindPipeline(m_CurrentCmdBuffer->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, shader->GetPipeline()->Raw());
+        vkCmdBindPipeline(m_CurrentCmdBuffer->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->Raw());
         vkCmdBindVertexBuffers(m_CurrentCmdBuffer->Raw(), 0, 1, &raw_vertex_buffer, offsets);
         vkCmdBindIndexBuffer(m_CurrentCmdBuffer->Raw(), index_buffer->Raw(), 0, index_type);
-        vkCmdBindDescriptorSets(m_CurrentCmdBuffer->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, shader->GetPipeline()->RawLayout(), 0, raw_set.size(), raw_set.data(), 0, nullptr);
+        vkCmdBindDescriptorSets(m_CurrentCmdBuffer->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->RawLayout(), 0, raw_set.size(), raw_set.data(), 0, nullptr);
         vkCmdDrawIndexed(m_CurrentCmdBuffer->Raw(), mesh->TotalIndexCount(), 1, 0, 0, 0);
     });
 }
@@ -223,101 +226,67 @@ void VulkanRendererAPI::RenderTasks(Shared<Shader> shader, uint32_t vertex_count
         vkCmdDraw(m_CurrentCmdBuffer->Raw(), vertex_count, 1, 0, 0);
     });
 }
-void VulkanRendererAPI::BeginRender(const std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 render_offset, Vector4 clear_color)
+void VulkanRendererAPI::BeginRender(std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 render_offset, Vector4 clear_color)
 {
+
     Submit([=]() mutable {
-        VkRenderingAttachmentInfo depth_attachment = {};
+        Shared<VulkanRenderPass> render_pass;
+        for (auto& render_pass_info : m_RenderPassInfos) {
+            if (render_pass_info.spec.attachments != attachments)
+                continue;
 
-        std::vector<VkRenderingAttachmentInfo> color_attachments = {};
+            if (render_pass_info.spec.clear_color != clear_color)
+                continue;
 
-        for (auto attachment : attachments) {
-            Shared<VulkanImage> vk_target = ShareAs<VulkanImage>(attachment);
-            ImageSpecification target_spec = vk_target->GetSpecification();
+            if (render_pass_info.spec.extent != render_area)
+                continue;
 
-            if (target_spec.usage == ImageUsage::RENDER_TARGET) {
-                ShareAs<VulkanImage>(attachment)->SetLayout(m_CurrentCmdBuffer, ImageLayout::COLOR_ATTACHMENT, PipelineStage::FRAGMENT_SHADER, PipelineStage::COLOR_ATTACHMENT_OUTPUT, (BitMask)PipelineAccess::UNIFORM_READ, (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE);
-
-                VkImageMemoryBarrier target_barrier = {};
-                target_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-                target_barrier.image = vk_target->Raw();
-                target_barrier.oldLayout = (VkImageLayout)vk_target->GetCurrentLayout();
-                target_barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-                target_barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
-                target_barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-                target_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-                target_barrier.subresourceRange.baseArrayLayer = 0;
-                target_barrier.subresourceRange.baseMipLevel = 0;
-                target_barrier.subresourceRange.layerCount = 1;
-                target_barrier.subresourceRange.levelCount = 1;
-
-                vkCmdPipelineBarrier(m_CurrentCmdBuffer->Raw(),
-                    VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT,
-                    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                    0,
-                    0,
-                    nullptr,
-                    0,
-                    nullptr,
-                    1,
-                    &target_barrier);
-
-                vk_target->SetCurrentLayout(ImageLayout::COLOR_ATTACHMENT);
-
-                VkRenderingAttachmentInfo color_attachment = {};
-                color_attachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-                color_attachment.imageView = vk_target->RawView();
-                color_attachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-                if (clear_color.a != 0.0f)
-                    color_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-                else
-                    color_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-                color_attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-                color_attachment.clearValue = { clear_color.r, clear_color.g, clear_color.b, clear_color.a };
-
-                color_attachments.push_back(color_attachment);
-            } else {
-                depth_attachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-                depth_attachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
-                depth_attachment.imageView = vk_target->RawView();
-                depth_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-                depth_attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-                depth_attachment.clearValue.color = { 0, 0, 0, 1 };
-                if (clear_color.a != 0.0f)
-                    depth_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-                else
-                    depth_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-                depth_attachment.clearValue.depthStencil = { 0.0f, 0 };
-            }
+            render_pass = render_pass_info.render_pass;
         }
 
-        VkRenderingInfo rendering_info = {};
-        rendering_info.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
-        rendering_info.renderArea = { { render_offset.x, render_offset.y }, { render_area.x, render_area.y } };
-        rendering_info.layerCount = 1;
-        rendering_info.colorAttachmentCount = color_attachments.size();
-        rendering_info.pColorAttachments = color_attachments.data();
-        rendering_info.pDepthAttachment = depth_attachment.imageView ? &depth_attachment : nullptr;
-        // rendering_info.pStencilAttachment = depth_attachment.imageView ? &depth_attachment : nullptr;
+        if (!render_pass) {
+            VulkanRendererAPIRenderPassInfo render_pass_info;
+            render_pass_info.spec.attachments = attachments;
+            render_pass_info.spec.clear_color = clear_color;
+            render_pass_info.spec.extent = render_area;
+            render_pass_info.render_pass = CreateShared<VulkanRenderPass>();
+            render_pass_info.render_pass->Create(render_pass_info.spec);
+
+            m_RenderPassInfos.push_back(render_pass_info);
+            render_pass = render_pass_info.render_pass;
+            m_CurrentRenderPass = render_pass_info;
+        }
+
+        std::vector<VkClearValue> clear_values;
+        clear_values.resize(attachments.size());
+        for (int i = 0; i < attachments.size(); i++) {
+            if (attachments[i]->GetSpecification().usage == ImageUsage::RENDER_TARGET)
+                clear_values[i].color = { clear_color.r, clear_color.g, clear_color.b, clear_color.a };
+            else if (attachments[i]->GetSpecification().usage == ImageUsage::DEPTH_BUFFER)
+                clear_values[i].depthStencil = { 1.0f, 0 };
+        }
+
+        VkRenderPassBeginInfo render_pass_info {};
+        render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        render_pass_info.renderPass = render_pass->Raw();
+        render_pass_info.framebuffer = render_pass->RawFramebuffer();
+        render_pass_info.renderArea.offset = { render_offset.x, render_offset.y };
+        render_pass_info.renderArea.extent = { render_area.x, render_area.y };
+        render_pass_info.clearValueCount = clear_values.size();
+        render_pass_info.pClearValues = clear_values.data();
 
         VkRect2D scissor = { { 0, 0 }, { render_area.x, render_area.y } };
         VkViewport viewport = { 0, (float)render_area.y, (float)render_area.x, -(float)render_area.y, 0.0f, 1.0f };
         vkCmdSetScissor(m_CurrentCmdBuffer->Raw(), 0, 1, &scissor);
         vkCmdSetViewport(m_CurrentCmdBuffer->Raw(), 0, 1, &viewport);
-        vkCmdBeginRenderingKHR(m_CurrentCmdBuffer->Raw(), &rendering_info);
+        vkCmdBeginRenderPass(m_CurrentCmdBuffer->Raw(), &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
     });
 }
 
 void VulkanRendererAPI::EndRender(Shared<Image> target)
 {
     Submit([=]() mutable {
-        vkCmdEndRenderingKHR(m_CurrentCmdBuffer->Raw());
-        // ShareAs<VulkanImage>(target)->SetLayout(
-        //     m_CurrentCmdBuffer,
-        //     ImageLayout::SHADER_READ_ONLY,
-        //     PipelineStage::COLOR_ATTACHMENT_OUTPUT,
-        //     PipelineStage::ALL_COMMANDS,
-        //     (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE,
-        //     (BitMask)PipelineAccess::MEMORY_READ | (BitMask)PipelineAccess::MEMORY_WRITE);
+        vkCmdEndRenderPass(m_CurrentCmdBuffer->Raw());
     });
 }
 
@@ -325,22 +294,13 @@ void VulkanRendererAPI::Render()
 {
     Submit([=]() mutable {
         auto swapchain_image = m_Swapchain->GetCurrentImage();
-        // VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
         swapchain_image->SetLayout(
             m_CurrentCmdBuffer,
-            ImageLayout::SHADER_READ_ONLY,
+            ImageLayout::PRESENT_SRC,
             PipelineStage::COLOR_ATTACHMENT_OUTPUT,
             PipelineStage::ALL_COMMANDS,
             (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE,
             (BitMask)PipelineAccess::MEMORY_READ);
-
-        // swapchain_image->SetLayout(
-        //     m_CurrentCmdBuffer,
-        //     ImageLayout::PRESENT_SRC,
-        //     PipelineStage::COLOR_ATTACHMENT_OUTPUT,
-        //     PipelineStage::ALL_COMMANDS,
-        //     (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE,
-        //     (BitMask)PipelineAccess::MEMORY_READ);
     });
     this->EndCommandRecord();
     this->ExecuteCurrentCommands();
@@ -354,11 +314,11 @@ void VulkanRendererAPI::Render()
 
 void VulkanRendererAPI::RenderImGui()
 {
-    auto image = m_Swapchain->GetCurrentImage();
+    auto imgui_renderer = (VulkanImGuiRenderer*)Application::GetImGuiRenderer();
 
     BeginRender(
-        { image },
-        image->GetSpecification().extent,
+        { imgui_renderer->GetFrameImages()[m_Swapchain->GetCurrentFrameIndex()] },
+        imgui_renderer->GetFrameImages()[m_Swapchain->GetCurrentFrameIndex()]->GetSpecification().extent,
         { 0, 0 },
         { 0.0f, 0.0f, 0.0f, 1.0f });
 
@@ -367,7 +327,50 @@ void VulkanRendererAPI::RenderImGui()
         ImDrawData* draw_data = ImGui::GetDrawData();
         ImGui_ImplVulkan_RenderDrawData(draw_data, m_CurrentCmdBuffer->Raw());
     });
-    EndRender(image);
+    EndRender(imgui_renderer->GetFrameImages()[m_Swapchain->GetCurrentFrameIndex()]);
+    CopyToSwapchain(imgui_renderer->GetFrameImages()[m_Swapchain->GetCurrentFrameIndex()]);
+}
+
+void VulkanRendererAPI::CopyToSwapchain(Shared<Image> image)
+{
+    Renderer::Submit([=]() mutable {
+        Shared<VulkanImage> vk_image = ShareAs<VulkanImage>(image);
+        Shared<Image> swapchain_image = m_Swapchain->GetCurrentImage();
+        UIntVector3 swapchain_resolution = swapchain_image->GetSpecification().extent;
+        UIntVector3 src_image_resolution = image->GetSpecification().extent;
+
+        VkImageBlit image_blit = {};
+        image_blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        image_blit.srcSubresource.mipLevel = 0;
+        image_blit.srcSubresource.baseArrayLayer = 0;
+        image_blit.srcSubresource.layerCount = 1;
+        image_blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        image_blit.dstSubresource.mipLevel = 0;
+        image_blit.dstSubresource.baseArrayLayer = 0;
+        image_blit.dstSubresource.layerCount = 1;
+        image_blit.srcOffsets[0] = { 0, 0, 0 };
+        image_blit.srcOffsets[1] = { (int)src_image_resolution.x, (int)src_image_resolution.y, 1 };
+        image_blit.dstOffsets[0] = { 0, 0, 0 };
+        image_blit.dstOffsets[1] = { (int)swapchain_resolution.x, (int)swapchain_resolution.y, 1 };
+
+        vk_image->SetLayout(
+            m_CurrentCmdBuffer,
+            ImageLayout::TRANSFER_DST,
+            PipelineStage::COLOR_ATTACHMENT_OUTPUT,
+            PipelineStage::TRANSFER,
+            (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE,
+            (BitMask)PipelineAccess::TRANSFER_READ);
+
+        vkCmdBlitImage(
+            m_CurrentCmdBuffer->Raw(),
+            vk_image->Raw(),
+            (VkImageLayout)vk_image->GetCurrentLayout(),
+            ShareAs<VulkanImage>(image)->Raw(),
+            (VkImageLayout)VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            1,
+            &image_blit,
+            VK_FILTER_LINEAR);
+    });
 }
 
 void VulkanRendererAPI::WaitDevice()

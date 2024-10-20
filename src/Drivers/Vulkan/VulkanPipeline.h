@@ -8,6 +8,7 @@
 namespace Tabby {
 
 class Shader;
+class VulkanRenderPass;
 
 struct VulkanPipelineSpecification {
     std::string debug_name;
@@ -72,14 +73,18 @@ public:
     VulkanPipeline(const VulkanPipelineSpecification& spec);
     ~VulkanPipeline();
 
+    void Create(Shared<VulkanRenderPass> current_render_pass = nullptr);
     void Destroy();
 
     VkPipeline Raw() const { return m_Pipeline; }
     VkPipelineLayout RawLayout() const { return m_PipelineLayout; }
     const VulkanPipelineSpecification& GetSpecification() const { return m_Specification; }
 
+    // return current renderpass of pipeline
+    Shared<VulkanRenderPass> GetCurrentRenderPass() const { return m_CurrentRenderPass; }
+
 private:
-    void CreateGraphics();
+    void CreateGraphics(Shared<VulkanRenderPass> render_pass);
     void CreateCompute();
 
 private:
@@ -87,6 +92,7 @@ private:
 
     VkPipeline m_Pipeline;
     VkPipelineLayout m_PipelineLayout;
+    Shared<VulkanRenderPass> m_CurrentRenderPass;
 };
 
 }

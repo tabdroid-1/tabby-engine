@@ -158,22 +158,14 @@ VulkanDevice::VulkanDevice(std::shared_ptr<VulkanPhysicalDevice> physical_device
     }
     std::vector<const char*> enabled_extensions = GetRequiredExtensions();
 
+    // TODO: remove
     VkPhysicalDeviceSynchronization2FeaturesKHR sync2Features = {};
     sync2Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR;
     sync2Features.synchronization2 = VK_TRUE;
 
-    VkPhysicalDeviceFeatures2 deviceFeatures2 = {};
-    deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-    deviceFeatures2.pNext = &sync2Features;
-
-    VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamic_rendering_feature;
-    dynamic_rendering_feature.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR;
-    dynamic_rendering_feature.pNext = &deviceFeatures2;
-    dynamic_rendering_feature.dynamicRendering = VK_TRUE;
-
     VkDeviceCreateInfo device_create_info = {};
     device_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    device_create_info.pNext = &dynamic_rendering_feature;
+    device_create_info.pNext = &sync2Features;
     device_create_info.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     device_create_info.pQueueCreateInfos = queueCreateInfos.data();
     device_create_info.pEnabledFeatures = &features;
@@ -227,12 +219,8 @@ std::vector<const char*> VulkanDevice::GetRequiredExtensions()
         extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     }
 
-    if (m_PhysicalDevice->IsExtensionSupported(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME)) {
-        extensions.push_back(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
-    }
-
     if (m_PhysicalDevice->IsExtensionSupported(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME)) {
-        extensions.push_back(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
+        extensions.push_back(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME); // TODO: remove
     }
 
 #ifdef TB_PLATFORM_MACOS

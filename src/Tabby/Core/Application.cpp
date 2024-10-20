@@ -44,14 +44,12 @@ Application::Application(const ApplicationSpecification& specification)
     m_ImGuiRenderer = ImGuiRenderer::Create();
     m_ImGuiRenderer->Launch(m_Window->GetNativeWindow());
 
-#if !TB_HEADLESS
     Input::Init();
 
     // m_ImGuiLayer = new ImGuiLayer();
     // PushOverlay(m_ImGuiLayer);
 
-    m_Console = new ConsolePanel();
-#endif // TB_HEADLESS
+    // m_Console = new ConsolePanel();
 }
 
 Application::~Application()
@@ -132,9 +130,7 @@ void Application::Run()
         Time::SetDeltaTime(time - s_Instance->m_LastFrameTime);
         s_Instance->m_LastFrameTime = time;
 
-#if !TB_HEADLESS
         Input::Update();
-#endif
 
         s_Instance->ExecuteMainThreadQueue();
 
@@ -150,7 +146,6 @@ void Application::Run()
                     layer->OnUpdate();
             }
 
-#if !TB_HEADLESS
             s_Instance->m_ImGuiRenderer->BeginFrame();
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackOnImGuiRender");
@@ -159,20 +154,17 @@ void Application::Run()
                     layer->OnImGuiRender();
             }
 
-            s_Instance->m_Console->Draw();
+            // s_Instance->m_Console->Draw();
 
             s_Instance->m_ImGuiRenderer->EndFrame();
-#endif
 
             Renderer::Render();
             Renderer::EndFrame();
         }
 
-#if !TB_HEADLESS
         Input::s_Instance->m_MouseScrollDelta = { 0.0f, 0.0f };
         s_Instance->m_Window->OnUpdate();
         ProcessApplicationSpec();
-#endif
 
         // Framerate limiter. this will do nothing if maxFPS is 0 or less.
         if (s_Instance->m_Specification.MaxFPS > 0.0) {

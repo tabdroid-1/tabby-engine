@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Tabby/Renderer/UI/ImGuiRenderer.h>
+#include <Drivers/Vulkan/VulkanImage.h>
 
 #include <imgui.h>
 
@@ -18,7 +19,10 @@ public:
     void EndFrame() override;
     void OnRender() override;
 
+    std::vector<Shared<VulkanImage>> GetFrameImages() { return m_FrameImages; }
+
 private:
     ImFont* m_MainFont;
+    std::vector<Shared<VulkanImage>> m_FrameImages;
 };
 }

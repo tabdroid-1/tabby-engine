@@ -33,7 +33,7 @@ public:
 
     virtual void BeginFrame() = 0;
     virtual void EndFrame() = 0;
-    virtual void BeginRender(const std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 offset, Vector4 clear_value) = 0;
+    virtual void BeginRender(std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 offset, Vector4 clear_value) = 0;
     virtual void EndRender(Shared<Image> target) = 0;
     virtual void WaitDevice() = 0;
     // virtual void BindSet(Shared<DescriptorSet> set, Shared<Pipeline> pipeline, uint8 index) = 0;

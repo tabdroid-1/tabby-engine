@@ -1,4 +1,5 @@
 #include <Drivers/Vulkan/VulkanGraphicsContext.h>
+#include <Drivers/Vulkan/VulkanRenderPass.h>
 #include <Drivers/Vulkan/VulkanSwapchain.h>
 #include <Drivers/Vulkan/VulkanPipeline.h>
 #include <Drivers/Vulkan/VulkanDevice.h>
@@ -7,6 +8,78 @@
 #include <Drivers/Vulkan/VulkanImage.h>
 
 namespace Tabby {
+
+// static VkRenderPass createDummyRenderPass(const std::vector<ImageFormat>& output_attachments_formats)
+// {
+//     std::vector<VkAttachmentReference> color_attachment_references;
+//     std::vector<VkAttachmentDescription> attachments;
+//     VkAttachmentReference depth_attachment_reference = {};
+//
+//     for (int i = 0; i < output_attachments_formats.size(); i++) {
+//
+//         if (output_attachments_formats[i] == ImageFormat::D32_S8) {
+//         } else {
+//             auto& color_attachment = attachments.emplace_back();
+//             color_attachment.format = convert(output_attachments_formats[i]);
+//             color_attachment.samples = VK_SAMPLE_COUNT_1_BIT;
+//             color_attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+//             color_attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+//             color_attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+//             color_attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+//             color_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+//             color_attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+//
+//             auto& color_attachment_reference = color_attachment_references.emplace_back();
+//             color_attachment_reference.attachment = i;
+//             color_attachment_reference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+//         }
+//     }
+//
+//     // HACK: I asume all render passes has depth buffer and all of them are the last attachment
+//     {
+//         auto& depth_attachment = attachments.emplace_back();
+//         depth_attachment.format = VK_FORMAT_D32_SFLOAT_S8_UINT;
+//         depth_attachment.samples = VK_SAMPLE_COUNT_1_BIT;
+//         depth_attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_STORE;
+//         depth_attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+//         depth_attachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+//         depth_attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+//         depth_attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+//         depth_attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+//
+//         depth_attachment_reference.attachment = color_attachment_references.size();
+//         depth_attachment_reference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+//     }
+//
+//     VkSubpassDescription subpass = {};
+//     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+//     subpass.colorAttachmentCount = color_attachment_references.size();
+//     subpass.pColorAttachments = color_attachment_references.data();
+//     subpass.pDepthStencilAttachment = &depth_attachment_reference;
+//
+//     VkSubpassDependency dependency {};
+//     dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+//     dependency.dstSubpass = 0;
+//     dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+//     dependency.srcAccessMask = 0;
+//     dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+//     dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+//
+//     VkRenderPassCreateInfo render_pass_info = {};
+//     render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+//     render_pass_info.attachmentCount = attachments.size();
+//     render_pass_info.pAttachments = attachments.data();
+//     render_pass_info.subpassCount = 1;
+//     render_pass_info.pSubpasses = &subpass;
+//     render_pass_info.dependencyCount = 1;
+//     render_pass_info.pDependencies = &dependency;
+//
+//     VkRenderPass dummy_render_pass;
+//
+//     VK_CHECK_RESULT(vkCreateRenderPass(VulkanGraphicsContext::Get()->GetDevice()->Raw(), &render_pass_info, nullptr, &dummy_render_pass))
+//
+//     return dummy_render_pass;
+// }
 
 #pragma region converts
 constexpr VkFormat convert(const ShaderDataType& type)
@@ -102,10 +175,16 @@ constexpr VkFrontFace convert(const PipelineFrontFace face)
 
 VulkanPipeline::VulkanPipeline(const VulkanPipelineSpecification& spec)
     : m_Specification(spec)
+    , m_Pipeline(VK_NULL_HANDLE)
+    , m_CurrentRenderPass(nullptr)
 {
-    switch (spec.type) {
+}
+
+void VulkanPipeline::Create(Shared<VulkanRenderPass> current_render_pass)
+{
+    switch (m_Specification.type) {
     case PipelineType::GRAPHICS:
-        CreateGraphics();
+        CreateGraphics(current_render_pass);
         break;
     case PipelineType::COMPUTE:
         CreateCompute();
@@ -129,7 +208,7 @@ void VulkanPipeline::Destroy()
     vkDestroyPipelineLayout(device->Raw(), m_PipelineLayout, nullptr);
 }
 
-void VulkanPipeline::CreateGraphics()
+void VulkanPipeline::CreateGraphics(Shared<VulkanRenderPass> render_pass)
 {
     auto device = VulkanGraphicsContext::Get()->GetDevice();
 
@@ -225,7 +304,7 @@ void VulkanPipeline::CreateGraphics()
         state.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
         state.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
         state.alphaBlendOp = VK_BLEND_OP_ADD;
-        state.colorWriteMask = VK_COLOR_COMPONENT_FLAG_BITS_MAX_ENUM;
+        state.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     }
 
     VkPipelineColorBlendStateCreateInfo color_blend_state = {};
@@ -278,17 +357,10 @@ void VulkanPipeline::CreateGraphics()
     for (const auto& format : m_Specification.output_attachments_formats)
         formats.push_back(convert(format));
 
-    VkPipelineRenderingCreateInfo pipeline_rendering = {};
-    pipeline_rendering.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
-    pipeline_rendering.colorAttachmentCount = formats.size();
-    pipeline_rendering.pColorAttachmentFormats = formats.data();
-    pipeline_rendering.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
-
     std::vector<VkPipelineShaderStageCreateInfo> stage_infos = vk_shader->GetCreateInfos();
 
     VkGraphicsPipelineCreateInfo graphics_pipeline_create_info = {};
     graphics_pipeline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-    graphics_pipeline_create_info.pNext = &pipeline_rendering;
     graphics_pipeline_create_info.pStages = stage_infos.data();
     graphics_pipeline_create_info.stageCount = stage_infos.size();
     graphics_pipeline_create_info.pVertexInputState = &vertex_input_state;
@@ -300,7 +372,7 @@ void VulkanPipeline::CreateGraphics()
     graphics_pipeline_create_info.pMultisampleState = &multisample_state;
     graphics_pipeline_create_info.layout = m_PipelineLayout;
     graphics_pipeline_create_info.pViewportState = &viewport_state;
-    graphics_pipeline_create_info.renderPass = VK_NULL_HANDLE;
+    graphics_pipeline_create_info.renderPass = render_pass->Raw();
 
     VkResult result = vkCreateGraphicsPipelines(device->Raw(), VK_NULL_HANDLE, 1, &graphics_pipeline_create_info, nullptr, &m_Pipeline);
     if (result != VK_SUCCESS) {
@@ -309,6 +381,7 @@ void VulkanPipeline::CreateGraphics()
     }
 
     TB_CORE_TRACE("Pipeline \"{0}\" created successfully", m_Specification.debug_name);
+    m_CurrentRenderPass = render_pass;
 }
 
 void VulkanPipeline::CreateCompute()

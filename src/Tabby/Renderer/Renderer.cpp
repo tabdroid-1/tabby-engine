@@ -59,7 +59,7 @@ void Renderer::EndFrame()
     s_RendererAPI->EndFrame();
 }
 
-void Renderer::BeginRender(const std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 offset, Vector4 clear_value)
+void Renderer::BeginRender(const std::vector<Shared<Image>>& attachments, UIntVector3 render_area, IntVector2 offset, Vector4 clear_value)
 {
     s_RendererAPI->BeginRender(attachments, render_area, offset, clear_value);
 }
