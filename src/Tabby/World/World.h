@@ -70,8 +70,6 @@ public:
     static Entity FindEntityByName(std::string_view name);
     static Entity GetEntityByUUID(UUID uuid);
 
-    static Entity GetPrimaryCameraEntity();
-
     static void Update();
     void RendererThread();
 
@@ -92,8 +90,6 @@ public:
 
     static entt::registry& GetRegistry();
 
-    static void SetCurrentCamera(Camera* currentCamera, Matrix4* currentCameraTransform);
-
 private:
     static void UpdateEntityTransforms();
 
@@ -108,9 +104,6 @@ private:
 
     float m_FixedUpdateAccumulator = 0;
 
-    Camera* m_CurrentCamera = nullptr;
-    const Matrix4* m_CurrentCameraTransform = nullptr;
-
     enki::TaskScheduler m_TaskScheduler;
     entt::registry m_EntityRegistry;
     std::unordered_map<UUID, entt::entity> m_EntityMap;
@@ -123,18 +116,14 @@ private:
     std::vector<std::function<void()>> m_PostStartupSystems;
 
     // Called every frame
-    // std::vector<std::function<void(entt::registry&)>> m_FirstSystems;
     std::vector<std::function<void()>> m_PreUpdateSystems;
     std::vector<std::function<void()>> m_UpdateSystems;
     std::vector<std::function<void()>> m_PostUpdateSystems;
-    // std::vector<std::function<void(entt::registry&)>> m_LastSystems;
 
     // Called fixed update
-    // std::vector<std::function<void(entt::registry&)>> m_FixedFirstSystems;
     std::vector<std::function<void()>> m_FixedPreUpdateSystems;
     std::vector<std::function<void()>> m_FixedUpdateSystems;
     std::vector<std::function<void()>> m_FixedPostUpdateSystems;
-    // std::vector<std::function<void(entt::registry&)>> m_FixedLastSystems;
 
     // Called everyupdate
     std::vector<std::function<void()>> m_DrawSystems;

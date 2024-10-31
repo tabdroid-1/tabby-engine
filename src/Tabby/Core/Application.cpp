@@ -57,6 +57,7 @@ Application::~Application()
     TB_PROFILE_SCOPE_NAME("Tabby::Application::Destructor");
 
     m_LayerStack.Destroy();
+    m_ImGuiRenderer->Destroy();
 
     // AudioEngine::Shutdown();
     AssetManager::FullUnload();
@@ -77,11 +78,6 @@ void Application::PushOverlay(Layer* layer)
 
     s_Instance->m_LayerStack.PushOverlay(layer);
     layer->OnAttach();
-}
-
-void Application::SetConsoleActive(bool active)
-{
-    s_Instance->m_Console->SetActive(active);
 }
 
 void Application::Close()
@@ -153,8 +149,6 @@ void Application::Run()
                 for (Layer* layer : s_Instance->m_LayerStack)
                     layer->OnImGuiRender();
             }
-
-            // s_Instance->m_Console->Draw();
 
             s_Instance->m_ImGuiRenderer->EndFrame();
 

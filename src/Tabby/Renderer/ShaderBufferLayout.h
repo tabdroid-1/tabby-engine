@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Pipeline.h"
+#include <Tabby/Renderer/Shader.h>
 
 namespace Tabby {
 
@@ -75,8 +75,6 @@ public:
     std::vector<ShaderBufferLayoutElement>::iterator end() { return m_Elements.end(); }
     std::vector<ShaderBufferLayoutElement>::const_iterator begin() const { return m_Elements.begin(); }
     std::vector<ShaderBufferLayoutElement>::const_iterator end() const { return m_Elements.end(); }
-    // const std::vector<ShaderBufferLayoutElement>::iterator& begin() { return m_Elements.begin(); }
-    // const std::vector<ShaderBufferLayoutElement>::iterator& end() { return m_Elements.end(); }
 
 private:
     std::vector<ShaderBufferLayoutElement> m_Elements;

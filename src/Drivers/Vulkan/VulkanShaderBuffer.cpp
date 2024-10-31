@@ -86,6 +86,11 @@ VulkanShaderBuffer::VulkanShaderBuffer(const ShaderBufferSpecification& spec, Bu
 
     if (data.Data)
         this->UploadData(0, data);
+
+    if (m_Specification.debug_name.empty())
+        vmaSetAllocationName(alloc->Raw(), m_Allocation, "vulkan_device_buffer");
+    else
+        vmaSetAllocationName(alloc->Raw(), m_Allocation, m_Specification.debug_name.c_str());
 }
 VulkanShaderBuffer::VulkanShaderBuffer(const ShaderBufferSpecification& spec, void* data, uint64_t data_size)
     : m_Buffer(VK_NULL_HANDLE)
@@ -110,6 +115,11 @@ VulkanShaderBuffer::VulkanShaderBuffer(const ShaderBufferSpecification& spec, vo
 
     m_Allocation = alloc->AllocateBuffer(&buffer_create_info, vma_flags, &m_Buffer);
     this->UploadData(0, data, data_size);
+
+    if (m_Specification.debug_name.empty())
+        vmaSetAllocationName(alloc->Raw(), m_Allocation, "vulkan_device_buffer");
+    else
+        vmaSetAllocationName(alloc->Raw(), m_Allocation, m_Specification.debug_name.c_str());
 }
 
 VulkanShaderBuffer::~VulkanShaderBuffer()

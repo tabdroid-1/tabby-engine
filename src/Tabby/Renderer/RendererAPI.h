@@ -33,11 +33,11 @@ public:
 
     virtual void BeginFrame() = 0;
     virtual void EndFrame() = 0;
-    virtual void BeginRender(std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 offset, Vector4 clear_value) = 0;
+    virtual void BeginRender(Shared<RenderPass> render_pass, std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 offset, Vector4 clear_value) = 0;
     virtual void EndRender(Shared<Image> target) = 0;
     virtual void WaitDevice() = 0;
     // virtual void BindSet(Shared<DescriptorSet> set, Shared<Pipeline> pipeline, uint8 index) = 0;
-    // virtual void CopyToSwapchain(Shared<Image> image) = 0;
+    virtual void CopyToSwapchain(Shared<Image> image) = 0;
     // virtual void InsertBarrier(const PipelineBarrierInfo& barrier) = 0;
 
     virtual void BeginCommandRecord() = 0;
@@ -46,9 +46,9 @@ public:
 
     virtual void ClearImage(Shared<Image> image, const Vector4& value) = 0;
     virtual void RenderTasks(Shared<Mesh>, std::vector<MaterialData> elements, Buffer data = Buffer()) = 0;
-    virtual void RenderTasks(Shared<Shader> shader, uint32_t vertex_count, Buffer data = Buffer()) = 0;
-    // virtual void RenderQuad(Shared<Pipeline> pipeline, MiscData data) = 0;
-    // virtual void RenderQuad(Shared<Pipeline> pipeline, uint32 amount, MiscData data) = 0;
+    virtual void RenderTasks(Shared<Pipeline> pipeline, uint32_t vertex_count, Buffer data = Buffer()) = 0;
+    virtual void RenderQuad(Shared<Pipeline> pipeline, Buffer data = Buffer()) = 0;
+    virtual void RenderQuad(Shared<Pipeline> pipeline, uint32_t amount, Buffer data = Buffer()) = 0;
     // virtual void DispatchCompute(Shared<Pipeline> pipeline, const glm::uvec3& dimensions, MiscData data) = 0;
     // virtual void RenderUnindexed(Shared<Pipeline> pipeline, Shared<DeviceBuffer> vertex_buffer, MiscData data) = 0;
 

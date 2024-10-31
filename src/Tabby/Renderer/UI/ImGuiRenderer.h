@@ -5,6 +5,7 @@
 namespace Tabby {
 
 class Image;
+class RenderPass;
 class ImageSampler;
 
 class ImGuiRenderer {
@@ -17,6 +18,8 @@ public:
     virtual void BeginFrame() = 0;
     virtual void EndFrame() = 0;
     virtual void OnRender() = 0;
+
+    virtual Shared<RenderPass> GetRenderPass() = 0;
 };
 
 namespace UI {

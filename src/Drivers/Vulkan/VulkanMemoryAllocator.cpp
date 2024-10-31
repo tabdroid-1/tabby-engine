@@ -22,7 +22,7 @@ VulkanMemoryAllocator::VulkanMemoryAllocator()
     vulkan_functions.vkGetDeviceProcAddr = vkGetDeviceProcAddr;
 
     VmaAllocatorCreateInfo allocator_create_info = {};
-    allocator_create_info.vulkanApiVersion = VK_API_VERSION_1_2;
+    allocator_create_info.vulkanApiVersion = VK_API_VERSION_1_1;
     allocator_create_info.instance = vk_context->GetVulkanInstance();
     allocator_create_info.physicalDevice = vk_context->GetDevice()->GetPhysicalDevice()->Raw();
     allocator_create_info.device = vk_context->GetDevice()->Raw();
@@ -31,7 +31,7 @@ VulkanMemoryAllocator::VulkanMemoryAllocator()
 
     vmaCreateAllocator(&allocator_create_info, &m_Allocator);
 
-    m_Statistics = { 0, 0, 0 };
+    m_Statistics = { {}, 0, 0, 0 };
 }
 
 VulkanMemoryAllocator::~VulkanMemoryAllocator()
@@ -40,6 +40,15 @@ VulkanMemoryAllocator::~VulkanMemoryAllocator()
     TB_CORE_TRACE("\tTotal memory allocated: {0}", Utils::FormatAllocationSize(m_Statistics.allocated));
     TB_CORE_TRACE("\tTotal memory freed: {0}", Utils::FormatAllocationSize(m_Statistics.freed));
     TB_CORE_TRACE("\tIn use at the moment: {0}", Utils::FormatAllocationSize(m_Statistics.currently_allocated));
+
+    if (m_Statistics.currently_allocated) {
+        TB_CORE_TRACE("\tActive allocations:");
+        for (auto allocation : m_Statistics.allocations) {
+            TB_CORE_TRACE("\t\tAllocation \"{}\":", allocation->GetName());
+            TB_CORE_TRACE("\t\t\tSize: {}", allocation->GetSize());
+        }
+    }
+
     vmaDestroyAllocator(m_Allocator);
 }
 
@@ -73,6 +82,7 @@ VmaAllocation VulkanMemoryAllocator::AllocateBuffer(VkBufferCreateInfo* create_i
 
     m_Statistics.allocated += allocation_info.size;
     m_Statistics.currently_allocated += allocation_info.size;
+    m_Statistics.allocations.push_back(allocation);
 
     if (TB_TRACE_DEVICE_ALLOCATIONS) {
         TB_CORE_TRACE("Allocating device buffer:");
@@ -99,6 +109,7 @@ VmaAllocation VulkanMemoryAllocator::AllocateImage(VkImageCreateInfo* create_inf
     VK_CHECK_RESULT(vmaCreateImage(m_Allocator, create_info, &allocation_create_info, image, &allocation, &allocation_info));
     m_Statistics.allocated += allocation_info.size;
     m_Statistics.currently_allocated += allocation_info.size;
+    m_Statistics.allocations.push_back(allocation);
 
     if (TB_TRACE_DEVICE_ALLOCATIONS) {
         TB_CORE_TRACE("Allocating device image:");
@@ -118,6 +129,12 @@ void VulkanMemoryAllocator::DestroyBuffer(VkBuffer* buffer, VmaAllocation* alloc
 
     m_Statistics.freed += allocation_info.size;
     m_Statistics.currently_allocated -= allocation_info.size;
+
+    for (int i = 0; i < m_Statistics.allocations.size(); i++) {
+        if (m_Statistics.allocations[i] == *allocation) {
+            m_Statistics.allocations.erase(m_Statistics.allocations.begin() + i);
+        }
+    }
 
     if (TB_TRACE_DEVICE_ALLOCATIONS) {
         TB_CORE_TRACE("Destroying device buffer:");
@@ -139,6 +156,12 @@ void VulkanMemoryAllocator::DestroyImage(VkImage* image, VmaAllocation* allocati
 
     m_Statistics.freed += allocation_info.size;
     m_Statistics.currently_allocated -= allocation_info.size;
+
+    for (int i = 0; i < m_Statistics.allocations.size(); i++) {
+        if (m_Statistics.allocations[i] == *allocation) {
+            m_Statistics.allocations.erase(m_Statistics.allocations.begin() + i);
+        }
+    }
 
     if (TB_TRACE_DEVICE_ALLOCATIONS) {
         TB_CORE_TRACE("Destroying device image:");

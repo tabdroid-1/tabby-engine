@@ -35,7 +35,7 @@ void ShaderLibrary::Destroy()
     }
 }
 
-bool ShaderLibrary::LoadShader(const ShaderSpecification& spec, const std::filesystem::path& path, const ShaderMacroTable& macros)
+bool ShaderLibrary::LoadShader(const std::filesystem::path& path, const ShaderMacroTable& macros)
 {
     ShaderCompiler shader_compiler;
 
@@ -67,7 +67,7 @@ bool ShaderLibrary::LoadShader(const ShaderSpecification& spec, const std::files
     if (!compilation_result.valid)
         return false;
 
-    Shared<Shader> shader = Shader::Create(spec, compilation_result.bytecode);
+    Shared<Shader> shader = Shader::Create(compilation_result.bytecode, path);
 
     s_Instance->m_Mutex.lock();
     if (auto shader_filename = path.filename().string(); s_Instance->m_Library.find(shader_filename) != s_Instance->m_Library.end()) {

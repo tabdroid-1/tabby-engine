@@ -47,9 +47,9 @@ Mesh::Mesh(const MeshSpecification& spec, AssetHandle handle)
     if (!m_Specification.material)
         return;
 
-    if (m_Specification.vertex_data_size % m_Specification.material->GetShader()->GetVertexBufferSize() != 0) {
-        TB_CORE_WARN("Vertex buffer size of shader that is from of material being set to mesh \"{}\", is not divisible by the mesh's vertex buffer size. Vertex data might be not suitable for the shader.", m_Specification.name);
-    }
+    // if (m_Specification.vertex_data_size % m_Specification.material->GetShader()->GetVertexBufferSize() != 0) {
+    //     TB_CORE_WARN("Vertex buffer size of shader that is from of material being set to mesh \"{}\", is not divisible by the mesh's vertex buffer size. Vertex data might be not suitable for the shader.", m_Specification.name);
+    // }
 }
 
 void Mesh::Destroy()
@@ -63,9 +63,9 @@ void Mesh::Destroy()
 void Mesh::SetMaterial(Shared<Material> material)
 {
     m_Specification.material = material;
-    if (m_Specification.vertex_data_size % material->GetShader()->GetVertexBufferSize() != 0) {
-        TB_CORE_WARN("Vertex buffer size of shader that is from of material being set to mesh \"{}\", is not divisible by the mesh's vertex buffer size. Vertex data might be not suitable for the shader.", m_Specification.name);
-    }
+    // if (m_Specification.vertex_data_size % material->GetShader()->GetVertexBufferSize() != 0) {
+    //     TB_CORE_WARN("Vertex buffer size of shader that is from of material being set to mesh \"{}\", is not divisible by the mesh's vertex buffer size. Vertex data might be not suitable for the shader.", m_Specification.name);
+    // }
 }
 
 Shared<Material> Mesh::GetMaterial() { return m_Specification.material; }

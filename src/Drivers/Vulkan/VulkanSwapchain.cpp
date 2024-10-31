@@ -148,6 +148,7 @@ void VulkanSwapchain::CreateSwapchain()
         swapchain_image_spec.usage = ImageUsage::RENDER_TARGET;
         swapchain_image_spec.type = ImageType::TYPE_2D;
         swapchain_image_spec.format = convert(m_SurfaceFormat.format);
+        swapchain_image_spec.path = "bin_vulkan_swapchain_image";
 
         m_Images.push_back(std::make_shared<VulkanImage>(swapchain_image_spec, image, image_view));
 

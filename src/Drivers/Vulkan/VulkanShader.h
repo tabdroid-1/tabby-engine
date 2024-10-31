@@ -3,11 +3,10 @@
 #include <Drivers/Vulkan/VulkanDescriptorSet.h>
 #include <Drivers/Vulkan/VulkanCommon.h>
 
+#include <Tabby/Renderer/ShaderBufferLayout.h>
 #include <Tabby/Renderer/Shader.h>
 
 namespace Tabby {
-
-class VulkanPipeline;
 
 struct VulkanDescriptorInfo {
     std::vector<uint32_t> binding_sizes;
@@ -17,10 +16,10 @@ struct VulkanDescriptorInfo {
 
 class VulkanShader : public Shader {
 public:
-    VulkanShader(const ShaderSpecification& spec, std::map<ShaderStage, std::vector<uint32_t>> binaries);
+    VulkanShader(std::map<ShaderStage, std::vector<uint32_t>> binaries, const std::string& path);
     ~VulkanShader();
 
-    Shared<VulkanPipeline> GetPipeline() { return m_Pipeline; }
+    const ShaderBufferLayout& GetBufferLayout() { return m_BufferLayout; };
     std::vector<VulkanDescriptorInfo> GetDescriptorInfos() const { return m_DescriptorInfos; }
     std::vector<VkPipelineShaderStageCreateInfo> GetCreateInfos() const { return m_StageCreateInfos; }
     std::vector<VkDescriptorSetLayout> GetLayouts() const { return m_SetLayouts; }
@@ -28,11 +27,7 @@ public:
     void Destroy() override;
 
 private:
-    ShaderSpecification m_Specification;
-
-    Shared<VulkanPipeline> m_Pipeline;
-
-    std::vector<ShaderDataType> m_VertexInputLayout;
+    ShaderBufferLayout m_BufferLayout;
     std::vector<VulkanDescriptorInfo> m_DescriptorInfos;
 
     std::vector<VkPipelineShaderStageCreateInfo> m_StageCreateInfos;

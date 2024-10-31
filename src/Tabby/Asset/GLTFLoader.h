@@ -9,6 +9,11 @@ namespace Tabby {
 class Mesh;
 class Image;
 
+struct GLTFParseSpecification {
+    std::filesystem::path filePath;
+    bool create_entity_from_mesh = true;
+};
+
 struct GLTFLoader {
 public:
     struct GLTFMaterialUniforms {
@@ -36,7 +41,7 @@ public:
         std::vector<Shared<Image>> images;
     };
 
-    static GLTFData Parse(const std::filesystem::path& filePath);
+    static GLTFData Parse(GLTFParseSpecification spec);
 
 private:
     struct Vertex {
@@ -62,7 +67,7 @@ private:
 
     static void LoadImages(GLTFParserData& data);
     static void LoadMaterials(GLTFParserData& data);
-    static void LoadMeshes(GLTFParserData& data);
+    static void LoadMeshes(GLTFParserData& data, bool create_entity);
 };
 
 }

@@ -33,6 +33,11 @@ VulkanRendererAPI::VulkanRendererAPI(const RendererConfig& config)
 
     m_Swapchain = m_GraphicsContext->GetSwapchain();
 
+    RenderPassSpecification render_pass_spec;
+    render_pass_spec.extent = { Application::GetWindow().GetWidth(), Application::GetWindow().GetHeight(), 0 };
+    render_pass_spec.clear_color = { 0.0f, 0.0f, 0.0f, 1.0f };
+    render_pass_spec.attachments = { m_Swapchain->GetCurrentImage() };
+
     m_CmdBuffers.resize(m_GraphicsContext->GetFramesInFlight());
 
     for (auto& buf : m_CmdBuffers) {
@@ -90,6 +95,11 @@ void VulkanRendererAPI::BeginCommandRecord()
     Submit([=]() mutable {
         m_CurrentCmdBuffer->Reset();
         m_CurrentCmdBuffer->Begin();
+
+        auto swapchain_image = m_Swapchain->GetCurrentImage();
+        swapchain_image->SetLayout(
+            m_CurrentCmdBuffer,
+            ImageLayout::TRANSFER_DST);
     });
 }
 
@@ -134,9 +144,7 @@ void VulkanRendererAPI::ClearImage(Shared<Image> image, const Vector4& value)
 
         vk_image->SetLayout(
             m_CurrentCmdBuffer,
-            ImageLayout::TRANSFER_DST,
-            PipelineStage::TOP_OF_PIPE,
-            PipelineStage::TRANSFER);
+            ImageLayout::TRANSFER_DST);
 
         VkClearColorValue clear_color_value = {};
         clear_color_value.float32[0] = value.r;
@@ -154,9 +162,7 @@ void VulkanRendererAPI::ClearImage(Shared<Image> image, const Vector4& value)
         vkCmdClearColorImage(m_CurrentCmdBuffer->Raw(), vk_image->Raw(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &clear_color_value, 1, &range);
 
         vk_image->SetLayout(m_CurrentCmdBuffer,
-            ImageLayout::PRESENT_SRC,
-            PipelineStage::TRANSFER,
-            PipelineStage::BOTTOM_OF_PIPE);
+            ImageLayout::PRESENT_SRC);
     });
 }
 
@@ -166,13 +172,10 @@ void VulkanRendererAPI::RenderTasks(Shared<Mesh> mesh, std::vector<MaterialData>
         if (!mesh)
             return;
 
-        auto pipeline = ShareAs<VulkanShader>(mesh->GetMaterial()->GetShader())->GetPipeline();
+        auto pipeline = ShareAs<VulkanPipeline>(mesh->GetMaterial()->GetPipeline());
         auto vertex_buffer = ShareAs<VulkanShaderBuffer>(mesh->GetVertexBuffer());
         auto index_buffer = ShareAs<VulkanShaderBuffer>(mesh->GetIndexBuffer());
         auto material = ShareAs<VulkanMaterial>(mesh->GetMaterial());
-
-        if (pipeline->GetCurrentRenderPass() != m_CurrentRenderPass.render_pass || pipeline->Raw() == VK_NULL_HANDLE)
-            pipeline->Create(m_CurrentRenderPass.render_pass);
 
         for (auto& element : elements) {
             if (element.type == MaterialData::Type::Uniform) {
@@ -192,7 +195,7 @@ void VulkanRendererAPI::RenderTasks(Shared<Mesh> mesh, std::vector<MaterialData>
 
         if (data.Size) {
             vkCmdPushConstants(m_CurrentCmdBuffer->Raw(), pipeline->RawLayout(), VK_SHADER_STAGE_ALL, 0, data.Size, data.Data);
-            delete[] data.Data;
+            data.Release();
         }
 
         VkIndexType index_type;
@@ -212,64 +215,99 @@ void VulkanRendererAPI::RenderTasks(Shared<Mesh> mesh, std::vector<MaterialData>
     });
 }
 
-void VulkanRendererAPI::RenderTasks(Shared<Shader> shader, uint32_t vertex_count, Buffer data)
+void VulkanRendererAPI::RenderTasks(Shared<Pipeline> pipeline, uint32_t vertex_count, Buffer data)
 {
     Submit([=]() mutable {
-        auto vk_shader = ShareAs<VulkanShader>(shader);
+        auto vk_pipeline = ShareAs<VulkanPipeline>(pipeline);
 
         if (data.Size) {
-            vkCmdPushConstants(m_CurrentCmdBuffer->Raw(), vk_shader->GetPipeline()->RawLayout(), VK_SHADER_STAGE_ALL, 0, data.Size, data.Data);
-            delete[] data.Data;
+            vkCmdPushConstants(m_CurrentCmdBuffer->Raw(), vk_pipeline->RawLayout(), VK_SHADER_STAGE_ALL, 0, data.Size, data.Data);
+            data.Release();
         }
 
-        vkCmdBindPipeline(m_CurrentCmdBuffer->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, vk_shader->GetPipeline()->Raw());
+        vkCmdBindPipeline(m_CurrentCmdBuffer->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, vk_pipeline->Raw());
         vkCmdDraw(m_CurrentCmdBuffer->Raw(), vertex_count, 1, 0, 0);
     });
 }
-void VulkanRendererAPI::BeginRender(std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 render_offset, Vector4 clear_color)
+
+void VulkanRendererAPI::RenderQuad(Shared<Pipeline> pipeline, Buffer data)
+{
+    Renderer::Submit([=]() mutable {
+        Shared<VulkanPipeline> vk_pipeline = ShareAs<VulkanPipeline>(pipeline);
+
+        vkCmdPushConstants(m_CurrentCmdBuffer->Raw(), vk_pipeline->RawLayout(), VK_SHADER_STAGE_ALL, 0, data.Size, data.Data);
+        vkCmdBindPipeline(m_CurrentCmdBuffer->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, vk_pipeline->Raw());
+
+        vkCmdDraw(m_CurrentCmdBuffer->Raw(), 6, 1, 0, 0);
+
+        data.Release();
+    });
+}
+
+void VulkanRendererAPI::RenderQuad(Shared<Pipeline> pipeline, uint32_t amount, Buffer data)
+{
+    Renderer::Submit([=]() mutable {
+        Shared<VulkanPipeline> vk_pipeline = ShareAs<VulkanPipeline>(pipeline);
+
+        if (data.Size) {
+            vkCmdPushConstants(m_CurrentCmdBuffer->Raw(), vk_pipeline->RawLayout(), VK_SHADER_STAGE_ALL, 0, data.Size, data.Data);
+            data.Release();
+        }
+        vkCmdBindPipeline(m_CurrentCmdBuffer->Raw(), VK_PIPELINE_BIND_POINT_GRAPHICS, vk_pipeline->Raw());
+        vkCmdDraw(m_CurrentCmdBuffer->Raw(), 6, amount, 0, 0);
+    });
+}
+
+void VulkanRendererAPI::BeginRender(Shared<RenderPass> render_pass, std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 render_offset, Vector4 clear_color)
 {
 
     Submit([=]() mutable {
-        Shared<VulkanRenderPass> render_pass;
-        for (auto& render_pass_info : m_RenderPassInfos) {
-            if (render_pass_info.spec.attachments != attachments)
-                continue;
+        TB_CORE_ASSERT_TAGGED(!m_RenderPassActive, "There is an active render pass!");
 
-            if (render_pass_info.spec.clear_color != clear_color)
-                continue;
+        auto vk_render_pass = ShareAs<VulkanRenderPass>(render_pass);
 
-            if (render_pass_info.spec.extent != render_area)
-                continue;
-
-            render_pass = render_pass_info.render_pass;
-        }
-
-        if (!render_pass) {
-            VulkanRendererAPIRenderPassInfo render_pass_info;
-            render_pass_info.spec.attachments = attachments;
-            render_pass_info.spec.clear_color = clear_color;
-            render_pass_info.spec.extent = render_area;
-            render_pass_info.render_pass = CreateShared<VulkanRenderPass>();
-            render_pass_info.render_pass->Create(render_pass_info.spec);
-
-            m_RenderPassInfos.push_back(render_pass_info);
-            render_pass = render_pass_info.render_pass;
-            m_CurrentRenderPass = render_pass_info;
-        }
+        vk_render_pass->Refresh({ attachments, clear_color, render_area });
 
         std::vector<VkClearValue> clear_values;
         clear_values.resize(attachments.size());
         for (int i = 0; i < attachments.size(); i++) {
-            if (attachments[i]->GetSpecification().usage == ImageUsage::RENDER_TARGET)
+            auto vk_target = ShareAs<VulkanImage>(attachments[i]);
+
+            if (attachments[i]->GetSpecification().usage == ImageUsage::RENDER_TARGET) {
+
+                VkImageMemoryBarrier target_barrier = {};
+                target_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+                target_barrier.image = vk_target->Raw();
+                target_barrier.oldLayout = (VkImageLayout)vk_target->GetCurrentLayout();
+                target_barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+                target_barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
+                target_barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+                target_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                target_barrier.subresourceRange.baseArrayLayer = 0;
+                target_barrier.subresourceRange.baseMipLevel = 0;
+                target_barrier.subresourceRange.layerCount = 1;
+                target_barrier.subresourceRange.levelCount = 1;
+
+                vkCmdPipelineBarrier(m_CurrentCmdBuffer->Raw(),
+                    VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT,
+                    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                    0,
+                    0,
+                    nullptr,
+                    0,
+                    nullptr,
+                    1,
+                    &target_barrier);
                 clear_values[i].color = { clear_color.r, clear_color.g, clear_color.b, clear_color.a };
-            else if (attachments[i]->GetSpecification().usage == ImageUsage::DEPTH_BUFFER)
+
+            } else if (attachments[i]->GetSpecification().usage == ImageUsage::DEPTH_BUFFER)
                 clear_values[i].depthStencil = { 1.0f, 0 };
         }
 
         VkRenderPassBeginInfo render_pass_info {};
         render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        render_pass_info.renderPass = render_pass->Raw();
-        render_pass_info.framebuffer = render_pass->RawFramebuffer();
+        render_pass_info.renderPass = vk_render_pass->Raw();
+        render_pass_info.framebuffer = vk_render_pass->RawFramebuffer();
         render_pass_info.renderArea.offset = { render_offset.x, render_offset.y };
         render_pass_info.renderArea.extent = { render_area.x, render_area.y };
         render_pass_info.clearValueCount = clear_values.size();
@@ -280,13 +318,21 @@ void VulkanRendererAPI::BeginRender(std::vector<Shared<Image>> attachments, UInt
         vkCmdSetScissor(m_CurrentCmdBuffer->Raw(), 0, 1, &scissor);
         vkCmdSetViewport(m_CurrentCmdBuffer->Raw(), 0, 1, &viewport);
         vkCmdBeginRenderPass(m_CurrentCmdBuffer->Raw(), &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+
+        m_RenderPassActive = true;
     });
 }
 
 void VulkanRendererAPI::EndRender(Shared<Image> target)
 {
     Submit([=]() mutable {
+        TB_CORE_ASSERT_TAGGED(m_RenderPassActive, "There is currently no active render pass!");
+
         vkCmdEndRenderPass(m_CurrentCmdBuffer->Raw());
+        m_RenderPassActive = false;
+
+        Shared<VulkanImage> vk_image = ShareAs<VulkanImage>(target);
+        vk_image->SetLayout(m_CurrentCmdBuffer, ImageLayout::SHADER_READ_ONLY);
     });
 }
 
@@ -296,11 +342,7 @@ void VulkanRendererAPI::Render()
         auto swapchain_image = m_Swapchain->GetCurrentImage();
         swapchain_image->SetLayout(
             m_CurrentCmdBuffer,
-            ImageLayout::PRESENT_SRC,
-            PipelineStage::COLOR_ATTACHMENT_OUTPUT,
-            PipelineStage::ALL_COMMANDS,
-            (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE,
-            (BitMask)PipelineAccess::MEMORY_READ);
+            ImageLayout::PRESENT_SRC);
     });
     this->EndCommandRecord();
     this->ExecuteCurrentCommands();
@@ -317,8 +359,9 @@ void VulkanRendererAPI::RenderImGui()
     auto imgui_renderer = (VulkanImGuiRenderer*)Application::GetImGuiRenderer();
 
     BeginRender(
+        imgui_renderer->GetRenderPass(),
         { imgui_renderer->GetFrameImages()[m_Swapchain->GetCurrentFrameIndex()] },
-        imgui_renderer->GetFrameImages()[m_Swapchain->GetCurrentFrameIndex()]->GetSpecification().extent,
+        m_Swapchain->GetCurrentImage()->GetSpecification().extent,
         { 0, 0 },
         { 0.0f, 0.0f, 0.0f, 1.0f });
 
@@ -355,17 +398,13 @@ void VulkanRendererAPI::CopyToSwapchain(Shared<Image> image)
 
         vk_image->SetLayout(
             m_CurrentCmdBuffer,
-            ImageLayout::TRANSFER_DST,
-            PipelineStage::COLOR_ATTACHMENT_OUTPUT,
-            PipelineStage::TRANSFER,
-            (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE,
-            (BitMask)PipelineAccess::TRANSFER_READ);
+            ImageLayout::TRANSFER_SRC);
 
         vkCmdBlitImage(
             m_CurrentCmdBuffer->Raw(),
             vk_image->Raw(),
             (VkImageLayout)vk_image->GetCurrentLayout(),
-            ShareAs<VulkanImage>(image)->Raw(),
+            ShareAs<VulkanImage>(swapchain_image)->Raw(),
             (VkImageLayout)VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
             1,
             &image_blit,

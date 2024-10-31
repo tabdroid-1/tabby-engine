@@ -1,11 +1,10 @@
 #pragma once
 #include <tbpch.h>
 #include <Tabby/Core/Events/ApplicationEvent.h>
-#include <Tabby/UI/Panels/Console/Console.h>
-#include <Tabby/Core/Events/MouseEvent.h>
-#include <Tabby/Core/Layer/LayerStack.h>
 #include <Tabby/Renderer/UI/ImGuiRenderer.h>
 // #include <Tabby/UI/ImGui/ImGuiLayer.h>
+#include <Tabby/Core/Events/MouseEvent.h>
+#include <Tabby/Core/Layer/LayerStack.h>
 #include <Tabby/Core/Events/Event.h>
 #include <Tabby/Core/Window.h>
 
@@ -27,9 +26,10 @@ struct ApplicationCommandLineArgs {
 struct ApplicationSpecification {
     enum class RendererAPI {
         Null = 0,
-        OpenGL46 = 1,
-        OpenGL33 = 2,
-        OpenGLES3 = 3
+        Vulkan = 1,
+        OpenGL46 = 2,
+        OpenGL33 = 3,
+        OpenGLES3 = 4
     };
     std::string Name = "Tabby Application";
     std::string WorkingDirectory = "assets";
@@ -61,7 +61,6 @@ public:
     static void SetConsoleActive(bool active);
 
     static Window& GetWindow() { return *s_Instance->m_Window; }
-    static ConsolePanel* GetConsole() { return s_Instance->m_Console; }
     static ImGuiRenderer* GetImGuiRenderer() { return s_Instance->m_ImGuiRenderer; }
     static ApplicationSpecification& GetSpecification() { return s_Instance->m_Specification; }
 
@@ -82,7 +81,6 @@ private:
 private:
     ApplicationSpecification m_Specification;
     Scope<Window> m_Window;
-    // ImGuiLayer* m_ImGuiLayer;
     ImGuiRenderer* m_ImGuiRenderer;
     LayerStack m_LayerStack;
 
@@ -92,7 +90,6 @@ private:
 
     std::vector<std::function<void()>> m_MainThreadQueue;
     std::mutex m_MainThreadQueueMutex;
-    ConsolePanel* m_Console = nullptr;
 
 private:
     inline static Application* s_Instance = nullptr;

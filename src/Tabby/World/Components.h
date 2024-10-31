@@ -1,8 +1,8 @@
 #pragma once
 #include <tbpch.h>
+#include <Tabby/Renderer/Material.h>
 #include <Tabby/Foundation/Types.h>
-// #include <Tabby/Renderer/Camera.h>
-// #include <Tabby/Renderer/Font.h>
+#include <Tabby/Renderer/Camera.h>
 
 #include <box2d/box2d.h>
 #include <entt.hpp>
@@ -37,21 +37,23 @@ struct HierarchyNodeComponent {
 
 struct TransformComponent {
 public:
-    Vector3 position = { 0.0f, 0.0f, 0.0f };
-    Vector3 rotation = { 0.0f, 0.0f, 0.0f };
-    Vector3 scale = { 1.0f, 1.0f, 1.0f };
+    Vector3 position = Vector3(0.0f, 0.0f, 0.0f);
+    Quaternion rotation = Quaternion({ 0.0f, 0.0f, 0.0f });
+    Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
 
     TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
-    TransformComponent(const Vector3& Position)
-        : position(Position)
+    TransformComponent(const Vector3& position, const Vector3& rotation, const Vector3& scale)
     {
+        this->position = position;
+        this->rotation = rotation;
+        this->scale = scale;
     }
 
     void ApplyTransform(const Matrix4& transform);
 
     const Vector3& GetWorldPosition() { return worldPosition; }
-    const Vector3& GetWorldRotation() { return worldRotation; }
+    const Quaternion& GetWorldRotation() { return worldRotation; }
     const Vector3& GetWorldScale() { return worldScale; }
 
     Matrix4& GetTransform() { return transformMatrix; }
@@ -65,7 +67,7 @@ private:
     void ApplyWorldTransform(const Matrix4& transform);
 
     Vector3 worldPosition = { 0.0f, 0.0f, 0.0f };
-    Vector3 worldRotation = { 0.0f, 0.0f, 0.0f };
+    Quaternion worldRotation = Vector3(0.0f, 0.0f, 0.0f);
     Vector3 worldScale = { 1.0f, 1.0f, 1.0f };
 
     Matrix4 worldTransformMatrix = Matrix4(1);
@@ -106,9 +108,8 @@ struct CircleRendererComponent {
 };
 
 struct CameraComponent {
-    // Tabby::Camera Camera;
-    bool Primary = true; // TODO: think about moving to Scene
-    bool FixedAspectRatio = false;
+    Camera camera;
+    bool fixedAspectRatio = false;
 
     CameraComponent() = default;
     CameraComponent(const CameraComponent&) = default;
@@ -482,7 +483,8 @@ struct TextComponent {
 class Mesh;
 
 struct MeshComponent {
-    Shared<Mesh> m_Mesh;
+    std::vector<MaterialData> material_datas;
+    Shared<Mesh> mesh;
 };
 
 template <typename... Component>

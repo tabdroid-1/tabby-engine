@@ -17,7 +17,7 @@ public:
     using InternalStorage = std::map<std::string, std::vector<std::pair<Shared<Shader>, ShaderMacroTable>>>;
 
     // @return true if loaded successfully, false if not. It can happen due to incorrect shader path or invalid shader code
-    static bool LoadShader(const ShaderSpecification& spec, const std::filesystem::path& path, const ShaderMacroTable& macros = {});
+    static bool LoadShader(const std::filesystem::path& path, const ShaderMacroTable& macros = {});
 
     // @return true if shader was successfully unloaded from library and destroyed, false if no shader with such name was found
     static bool UnloadShader(std::string name, const ShaderMacroTable& macros = {});

@@ -14,13 +14,15 @@ VulkanMaterial::VulkanMaterial(const MaterialSpecification& spec, AssetHandle id
     }
     m_DescriptorSets.clear();
 
-    auto descriptorset_infos = ShareAs<VulkanShader>(m_Specification.shader)->GetDescriptorInfos();
+    auto vk_shader = ShareAs<VulkanShader>(m_Specification.pipeline->GetSpecification().shader);
+
+    auto descriptorset_infos = vk_shader->GetDescriptorInfos();
 
     // Create Descriptor sets
     m_DescriptorSets.resize(descriptorset_infos.size());
     for (int i = 0; i < descriptorset_infos.size(); i++) {
         VulkanDescriptorSetSpecification descriptorset_spec;
-        descriptorset_spec.bindings = ShareAs<VulkanShader>(m_Specification.shader)->GetDescriptorInfos()[i].bindings;
+        descriptorset_spec.bindings = vk_shader->GetDescriptorInfos()[i].bindings;
         auto descriptor = CreateShared<VulkanDescriptorSet>(descriptorset_spec);
         m_DescriptorSets[i] = descriptor;
     }

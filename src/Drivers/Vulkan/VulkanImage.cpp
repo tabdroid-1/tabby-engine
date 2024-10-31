@@ -67,35 +67,176 @@ void VulkanImage::Destroy()
     m_ImageView = VK_NULL_HANDLE;
 }
 
-void VulkanImage::SetLayout(Shared<VulkanDeviceCmdBuffer> cmd_buffer, ImageLayout new_layout, PipelineStage src_stage, PipelineStage dst_stage, BitMask src_access, BitMask dst_access)
+void VulkanImage::SetLayout(Shared<VulkanDeviceCmdBuffer> cmd_buffer, ImageLayout new_layout)
 {
-    Shared<VulkanDeviceCmdBuffer> vk_cmd_buffer = ShareAs<VulkanDeviceCmdBuffer>(cmd_buffer);
+    // Shared<VulkanDeviceCmdBuffer> vk_cmd_buffer = ShareAs<VulkanDeviceCmdBuffer>(cmd_buffer);
+    //
+    // VkImageMemoryBarrier2 image_memory_barrier = {};
+    // image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
+    // image_memory_barrier.image = m_Image;
+    // image_memory_barrier.oldLayout = (VkImageLayout)m_CurrentLayout;
+    // image_memory_barrier.newLayout = (VkImageLayout)new_layout;
+    // image_memory_barrier.srcStageMask = (BitMask)src_stage;
+    // image_memory_barrier.dstStageMask = (BitMask)dst_stage;
+    // image_memory_barrier.srcAccessMask = (VkAccessFlags)src_access;
+    // image_memory_barrier.dstAccessMask = (VkAccessFlags)dst_access;
+    // image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    // image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    // image_memory_barrier.subresourceRange.aspectMask = m_Specification.usage == ImageUsage::DEPTH_BUFFER ? VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
+    // // image_memory_barrier.subresourceRange.aspectMask = m_Specification.usage == ImageUsage::DEPTH_BUFFER ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
+    // image_memory_barrier.subresourceRange.baseArrayLayer = 0;
+    // image_memory_barrier.subresourceRange.layerCount = 1;
+    // image_memory_barrier.subresourceRange.baseMipLevel = 0;
+    // image_memory_barrier.subresourceRange.levelCount = 1;
+    //
+    // VkDependencyInfo dep_info = {};
+    // dep_info.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+    // dep_info.imageMemoryBarrierCount = 1;
+    // dep_info.pImageMemoryBarriers = &image_memory_barrier;
+    //
+    // VulkanGraphicsContext::vkCmdPipelineBarrier2KHR(vk_cmd_buffer->Raw(),
+    //     &dep_info);
+    //
+    // m_CurrentLayout = new_layout;
 
-    VkImageMemoryBarrier2 image_memory_barrier = {};
-    image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
-    image_memory_barrier.image = m_Image;
+    TB_CORE_ASSERT_TAGGED(true
+            && new_layout != ImageLayout::UNDEFINED,
+        "new layout cannot use ImageLayout::UNDEFINED!");
+
+    constexpr VkPipelineStageFlags depthStageMask = 0
+        | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT
+        | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+
+    constexpr VkPipelineStageFlags sampledStageMask = 0
+        | VK_PIPELINE_STAGE_VERTEX_SHADER_BIT
+        | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
+        | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+
+    VkPipelineStageFlags srcStageMask = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    VkPipelineStageFlags dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+
+    VkAccessFlags srcAccessMask = 0;
+    VkAccessFlags dstAccessMask = 0;
+
+    switch ((VkImageLayout)m_CurrentLayout) {
+    case VK_IMAGE_LAYOUT_UNDEFINED:
+        break;
+
+    case VK_IMAGE_LAYOUT_GENERAL:
+        srcStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+        srcAccessMask = VK_ACCESS_MEMORY_WRITE_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+        srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+        srcStageMask = depthStageMask;
+        srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+        srcStageMask = depthStageMask | sampledStageMask;
+        break;
+
+    case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+        srcStageMask = sampledStageMask;
+        break;
+
+    case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+        srcStageMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+        srcStageMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
+        srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_PREINITIALIZED:
+        srcStageMask = VK_PIPELINE_STAGE_HOST_BIT;
+        srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR:
+        srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        break;
+
+    default:
+        TB_CORE_ASSERT_TAGGED(false, "Unknown image layout.");
+        break;
+    }
+
+    switch ((VkImageLayout)new_layout) {
+    case VK_IMAGE_LAYOUT_GENERAL:
+        dstStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+        dstAccessMask = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+        dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+        dstStageMask = depthStageMask;
+        dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+        dstStageMask = depthStageMask | sampledStageMask;
+        dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_INPUT_ATTACHMENT_READ_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+        dstStageMask = sampledStageMask;
+        dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_INPUT_ATTACHMENT_READ_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+        dstStageMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
+        dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+        dstStageMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
+        dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        break;
+
+    case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR:
+        srcStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+        srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+        break;
+
+    default:
+        TB_CORE_ASSERT_TAGGED(false, "Unknown image layout.");
+        break;
+    }
+
+    if (m_Specification.usage == ImageUsage::RENDER_TARGET) {
+        m_CurrentLayout = ImageLayout::UNDEFINED;
+    }
+
+    VkImageMemoryBarrier image_memory_barrier;
+    image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    image_memory_barrier.pNext = NULL;
+    image_memory_barrier.srcAccessMask = srcAccessMask;
+    image_memory_barrier.dstAccessMask = dstAccessMask;
     image_memory_barrier.oldLayout = (VkImageLayout)m_CurrentLayout;
     image_memory_barrier.newLayout = (VkImageLayout)new_layout;
-    image_memory_barrier.srcStageMask = (BitMask)src_stage;
-    image_memory_barrier.dstStageMask = (BitMask)dst_stage;
-    image_memory_barrier.srcAccessMask = (VkAccessFlags)src_access;
-    image_memory_barrier.dstAccessMask = (VkAccessFlags)dst_access;
     image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    image_memory_barrier.image = m_Image;
     image_memory_barrier.subresourceRange.aspectMask = m_Specification.usage == ImageUsage::DEPTH_BUFFER ? VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
-    // image_memory_barrier.subresourceRange.aspectMask = m_Specification.usage == ImageUsage::DEPTH_BUFFER ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
     image_memory_barrier.subresourceRange.baseArrayLayer = 0;
     image_memory_barrier.subresourceRange.layerCount = 1;
     image_memory_barrier.subresourceRange.baseMipLevel = 0;
     image_memory_barrier.subresourceRange.levelCount = 1;
 
-    VkDependencyInfo dep_info = {};
-    dep_info.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
-    dep_info.imageMemoryBarrierCount = 1;
-    dep_info.pImageMemoryBarriers = &image_memory_barrier;
-
-    VulkanGraphicsContext::vkCmdPipelineBarrier2KHR(vk_cmd_buffer->Raw(),
-        &dep_info);
+    vkCmdPipelineBarrier(
+        cmd_buffer->Raw(), srcStageMask, dstStageMask, 0, 0, NULL, 0, NULL, 1, &image_memory_barrier);
 
     m_CurrentLayout = new_layout;
 }
@@ -117,6 +258,11 @@ void VulkanImage::CreateTexture()
 
     auto allocator = VulkanMemoryAllocator::Get();
     m_Allocation = allocator->AllocateImage(&texture_create_info, 0, &m_Image);
+
+    if (m_Specification.path.empty())
+        vmaSetAllocationName(allocator->Raw(), m_Allocation, ("vulkan_image_texture" + std::to_string(Handle)).c_str());
+    else
+        vmaSetAllocationName(allocator->Raw(), m_Allocation, m_Specification.path.c_str());
 
     ShaderBufferSpecification staging_buffer_spec = {};
     staging_buffer_spec.size = m_Specification.pixels.size();
@@ -244,12 +390,23 @@ void VulkanImage::CreateRenderTarget()
     render_target_create_info.arrayLayers = 1;
     render_target_create_info.format = convert(m_Specification.format);
     render_target_create_info.samples = VK_SAMPLE_COUNT_1_BIT; // HACK
-    render_target_create_info.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    // render_target_create_info.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT; // VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
+    render_target_create_info.usage = 0
+        | VK_IMAGE_USAGE_TRANSFER_SRC_BIT
+        | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+        | VK_IMAGE_USAGE_SAMPLED_BIT
+        | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
     render_target_create_info.tiling = VK_IMAGE_TILING_OPTIMAL;
     render_target_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     auto allocator = VulkanMemoryAllocator::Get();
     m_Allocation = allocator->AllocateImage(&render_target_create_info, 0, &m_Image);
+
+    if (m_Specification.path.empty())
+        vmaSetAllocationName(allocator->Raw(), m_Allocation, ("vulkan_image_render_target" + std::to_string(Handle)).c_str());
+    else
+        vmaSetAllocationName(allocator->Raw(), m_Allocation, m_Specification.path.c_str());
 
     VkImageViewCreateInfo image_view_create_info = {};
     image_view_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -273,11 +430,7 @@ void VulkanImage::CreateRenderTarget()
     cmd_buffer->Begin();
     SetLayout(
         cmd_buffer,
-        ImageLayout::COLOR_ATTACHMENT,
-        PipelineStage::TOP_OF_PIPE,
-        PipelineStage::COLOR_ATTACHMENT_OUTPUT,
-        (BitMask)PipelineAccess::NONE,
-        (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE);
+        ImageLayout::COLOR_ATTACHMENT);
     cmd_buffer->End();
     cmd_buffer->Execute(true);
     cmd_buffer->Destroy();
@@ -303,6 +456,11 @@ void VulkanImage::CreateDepthBuffer()
     auto allocator = VulkanMemoryAllocator::Get();
     m_Allocation = allocator->AllocateImage(&depth_buffer_create_info, 0, &m_Image);
 
+    if (m_Specification.path.empty())
+        vmaSetAllocationName(allocator->Raw(), m_Allocation, ("vulkan_image_depth_buffer" + std::to_string(Handle)).c_str());
+    else
+        vmaSetAllocationName(allocator->Raw(), m_Allocation, m_Specification.path.c_str());
+
     VkImageViewCreateInfo image_view_create_info = {};
     image_view_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     image_view_create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
@@ -325,11 +483,7 @@ void VulkanImage::CreateDepthBuffer()
     cmd_buffer->Begin();
     SetLayout(
         cmd_buffer,
-        ImageLayout::DEPTH_STENCIL_ATTACHMENT,
-        PipelineStage::TOP_OF_PIPE,
-        PipelineStage::COLOR_ATTACHMENT_OUTPUT,
-        (BitMask)PipelineAccess::NONE,
-        (BitMask)PipelineAccess::COLOR_ATTACHMENT_WRITE);
+        ImageLayout::DEPTH_STENCIL_ATTACHMENT);
     cmd_buffer->End();
     cmd_buffer->Execute(true);
     cmd_buffer->Destroy();

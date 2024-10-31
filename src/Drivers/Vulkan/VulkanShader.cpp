@@ -302,17 +302,18 @@ uint32_t spv_format_size(const SpvReflectFormat& format)
 }
 #pragma endregion
 
-VulkanShader::VulkanShader(const ShaderSpecification& spec, std::map<ShaderStage, std::vector<uint32_t>> binaries)
-    : m_Specification(spec)
+VulkanShader::VulkanShader(std::map<ShaderStage, std::vector<uint32_t>> binaries, const std::string& path)
 {
     auto device = VulkanGraphicsContext::Get()->GetDevice();
 
     // set id and its bindings
+
+    std::vector<ShaderBufferLayoutElement> input_elements;
     std::map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>> bindings;
     VkPushConstantRange push_constant_range = {};
 
     // TB_CORE_TRACE("=======================");
-    TB_CORE_TRACE("Reflecting shader - {0}", spec.path.filename().string());
+    TB_CORE_TRACE("Reflecting shader - {0}", path);
     // TB_CORE_TRACE("=======================");
 
     for (auto& stage_data : binaries) {
@@ -335,7 +336,7 @@ VulkanShader::VulkanShader(const ShaderSpecification& spec, std::map<ShaderStage
 
         SpvReflectShaderModule reflect_module;
         if (spvReflectCreateShaderModule(stage_data.second.size() * 4, stage_data.second.data(), &reflect_module) != SPV_REFLECT_RESULT_SUCCESS) {
-            TB_CORE_ERROR("Failed to reflect shader {}", spec.path.filename().string());
+            TB_CORE_ERROR("Failed to reflect shader {}", path);
             m_Dirty = true;
             return;
         }
@@ -443,7 +444,8 @@ VulkanShader::VulkanShader(const ShaderSpecification& spec, std::map<ShaderStage
                 };
 
                 m_VertexBufferSize += calculate_input_size(calculate_input_size, input_var);
-                m_VertexInputLayout.push_back(convert(input_var->format));
+
+                input_elements.push_back(ShaderBufferLayoutElement(input_var->name, convert(input_var->format)));
             }
         }
 
@@ -453,14 +455,14 @@ VulkanShader::VulkanShader(const ShaderSpecification& spec, std::map<ShaderStage
     if (push_constant_range.size)
         m_Ranges.push_back(push_constant_range);
 
-#if TB_DEBUG
-    for (auto& set : bindings) {
-        TB_CORE_TRACE("\tSet #{0}: ", set.first);
-        for (auto& binding : set.second) {
-            TB_CORE_TRACE("\t\t Binding #{0}: {1}[{2}]", binding.binding, DescriptorToString(binding.descriptorType), binding.descriptorCount);
-        }
-    }
-#endif
+    // #if TB_DEBUG
+    //     for (auto& set : bindings) {
+    //         TB_CORE_TRACE("\tSet #{0}: ", set.first);
+    //         for (auto& binding : set.second) {
+    //             TB_CORE_TRACE("\t\t Binding #{0}: {1}[{2}]", binding.binding, DescriptorToString(binding.descriptorType), binding.descriptorCount);
+    //         }
+    //     }
+    // #endif
 
     if (bindings.size()) {
         uint32_t highest_set_index = bindings.rbegin()->first;
@@ -494,33 +496,7 @@ VulkanShader::VulkanShader(const ShaderSpecification& spec, std::map<ShaderStage
         }
     }
 
-    std::vector<ShaderBufferLayoutElement> elements;
-    for (const auto& element : m_VertexInputLayout) {
-        elements.push_back(ShaderBufferLayoutElement("", element));
-    }
-    ShaderBufferLayout buffer_layout(elements);
-
-    VulkanPipelineSpecification pipeline_spec = VulkanPipelineSpecification::Default();
-    pipeline_spec.shader = this;
-    // pipeline_spec.input_layout = m_Specification.input_layout;
-    pipeline_spec.input_layout = buffer_layout;
-    pipeline_spec.topology = m_Specification.topology;
-    pipeline_spec.output_attachments_formats = m_Specification.output_attachments_formats;
-    pipeline_spec.culling_mode = m_Specification.culling_mode;
-    pipeline_spec.front_face = m_Specification.front_face;
-    pipeline_spec.topology = m_Specification.topology;
-    pipeline_spec.fill_mode = m_Specification.fill_mode;
-    pipeline_spec.primitive_restart_enable = m_Specification.primitive_restart_enable;
-    pipeline_spec.color_blending_enable = m_Specification.color_blending_enable;
-    pipeline_spec.depth_test_enable = m_Specification.depth_test_enable;
-    pipeline_spec.multisampling_enable = m_Specification.multisampling_enable;
-    pipeline_spec.sample_count = m_Specification.sample_count;
-
-    if (binaries.find(ShaderStage::COMPUTE) != binaries.end()) {
-        pipeline_spec.type = PipelineType::COMPUTE;
-    }
-
-    m_Pipeline = CreateShared<VulkanPipeline>(pipeline_spec);
+    m_BufferLayout = ShaderBufferLayout(input_elements);
 }
 
 VulkanShader::~VulkanShader()
@@ -541,7 +517,5 @@ void VulkanShader::Destroy()
     m_SetLayouts.clear();
     for (auto& stage : m_StageCreateInfos)
         stage.module = VK_NULL_HANDLE;
-
-    m_Pipeline->Destroy();
 }
 }

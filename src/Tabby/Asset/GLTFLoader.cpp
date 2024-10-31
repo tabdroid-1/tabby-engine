@@ -24,7 +24,7 @@
 
 namespace Tabby {
 
-GLTFLoader::GLTFData GLTFLoader::Parse(const std::filesystem::path& filePath)
+GLTFLoader::GLTFData GLTFLoader::Parse(GLTFParseSpecification spec)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::GLTFLoader::Parse");
 
@@ -40,11 +40,11 @@ GLTFLoader::GLTFData GLTFLoader::Parse(const std::filesystem::path& filePath)
 #ifdef TB_PLATFORM_ANDROID
     auto asset = parser.loadFileFromApk(filePath);
 #else
-    auto gltfFile = fastgltf::MappedGltfFile::FromPath(filePath);
+    auto gltfFile = fastgltf::MappedGltfFile::FromPath(spec.filePath);
 
     std::string message = "Failed to load glTF file: " + std::string(fastgltf::getErrorMessage(gltfFile.error()));
     TB_CORE_ASSERT_TAGGED(bool(gltfFile), message);
-    auto asset = parser.loadGltf(gltfFile.get(), filePath.parent_path(), gltfOptions);
+    auto asset = parser.loadGltf(gltfFile.get(), spec.filePath.parent_path(), gltfOptions);
 #endif
 
     message = "Failed to load glTF file: " + std::string(fastgltf::getErrorMessage(asset.error()));
@@ -55,7 +55,7 @@ GLTFLoader::GLTFData GLTFLoader::Parse(const std::filesystem::path& filePath)
 
     LoadImages(data);
     LoadMaterials(data);
-    LoadMeshes(data);
+    LoadMeshes(data, spec.create_entity_from_mesh);
 
     return { data.meshes, data.materials, data.mesh_data, data.images };
 }
@@ -86,15 +86,15 @@ void GLTFLoader::LoadImages(GLTFParserData& data)
                            std::vector<RGBA32> image_data;
                            image_data.assign(raw_image_data, raw_image_data + (image_width * image_height));
 
-                           // std::vector<RGBA32> full_image_data = AssetCompressor::GenerateMipMaps(image_data, image_width, image_height);
-                           //
-                           // std::vector<byte> raw(full_image_data.size() * sizeof(RGBA32));
-                           // memcpy(raw.data(), full_image_data.data(), full_image_data.size() * sizeof(RGBA32));
-                           // full_image_data.clear();
+                           std::vector<RGBA32> full_image_data = AssetCompressor::GenerateMipMaps(image_data, image_width, image_height);
 
-                           std::vector<byte> raw(image_data.size() * sizeof(RGBA32));
-                           memcpy(raw.data(), image_data.data(), image_data.size() * sizeof(RGBA32));
-                           image_data.clear();
+                           std::vector<byte> raw(full_image_data.size() * sizeof(RGBA32));
+                           memcpy(raw.data(), full_image_data.data(), full_image_data.size() * sizeof(RGBA32));
+                           full_image_data.clear();
+
+                           // std::vector<byte> raw(image_data.size() * sizeof(RGBA32));
+                           // memcpy(raw.data(), image_data.data(), image_data.size() * sizeof(RGBA32));
+                           // image_data.clear();
 
                            ImageSpecification texture_spec = {};
                            texture_spec.pixels = std::move(raw);
@@ -181,7 +181,7 @@ void GLTFLoader::LoadMaterials(GLTFParserData& data)
     }
 }
 
-void GLTFLoader::LoadMeshes(GLTFParserData& data)
+void GLTFLoader::LoadMeshes(GLTFParserData& data, bool create_entity)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::GLTFLoader::LoadMeshes");
 
@@ -277,44 +277,47 @@ void GLTFLoader::LoadMeshes(GLTFParserData& data)
         meshID++;
     }
 
-    // auto SceneEntity = Tabby::World::CreateEntity("Scene");
-    //
-    // for (auto& node : data.fastgltf_asset.nodes) {
-    //
-    //     auto ent = Tabby::World::CreateEntity(node.name.c_str());
-    //
-    //     for (auto mesh : tabbyMeshes) {
-    //         if (mesh.first == node.meshIndex.value()) {
-    //             auto childEnt = Tabby::World::CreateEntity(mesh.second->GetName());
-    //             auto& mC = childEnt.AddComponent<MeshComponent>();
-    //             mC.m_Mesh = mesh.second;
-    //             ent.AddChild(childEnt);
-    //         }
-    //     }
-    //
-    //     auto& tc = ent.GetComponent<TransformComponent>();
-    //     std::visit(fastgltf::visitor { [&](const fastgltf::math::fmat4x4& matrix) {
-    //                                       fastgltf::math::fvec3 scale;
-    //                                       fastgltf::math::fquat rotation;
-    //                                       fastgltf::math::fvec3 translation;
-    //                                       fastgltf::math::decomposeTransformMatrix(matrix, scale, rotation, translation);
-    //
-    //                                       Vector3 Gscale = { scale.x(), scale.y(), scale.z() };
-    //                                       Quaternion Grotation = { rotation.w(), rotation.x(), rotation.y(), rotation.z() };
-    //                                       Vector3 Gtranslation = { translation.x(), translation.y(), translation.z() };
-    //                                       Matrix4 rotMat = glm::toMat4(Grotation);
-    //                                       tc.ApplyTransform(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
-    //                                   },
-    //                    [&](const fastgltf::TRS& trs) {
-    //                        Vector3 Gscale = { trs.scale.x(), trs.scale.y(), trs.scale.z() };
-    //                        Quaternion Grotation = { trs.rotation.w(), trs.rotation.x(), trs.rotation.y(), trs.rotation.z() };
-    //                        Vector3 Gtranslation = { trs.translation.x(), trs.translation.y(), trs.translation.z() };
-    //                        Matrix4 rotMat = glm::toMat4(Grotation);
-    //                        tc.ApplyTransform(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
-    //                    } },
-    //         node.transform);
-    //
-    //     SceneEntity.AddChild(ent);
-    // }
+    if (!create_entity)
+        return;
+
+    auto SceneEntity = Tabby::World::CreateEntity("Scene");
+
+    for (auto& node : data.fastgltf_asset.nodes) {
+
+        auto ent = Tabby::World::CreateEntity(node.name.c_str());
+
+        for (auto mesh : tabbyMeshes) {
+            if (mesh.first == node.meshIndex.value()) {
+                auto childEnt = Tabby::World::CreateEntity(mesh.second->GetName());
+                auto& mC = childEnt.AddComponent<MeshComponent>();
+                mC.mesh = mesh.second;
+                ent.AddChild(childEnt);
+            }
+        }
+
+        auto& tc = ent.GetComponent<TransformComponent>();
+        std::visit(fastgltf::visitor { [&](const fastgltf::math::fmat4x4& matrix) {
+                                          fastgltf::math::fvec3 scale;
+                                          fastgltf::math::fquat rotation;
+                                          fastgltf::math::fvec3 translation;
+                                          fastgltf::math::decomposeTransformMatrix(matrix, scale, rotation, translation);
+
+                                          Vector3 Gscale = { scale.x(), scale.y(), scale.z() };
+                                          Quaternion Grotation = { rotation.w(), rotation.x(), rotation.y(), rotation.z() };
+                                          Vector3 Gtranslation = { translation.x(), translation.y(), translation.z() };
+                                          Matrix4 rotMat = glm::toMat4(Grotation);
+                                          tc.ApplyTransform(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
+                                      },
+                       [&](const fastgltf::TRS& trs) {
+                           Vector3 Gscale = { trs.scale.x(), trs.scale.y(), trs.scale.z() };
+                           Quaternion Grotation = { trs.rotation.w(), trs.rotation.x(), trs.rotation.y(), trs.rotation.z() };
+                           Vector3 Gtranslation = { trs.translation.x(), trs.translation.y(), trs.translation.z() };
+                           Matrix4 rotMat = glm::toMat4(Grotation);
+                           tc.ApplyTransform(glm::translate(Matrix4(1.0f), (Vector3&)Gtranslation) * rotMat * glm::scale(Matrix4(1.0f), (Vector3&)Gscale));
+                       } },
+            node.transform);
+
+        SceneEntity.AddChild(ent);
+    }
 }
 }

@@ -34,11 +34,11 @@ public:
     //
     void BeginFrame() override;
     void EndFrame() override;
-    void BeginRender(std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 render_offset, Vector4 clear_color) override;
+    void BeginRender(Shared<RenderPass> render_pass, std::vector<Shared<Image>> attachments, UIntVector3 render_area, IntVector2 render_offset, Vector4 clear_color) override;
     void EndRender(Shared<Image> target) override;
     void WaitDevice() override;
+    void CopyToSwapchain(Shared<Image> image) override;
     // void BindSet(Shared<DescriptorSet> set, Shared<Pipeline> pipeline, uint8 index) override;
-    void CopyToSwapchain(Shared<Image> image);
     // void InsertBarrier(const PipelineBarrierInfo& barrier) override;
 
     void BeginCommandRecord() override;
@@ -47,9 +47,9 @@ public:
 
     void ClearImage(Shared<Image> image, const Vector4& value) override;
     void RenderTasks(Shared<Mesh> mesh, std::vector<MaterialData> elements, Buffer data = Buffer()) override;
-    void RenderTasks(Shared<Shader> shader, uint32_t vertex_count, Buffer data = Buffer()) override;
-    // void RenderQuad(Shared<Pipeline> pipeline, MiscData data) override;
-    // void RenderQuad(Shared<Pipeline> pipeline, uint32 amount, MiscData data) override;
+    void RenderTasks(Shared<Pipeline> pipeline, uint32_t vertex_count, Buffer data = Buffer()) override;
+    void RenderQuad(Shared<Pipeline> pipeline, Buffer data = Buffer()) override;
+    void RenderQuad(Shared<Pipeline> pipeline, uint32_t amount, Buffer data = Buffer()) override;
     // void DispatchCompute(Shared<Pipeline> pipeline, const glm::uvec3& dimensions, MiscData data) override;
     // void RenderUnindexed(Shared<Pipeline> pipeline, Shared<DeviceBuffer> vertex_buffer, MiscData data) override;
 
@@ -60,20 +60,13 @@ public:
     static void FreeDescriptorSets(std::vector<VkDescriptorSet> sets);
 
 private:
-    struct VulkanRendererAPIRenderPassInfo {
-        VulkanRenderPassSpecification spec;
-        Shared<VulkanRenderPass> render_pass;
-    };
-
-private:
     RendererConfig m_Config;
+
+    bool m_RenderPassActive = false;
 
     Shared<VulkanGraphicsContext> m_GraphicsContext;
     Shared<VulkanDevice> m_Device;
     Shared<VulkanSwapchain> m_Swapchain;
-
-    std::vector<VulkanRendererAPIRenderPassInfo> m_RenderPassInfos;
-    VulkanRendererAPIRenderPassInfo m_CurrentRenderPass;
 
     std::vector<Shared<VulkanDeviceCmdBuffer>> m_CmdBuffers;
     Shared<VulkanDeviceCmdBuffer> m_CurrentCmdBuffer;

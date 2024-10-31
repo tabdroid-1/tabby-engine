@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Tabby/Renderer/Shader.h>
+#include <Tabby/Renderer/Pipeline.h>
 #include <Tabby/Asset/AssetBase.h>
 
 namespace Tabby {
@@ -46,7 +46,7 @@ struct MaterialData {
 
 struct MaterialSpecification {
     std::string name;
-    Shared<Shader> shader;
+    Shared<Pipeline> pipeline;
 };
 
 class Material : public AssetBase {
@@ -55,7 +55,7 @@ public:
     virtual ~Material() { }
 
     const std::string& GetName() { return m_Specification.name; }
-    Shared<Shader> GetShader() { return m_Specification.shader; }
+    Shared<Pipeline> GetPipeline() { return m_Specification.pipeline; }
 
     virtual void UploadData(const std::string& name, uint64_t offset, void* data, uint64_t data_size) = 0;
     virtual void UploadData(const std::string& name, uint16_t array_element, Shared<Image> image, Shared<ImageSampler> sampler) = 0;

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <Tabby/Renderer/ShaderBufferLayout.h>
+#include <Tabby/Renderer/RenderPass.h>
+#include <Tabby/Renderer/Image.h>
+
 namespace Tabby {
 
 enum class PipelineType : uint8_t {
@@ -29,52 +33,74 @@ enum class PipelineFillMode : uint8_t {
     EDGE_ONLY
 };
 
-enum class ShaderDataType : uint32_t {
-    INT,
-    INT2,
-    INT3,
-    INT4,
-    FLOAT,
-    FLOAT2,
-    FLOAT3,
-    FLOAT4,
-    IMAT3,
-    IMAT4,
-    MAT3,
-    MAT4
+struct PipelineSpecification {
+    std::string debug_name;
+    Shared<Shader> shader;
+    Shared<RenderPass> render_pass;
+    float line_width;
+    PipelineType type;
+    PipelineCullingMode culling_mode;
+    PipelineFrontFace front_face;
+    PipelineTopology topology;
+    PipelineFillMode fill_mode;
+    std::vector<ImageFormat> output_attachments_formats;
+    bool primitive_restart_enable;
+    bool color_blending_enable;
+    bool depth_test_enable;
+    bool stencil_test_enable;
+    bool multisampling_enable;
+    uint8_t sample_count;
+
+    static PipelineSpecification Default()
+    {
+        PipelineSpecification spec = {};
+        spec.debug_name = "";
+        spec.shader = nullptr;
+        spec.line_width = 1.0f;
+        spec.type = PipelineType::GRAPHICS;
+        spec.culling_mode = PipelineCullingMode::BACK;
+        spec.front_face = PipelineFrontFace::COUNTER_CLOCKWISE;
+        spec.topology = PipelineTopology::TRIANGLES;
+        spec.fill_mode = PipelineFillMode::FILL;
+        spec.output_attachments_formats = {};
+        spec.primitive_restart_enable = false;
+        spec.color_blending_enable = true;
+        spec.depth_test_enable = true;
+        spec.stencil_test_enable = true;
+        spec.multisampling_enable = false;
+        spec.sample_count = 1;
+
+        return spec;
+    }
+
+    bool operator==(const PipelineSpecification& other) const
+    {
+        bool result = true;
+        result &= shader == other.shader;
+        result &= line_width == other.line_width;
+        result &= type == other.type;
+        result &= culling_mode == other.culling_mode;
+        result &= front_face == other.front_face;
+        result &= topology == other.topology;
+        result &= fill_mode == other.fill_mode;
+        result &= color_blending_enable == other.color_blending_enable;
+        result &= depth_test_enable == other.depth_test_enable;
+        result &= sample_count == other.sample_count;
+
+        return result;
+    }
 };
 
-constexpr uint32_t ShaderDataTypeSize(const ShaderDataType& type)
-{
-    switch (type) {
-    case ShaderDataType::INT:
-        return 4;
-    case ShaderDataType::INT2:
-        return 4 * 2;
-    case ShaderDataType::INT3:
-        return 4 * 3;
-    case ShaderDataType::INT4:
-        return 4 * 4;
-    case ShaderDataType::FLOAT:
-        return 4;
-    case ShaderDataType::FLOAT2:
-        return 4 * 2;
-    case ShaderDataType::FLOAT3:
-        return 4 * 3;
-    case ShaderDataType::FLOAT4:
-        return 4 * 4;
-    case ShaderDataType::IMAT3:
-        return 4 * 3 * 3;
-    case ShaderDataType::IMAT4:
-        return 4 * 4 * 4;
-    case ShaderDataType::MAT3:
-        return 4 * 3 * 3;
-    case ShaderDataType::MAT4:
-        return 4 * 4 * 4;
-    default:
-        TB_CORE_ASSERT(false);
-        return 0;
-    }
-}
+class Pipeline {
+public:
+    static Shared<Pipeline> Create(const PipelineSpecification& spec);
+    virtual void Destroy() = 0;
+
+    virtual const PipelineSpecification& GetSpecification() const = 0;
+    UUID GetID() const { return m_ID; }
+
+protected:
+    UUID m_ID;
+};
 
 }

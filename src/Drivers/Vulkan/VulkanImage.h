@@ -181,7 +181,7 @@ public:
 
     // It is supposed that image has actually already been transitioned into layout.
     void SetCurrentLayout(ImageLayout layout) { m_CurrentLayout = layout; }
-    void SetLayout(Shared<VulkanDeviceCmdBuffer> cmd_buffer, ImageLayout new_layout, PipelineStage src_stage, PipelineStage dst_stage, BitMask src_access = 0, BitMask dst_access = 0);
+    void SetLayout(Shared<VulkanDeviceCmdBuffer> cmd_buffer, ImageLayout new_layout);
 
 private:
     void CreateTexture();

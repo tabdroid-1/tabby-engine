@@ -7,6 +7,7 @@
 namespace Tabby {
 
 struct VulkanAllocatorStatistics {
+    std::vector<VmaAllocation> allocations;
     uint64_t allocated;
     uint64_t freed;
     uint64_t currently_allocated;
@@ -29,6 +30,7 @@ public:
     void* MapMemory(VmaAllocation allocation);
     void UnmapMemory(VmaAllocation allocation);
 
+    VmaAllocator Raw() { return m_Allocator; }
     VulkanAllocatorStatistics GetStats() const { return m_Statistics; }
 
 private:

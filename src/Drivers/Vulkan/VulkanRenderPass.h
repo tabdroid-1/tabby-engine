@@ -2,41 +2,32 @@
 
 #include <Drivers/Vulkan/VulkanCommon.h>
 
+#include <Tabby/Renderer/RenderPass.h>
+
 namespace Tabby {
 
 class Image;
 
-struct VulkanRenderPassSpecification {
-    std::vector<Shared<Image>> attachments;
-    Vector4 clear_color;
-    UIntVector3 extent;
-
-    bool operator==(const VulkanRenderPassSpecification& a) const
-    {
-        return (this->attachments == a.attachments && this->extent == a.extent && this->clear_color == a.clear_color) ? true : false;
-    }
-};
-
-class VulkanRenderPass {
+class VulkanRenderPass : public RenderPass {
 public:
-    VulkanRenderPass();
+    VulkanRenderPass(const RenderPassSpecification& spec);
     ~VulkanRenderPass();
 
-    void Create(const VulkanRenderPassSpecification& spec);
-    void Destroy();
+    void Refresh(const RenderPassSpecification& spec) override;
+    void Destroy() override;
+
+    // void Begin() override;
+    // void End() override;
+
+    const RenderPassSpecification& GetSpecification() const override { return m_Specification; }
 
     VkRenderPass Raw() const { return m_RenderPass; }
-    VkFramebuffer RawFramebuffer() const { return m_Framebuffer; }
-    // std::vector<VkFramebuffer> RawFramebuffer() const { return m_Framebuffers; }
-
-    // private:
-    //     void CreateFramebuffer(const VulkanRenderPassSpecification& spec);
+    VkFramebuffer RawFramebuffer() const;
 
 private:
-    VulkanRenderPassSpecification m_Specification;
-    VkFramebuffer m_Framebuffer;
-    // std::vector<VkFramebuffer> m_Framebuffers;
-    // Shared<Image> m_DepthStencilBuffer;
+    RenderPassSpecification m_Specification;
+
+    std::vector<VkFramebuffer> m_Framebuffers;
     VkRenderPass m_RenderPass;
 };
 }

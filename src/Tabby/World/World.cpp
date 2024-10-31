@@ -1,9 +1,10 @@
 #include <Tabby/Physics/2D/Physics2D.h>
-// #include <Tabby/Renderer/Renderer2D.h>
 #include <Tabby/Asset/AssetManager.h>
+#include <Tabby/Renderer/Renderer.h>
 #include <Tabby/Audio/AudioEngine.h>
 #include <Tabby/Audio/AudioSource.h>
 #include <Tabby/Core/Application.h>
+#include <Tabby/Renderer/Camera.h>
 #include <Tabby/Core/Time/Time.h>
 // #include <Tabby/Renderer/Mesh.h>
 #include <Tabby/World/Entity.h>
@@ -128,22 +129,6 @@ void World::Init()
             }
             tasks.clear();
         });
-
-        AddSystem(Schedule::PostUpdate, []() {
-            TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera");
-
-            auto view = World::GetRegistry().view<TransformComponent, CameraComponent>();
-            for (auto entity : view) {
-
-                TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera::Iteration");
-                auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
-
-                // if (camera.Primary) {
-                //     World::SetCurrentCamera(&camera.Camera, &transform.GetWorldTransform());
-                //     break;
-                // }
-            }
-        });
         AddSystem(Schedule::PostUpdate, []() {
             TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::UpdateAudioSource");
             auto view = World::GetRegistry().view<TransformComponent, AudioSourceComponent>();
@@ -155,7 +140,8 @@ void World::Init()
                     auto [transform, source] = view.get<TransformComponent, AudioSourceComponent>(entity);
 
                     source.Source->SetPosition(transform.GetWorldPosition());
-                    source.Source->SetDirection(transform.GetWorldRotation());
+                    glm::vec3 euler = glm::eulerAngles(transform.GetWorldRotation()) * 3.14159f / 180.f;
+                    source.Source->SetDirection(euler);
 
                     if (World::GetRegistry().any_of<Rigidbody2DComponent>(entity)) {
                         auto& rb = World::GetRegistry().get<Rigidbody2DComponent>(entity);
@@ -211,71 +197,71 @@ void World::Init()
             }
         });
 
-        AddSystem(Schedule::Draw, []() {
-            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle");
-            auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
-
-            for (auto entity : view) {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle::Iteration");
-
-                auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-                // Renderer2D::DrawCircle(transform.GetWorldTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
-            }
-        });
-
-        AddSystem(Schedule::Draw, []() {
-            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites");
-
-            World::GetRegistry().sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs) {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites::UpdateOrder");
-                return lhs.renderOrder < rhs.renderOrder;
-            });
-
-            auto sprite_view = World::GetRegistry().view<SpriteRendererComponent>();
-
-            for (const entt::entity entity : sprite_view) {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites::Iteration");
-
-                auto transform = World::GetRegistry().get<TransformComponent>(entity);
-                auto sprite = World::GetRegistry().get<SpriteRendererComponent>(entity);
-
-                // Renderer2D::DrawSprite(transform.GetWorldTransform(), sprite, (int)entity);
-            }
-        });
-
-        AddSystem(Schedule::Draw, []() {
-            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF");
-            auto view = World::GetRegistry().view<TransformComponent, MeshComponent>();
-            for (auto entity : view) {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF::Iteration");
-
-                auto [transform, mC] = view.get<TransformComponent, MeshComponent>(entity);
-
-                // if (mC.m_Mesh) {
-                //     mC.m_Mesh->SetTransform(transform.GetWorldTransform());
-                //     mC.m_Mesh->Render();
-                // }
-            }
-        });
-
-        AddSystem(Schedule::Draw, []() {
-            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderText");
-
-            auto view = GetRegistry().view<TransformComponent, TextComponent>();
-            for (auto entity : view) {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderText::Iteration");
-
-                auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
-
-                // Renderer2D::DrawString(text.TextString, transform.GetWorldTransform(), text, (int)entity);
-            }
-        });
-
-        AddSystem(Schedule::Draw, []() {
-            TB_PROFILE_SCOPE_NAME("Tabby::World::OnUpdate::RenderScene::DebugDraw");
-
-            // Debug::ProcessDrawCalls();
-        });
+        // AddSystem(Schedule::Draw, []() {
+        //     TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle");
+        //     auto view = World::GetRegistry().view<TransformComponent, CircleRendererComponent>();
+        //
+        //     for (auto entity : view) {
+        //         TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderCircle::Iteration");
+        //
+        //         auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+        //         // Renderer2D::DrawCircle(transform.GetWorldTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+        //     }
+        // });
+        //
+        // AddSystem(Schedule::Draw, []() {
+        //     TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites");
+        //
+        //     World::GetRegistry().sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs) {
+        //         TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites::UpdateOrder");
+        //         return lhs.renderOrder < rhs.renderOrder;
+        //     });
+        //
+        //     auto sprite_view = World::GetRegistry().view<SpriteRendererComponent>();
+        //
+        //     for (const entt::entity entity : sprite_view) {
+        //         TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderSprites::Iteration");
+        //
+        //         auto transform = World::GetRegistry().get<TransformComponent>(entity);
+        //         auto sprite = World::GetRegistry().get<SpriteRendererComponent>(entity);
+        //
+        //         // Renderer2D::DrawSprite(transform.GetWorldTransform(), sprite, (int)entity);
+        //     }
+        // });
+        //
+        // AddSystem(Schedule::Draw, []() {
+        //     TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF");
+        //     auto view = World::GetRegistry().view<TransformComponent, MeshComponent>();
+        //     for (auto entity : view) {
+        //         TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF::Iteration");
+        //
+        //         auto [transform, mC] = view.get<TransformComponent, MeshComponent>(entity);
+        //
+        //         // if (mC.m_Mesh) {
+        //         //     mC.m_Mesh->SetTransform(transform.GetWorldTransform());
+        //         //     mC.m_Mesh->Render();
+        //         // }
+        //     }
+        // });
+        //
+        // AddSystem(Schedule::Draw, []() {
+        //     TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderText");
+        //
+        //     auto view = GetRegistry().view<TransformComponent, TextComponent>();
+        //     for (auto entity : view) {
+        //         TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderText::Iteration");
+        //
+        //         auto [transform, text] = view.get<TransformComponent, TextComponent>(entity);
+        //
+        //         // Renderer2D::DrawString(text.TextString, transform.GetWorldTransform(), text, (int)entity);
+        //     }
+        // });
+        //
+        // AddSystem(Schedule::Draw, []() {
+        //     TB_PROFILE_SCOPE_NAME("Tabby::World::OnUpdate::RenderScene::DebugDraw");
+        //
+        //     // Debug::ProcessDrawCalls();
+        // });
     }
 }
 
@@ -474,19 +460,6 @@ Entity World::GetEntityByUUID(UUID uuid)
     return {};
 }
 
-Entity World::GetPrimaryCameraEntity()
-{
-    TB_PROFILE_SCOPE_NAME("Tabby::World::GetPrimaryCameraEntity");
-
-    auto view = GetRegistry().view<CameraComponent>();
-    for (auto entity : view) {
-        const auto& camera = view.get<CameraComponent>(entity);
-        if (camera.Primary)
-            return Entity { entity };
-    }
-    return {};
-}
-
 void World::OnStart()
 {
     TB_PROFILE_SCOPE_NAME("Tabby::World::OnStart");
@@ -558,16 +531,45 @@ void World::Update()
         }
     }
 
-    if (s_Instance->m_CurrentCamera && s_Instance->m_CurrentCameraTransform) {
+    {
+        TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera");
 
-#if !TB_HEADLESS
-        // Renderer2D::BeginScene(*s_Instance->m_CurrentCamera, *s_Instance->m_CurrentCameraTransform);
-        //
-        // for (const auto& draw : s_Instance->m_DrawSystems)
-        //     draw();
-        //
-        // Renderer2D::EndScene();
-#endif
+        auto view = World::GetRegistry().view<TransformComponent, CameraComponent>();
+        for (auto entity : view) {
+
+            TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera::Iteration");
+            auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+
+            camera.camera.SetPosition(transform.position);
+            camera.camera.SetRotation(transform.rotation);
+            camera.camera.SetScale(transform.scale);
+            camera.camera.CalculateMatrix();
+
+            Buffer camera_data;
+            camera_data.Allocate(sizeof(Matrix4));
+            std::memcpy(camera_data.Data, &camera.camera.GetViewProjectionMatrix(), sizeof(Matrix4));
+
+            Renderer::BeginRenderPipeline(camera.camera);
+
+            {
+                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF");
+                auto view = World::GetRegistry().view<TransformComponent, MeshComponent>();
+                for (auto entity : view) {
+                    TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF::Iteration");
+
+                    auto [transform, mC] = view.get<TransformComponent, MeshComponent>(entity);
+
+                    auto material_datas = mC.material_datas;
+                    material_datas.push_back(MaterialData("cm", 0, camera_data.Data, camera_data.Size));
+
+                    if (mC.mesh) {
+                        Renderer::RenderTasks(mC.mesh, mC.material_datas);
+                    }
+                }
+            }
+
+            Renderer::EndRenderPipeline();
+        }
     }
 }
 
@@ -585,8 +587,8 @@ void World::OnViewportResize(uint32_t width, uint32_t height)
     auto view = GetRegistry().view<CameraComponent>();
     for (auto entity : view) {
         auto& cameraComponent = view.get<CameraComponent>(entity);
-        // if (!cameraComponent.FixedAspectRatio)
-        // cameraComponent.Camera.SetViewportSize(width, height);
+        if (!cameraComponent.fixedAspectRatio)
+            cameraComponent.camera.SetAspectRatio((float)width / (float)height);
     }
 }
 
@@ -595,14 +597,6 @@ void World::Step(int frames)
     TB_PROFILE_SCOPE_NAME("Tabby::World::Step");
 
     s_Instance->m_StepFrames = frames;
-}
-
-void World::SetCurrentCamera(Camera* currentCamera, Matrix4* currentCameraTransform)
-{
-    TB_PROFILE_SCOPE_NAME("Tabby::World::SetCurrentCamera");
-
-    s_Instance->m_CurrentCamera = currentCamera;
-    s_Instance->m_CurrentCameraTransform = currentCameraTransform;
 }
 
 entt::registry& World::GetRegistry()
