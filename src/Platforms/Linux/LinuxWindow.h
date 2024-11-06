@@ -1,5 +1,4 @@
 #pragma once
-#include <Tabby/Renderer/GraphicsContext.h>
 #include <Tabby/Core/Window.h>
 
 class SDL_Window;
@@ -36,7 +35,6 @@ private:
 
 private:
     SDL_Window* m_Window;
-    Scope<GraphicsContext> m_Context;
 
     struct WindowData {
         std::string Title;

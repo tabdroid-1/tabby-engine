@@ -71,27 +71,13 @@ set(BOX2D_DOCS OFF CACHE BOOL "" FORCE)
 set(BOX2D_PROFILE OFF CACHE BOOL "" FORCE)
 set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "Build the Box2D unit tests" FORCE)
 set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "Build the Box2D testbed" FORCE)
-set(MSDF_ATLAS_BUILD_STANDALONE OFF CACHE BOOL "Disable building MSDF Standalone executable" FORCE)
-set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
-set(MSDF_ATLAS_USE_SKIA OFF CACHE BOOL "Disable Skia from MSDF" FORCE)
-set(MSDFGEN_DISABLE_SVG ON CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
-set(MSDFGEN_DISABLE_PNG ON CACHE BOOL "Disable MSDF VCPKG Fetch" FORCE)
-set(MSDF_ATLAS_NO_ARTERY_FONT OFF CACHE BOOL "Disable Artery Font export and do not require its submodule" FORCE)
-set(MSDF_ATLAS_MSDFGEN_EXTERNAL OFF CACHE BOOL "Do not build the msdfgen submodule but find it as an external package" FORCE)
-set(MSDF_ATLAS_INSTALL OFF CACHE BOOL "Generate installation target" FORCE)
-set(MSDF_ATLAS_DYNAMIC_RUNTIME OFF CACHE BOOL "Link dynamic runtime library instead of static" FORCE)
-set(MSDFGEN_CORE_ONLY OFF CACHE BOOL "Only build the core library with no dependencies" FORCE)
-set(MSDFGEN_BUILD_STANDALONE OFF CACHE BOOL "Build the msdfgen standalone executable" FORCE)
-set(MSDFGEN_USE_VCPKG OFF CACHE BOOL "Use vcpkg package manager to link project dependencies" FORCE)
-set(MSDFGEN_USE_OPENMP OFF CACHE BOOL "Build with OpenMP support for multithreaded code" FORCE)
-set(MSDFGEN_USE_CPP11 ON CACHE BOOL "Build with C++11 enabled" FORCE)
-set(MSDFGEN_USE_SKIA ON CACHE BOOL "Build with the Skia library" FORCE)
-set(MSDFGEN_INSTALL  OFF CACHE BOOL "Generate installation target" FORCE)
-set(MSDFGEN_DYNAMIC_RUNTIME OFF CACHE BOOL "Link dynamic runtime library instead of static" FORCE)
 set(SPDLOG_HEADER_ONLY OFF CACHE BOOL "" FORCE)
-set(VMA_ENABLE_INSTALL OFF CACHE BOOL "Install VulkanMemoryAllocator" FORCE)
 set(SHADERC_SKIP_TESTS ON CACHE BOOL "Skip building tests" FORCE)
 set(SHADERC_SKIP_EXAMPLES ON CACHE BOOL "Skip building examples" FORCE)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(BX_CONFIG_DEBUG ON CACHE BOOL "" FORCE)
+endif()
 
 set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_VENDOR_DIR "vendor")
@@ -100,23 +86,20 @@ set(PROJECT_VENDOR_DIR "vendor")
 # Add dependencies 
 # ##############################################################################
 
-set(GLM ${PROJECT_VENDOR_DIR}/glm)
 set(STB ${PROJECT_VENDOR_DIR}/stb)
+set(GLM ${PROJECT_VENDOR_DIR}/glm)
 set(SDL2 ${PROJECT_VENDOR_DIR}/SDL2)
-set(GLAD ${PROJECT_VENDOR_DIR}/glad)
 set(ENTT ${PROJECT_VENDOR_DIR}/entt)
+set(BGFX ${PROJECT_VENDOR_DIR}/bgfx)
+set(IMGUI ${PROJECT_VENDOR_DIR}/imgui)
 set(BOX2D ${PROJECT_VENDOR_DIR}/box2d)
 set(TRACY ${PROJECT_VENDOR_DIR}/tracy)
-set(IMGUI ${PROJECT_VENDOR_DIR}/imgui)
 set(ENKITS ${PROJECT_VENDOR_DIR}/enkiTS)
 set(SPDLOG ${PROJECT_VENDOR_DIR}/spdlog)
 set(FASTGLTF ${PROJECT_VENDOR_DIR}/fastgltf)
 set(IMGUIZMO ${PROJECT_VENDOR_DIR}/imguizmo)
 set(OPENAL ${PROJECT_VENDOR_DIR}/openal-soft)
-set(METAL-CPP ${PROJECT_VENDOR_DIR}/metal-cpp)
 set(SPIRV-REFLECT ${PROJECT_VENDOR_DIR}/SPIRV-Reflect)
-set(MSDF-ATLAS-GEN ${PROJECT_VENDOR_DIR}/msdf-atlas-gen)
-set(VULKAN-MEMORY-ALLOCATOR ${PROJECT_VENDOR_DIR}/VulkanMemoryAllocator)
 set(GAME-NETWORKING-SOCKETS ${PROJECT_VENDOR_DIR}/GameNetworkingSockets)
 
 # ##############################################################################
@@ -188,35 +171,39 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${SPDLOG}/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${OPENAL}/include) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${BOX2D}/include) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${ENKITS}/src) 
+target_include_directories(${PROJECT_NAME} PUBLIC ${GLM}) 
+target_include_directories(${PROJECT_NAME} PUBLIC ${BGFX}/bgfx/3rdparty) 
+target_include_directories(${PROJECT_NAME} PUBLIC ${BGFX}/bgfx/include) 
+target_include_directories(${PROJECT_NAME} PUBLIC ${BGFX}/bimg/include) 
+target_include_directories(${PROJECT_NAME} PUBLIC ${BGFX}/bx/include) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUIZMO}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${IMGUI}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${TRACY}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${ENTT}) 
 target_include_directories(${PROJECT_NAME} PUBLIC ${STB}) 
-target_include_directories(${PROJECT_NAME} PUBLIC ${GLM}) 
-target_include_directories(${PROJECT_NAME} PRIVATE ${VULKAN-MEMORY-ALLOCATOR}/include) 
-target_include_directories(${PROJECT_NAME} PRIVATE ${MSDF-ATLAS-GEN}/msdf-atlas-gen) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${SPIRV-REFLECT}) 
-target_include_directories(${PROJECT_NAME} PRIVATE ${GLAD}) 
 target_include_directories(${PROJECT_NAME} PRIVATE ${STB}) 
 
 # ####################
 # Add Subdirectories
 # ####################
-if (NOT TARGET fastgltf)
+
+add_subdirectory(${BGFX})
+
+if (NOT TARGET glm)
     add_subdirectory(${GLM})
 endif()
 if (NOT TARGET SDL2-static)
     add_subdirectory(${SDL2})
-endif()
-if (NOT TARGET imgui)
-    add_subdirectory(${IMGUI})
 endif()
 if (NOT TARGET box2d)
     add_subdirectory(${BOX2D})
 endif()
 if (NOT TARGET tracy)
     add_subdirectory(${TRACY})
+endif()
+if (NOT TARGET imgui)
+    add_subdirectory(${IMGUI})
 endif()
 if (NOT TARGET enkiTS)
     add_subdirectory(${ENKITS})
@@ -229,12 +216,6 @@ if (NOT TARGET imguizmo)
 endif()
 if (NOT TARGET fastgltf)
     add_subdirectory(${FASTGLTF})
-endif()
-if (NOT TARGET msdf-atlas-gen)
-    add_subdirectory(${MSDF-ATLAS-GEN})
-endif()
-if (NOT TARGET GPUOpen::VulkanMemoryAllocator)
-    add_subdirectory(${VULKAN-MEMORY-ALLOCATOR})
 endif()
 if (TB_NETWORKING AND NOT TARGET GameNetworkingSockets)
     add_subdirectory(${GAME-NETWORKING-SOCKETS})
@@ -266,7 +247,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
         target_link_options(${PROJECT_NAME} PUBLIC -static)
 
         # does this even work?
-        if(MAINECOON_DIST)
+        if(TB_DIST)
             target_link_options(${PROJECT_NAME} PUBLIC -mwindows)
         else()
             target_link_options(${PROJECT_NAME} PUBLIC -mconsole)
@@ -280,6 +261,14 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
         SDL2::SDL2-static
         )
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+
+    # for some reason set(BGFX_WITH_WAYLAND ON CACHE BOOL "" FORCE) doesnt work
+	target_compile_definitions(bgfx PRIVATE "WL_EGL_PLATFORM=1")
+    target_link_libraries(bgfx PRIVATE wayland-egl) 
+    #--------------------------------------------------------------------------
+
+
+    target_include_directories(${PROJECT_NAME} INTERFACE ${SDL2_INCLUDE_DIRS})
 
     find_package(OpenAL REQUIRED STATIC)
     target_link_options(${PROJECT_NAME} PUBLIC -ludev)
@@ -300,22 +289,9 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 
     find_package(PkgConfig REQUIRED)
     find_package(OpenAL REQUIRED STATIC)
-    find_package(Vulkan REQUIRED)
     pkg_check_modules(shaderc REQUIRED IMPORTED_TARGET shaderc)
 
     find_package(SDL2 REQUIRED)
-
-    if(Vulkan_INCLUDE_DIRS)
-        message("Using Vulkan_INCLUDE_DIRS from FindVulkan module")
-        target_include_directories(${PROJECT_NAME} PRIVATE ${Vulkan_INCLUDE_DIRS}) 
-    elseif(DEFINED ENV{VULKAN_SDK})
-        message("Using VULKAN_SDK environment variable")
-        target_include_directories(${PROJECT_NAME} PRIVATE $ENV{VULKAN_SDK}/include) 
-    endif()
-
-    add_definitions(-DVK_USE_PLATFORM_IOS_MVK)
-    add_definitions(-DVK_USE_PLATFORM_MACOS_MVK)
-    add_definitions(-DVK_USE_PLATFORM_METAL_EXT)
 
     message(STATUS "Generating scripts for Mac")
     target_link_libraries(${PROJECT_NAME} PRIVATE 
@@ -331,7 +307,6 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         SDL2::SDL2-static
         SDL2::SDL2main
         PkgConfig::shaderc
-        Vulkan::Vulkan
         )
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Android")
     message(STATUS "Generating scripts for Android")
@@ -350,20 +325,27 @@ endif()
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
+    bx
+    bgfx
+    bimg
     glm
-    imgui
     box2d
     tracy 
+    imgui
     enkiTS
     imguizmo
     fastgltf
-    msdf-atlas-gen 
-    GPUOpen::VulkanMemoryAllocator
     )
 
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG -DTB_DEBUG=1 -DTRACY_ENABLE=1")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -DDEBUG")
+    target_compile_definitions(tabby PUBLIC 
+        BX_CONFIG_DEBUG
+        TB_DEBUG 
+        TRACY_ENABLE
+    )
+
     add_compile_options(
       "$<$<CONFIG:DEBUG>:-O0;-g3;-ggdb>"
     )

@@ -22,6 +22,7 @@
 
 #ifdef TB_DEBUG
 #define TB_ENABLE_ASSERTS
+/*#define BX_CONFIG_DEBUG*/
 #endif
 
 #define TB_ENABLE_VERIFY

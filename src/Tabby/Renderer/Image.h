@@ -1,24 +1,11 @@
 #pragma once
 
+#include <Tabby/Foundation/Types.h>
 #include <Tabby/Asset/AssetBase.h>
 
+#include <bgfx/bgfx.h>
+
 namespace Tabby {
-
-// =======
-//  Image
-// =======
-
-enum class ImageLayout {
-    UNDEFINED = 0,
-    GENERAL = 1,
-    COLOR_ATTACHMENT = 2,
-    DEPTH_STENCIL_ATTACHMENT = 3,
-    DEPTH_STENCIL_READ_ONLY = 4,
-    SHADER_READ_ONLY = 5,
-    TRANSFER_SRC = 6,
-    TRANSFER_DST = 7,
-    PRESENT_SRC = 1000001002
-};
 
 enum class ImageUsage : uint8_t {
     TEXTURE,
@@ -37,8 +24,9 @@ enum class ImageFormat : uint8_t {
     RGB32_HDR,
     RGBA64_HDR,
     RGBA128_HDR,
-    // D32,
     D32_S8,
+    D32,
+    S8,
     BC1,
     BC5,
     BC6h,
@@ -54,10 +42,11 @@ enum class ImageType : uint8_t {
 };
 
 struct ImageSpecification {
-    UIntVector3 extent = { 0, 0, 0 };
-    std::vector<byte> pixels;
+    UIntVector2 extent = { 0, 0 };
+    std::vector<uint8_t> pixels;
     std::filesystem::path path;
-    ImageFormat format = ImageFormat::RGBA32_SRGB;
+    bgfx::TextureFormat::Enum format = bgfx::TextureFormat::RGBA32U;
+    /*ImageFormat format = ImageFormat::RGBA32_SRGB;*/
     ImageUsage usage = ImageUsage::TEXTURE;
     ImageType type = ImageType::TYPE_2D;
     uint8_t array_layers = 1;
@@ -66,8 +55,9 @@ struct ImageSpecification {
     static ImageSpecification Default()
     {
         ImageSpecification spec;
-        spec.extent = { 0, 0, 0 };
-        spec.format = ImageFormat::RGBA32_SRGB;
+        spec.extent = { 0, 0 };
+        /*spec.format = ImageFormat::RGBA32_SRGB;*/
+        spec.format = bgfx::TextureFormat::RGBA32U;
         spec.usage = ImageUsage::TEXTURE;
         spec.type = ImageType::TYPE_2D;
         spec.mip_levels = 1;
@@ -79,61 +69,21 @@ struct ImageSpecification {
 
 class Image : public AssetBase {
 public:
-    static Shared<Image> Create(const ImageSpecification& spec, const AssetHandle& id = AssetHandle());
+    static void Create(const ImageSpecification& spec, const AssetHandle& id = AssetHandle());
 
-    virtual ~Image() { }
+    Image(const ImageSpecification& spec, const AssetHandle& id = AssetHandle());
+    ~Image();
 
-    virtual void Destroy() = 0;
+    void Update(const ImageSpecification& spec);
+    void Destroy();
 
-    virtual ImageSpecification GetSpecification() const = 0;
-    // virtual void SetLayout(
-    //     Shared<DeviceCmdBuffer> cmd_buffer,
-    //     ImageLayout new_layout,
-    //     PipelineStage src_stage,
-    //     PipelineStage dst_stage,
-    //     BitMask src_access = 0,
-    //     BitMask dst_access = 0)
-    //     = 0;
+    const ImageSpecification& GetSpecification() const { return m_Specification; }
 
-protected:
-    Image(AssetHandle handle)
-    {
-        Handle = handle;
-        Type = AssetType::TABBY_IMAGE;
-    };
-};
+    bgfx::TextureHandle Raw() { return m_TextureHandle; }
 
-// ===============
-//	Image sampler
-// ===============
-enum class SamplerFilteringMode : uint32_t {
-    NEAREST,
-    LINEAR
-};
-
-enum class SamplerAddressMode : uint32_t {
-    REPEAT,
-    MIRRORED_REPEAT,
-    CLAMP,
-    CLAMP_BORDER
-};
-
-struct ImageSamplerSpecification {
-    SamplerFilteringMode min_filtering_mode;
-    SamplerFilteringMode mag_filtering_mode;
-    SamplerFilteringMode mipmap_filtering_mode;
-    SamplerAddressMode address_mode;
-    float min_lod;
-    float max_lod;
-    float lod_bias;
-    uint8_t anisotropic_filtering_level;
-};
-
-class ImageSampler {
-public:
-    static Shared<ImageSampler> Create(const ImageSamplerSpecification& spec);
-
-    virtual void Destroy() = 0;
+private:
+    ImageSpecification m_Specification;
+    bgfx::TextureHandle m_TextureHandle;
 };
 
 }

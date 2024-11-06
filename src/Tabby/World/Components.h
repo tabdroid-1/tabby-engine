@@ -1,8 +1,6 @@
 #pragma once
 #include <tbpch.h>
-#include <Tabby/Renderer/Material.h>
 #include <Tabby/Foundation/Types.h>
-#include <Tabby/Renderer/Camera.h>
 
 #include <box2d/box2d.h>
 #include <entt.hpp>
@@ -108,7 +106,7 @@ struct CircleRendererComponent {
 };
 
 struct CameraComponent {
-    Camera camera;
+    /*Camera camera;*/
     bool fixedAspectRatio = false;
 
     CameraComponent() = default;
@@ -480,11 +478,9 @@ struct TextComponent {
     int renderOrder = 0;
 };
 
-class Mesh;
-
 struct MeshComponent {
-    std::vector<MaterialData> material_datas;
-    Shared<Mesh> mesh;
+    /*std::vector<MaterialData> material_datas;*/
+    /*Shared<Mesh> mesh;*/
 };
 
 template <typename... Component>

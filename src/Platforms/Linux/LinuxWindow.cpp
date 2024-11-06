@@ -7,9 +7,13 @@
 #include <Tabby/Core/Input/Input.h>
 #include <Tabby/Core/Application.h>
 
-#include <backends/imgui_impl_sdl2.h>
 #include <SDL.h>
-#include <SDL_vulkan.h>
+#include <SDL_syswm.h>
+#include <bgfx/bgfx.h>
+#include <bgfx/c99/bgfx.h>
+#include <backends/imgui_impl_sdl2.h>
+
+#define macro()
 
 namespace Tabby {
 
@@ -31,6 +35,9 @@ LinuxWindow::~LinuxWindow()
 
 void LinuxWindow::Init(const WindowProps& props)
 {
+
+    /*setenv("SDL_VIDEODRIVER", "wayland", 1);*/
+    /*setenv("SDL_VIDEODRIVER", "x11", 1);*/
     TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::Init");
 
     m_Data.Title = props.Title;
@@ -58,41 +65,6 @@ void LinuxWindow::Init(const WindowProps& props)
 
         SDL_WindowFlags window_flags = SDL_WINDOW_SHOWN;
 
-        if (Renderer::GetAPI() == Renderer::API::OpenGL46) {
-
-            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-#if defined(TB_DEBUG)
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-#endif
-            window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_OPENGL);
-        } else if (Renderer::GetAPI() == Renderer::API::OpenGL33) {
-
-            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-#if defined(TB_DEBUG)
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-#endif
-            window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_OPENGL);
-        } else if (Renderer::GetAPI() == Renderer::API::OpenGLES3) {
-
-            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-#if defined(TB_DEBUG)
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-#endif
-            window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_OPENGL);
-        } else if (Renderer::GetAPI() == Renderer::API::Vulkan) {
-            window_flags = (SDL_WindowFlags)(window_flags | SDL_WINDOW_VULKAN);
-            SDL_Vulkan_LoadLibrary(nullptr);
-        }
-
         m_Window = SDL_CreateWindow(
             m_Data.Title.c_str(),
             SDL_WINDOWPOS_CENTERED,
@@ -102,12 +74,45 @@ void LinuxWindow::Init(const WindowProps& props)
         ++s_SDLWindowCount;
     }
 
+    Input::Init();
+
+    SDL_SysWMinfo wmInfo;
+    SDL_VERSION(&wmInfo.version);
+    SDL_GetWindowWMInfo(m_Window, &wmInfo);
+
+    void* native_window_handle;
+    void* native_display_handle;
+    if (wmInfo.subsystem == SDL_SYSWM_WAYLAND) {
+        native_window_handle = (void*)wmInfo.info.wl.surface;
+        native_display_handle = (void*)wmInfo.info.wl.display;
+    } else {
+        native_window_handle = (void*)wmInfo.info.x11.window;
+        native_display_handle = (void*)wmInfo.info.x11.display;
+    }
+
+    bgfx::PlatformData platform_data;
+    platform_data.ndt = native_display_handle;
+    platform_data.nwh = native_window_handle;
+
+    if (wmInfo.subsystem == SDL_SYSWM_WAYLAND) {
+        platform_data.type = bgfx::NativeWindowHandleType::Wayland;
+    } else {
+        platform_data.type = bgfx::NativeWindowHandleType::Default;
+    }
+
+    bgfx::Init bgfxInit;
+    bgfxInit.type = bgfx::RendererType::Count; // Automatically choose a renderer.
+    bgfxInit.platformData = platform_data;
+    bgfxInit.resolution.width = props.Width;
+    bgfxInit.resolution.height = props.Height;
+    bgfxInit.resolution.reset = BGFX_RESET_VSYNC;
+    bgfx::init(bgfxInit);
+    bgfx::setDebug(BGFX_DEBUG_TEXT /*| BGFX_DEBUG_STATS*/);
+
     SDL_SetWindowData(m_Window, "WindowData", &m_Data);
     SetVSync(props.VSync);
     SetResizable(props.Resizable);
     SetMinSize(props.MinWidth, props.MinHeight);
-
-    Input::Init();
 }
 
 void LinuxWindow::Shutdown()
@@ -117,7 +122,6 @@ void LinuxWindow::Shutdown()
     SDL_DestroyWindow(m_Window);
     --s_SDLWindowCount;
 
-    SDL_Vulkan_UnloadLibrary();
     if (s_SDLWindowCount == 0) {
         SDL_Quit();
     }
@@ -129,14 +133,15 @@ void LinuxWindow::OnUpdate()
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-
         ImGui_ImplSDL2_ProcessEvent(&event);
+
         switch (event.type) {
         case SDL_WINDOWEVENT: {
             if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                 m_Data.Width = event.window.data1;
                 m_Data.Height = event.window.data2;
                 WindowResizeEvent resizeEvent(m_Data.Width, m_Data.Height);
+                bgfx::reset(m_Data.Width, m_Data.Height);
                 m_Data.EventCallback(resizeEvent);
             }
             break;
@@ -203,12 +208,11 @@ void LinuxWindow::SetVSync(bool enabled)
 {
     TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::SetVSync");
 
-    // TODO:: Vulkan
-
+    // TODO: overriding other flags
     if (enabled)
-        SDL_GL_SetSwapInterval(1);
+        bgfx::reset(m_Data.Width, m_Data.Height, BGFX_RESET_VSYNC);
     else
-        SDL_GL_SetSwapInterval(0);
+        bgfx::reset(m_Data.Width, m_Data.Height, BGFX_RESET_NONE);
 
     m_Data.VSync = enabled;
 }

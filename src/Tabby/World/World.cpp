@@ -4,7 +4,7 @@
 #include <Tabby/Audio/AudioEngine.h>
 #include <Tabby/Audio/AudioSource.h>
 #include <Tabby/Core/Application.h>
-#include <Tabby/Renderer/Camera.h>
+/*#include <Tabby/Renderer/Camera.h>*/
 #include <Tabby/Core/Time/Time.h>
 // #include <Tabby/Renderer/Mesh.h>
 #include <Tabby/World/Entity.h>
@@ -14,6 +14,7 @@
 
 #include <glm/gtx/quaternion.hpp>
 #include <box2d/box2d.h>
+#include <TaskScheduler.h>
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 
@@ -531,46 +532,46 @@ void World::Update()
         }
     }
 
-    {
-        TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera");
-
-        auto view = World::GetRegistry().view<TransformComponent, CameraComponent>();
-        for (auto entity : view) {
-
-            TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera::Iteration");
-            auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
-
-            camera.camera.SetPosition(transform.position);
-            camera.camera.SetRotation(transform.rotation);
-            camera.camera.SetScale(transform.scale);
-            camera.camera.CalculateMatrix();
-
-            Buffer camera_data;
-            camera_data.Allocate(sizeof(Matrix4));
-            std::memcpy(camera_data.Data, &camera.camera.GetViewProjectionMatrix(), sizeof(Matrix4));
-
-            Renderer::BeginRenderPipeline(camera.camera);
-
-            {
-                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF");
-                auto view = World::GetRegistry().view<TransformComponent, MeshComponent>();
-                for (auto entity : view) {
-                    TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF::Iteration");
-
-                    auto [transform, mC] = view.get<TransformComponent, MeshComponent>(entity);
-
-                    auto material_datas = mC.material_datas;
-                    material_datas.push_back(MaterialData("cm", 0, camera_data.Data, camera_data.Size));
-
-                    if (mC.mesh) {
-                        Renderer::RenderTasks(mC.mesh, mC.material_datas);
-                    }
-                }
-            }
-
-            Renderer::EndRenderPipeline();
-        }
-    }
+    /*{*/
+    /*    TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera");*/
+    /**/
+    /*    auto view = World::GetRegistry().view<TransformComponent, CameraComponent>();*/
+    /*    for (auto entity : view) {*/
+    /**/
+    /*        TB_PROFILE_SCOPE_NAME("Tabby::World::PostUpdate::SetCurrentCamera::Iteration");*/
+    /*        auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);*/
+    /**/
+    /*        camera.camera.SetPosition(transform.position);*/
+    /*        camera.camera.SetRotation(transform.rotation);*/
+    /*        camera.camera.SetScale(transform.scale);*/
+    /*        camera.camera.CalculateMatrix();*/
+    /**/
+    /*        Buffer camera_data;*/
+    /*        camera_data.Allocate(sizeof(Matrix4));*/
+    /*        std::memcpy(camera_data.Data, &camera.camera.GetViewProjectionMatrix(), sizeof(Matrix4));*/
+    /**/
+    /*        Renderer::BeginRenderPipeline(camera.camera);*/
+    /**/
+    /*        {*/
+    /*            TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF");*/
+    /*            auto view = World::GetRegistry().view<TransformComponent, MeshComponent>();*/
+    /*            for (auto entity : view) {*/
+    /*                TB_PROFILE_SCOPE_NAME("Tabby::World::Draw::RenderGLTF::Iteration");*/
+    /**/
+    /*                auto [transform, mC] = view.get<TransformComponent, MeshComponent>(entity);*/
+    /**/
+    /*                auto material_datas = mC.material_datas;*/
+    /*                material_datas.push_back(MaterialData("cm", 0, camera_data.Data, camera_data.Size));*/
+    /**/
+    /*                if (mC.mesh) {*/
+    /*                    Renderer::RenderTasks(mC.mesh, mC.material_datas);*/
+    /*                }*/
+    /*            }*/
+    /*        }*/
+    /**/
+    /*        Renderer::EndRenderPipeline();*/
+    /*    }*/
+    /*}*/
 }
 
 void World::OnViewportResize(uint32_t width, uint32_t height)
@@ -584,12 +585,12 @@ void World::OnViewportResize(uint32_t width, uint32_t height)
     s_Instance->m_ViewportHeight = height;
 
     // Resize our non-FixedAspectRatio cameras
-    auto view = GetRegistry().view<CameraComponent>();
-    for (auto entity : view) {
-        auto& cameraComponent = view.get<CameraComponent>(entity);
-        if (!cameraComponent.fixedAspectRatio)
-            cameraComponent.camera.SetAspectRatio((float)width / (float)height);
-    }
+    /*auto view = GetRegistry().view<CameraComponent>();*/
+    /*for (auto entity : view) {*/
+    /*    auto& cameraComponent = view.get<CameraComponent>(entity);*/
+    /*    if (!cameraComponent.fixedAspectRatio)*/
+    /*        cameraComponent.camera.SetAspectRatio((float)width / (float)height);*/
+    /*}*/
 }
 
 void World::Step(int frames)

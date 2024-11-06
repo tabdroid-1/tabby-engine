@@ -7,6 +7,7 @@
 #include <Tabby/Core/Time/Time.h>
 
 #include <SDL_rwops.h>
+#include <bgfx/bgfx.h>
 
 namespace Tabby {
 
@@ -24,32 +25,11 @@ Application::Application(const ApplicationSpecification& specification)
 
     ParseEngineConfig();
 
-#if TB_HEADLESS
-    RendererAPI::s_API = RendererAPI::API::Null;
-    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::Null;
-#endif // TB_HEADLESS
-
-    Renderer::s_API = Renderer::API::Vulkan;
     m_Window = Window::Create(WindowProps(m_Specification.Name, m_Specification.Width, m_Specification.Height, m_Specification.MinWidth, m_Specification.MinHeight, m_Specification.FullscreenMode, m_Specification.Resizable, m_Specification.VSync));
     m_Window->SetEventCallback(TB_BIND_EVENT_FN(Application::OnEvent));
 
-    // AudioEngine::Init();
-
-    RendererConfig renderer_config = {};
-    renderer_config.main_window = m_Window.get();
-    renderer_config.frames_in_flight = 2;
-    renderer_config.vsync = false;
-    Renderer::Init(renderer_config);
-
-    m_ImGuiRenderer = ImGuiRenderer::Create();
+    m_ImGuiRenderer = new ImGuiRenderer;
     m_ImGuiRenderer->Launch(m_Window->GetNativeWindow());
-
-    Input::Init();
-
-    // m_ImGuiLayer = new ImGuiLayer();
-    // PushOverlay(m_ImGuiLayer);
-
-    // m_Console = new ConsolePanel();
 }
 
 Application::~Application()
@@ -57,11 +37,9 @@ Application::~Application()
     TB_PROFILE_SCOPE_NAME("Tabby::Application::Destructor");
 
     m_LayerStack.Destroy();
-    m_ImGuiRenderer->Destroy();
 
     // AudioEngine::Shutdown();
     AssetManager::FullUnload();
-    Renderer::Shutdown();
 }
 
 void Application::PushLayer(Layer* layer)
@@ -134,7 +112,7 @@ void Application::Run()
                                                                          // and that breaks the phyiscs and some other stuff.
                                                                          // this happens because m_LastFrameTime is 0 in first frame.
 
-            Renderer::BeginFrame();
+            bgfx::touch(0);
             {
                 TB_PROFILE_SCOPE_NAME("Tabby::Application::LayerStackUpdate");
 
@@ -152,8 +130,7 @@ void Application::Run()
 
             s_Instance->m_ImGuiRenderer->EndFrame();
 
-            Renderer::Render();
-            Renderer::EndFrame();
+            Renderer::Frame();
         }
 
         Input::s_Instance->m_MouseScrollDelta = { 0.0f, 0.0f };
@@ -172,8 +149,6 @@ void Application::Run()
             }
         }
     }
-
-    Renderer::WaitDevice();
 }
 
 void Application::ProcessApplicationSpec()
@@ -270,20 +245,20 @@ void Application::ParseEngineConfig()
                 size_t offset = a + 12 + 1; // 12 is the size of 'graphics_api' and 1 is '='
                 option = line.substr(offset, line.size());
 
-                if (option == "gles3") {
-                    Renderer::s_API = Renderer::API::OpenGLES3;
-                    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGLES3;
-
-                } else if (option == "gl33") {
-                    Renderer::s_API = Renderer::API::OpenGL33;
-                    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGL33;
-
-                } else if (option == "gl46") {
-                    Renderer::s_API = Renderer::API::OpenGL46;
-                    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGL46;
-
-                } else
-                    TB_CORE_ERROR("Unknown graphics_api option in config!");
+                /*if (option == "gles3") {*/
+                /*    Renderer::s_API = Renderer::API::OpenGLES3;*/
+                /*    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGLES3;*/
+                /**/
+                /*} else if (option == "gl33") {*/
+                /*    Renderer::s_API = Renderer::API::OpenGL33;*/
+                /*    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGL33;*/
+                /**/
+                /*} else if (option == "gl46") {*/
+                /*    Renderer::s_API = Renderer::API::OpenGL46;*/
+                /*    GetSpecification().RendererAPI = ApplicationSpecification::RendererAPI::OpenGL46;*/
+                /**/
+                /*} else*/
+                /*    TB_CORE_ERROR("Unknown graphics_api option in config!");*/
 
                 continue;
             }

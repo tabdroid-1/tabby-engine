@@ -91,7 +91,7 @@ const Shared<Image> AssetManager::GetMissingTexture()
 
         ImageSpecification texture_spec = {};
         texture_spec.pixels = std::move(raw);
-        texture_spec.format = ImageFormat::RGBA32_UNORM;
+        texture_spec.format = bgfx::TextureFormat::Enum::RGBA32U;
         texture_spec.type = ImageType::TYPE_2D;
         texture_spec.usage = ImageUsage::TEXTURE;
         texture_spec.extent = { 2, 2, 1 };
@@ -100,7 +100,7 @@ const Shared<Image> AssetManager::GetMissingTexture()
         texture_spec.path = "bin_missing_image";
 
         AssetHandle handle;
-        m_MissingTextureImage = Image::Create(texture_spec, handle);
+        m_MissingTextureImage = CreateShared<Image>(texture_spec, handle);
 
         AssetManager::RegisterAsset(m_MissingTextureImage, handle);
     }
@@ -129,8 +129,7 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
     {
         TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::ImportImageSource::Read");
 
-        if (Renderer::GetAPI() != Renderer::API::Vulkan)
-            stbi_set_flip_vertically_on_load(true);
+        stbi_set_flip_vertically_on_load(true);
         std::vector<unsigned char> image_source;
 
         SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
@@ -175,7 +174,7 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
 
     ImageSpecification texture_spec = {};
     texture_spec.pixels = std::move(raw);
-    texture_spec.format = ImageFormat::RGBA32_UNORM;
+    texture_spec.format = bgfx::TextureFormat::Enum::RGBA32U;
     texture_spec.type = ImageType::TYPE_2D;
     texture_spec.usage = ImageUsage::TEXTURE;
     texture_spec.extent = { (uint32_t)image_width, (uint32_t)image_height, 1 };
@@ -183,7 +182,7 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
     texture_spec.mip_levels = Utils::ComputeNumMipLevelsBC7(image_width, image_height) + 1;
     texture_spec.path = path;
 
-    Shared<Image> image = Image::Create(texture_spec, handle);
+    Shared<Image> image = CreateShared<Image>(texture_spec, handle);
 
     m_AssetRegistry.emplace(image->Handle, image);
     m_UUIDs.emplace(path.string(), image->Handle);
