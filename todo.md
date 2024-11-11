@@ -25,7 +25,6 @@ Todo
     - <s>Asset manager. </s> Done
     - <s>Go balls deep in to ECS (ECS like in Bevy Engine)</s> kinda done since 20-06-2024_1 Alpha. 
     - <s>Implement File Dialog to linux.</s> Done Since 02-07-2024_1 Alpha
-    - <s>Add font support to asset manager.</s> Done since 15-08-2024_1 Alpha 
     - <s>Fix OpenGL ES Text Shader.</s>  17-08-2024_1 Alpha
     - <s>Clean up the code.</s> 18-08-2024_1 Alpha
         - <s>Expand Tracy profiler coverage.</s> 18-08-2024_1 Alpha
@@ -34,9 +33,10 @@ Todo
     - <s> Create Application by reading a file. From a file named "tbconfig.(file format)" maybe. </s> Done sine 19-08-2024_1 Alpha.
     - <s>Multithreading </s> Multithreaded some World systems since 20-08-2024_1 Alpha
     - <s>Deal with all compiler warnings.</s> Done since 20-08-2024_1 Alpha
-    - Use submodules for depencencies.
-    - Drop emscripten support. Its not worth it. maybe.
-    - create multiple buffers depending on the size of frames in flight to prefent "flickering".
+
+    - More elegant shader compiler. 
+    - 2D renderer and Debug(Gizmo) renderer. 
+    - Add font support to asset manager and renderer. <s>Done since 15-08-2024_1 Alpha</s> Reopened 
 
 
 - Low priority

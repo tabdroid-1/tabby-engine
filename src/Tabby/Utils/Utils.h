@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Tabby/Foundation/Types.h>
+#include <glm/gtx/matrix_decompose.hpp>
+
 namespace Tabby {
 
 namespace Utils {
@@ -60,18 +63,23 @@ namespace Utils {
             return fmt::format("{}(B)", size);
     }
 
-    // inline void DecomposeMatrix(const Matrix4& source, glm::vec3* translation, glm::quat* rotation, glm::vec3* scale)
-    // {
-    //     glm::vec3 skew;
-    //     glm::vec4 perpective;
-    //
-    //     glm::decompose(source, *scale, *rotation, *translation, skew, perpective);
-    // };
+    inline uint32_t ColorToHex(const RGBA32& color)
+    {
+        return (color.r << 24) | (color.g << 16) | (color.b << 8) | color.a;
+    }
 
-    // inline Matrix4 ComposeMatrix(const glm::vec3& translation, const glm::quat& rotation, const glm::vec3& scale)
-    // {
-    //     return glm::translate(Matrix4(1.0f), translation) * Matrix4_cast(rotation) * glm::scale(Matrix4(1.0f), scale);
-    // }
+    inline void DecomposeMatrix(const Matrix4& source, glm::vec3* translation, glm::quat* rotation, glm::vec3* scale)
+    {
+        glm::vec3 skew;
+        glm::vec4 perpective;
+
+        glm::decompose(source, *scale, *rotation, *translation, skew, perpective);
+    };
+
+    inline Matrix4 ComposeMatrix(const glm::vec3& translation, const glm::quat& rotation, const glm::vec3& scale)
+    {
+        return glm::translate(Matrix4(1.0f), translation) * glm::mat4_cast(rotation) * glm::scale(Matrix4(1.0f), scale);
+    }
 
     // NOTE: returns amount of mip levels excluding mip #0
     inline uint8_t ComputeNumMipLevelsBC7(uint16_t image_width, uint16_t image_height)

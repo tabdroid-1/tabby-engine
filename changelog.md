@@ -1,3 +1,10 @@
+Version: 11-11-2024_1 Alpha
+Changes:
+- Rewrote renderer to use bgfx. 
+- cant remember the rest. 
+
+--------------------------------------------------------------------------------------
+
 Version: 02-09-2024_1 Alpha
 Changes:
 - Initial renderer refactor. 

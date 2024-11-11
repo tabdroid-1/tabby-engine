@@ -94,7 +94,7 @@ const Shared<Image> AssetManager::GetMissingTexture()
         texture_spec.format = bgfx::TextureFormat::Enum::RGBA32U;
         texture_spec.type = ImageType::TYPE_2D;
         texture_spec.usage = ImageUsage::TEXTURE;
-        texture_spec.extent = { 2, 2, 1 };
+        texture_spec.extent = { 2, 2 };
         texture_spec.array_layers = 1;
         texture_spec.mip_levels = Utils::ComputeNumMipLevelsBC7(2, 2) + 1;
         texture_spec.path = "bin_missing_image";
@@ -177,7 +177,7 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
     texture_spec.format = bgfx::TextureFormat::Enum::RGBA32U;
     texture_spec.type = ImageType::TYPE_2D;
     texture_spec.usage = ImageUsage::TEXTURE;
-    texture_spec.extent = { (uint32_t)image_width, (uint32_t)image_height, 1 };
+    texture_spec.extent = { (uint32_t)image_width, (uint32_t)image_height };
     texture_spec.array_layers = 1;
     texture_spec.mip_levels = Utils::ComputeNumMipLevelsBC7(image_width, image_height) + 1;
     texture_spec.path = path;

@@ -1,38 +1,57 @@
+#include <Tabby/Renderer/ShaderLibrary.h>
 #include <Tabby/Renderer/Renderer.h>
 #include <Tabby/Renderer/Image.h>
+#include <Tabby/Utils/Utils.h>
+
+#include <Tabby/Core/Application.h>
 
 #include <glm/gtc/packing.hpp>
 #include <bx/math.h>
 
 namespace Tabby {
 
-inline static bool s_RenderPassActive = false;
-inline static bgfx::FrameBufferHandle s_FrameBufferHandle = { bgfx::kInvalidHandle };
+static std::unordered_map<uint8_t, bgfx::FrameBufferHandle> s_FrameBuffers;
+static std::unordered_map<uint8_t, ViewSpecification> s_ViewSpecifications;
 
-void Renderer::BeginRender(std::vector<Shared<Image>> render_targets, Shared<Image> depth_buffer, UIntVector2 render_area, IntVector2 offset, Vector4 clear_value)
+void Renderer::Init()
 {
+    ShaderLibrary::Init();
+}
 
-    std::vector<bgfx::Attachment> framebuffer_attachments;
-    constexpr uint64_t tsFlags = 0
-        | BGFX_SAMPLER_MIN_POINT
-        | BGFX_SAMPLER_MAG_POINT
-        | BGFX_SAMPLER_MIP_POINT
-        | BGFX_SAMPLER_U_CLAMP
-        | BGFX_SAMPLER_V_CLAMP;
+void Renderer::Shutdown()
+{
+    ShaderLibrary::Shutdown();
+}
 
-    if (bgfx::isValid(s_FrameBufferHandle)) {
-        bgfx::destroy(s_FrameBufferHandle);
+void Renderer::SetViewTarget(const ViewSpecification& spec)
+{
+    // check if recreation is needed.
+    if (s_ViewSpecifications.find(spec.view_id) != s_ViewSpecifications.end()) {
+        if (s_ViewSpecifications.find(spec.view_id)->second == spec) {
+            return;
+        }
     }
 
-    for (auto render_target : render_targets) {
+    s_ViewSpecifications[spec.view_id] = spec;
+
+    std::vector<bgfx::Attachment> framebuffer_attachments;
+
+    if (s_FrameBuffers.find(spec.view_id) != s_FrameBuffers.end()) {
+        if (bgfx::isValid(s_FrameBuffers.find(spec.view_id)->second)) {
+            bgfx::destroy(s_FrameBuffers.find(spec.view_id)->second);
+            s_FrameBuffers.erase(spec.view_id);
+        }
+    }
+
+    for (auto render_target : spec.render_targets) {
 
         if (!render_target)
             continue;
 
         auto tex_spec = render_target->GetSpecification();
-        tex_spec.extent = render_area;
 
-        if (tex_spec.extent != render_area) {
+        if (tex_spec.extent != spec.render_area) {
+            tex_spec.extent = spec.render_area;
             render_target->Update(tex_spec);
         }
 
@@ -41,54 +60,59 @@ void Renderer::BeginRender(std::vector<Shared<Image>> render_targets, Shared<Ima
         framebuffer_attachments.push_back(framebuffer_attachment);
     }
 
-    if (depth_buffer) {
-        auto tex_spec = depth_buffer->GetSpecification();
-        tex_spec.extent = render_area;
+    uint16_t flags = 0
+        | BGFX_CLEAR_COLOR;
 
-        if (tex_spec.extent != render_area) {
-            depth_buffer->Update(tex_spec);
+    if (spec.depth_buffer) {
+        auto tex_spec = spec.depth_buffer->GetSpecification();
+
+        if (tex_spec.extent != spec.render_area) {
+            tex_spec.extent = spec.render_area;
+            spec.depth_buffer->Update(tex_spec);
         }
 
         bgfx::Attachment framebuffer_attachment;
-        framebuffer_attachment.init(depth_buffer->Raw());
+        framebuffer_attachment.init(spec.depth_buffer->Raw());
         framebuffer_attachments.push_back(framebuffer_attachment);
+
+        flags |= BGFX_CLEAR_DEPTH;
     }
 
-    s_FrameBufferHandle = bgfx::createFrameBuffer(framebuffer_attachments.size(), framebuffer_attachments.data(), false);
+    s_FrameBuffers[spec.view_id] = bgfx::createFrameBuffer(framebuffer_attachments.size(), framebuffer_attachments.data(), false);
 
-    const bx::Vec3 at = { 0.0f, 0.0f, 0.0f };
-    const bx::Vec3 eye = { 0.0f, 0.0f, -35.0f };
+    bgfx::setViewFrameBuffer(spec.view_id, s_FrameBuffers[spec.view_id]);
+    bgfx::setViewRect(spec.view_id, spec.offset.x, spec.offset.y, spec.render_area.x, spec.render_area.y);
+    bgfx::setViewClear(spec.view_id, flags, Utils::ColorToHex(spec.clear_value), 1.0f, 0);
+    bgfx::touch(spec.view_id);
+}
 
-    // Ready framebuffer for the frame
-    {
+void Renderer::SetViewMatrix(uint8_t view_id, const Matrix4& view, const Matrix4& projection)
+{
+    bgfx::setViewTransform(view_id, glm::value_ptr(view), glm::value_ptr(projection));
+}
 
-        const bgfx::Caps* caps = bgfx::getCaps();
-
-        float proj[16];
-        float view[16];
-        bx::mtxLookAt(view, eye, at);
-        bx::mtxProj(proj, 60.0f, float(render_area.x) / float(render_area.x), 0.1f, 100.0f, caps->homogeneousDepth);
-
-        bgfx::setViewTransform(0, view, proj);
-        bgfx::setViewFrameBuffer(0, s_FrameBufferHandle);
-        bgfx::setViewRect(0, 0, 0, render_area.x, render_area.x);
-
-        uint16_t flags = 0
-            | BGFX_CLEAR_COLOR;
-
-        if (depth_buffer) {
-            flags |= BGFX_CLEAR_DEPTH;
+void Renderer::UnsetViewTarget(uint8_t view_id)
+{
+    if (s_FrameBuffers.find(view_id) != s_FrameBuffers.end()) {
+        if (bgfx::isValid(s_FrameBuffers.find(view_id)->second)) {
+            bgfx::destroy(s_FrameBuffers.find(view_id)->second);
+            s_FrameBuffers.erase(view_id);
+            s_ViewSpecifications.erase(view_id);
+            bgfx::setViewFrameBuffer(view_id, BGFX_INVALID_HANDLE);
         }
-
-        uint32_t clear_color_packed = glm::packSnorm3x10_1x2(clear_value);
-        bgfx::setViewClear(0, flags, clear_color_packed, 1.0f, 0);
-        bgfx::touch(0);
     }
 }
 
-void Renderer::EndRender()
+void Renderer::DrawMesh(uint8_t view_id, Shared<Mesh> mesh)
 {
-    bgfx::setViewFrameBuffer(0, BGFX_INVALID_HANDLE);
+
+    bgfx::setTransform(glm::value_ptr(mesh->m_Transform));
+    bgfx::setVertexBuffer(0, mesh->m_Specification.vertex_buffer_handle);
+    bgfx::setIndexBuffer(mesh->m_Specification.index_buffer_handle);
+
+    bgfx::setState(mesh->m_Specification.state);
+
+    bgfx::submit(0, mesh->m_Specification.program_handle);
 }
 
 void Renderer::Frame()

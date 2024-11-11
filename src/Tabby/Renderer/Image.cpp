@@ -3,6 +3,7 @@
 namespace Tabby {
 
 Image::Image(const ImageSpecification& spec, const AssetHandle& id)
+    : m_TextureHandle(BGFX_INVALID_HANDLE)
 {
     Handle = id;
     Type = AssetType::TABBY_IMAGE;
@@ -23,6 +24,7 @@ void Image::Update(const ImageSpecification& spec)
     }
 
     m_Specification = spec;
+
     uint64_t flags = 0
         | BGFX_SAMPLER_MIN_POINT
         | BGFX_SAMPLER_MAG_POINT
@@ -30,10 +32,8 @@ void Image::Update(const ImageSpecification& spec)
         | BGFX_SAMPLER_U_CLAMP
         | BGFX_SAMPLER_V_CLAMP;
 
-    if (spec.usage == ImageUsage::RENDER_TARGET) {
+    if (spec.usage == ImageUsage::RENDER_TARGET || spec.usage == ImageUsage::DEPTH_BUFFER) {
         flags |= BGFX_TEXTURE_RT;
-    } else if (spec.usage == ImageUsage::DEPTH_BUFFER) {
-        flags |= BGFX_TEXTURE_RT_WRITE_ONLY;
     }
 
     m_TextureHandle = bgfx::createTexture2D(

@@ -83,6 +83,31 @@ set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_VENDOR_DIR "vendor")
 
 # ##############################################################################
+# Functions 
+# ##############################################################################
+
+message("${TABBY_ROOT_DIR}")
+function(tabby_compile_shader)
+    set(options AS_HEADERS FALSE)
+    set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR)
+    set(multiValueArgs SHADERS INCLUDE_DIRS)
+    cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    list(APPEND ARGS_INCLUDE_DIRS ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vendor/bgfx/bgfx/src)
+
+    # Forward all parsed arguments directly to bgfx_compile_shaders
+    bgfx_compile_shaders(
+        TYPE ${ARGS_TYPE}
+        SHADERS ${ARGS_SHADERS}
+        VARYING_DEF ${ARGS_VARYING_DEF}
+        OUTPUT_DIR ${ARGS_OUTPUT_DIR}
+        OUT_FILES_VAR ${ARGS_OUT_FILES_VAR}
+        INCLUDE_DIRS ${ARGS_INCLUDE_DIRS}
+        AS_HEADERS ${ARGS_AS_HEADERS}
+    )
+endfunction()
+
+# ##############################################################################
 # Add dependencies 
 # ##############################################################################
 
