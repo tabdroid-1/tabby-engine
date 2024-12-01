@@ -10,10 +10,8 @@
 #include <SDL.h>
 #include <SDL_syswm.h>
 #include <bgfx/bgfx.h>
-#include <bgfx/c99/bgfx.h>
+#include <bgfx/platform.h>
 #include <backends/imgui_impl_sdl2.h>
-
-#define macro()
 
 namespace Tabby {
 
@@ -36,8 +34,8 @@ LinuxWindow::~LinuxWindow()
 void LinuxWindow::Init(const WindowProps& props)
 {
 
-    /*setenv("SDL_VIDEODRIVER", "wayland", 1);*/
-    /*setenv("SDL_VIDEODRIVER", "x11", 1);*/
+    // setenv("SDL_VIDEODRIVER", "wayland", 1);
+    // setenv("SDL_VIDEODRIVER", "x11", 1);
     TB_PROFILE_SCOPE_NAME("Tabby::LinuxWindow::Init");
 
     m_Data.Title = props.Title;
@@ -80,19 +78,14 @@ void LinuxWindow::Init(const WindowProps& props)
     SDL_VERSION(&wmInfo.version);
     SDL_GetWindowWMInfo(m_Window, &wmInfo);
 
-    void* native_window_handle;
-    void* native_display_handle;
-    if (wmInfo.subsystem == SDL_SYSWM_WAYLAND) {
-        native_window_handle = (void*)wmInfo.info.wl.surface;
-        native_display_handle = (void*)wmInfo.info.wl.display;
-    } else {
-        native_window_handle = (void*)wmInfo.info.x11.window;
-        native_display_handle = (void*)wmInfo.info.x11.display;
-    }
-
     bgfx::PlatformData platform_data;
-    platform_data.ndt = native_display_handle;
-    platform_data.nwh = native_window_handle;
+    if (wmInfo.subsystem == SDL_SYSWM_WAYLAND) {
+        platform_data.nwh = (void*)wmInfo.info.wl.surface;
+        platform_data.ndt = (void*)wmInfo.info.wl.display;
+    } else {
+        platform_data.nwh = (void*)wmInfo.info.x11.window;
+        platform_data.ndt = (void*)wmInfo.info.x11.display;
+    }
 
     if (wmInfo.subsystem == SDL_SYSWM_WAYLAND) {
         platform_data.type = bgfx::NativeWindowHandleType::Wayland;
@@ -105,7 +98,7 @@ void LinuxWindow::Init(const WindowProps& props)
     bgfxInit.platformData = platform_data;
     bgfxInit.resolution.width = props.Width;
     bgfxInit.resolution.height = props.Height;
-    bgfxInit.resolution.reset = BGFX_RESET_VSYNC;
+    // bgfxInit.resolution.reset = BGFX_RESET_VSYNC;
     bgfx::init(bgfxInit);
     bgfx::setDebug(BGFX_DEBUG_TEXT /*| BGFX_DEBUG_STATS*/);
 

@@ -2,6 +2,11 @@
 
 namespace Tabby {
 
+Shared<Image> Image::Create(const ImageSpecification& spec, const AssetHandle& id)
+{
+    return CreateShared<Image>(spec, id);
+}
+
 Image::Image(const ImageSpecification& spec, const AssetHandle& id)
     : m_TextureHandle(BGFX_INVALID_HANDLE)
 {
@@ -26,8 +31,8 @@ void Image::Update(const ImageSpecification& spec)
     m_Specification = spec;
 
     uint64_t flags = 0
-        | BGFX_SAMPLER_MIN_POINT
-        | BGFX_SAMPLER_MAG_POINT
+        | BGFX_SAMPLER_MIN_ANISOTROPIC
+        | BGFX_SAMPLER_MAG_ANISOTROPIC
         | BGFX_SAMPLER_MIP_POINT
         | BGFX_SAMPLER_U_CLAMP
         | BGFX_SAMPLER_V_CLAMP;
@@ -39,20 +44,21 @@ void Image::Update(const ImageSpecification& spec)
     m_TextureHandle = bgfx::createTexture2D(
         spec.extent.x,
         spec.extent.y,
-        spec.mip_levels > 1,
+        // spec.has_mips,
+        false, // TODO: add mip support
         spec.array_layers,
         spec.format,
         flags);
 
     TB_CORE_ASSERT(bgfx::isValid(m_TextureHandle));
 
-    /*if (!spec.pixels.empty()) {*/
-    /*    bgfx::updateTexture2D(*/
-    /*        m_TextureHandle,*/
-    /*        0, 0,*/
-    /*        0, 0, spec.extent.x, spec.extent.y,*/
-    /*        bgfx::copy(spec.pixels.data(), spec.pixels.size()));*/
-    /*}*/
+    if (!spec.pixels.empty()) {
+        bgfx::updateTexture2D(
+            m_TextureHandle,
+            0, 0,
+            0, 0, spec.extent.x, spec.extent.y,
+            bgfx::copy(spec.pixels.data(), spec.pixels.size() * sizeof(uint8_t)));
+    }
 }
 
 void Image::Destroy()

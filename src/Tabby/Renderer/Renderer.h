@@ -2,6 +2,7 @@
 
 #include <Tabby/Foundation/Types.h>
 #include <Tabby/Renderer/Image.h>
+#include <Tabby/Renderer/Font.h>
 #include <Tabby/Renderer/Mesh.h>
 
 namespace Tabby {
@@ -42,6 +43,19 @@ public:
     static void UnsetViewTarget(uint8_t view_id);
 
     static void DrawMesh(uint8_t view_id, Shared<Mesh> mesh);
+
+    // TODO: make generic Begin()
+    static void Begin2D(uint8_t view_id);
+    static void End2D();
+    static void DrawQuad(const Matrix4& transform, Shared<Image> texture, const Vector4& color, float tiling_factor, int horizontal_frames, int current_horizontal_frame, int vertical_frames, int current_vertical_frame);
+
+    struct TextParams {
+        Vector4 color { 1.0f };
+        float kerning = 0.0f;
+        float line_spacing = 0.0f;
+    };
+
+    static void DrawString(const std::wstring& string, Shared<Font> font, const Matrix4& transform, const TextParams& text_params);
 
     static void Frame();
 

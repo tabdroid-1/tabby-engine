@@ -3,7 +3,7 @@
 #include <Tabby/Renderer/Renderer.h>
 #include <Tabby/Asset/AssetFile.h>
 #include <Tabby/Renderer/Image.h>
-// #include <Tabby/Renderer/Font.h>
+#include <Tabby/Renderer/Font.h>
 #include <Tabby/Utils/Utils.h>
 #include <Tabby/Audio/Audio.h>
 
@@ -83,24 +83,22 @@ const Shared<Image> AssetManager::GetMissingTexture()
         image_data.push_back({ 1, 0, 1, 255 });
         image_data.push_back({ 255, 0, 220, 255 });
 
-        std::vector<RGBA32> full_image_data = AssetCompressor::GenerateMipMaps(image_data, 2, 2);
-
-        std::vector<byte> raw(full_image_data.size() * sizeof(RGBA32));
-        memcpy(raw.data(), full_image_data.data(), full_image_data.size() * sizeof(RGBA32));
-        full_image_data.clear();
+        std::vector<byte> raw(image_data.size() * sizeof(RGBA32));
+        memcpy(raw.data(), image_data.data(), image_data.size() * sizeof(RGBA32));
+        image_data.clear();
 
         ImageSpecification texture_spec = {};
         texture_spec.pixels = std::move(raw);
-        texture_spec.format = bgfx::TextureFormat::Enum::RGBA32U;
+        texture_spec.format = bgfx::TextureFormat::Enum::RGBA8;
         texture_spec.type = ImageType::TYPE_2D;
         texture_spec.usage = ImageUsage::TEXTURE;
         texture_spec.extent = { 2, 2 };
         texture_spec.array_layers = 1;
-        texture_spec.mip_levels = Utils::ComputeNumMipLevelsBC7(2, 2) + 1;
-        texture_spec.path = "bin_missing_image";
+        texture_spec.has_mips = false;
+        texture_spec.path = "bin_missing_texture";
 
         AssetHandle handle;
-        m_MissingTextureImage = CreateShared<Image>(texture_spec, handle);
+        m_MissingTextureImage = Image::Create(texture_spec, handle);
 
         AssetManager::RegisterAsset(m_MissingTextureImage, handle);
     }
@@ -166,20 +164,25 @@ AssetHandle AssetManager::ImportImageSource(std::filesystem::path path, AssetHan
         }
     }
     // Generate mip map
-    std::vector<RGBA32> full_image_data = AssetCompressor::GenerateMipMaps(image_data, image_width, image_height);
+    // std::vector<RGBA32> full_image_data = AssetCompressor::GenerateMipMaps(image_data, image_width, image_height);
+    //
+    // std::vector<byte> raw(full_image_data.size() * sizeof(RGBA32));
+    // memcpy(raw.data(), full_image_data.data(), full_image_data.size() * sizeof(RGBA32));
+    // full_image_data.clear();
 
-    std::vector<byte> raw(full_image_data.size() * sizeof(RGBA32));
-    memcpy(raw.data(), full_image_data.data(), full_image_data.size() * sizeof(RGBA32));
-    full_image_data.clear();
+    std::vector<byte> raw(image_data.size() * sizeof(RGBA32));
+    memcpy(raw.data(), image_data.data(), image_data.size() * sizeof(RGBA32));
+    image_data.clear();
 
     ImageSpecification texture_spec = {};
     texture_spec.pixels = std::move(raw);
-    texture_spec.format = bgfx::TextureFormat::Enum::RGBA32U;
+    texture_spec.format = bgfx::TextureFormat::Enum::RGBA8;
     texture_spec.type = ImageType::TYPE_2D;
     texture_spec.usage = ImageUsage::TEXTURE;
     texture_spec.extent = { (uint32_t)image_width, (uint32_t)image_height };
     texture_spec.array_layers = 1;
-    texture_spec.mip_levels = Utils::ComputeNumMipLevelsBC7(image_width, image_height) + 1;
+    texture_spec.has_mips = false;
+    // texture_spec.mip_levels = Utils::ComputeNumMipLevelsBC7(image_width, image_height) + 1;
     texture_spec.path = path;
 
     Shared<Image> image = CreateShared<Image>(texture_spec, handle);
@@ -194,13 +197,9 @@ AssetHandle AssetManager::ImportFontSource(std::filesystem::path path, AssetHand
 {
     TB_PROFILE_SCOPE_NAME("Tabby::AssetManager::ImportFontSource");
 
-    TB_CORE_ASSERT_TAGGED(false, "Not implemented");
+    if (m_UUIDs.find(path.string()) != m_UUIDs.end())
+        return m_UUIDs.at(path.string());
 
-    return 0;
-
-    // if (m_UUIDs.find(path.string()) != m_UUIDs.end())
-    //     return m_UUIDs.at(path.string());
-    //
     // Buffer data;
     //
     // {
@@ -230,15 +229,19 @@ AssetHandle AssetManager::ImportFontSource(std::filesystem::path path, AssetHand
     //         TB_CORE_ERROR("AssetManager::ImportFontSource - Could not load font from filepath: {}", path.string());
     //     }
     // }
-    //
-    // Shared<Font> font = CreateShared<Font>(path, handle, data);
-    //
-    // data.Release();
-    //
+
+    FontSpecification font_spec;
+    font_spec.name = path.filename();
+    // font_spec.data = std::move(data);
+
+    Shared<Font> font = Font::Create(font_spec, handle);
+
+    // font_spec.data.Release();
+
     // m_AssetRegistry.emplace(font->Handle, font);
     // m_UUIDs.emplace(path.string(), font->Handle);
-    //
-    // return font->Handle;
+
+    return font->Handle;
 }
 
 AssetHandle AssetManager::ImportAudioSource(std::filesystem::path path, AssetHandle handle)

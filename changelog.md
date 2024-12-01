@@ -1,3 +1,10 @@
+Version: 01-12-2024_1 Alpha
+Changes:
+- Unicode text renderer. 
+
+--------------------------------------------------------------------------------------
+
+
 Version: 11-11-2024_1 Alpha
 Changes:
 - Rewrote renderer to use bgfx. 

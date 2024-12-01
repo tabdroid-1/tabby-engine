@@ -50,17 +50,16 @@ struct ImageSpecification {
     ImageUsage usage = ImageUsage::TEXTURE;
     ImageType type = ImageType::TYPE_2D;
     uint8_t array_layers = 1;
-    uint8_t mip_levels = 1;
+    bool has_mips = false;
 
     static ImageSpecification Default()
     {
         ImageSpecification spec;
         spec.extent = { 0, 0 };
-        /*spec.format = ImageFormat::RGBA32_SRGB;*/
-        spec.format = bgfx::TextureFormat::RGBA32U;
+        spec.format = bgfx::TextureFormat::RGBA8;
         spec.usage = ImageUsage::TEXTURE;
         spec.type = ImageType::TYPE_2D;
-        spec.mip_levels = 1;
+        spec.has_mips = false;
         spec.array_layers = 1;
 
         return spec;
@@ -69,7 +68,7 @@ struct ImageSpecification {
 
 class Image : public AssetBase {
 public:
-    static void Create(const ImageSpecification& spec, const AssetHandle& id = AssetHandle());
+    static Shared<Image> Create(const ImageSpecification& spec, const AssetHandle& id = AssetHandle());
 
     Image(const ImageSpecification& spec, const AssetHandle& id = AssetHandle());
     ~Image();

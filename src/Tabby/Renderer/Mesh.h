@@ -12,7 +12,17 @@ struct MeshSpecification {
     bgfx::IndexBufferHandle index_buffer_handle;
     bgfx::VertexBufferHandle vertex_buffer_handle;
     std::unordered_map<std::string, bgfx::UniformHandle> uniform_buffer_handles;
-    uint64_t state = 0;
+    uint64_t state = 0
+        | BGFX_STATE_WRITE_R
+        | BGFX_STATE_WRITE_G
+        | BGFX_STATE_WRITE_B
+        | BGFX_STATE_WRITE_A
+        | BGFX_STATE_WRITE_Z
+        | BGFX_STATE_DEPTH_TEST_LESS
+        | BGFX_STATE_CULL_CW
+        | BGFX_STATE_MSAA
+        | BGFX_STATE_PT_TRISTRIP;
+    ;
 };
 
 class Mesh {

@@ -39,6 +39,8 @@
 // --- Renderer ----------------------
 #include <Tabby/Renderer/Renderer.h>
 #include <Tabby/Renderer/Image.h>
+#include <Tabby/Renderer/Font.h>
+#include <Tabby/Renderer/Mesh.h>
 // -----------------------------------
 //
 // --- Audio -------------------------

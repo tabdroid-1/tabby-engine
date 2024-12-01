@@ -33,10 +33,18 @@ Todo
     - <s> Create Application by reading a file. From a file named "tbconfig.(file format)" maybe. </s> Done sine 19-08-2024_1 Alpha.
     - <s>Multithreading </s> Multithreaded some World systems since 20-08-2024_1 Alpha
     - <s>Deal with all compiler warnings.</s> Done since 20-08-2024_1 Alpha
+    - Module/Extention system.
+    - Remove all game related stuff (ecs, physics) and move to different repo (perhaps tabby_framework_engine_extention). 
+    - UI of somesort
+
 
     - More elegant shader compiler. 
     - 2D renderer and Debug(Gizmo) renderer. 
+        - <s>2D Renderer(Batch)</s> Done since 19-11-2024 Alpha 
+        - Font Renderer
+        - Debug Renderer
     - Add font support to asset manager and renderer. <s>Done since 15-08-2024_1 Alpha</s> Reopened 
+    - Multithread wrapper (will call passed tasks single threaded if multithreaded is disabled or its webgl build)
 
 
 - Low priority
