@@ -1,6 +1,10 @@
 
 ![TabbyEngine](/resources/logo/Tabby_Engine_Logo_And_Name_1024X256.png?raw=true "TabbyEngine")
 
+## Discontinued.
+I have decided to stop this engines development in favour of creating framework.
+Instead you will be the once creating the engine. Mostly the graphics part. 
+[Tabby Framework](https://github.com/tabdroid-1/tabby-framework)
 
 Simple game engine written in C++.
 This engines main focus is compatibility for most new and old platforms.
